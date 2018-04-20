@@ -13,10 +13,6 @@ void servoce::display(const servoce::scene& scn) {
 	w.display->setScene(&scn);
 
 
-	gxx::println("trace: before display");
 	w.show();
-	gxx::println("trace: before display");
 	a.exec();
-
-	gxx::println("trace: after display");
 }

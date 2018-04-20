@@ -51,12 +51,13 @@ module('libqt',
 	include_paths = [libqt_include_path]    
 )
 
-shared_library("libservoce.so", 
+shared_library("build/libservoce.so", 
 	srcdir = "src",
 
 	sources = [
 		"math3.cpp",
 		"topo.cpp",
+		"trans.cpp",
 		"solid.cpp",
 		"face.cpp",
 		"wire.cpp",
@@ -82,8 +83,8 @@ shared_library("libservoce.so",
 
 @licant.routine
 def install():
-	licant.make.copy(src="libservoce.so", tgt=install_lib_dir+"libservoce.so")
-	licant.do(install_lib_dir+"libservoce.so")
+	os.system("cp build/libservoce.so {}".format(install_lib_dir+"libservoce.so"))
 	os.system("cp -r include/servoce {}".format(install_inc_dir))
+	print("success install")
 
-licant.ex(default = "libservoce.so")
+licant.ex(default = "build/libservoce.so")
