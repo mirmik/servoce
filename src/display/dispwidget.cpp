@@ -89,7 +89,7 @@ void servoce::disp::DisplayWidget::paintEvent(QPaintEvent* e) {
 }
 
 void servoce::disp::DisplayWidget::autoscale() {
-    gxx::println("autoscale emitted");
+    //gxx::println("autoscale emitted");
     m_view->FitAll (0.5, false);
 }
 

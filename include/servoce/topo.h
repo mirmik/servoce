@@ -12,11 +12,9 @@ class TopoDS_Face;
 namespace servoce {
 	struct shape {
 		TopoDS_Shape* m_shp;
-		shape(const TopoDS_Shape& shp);// : m_shp(shp) {}
-		shape(const shape& oth);// : shp(*oth.m_shp);// : m_shp(shp) {}
+		shape(const TopoDS_Shape& shp);
+		shape(const shape& oth);
 		~shape();
-//		const TopoDS_Shape& Shape() const { return m_shp; }
-//		TopoDS_Shape& Shape() { return m_shp; }
 	};
 
 	template<typename Self>
@@ -44,24 +42,22 @@ namespace servoce {
 		Self mirrorXZ() { return transform(trans::mirrorXZ()); }
 	};
 
-
 	struct solid : public shape, public can_trans<solid> {
-		solid(const TopoDS_Shape& sld);// : shape(sld) {}
-		//solid(const TopoDS_Solid& sld);// : shape(sld) {}
-//		const TopoDS_Solid& Solid() const { return TopoDS::Solid(m_shp); }
-//		TopoDS_Solid& Solid() { return TopoDS::Solid(m_shp); }
+		solid(const TopoDS_Shape& shp);
+		const TopoDS_Solid& Solid() const;
+		TopoDS_Solid& Solid();
 	};
 
-	struct face : public shape {
-		face(const TopoDS_Face& sld);// : shape(sld) {}
-//		const TopoDS_Face& Face() const { return TopoDS::Face(m_shp); }
-//		TopoDS_Face& Face() { return TopoDS::Face(m_shp); }
+	struct face : public shape, public can_trans<wire> {
+		face(const TopoDS_Shape& shp);
+		const TopoDS_Face& Face() const;
+		TopoDS_Face& Face();
 	};
 
-	struct wire : public shape {
-		wire(const TopoDS_Wire& sld);// : shape(sld) {}
-//		const TopoDS_Wire& Wire() const { return TopoDS::Wire(m_shp); }
-//		TopoDS_Wire& Wire() { return TopoDS::Wire(m_shp); }
+	struct wire : public shape, public can_trans<wire> {
+		wire(const TopoDS_Shape& shp);
+		const TopoDS_Wire& Wire() const;
+		TopoDS_Wire& Wire();
 	};
 }
 

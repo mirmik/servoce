@@ -6,10 +6,20 @@
 #include <TopoDS_Wire.hxx>
 #include <TopoDS.hxx>
 
+#include <cassert>
+
 servoce::shape::shape(const TopoDS_Shape& shp) : m_shp(new TopoDS_Shape(shp)) {}
 servoce::shape::shape(const shape& oth) : m_shp(new TopoDS_Shape(*oth.m_shp)) {}
 servoce::shape::~shape() { delete m_shp; }
 
-servoce::solid::solid(const TopoDS_Shape& sld) : shape(sld) {}
-servoce::face::face(const TopoDS_Face& sld) : shape(sld) {}
-servoce::wire::wire(const TopoDS_Wire& sld) : shape(sld) {}
+servoce::solid::solid(const TopoDS_Shape& shp) : shape(shp) {
+	assert(m_shp->ShapeType() == TopAbs_SOLID || m_shp->ShapeType() == TopAbs_COMPOUND);
+}
+
+servoce::face::face(const TopoDS_Shape& shp) : shape(shp) {
+	assert(m_shp->ShapeType() == TopAbs_FACE);
+}
+
+servoce::wire::wire(const TopoDS_Shape& shp) : shape(shp) {
+	assert(m_shp->ShapeType() == TopAbs_WIRE);
+}
