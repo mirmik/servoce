@@ -8,6 +8,7 @@
 #include <TopoDS_Wire.hxx>
 
 #include <gp_Ax1.hxx>
+#include <gp_Ax2.hxx>
 
 /*void ZenTranslate::doit() {
 	trsf.SetTranslation(gp_Vec(x,y,z));
@@ -50,4 +51,48 @@ void servoce::trans::translate::init_native(gp_Trsf* trsf) const {
 
 void servoce::trans::axrotation::init_native(gp_Trsf* trsf) const {
 	trsf->SetRotation(gp_Ax1(gp_Pnt(0,0,0), gp_Vec(ax,ay,az)), angle);
+}
+
+void servoce::trans::axis_mirror::init_native(gp_Trsf* trsf) const {
+	trsf->SetMirror(gp_Ax1(gp_Pnt(0,0,0), gp_Vec(ax,ay,az)));
+}
+
+void servoce::trans::plane_mirror::init_native(gp_Trsf* trsf) const {
+	trsf->SetMirror(gp_Ax2(gp_Pnt(0,0,0), gp_Vec(ax,ay,az)));
+}
+
+servoce::trans::axrotation servoce::trans::rotateX(double a) {
+	return servoce::trans::axrotation(1,0,0,a);
+}
+
+servoce::trans::axrotation servoce::trans::rotateY(double a) {
+	return servoce::trans::axrotation(0,1,0,a);
+}
+
+servoce::trans::axrotation servoce::trans::rotateZ(double a) {
+	return servoce::trans::axrotation(0,0,1,a);
+}
+
+servoce::trans::axis_mirror servoce::trans::mirrorX() {
+	return servoce::trans::axis_mirror(1,0,0);
+}
+
+servoce::trans::axis_mirror servoce::trans::mirrorY() {
+	return servoce::trans::axis_mirror(0,1,0);
+}
+
+servoce::trans::axis_mirror servoce::trans::mirrorZ() {
+	return servoce::trans::axis_mirror(0,0,1);
+}
+
+servoce::trans::plane_mirror servoce::trans::mirrorXY() {
+	return servoce::trans::plane_mirror(0,0,1);
+}
+
+servoce::trans::plane_mirror servoce::trans::mirrorYZ() {
+	return servoce::trans::plane_mirror(1,0,0);
+}
+
+servoce::trans::plane_mirror servoce::trans::mirrorXZ() {
+	return servoce::trans::plane_mirror(0,1,0);
 }

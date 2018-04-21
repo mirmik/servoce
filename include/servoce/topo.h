@@ -30,6 +30,18 @@ namespace servoce {
 		Self back(double y) { return translate(0,-y,0); }
 		Self right(double x) { return translate(x,0,0); }
 		Self left(double x) { return translate(-x,0,0); }
+
+		Self rotateX(double a) { return transform(trans::rotateX(a)); }
+		Self rotateY(double a) { return transform(trans::rotateY(a)); }
+		Self rotateZ(double a) { return transform(trans::rotateZ(a)); }
+
+		Self mirrorX() { return transform(trans::mirrorX()); }
+		Self mirrorY() { return transform(trans::mirrorY()); }
+		Self mirrorZ() { return transform(trans::mirrorZ()); }
+
+		Self mirrorXY() { return transform(trans::mirrorXY()); }
+		Self mirrorYZ() { return transform(trans::mirrorYZ()); }
+		Self mirrorXZ() { return transform(trans::mirrorXZ()); }
 	};
 
 
