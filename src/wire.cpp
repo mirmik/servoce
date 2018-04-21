@@ -18,15 +18,15 @@
 #include <BRepOffsetAPI_ThruSections.hxx>
 
 servoce::wire servoce::curve::make_segment(const servoce::point3& a, const servoce::point3& b) {
-	return BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(OCC_Point3(a), OCC_Point3(b))).Wire();
+	return BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(a.Pnt(), b.Pnt())).Wire();
 }
 
 servoce::wire servoce::curve::make_polysegment(const std::vector<servoce::point3>& pnts, bool closed) {
 	BRepBuilderAPI_MakeWire mkWire;
 	for (int i = 0; i < pnts.size() - 1; ++i) {
-		mkWire.Add(BRepBuilderAPI_MakeEdge(OCC_Point3(pnts[i]), OCC_Point3(pnts[i+1])));
+		mkWire.Add(BRepBuilderAPI_MakeEdge(pnts[i].Pnt(), pnts[i+1].Pnt()));
 	}
-	if (closed) mkWire.Add(BRepBuilderAPI_MakeEdge(OCC_Point3(pnts[pnts.size()-1]), OCC_Point3(pnts[0])));
+	if (closed) mkWire.Add(BRepBuilderAPI_MakeEdge(pnts[pnts.size()-1].Pnt(), pnts[0].Pnt()));
 	return mkWire.Wire(); 
 }
 

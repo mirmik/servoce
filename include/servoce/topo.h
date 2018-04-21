@@ -14,7 +14,10 @@ namespace servoce {
 		TopoDS_Shape* m_shp;
 		shape(const TopoDS_Shape& shp);
 		shape(const shape& oth);
-		~shape();
+		virtual ~shape();
+
+		TopoDS_Shape& Shape();
+		const TopoDS_Shape& Shape() const;
 	};
 
 	template<typename Self>

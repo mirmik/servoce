@@ -1,5 +1,5 @@
-#ifndef SERVOCE_SOLID_H
-#define SERVOCE_SOLID_H
+#ifndef SERVOCE_WIRE_H
+#define SERVOCE_WIRE_H
 
 #include <servoce/topo.h>
 #include <servoce/math3.h>

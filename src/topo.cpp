@@ -23,3 +23,15 @@ servoce::face::face(const TopoDS_Shape& shp) : shape(shp) {
 servoce::wire::wire(const TopoDS_Shape& shp) : shape(shp) {
 	assert(m_shp->ShapeType() == TopAbs_WIRE);
 }
+
+TopoDS_Shape& servoce::shape::Shape() { return *m_shp; }
+const TopoDS_Shape& servoce::shape::Shape() const { return *m_shp; }
+
+TopoDS_Wire& servoce::wire::Wire() { return TopoDS::Wire(*m_shp); }
+const TopoDS_Wire& servoce::wire::Wire() const { return TopoDS::Wire(*m_shp); }
+
+TopoDS_Face& servoce::face::Face() { return TopoDS::Face(*m_shp); }
+const TopoDS_Face& servoce::face::Face() const { return TopoDS::Face(*m_shp); }
+
+TopoDS_Solid& servoce::solid::Solid() { return TopoDS::Solid(*m_shp); }
+const TopoDS_Solid& servoce::solid::Solid() const { return TopoDS::Solid(*m_shp); }

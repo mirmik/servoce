@@ -6,13 +6,13 @@
 #include <BRepAlgoAPI_Cut.hxx>
 
 servoce::solid servoce::boolops::make_union(const solid& a, const solid& b) {
-	return BRepAlgoAPI_Fuse(OCC_Shape(a), OCC_Shape(b)).Shape();
+	return BRepAlgoAPI_Fuse(a.Shape(), b.Shape()).Shape();
 }
 
 servoce::solid servoce::boolops::make_difference(const solid& a, const solid& b) {
-	return BRepAlgoAPI_Cut(OCC_Shape(a), OCC_Shape(b)).Shape();
+	return BRepAlgoAPI_Cut(a.Shape(), b.Shape()).Shape();
 }
 
 servoce::solid servoce::boolops::make_intersect(const solid& a, const solid& b) {
-	return BRepAlgoAPI_Common(OCC_Shape(a), OCC_Shape(b)).Shape();
+	return BRepAlgoAPI_Common(a.Shape(), b.Shape()).Shape();
 }

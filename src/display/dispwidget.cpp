@@ -67,8 +67,8 @@ void servoce::disp::DisplayWidget::paintEvent(QPaintEvent* e) {
     if (m_context.IsNull()) {
         init();
         for (auto& wrap : scn->shapes) {
-            Handle(AIS_Shape) anAisBox1 = new AIS_Shape(OCC_Shape(wrap.shp));
-            Handle(AIS_Shape) anAisBox2 = new AIS_Shape(OCC_Shape(wrap.shp));
+            Handle(AIS_Shape) anAisBox1 = new AIS_Shape(wrap.shp.Shape());
+            Handle(AIS_Shape) anAisBox2 = new AIS_Shape(wrap.shp.Shape());
 
             Quantity_Color shpcolor (0.6, 0.6, 0.8,  Quantity_TOC_RGB);  
             anAisBox1->SetColor(shpcolor);

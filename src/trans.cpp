@@ -34,15 +34,15 @@ gp_Trsf OCC_Trans(const servoce::trans::transformation& trsf) {
 }
 
 servoce::solid servoce::trans::create_transformed(const servoce::solid& shp, const servoce::trans::transformation& trans) {
-	return BRepBuilderAPI_Transform(OCC_Shape(shp), OCC_Trans(trans), true).Shape();
+	return BRepBuilderAPI_Transform(shp.Shape(), OCC_Trans(trans), true).Shape();
 }
 
 servoce::face servoce::trans::create_transformed(const servoce::face& shp, const servoce::trans::transformation& trans) {
-	return BRepBuilderAPI_Transform(OCC_Shape(shp), OCC_Trans(trans), true).Shape();
+	return BRepBuilderAPI_Transform(shp.Shape(), OCC_Trans(trans), true).Shape();
 }
 
 servoce::wire servoce::trans::create_transformed(const servoce::wire& shp, const servoce::trans::transformation& trans) {
-	return BRepBuilderAPI_Transform(OCC_Shape(shp), OCC_Trans(trans), true).Shape();
+	return BRepBuilderAPI_Transform(shp.Shape(), OCC_Trans(trans), true).Shape();
 }
 
 void servoce::trans::translate::init_native(gp_Trsf* trsf) const {
