@@ -1,6 +1,8 @@
 #include <servoce/wire.h>
 #include <local/util.h>
 
+#include <exception>
+
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 
@@ -22,7 +24,10 @@ servoce::wire servoce::curve::make_segment(const servoce::point3& a, const servo
 }
 
 servoce::wire servoce::curve::make_polysegment(const std::vector<servoce::point3>& pnts, bool closed) {
-	BRepBuilderAPI_MakeWire mkWire;
+	if (pnts.size() <= 1) 
+        throw std::logic_error("Need at least two points for polysegment");
+
+    BRepBuilderAPI_MakeWire mkWire;
 	for (int i = 0; i < pnts.size() - 1; ++i) {
 		mkWire.Add(BRepBuilderAPI_MakeEdge(pnts[i].Pnt(), pnts[i+1].Pnt()));
 	}

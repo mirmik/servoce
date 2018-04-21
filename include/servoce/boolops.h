@@ -1,9 +1,10 @@
 #ifndef ZENGEOM_BOOLOPS_H
 #define ZENGEOM_BOOLOPS_H
 
-#include <servoce/topo.h>
-
 namespace servoce {
+	class solid;
+	class face;
+
 	namespace boolops {
 		solid make_union(const solid& a, const solid& b);
 		solid make_difference(const solid& a, const solid& b);

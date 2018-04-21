@@ -1,4 +1,6 @@
 #include <servoce/boolops.h>
+#include <servoce/topo.h>
+
 #include <local/util.h>
 
 #include <BRepAlgoAPI_Fuse.hxx>

@@ -2,6 +2,7 @@
 #define ZENGEOM_TOPO_H
 
 #include <memory>
+#include <servoce/boolops.h>
 #include <servoce/trans.h>
 
 class TopoDS_Shape;
@@ -45,13 +46,20 @@ namespace servoce {
 		Self mirrorXZ() { return transform(trans::mirrorXZ()); }
 	};
 
-	struct solid : public shape, public can_trans<solid> {
+	template<typename Self>
+	struct can_boolops {
+		Self operator+(const Self& oth) { Self& self = static_cast<Self&>(*this); return boolops::make_union(self, oth); }
+		Self operator-(const Self& oth) { Self& self = static_cast<Self&>(*this); return boolops::make_difference(self, oth); }
+		Self operator^(const Self& oth) { Self& self = static_cast<Self&>(*this); return boolops::make_intersect(self, oth); }
+	};
+
+	struct solid : public shape, public can_trans<solid>, public can_boolops<solid> {
 		solid(const TopoDS_Shape& shp);
 		const TopoDS_Solid& Solid() const;
 		TopoDS_Solid& Solid();
 	};
 
-	struct face : public shape, public can_trans<wire> {
+	struct face : public shape, public can_trans<wire>, public can_boolops<face> {
 		face(const TopoDS_Shape& shp);
 		const TopoDS_Face& Face() const;
 		TopoDS_Face& Face();

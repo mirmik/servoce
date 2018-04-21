@@ -10,8 +10,7 @@ int main() {
 	auto pipe = servoce::sweep3d::make_pipe(circ, path); 
 
 	servoce::scene scn;
-	scn.add(linext);
-	scn.add(pipe.right(30));
+	scn.add(linext + pipe.right(30));
 
 	servoce::display(scn);
 }
