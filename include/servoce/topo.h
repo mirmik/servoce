@@ -13,6 +13,7 @@ class TopoDS_Face;
 namespace servoce {
 	struct shape {
 		TopoDS_Shape* m_shp;
+		shape();
 		shape(const TopoDS_Shape& shp);
 		shape(const shape& oth);
 		virtual ~shape();
@@ -54,18 +55,21 @@ namespace servoce {
 	};
 
 	struct solid : public shape, public can_trans<solid>, public can_boolops<solid> {
+		solid();
 		solid(const TopoDS_Shape& shp);
 		const TopoDS_Solid& Solid() const;
 		TopoDS_Solid& Solid();
 	};
 
 	struct face : public shape, public can_trans<face>, public can_boolops<face> {
+		face();
 		face(const TopoDS_Shape& shp);
 		const TopoDS_Face& Face() const;
 		TopoDS_Face& Face();
 	};
 
 	struct wire : public shape, public can_trans<wire> {
+		wire();
 		wire(const TopoDS_Shape& shp);
 		const TopoDS_Wire& Wire() const;
 		TopoDS_Wire& Wire();

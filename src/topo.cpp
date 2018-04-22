@@ -19,6 +19,12 @@ const char* topotype_to_cstr(TopAbs_ShapeEnum e) {
 	}
 }
 
+
+servoce::shape::shape() {}
+servoce::solid::solid() {}
+servoce::face::face() {}
+servoce::wire::wire() {}
+
 servoce::shape::shape(const TopoDS_Shape& shp) : m_shp(new TopoDS_Shape(shp)) {}
 servoce::shape::shape(const shape& oth) : m_shp(new TopoDS_Shape(*oth.m_shp)) {}
 servoce::shape::~shape() { 

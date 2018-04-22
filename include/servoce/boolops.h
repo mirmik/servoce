@@ -1,6 +1,9 @@
 #ifndef ZENGEOM_BOOLOPS_H
 #define ZENGEOM_BOOLOPS_H
 
+#include <vector>
+#include <cstdlib>
+
 namespace servoce {
 	class solid;
 	class face;
@@ -13,6 +16,10 @@ namespace servoce {
 		face make_union(const face& a, const face& b);
 		face make_difference(const face& a, const face& b);
 		face make_intersect(const face& a, const face& b);
+
+		//solid make_union(const std::vector<solid>& vec);
+		solid make_union(const servoce::solid* vec, size_t size);
+		solid make_union(const std::vector<const solid*>& vec);
 	}
 }
 
