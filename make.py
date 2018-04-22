@@ -63,6 +63,7 @@ shared_library("build/libservoce.so",
 		"wire.cpp",
 		"boolops.cpp",
 		"display.cpp",
+		"test.cpp",
 
 		"display/mainwidget.cpp",
 		"display/dispwidget.cpp",
