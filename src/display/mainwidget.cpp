@@ -79,7 +79,7 @@ void servoce::disp::MainWidget::about() {
 
 void servoce::disp::MainWidget::export_stl() {
     //gxx::println("export_stl");
-    /*bool ok;
+    bool ok;
     
     QFileDialog fileDialog(this, "Choose file to export");
     fileDialog.setNameFilter("STL-Mesh (*.stl)");
@@ -95,7 +95,7 @@ void servoce::disp::MainWidget::export_stl() {
     double d = QInputDialog::getDouble(this, tr("QInputDialog::getDouble()"),
                                        tr("Amount:"), 0.01, 0, 10, 5, &ok);
 
-    if (display->display_on_init_list.size() != 1) {
+    if (display->scn->shapes.size() != 1) {
         exit(1);
         //gxx::panic("TODO");
     } 
@@ -103,7 +103,7 @@ void servoce::disp::MainWidget::export_stl() {
     StlAPI_Writer stl_writer;
     stl_writer.SetDeflection(d);
     stl_writer.RelativeMode() = false;
-    stl_writer.Write(display->display_on_init_list[0], path.toStdString().c_str());*/
+    stl_writer.Write(display->scn->shapes[0].shp.Shape(), path.toStdString().c_str());
 }
 
 void servoce::disp::MainWidget::screenshot() {
