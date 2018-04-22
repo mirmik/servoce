@@ -10,6 +10,9 @@
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakePolygon.hxx>
+#include <BRepFilletAPI_MakeFillet2d.hxx>
+#include <BRepTools_WireExplorer.hxx>
+#include <TopExp_Explorer.hxx>
 
 servoce::face servoce::prim2d::make_circle(double r) { 
 	gp_Circ EL ( gp::XOY(), r );
@@ -38,4 +41,36 @@ servoce::face servoce::prim2d::make_ngon(double r, int n) {
 		pnts[i] = servoce::point3(r*cos(angle), r*sin(angle), 0);
 	}
 	return make_polygon(pnts, n);
+}
+
+servoce::face servoce::prim2d::make_rectangle(double a, double b, bool center) { 
+	if (center) {
+		double x = a/2;
+		double y = b/2;
+		return make_polygon({{-x,-y},{x,-y},{x,y},{-x,y}});
+	}
+	else {
+		return make_polygon({{0,0},{0,b},{a,b},{a,0}});
+	}
+}
+
+servoce::face servoce::prim2d::make_square(double a, bool center) { 
+	return make_rectangle(a,a,center);
+}
+
+servoce::face servoce::face::fillet(double r, const std::vector<int>& nums) {
+	std::set<int>snums(nums.begin(), nums.end());
+	BRepFilletAPI_MakeFillet2d mk(Face());
+
+	int idx = 0;
+
+	for(TopExp_Explorer expWire(TopoDS::Face(Face()), TopAbs_WIRE); expWire.More(); expWire.Next()) {
+		BRepTools_WireExplorer explorer(TopoDS::Wire(expWire.Current()));
+    	while (explorer.More()) {
+			if (nums.size() == 0 || snums.count(idx))mk.AddFillet(explorer.CurrentVertex(), r);
+			explorer.Next();
+			++idx;
+		}
+	}
+	return mk.Shape();
 }

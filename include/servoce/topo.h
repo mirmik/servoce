@@ -2,6 +2,7 @@
 #define ZENGEOM_TOPO_H
 
 #include <memory>
+#include <set>
 #include <servoce/boolops.h>
 #include <servoce/trans.h>
 
@@ -66,6 +67,7 @@ namespace servoce {
 		face(const TopoDS_Shape& shp);
 		const TopoDS_Face& Face() const;
 		TopoDS_Face& Face();
+		face fillet(double r, const std::vector<int>& nums);
 	};
 
 	struct wire : public shape, public can_trans<wire> {
