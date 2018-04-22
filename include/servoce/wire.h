@@ -10,9 +10,9 @@ namespace servoce {
 		wire make_segment(const point3& a, const point3& b);
 		wire make_polysegment(const std::vector<point3>& vec, bool closed = false);
 		
-		wire make_interpolate(const std::vector<point3>& pnts);
-		wire make_interpolate(const std::vector<point3>& pnts, const vector3& atang, const vector3& btang);
-		wire make_interpolate(const std::vector<point3>& pnts, const std::vector<point3>& tang);
+		wire make_interpolate(const std::vector<point3>& pnts, bool closed);
+		//wire make_interpolate(const std::vector<point3>& pnts, const vector3& atang, const vector3& btang);
+		wire make_interpolate(const std::vector<point3>& pnts, const std::vector<vector3>& tang, bool closed);
 
 		wire make_arc_by_points(const point3& a, const point3& b, const point3& c);
 		

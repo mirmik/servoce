@@ -11,6 +11,8 @@ namespace servoce {
 		vector3(double x, double y) : x(x), y(y), z(0) {}
 		vector3(double x, double y, double z) : x(x), y(y), z(z) {}
 		gp_Vec Vec() const;
+		bool operator==(const vector3& oth) const { return oth.x == x && oth.y == y && oth.z == z; }
+		bool operator!=(const vector3& oth) const { return oth.x != x || oth.y != y || oth.z != z; }
 	};
 
 	struct point3 {

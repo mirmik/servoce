@@ -40,7 +40,6 @@ servoce::face::face(const TopoDS_Shape& shp) : shape(shp) {
 }
 
 servoce::wire::wire(const TopoDS_Shape& shp) : shape(shp) {
-	gxx::println(topotype_to_cstr(m_shp->ShapeType()));
 	assert(m_shp->ShapeType() == TopAbs_WIRE);
 }
 
