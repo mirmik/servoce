@@ -47,8 +47,8 @@ servoce::solid servoce::prim3d::make_torus(double r1, double r2) {
 }
 
 servoce::sweep_solid::~sweep_solid() {
-	delete m_first;
-	delete m_last;
+	//delete m_first;
+	//delete m_last;
 }
 
 servoce::sweep_solid::sweep_solid(BRepPrimAPI_MakeSweep&& builder) : solid(builder.Shape()) {

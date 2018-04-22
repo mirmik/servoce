@@ -20,6 +20,9 @@ namespace servoce {
 		TopoDS_Shape* m_last;
 		sweep_solid(BRepPrimAPI_MakeSweep&& builder);
 		virtual ~sweep_solid();
+	
+		shape last() { return *m_last; } 
+		shape first() { return *m_first; } 
 	};
 
 	namespace sweep3d {
