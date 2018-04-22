@@ -7,12 +7,16 @@ class gp_Pnt;
 namespace servoce {
 	struct vector3 {
 		double x, y, z;
+		vector3() {}
+		vector3(double x, double y) : x(x), y(y), z(0) {}
 		vector3(double x, double y, double z) : x(x), y(y), z(z) {}
 		gp_Vec Vec() const;
 	};
 
 	struct point3 {
 		double x, y, z;
+		point3() {}
+		point3(double x, double y) : x(x), y(y), z(0) {}
 		point3(double x, double y, double z) : x(x), y(y), z(z) {}
 		gp_Pnt Pnt() const;
 	};

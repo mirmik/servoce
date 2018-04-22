@@ -59,7 +59,7 @@ namespace servoce {
 		TopoDS_Solid& Solid();
 	};
 
-	struct face : public shape, public can_trans<wire>, public can_boolops<face> {
+	struct face : public shape, public can_trans<face>, public can_boolops<face> {
 		face(const TopoDS_Shape& shp);
 		const TopoDS_Face& Face() const;
 		TopoDS_Face& Face();

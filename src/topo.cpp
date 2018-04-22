@@ -7,6 +7,17 @@
 #include <TopoDS.hxx>
 
 #include <cassert>
+#include <gxx/print.h>
+
+const char* topotype_to_cstr(TopAbs_ShapeEnum e) {
+	switch(e) {
+		case TopAbs_SOLID: return "TopAbs_SOLID";
+		case TopAbs_WIRE: return "TopAbs_WIRE";
+		case TopAbs_FACE: return "TopAbs_FACE";
+		case TopAbs_COMPOUND: return "TopAbs_COMPOUND";
+		default: return "Another_TopAbs";
+	}
+}
 
 servoce::shape::shape(const TopoDS_Shape& shp) : m_shp(new TopoDS_Shape(shp)) {}
 servoce::shape::shape(const shape& oth) : m_shp(new TopoDS_Shape(*oth.m_shp)) {}
@@ -21,6 +32,7 @@ servoce::face::face(const TopoDS_Shape& shp) : shape(shp) {
 }
 
 servoce::wire::wire(const TopoDS_Shape& shp) : shape(shp) {
+	gxx::println(topotype_to_cstr(m_shp->ShapeType()));
 	assert(m_shp->ShapeType() == TopAbs_WIRE);
 }
 
