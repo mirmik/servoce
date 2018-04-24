@@ -15,16 +15,24 @@ static inline TopoDS_Shape __make_union(const TopoDS_Shape& a, const TopoDS_Shap
 	return BRepAlgoAPI_Fuse(a, b).Shape();
 }
 
+static inline TopoDS_Shape __make_difference(const TopoDS_Shape& a, const TopoDS_Shape& b) {
+	return BRepAlgoAPI_Cut(a, b).Shape();
+}
+
+static inline TopoDS_Shape __make_intersect(const TopoDS_Shape& a, const TopoDS_Shape& b) {
+	return BRepAlgoAPI_Common(a, b).Shape();
+}
+
 servoce::solid servoce::boolops::make_union(const solid& a, const solid& b) {
 	return __make_union(a.Shape(), b.Shape());
 }
 
 servoce::solid servoce::boolops::make_difference(const solid& a, const solid& b) {
-	return BRepAlgoAPI_Cut(a.Shape(), b.Shape()).Shape();
+	return __make_difference(a.Shape(), b.Shape());
 }
 
 servoce::solid servoce::boolops::make_intersect(const solid& a, const solid& b) {
-	return BRepAlgoAPI_Common(a.Shape(), b.Shape()).Shape();
+	return __make_intersect(a.Shape(), b.Shape());
 }
 
 /*TopoDS_Shape __make_union(const TopoDS_Shape* vec, size_t size) {
@@ -65,4 +73,20 @@ servoce::solid servoce::boolops::make_union(const std::vector<const servoce::sol
 	}
 
 	return narr[0];
+}
+
+servoce::solid servoce::boolops::make_difference(const std::vector<const servoce::solid*>& vec) {
+	TopoDS_Shape ret = vec[0]->Shape();
+	for (int i = 1; i < vec.size(); ++i) {
+		ret = __make_difference(ret, vec[i]->Shape());
+	}
+	return ret;
+}
+
+servoce::solid servoce::boolops::make_intersect(const std::vector<const servoce::solid*>& vec) {
+	TopoDS_Shape ret = vec[0]->Shape();
+	for (int i = 1; i < vec.size(); ++i) {
+		ret = __make_intersect(ret, vec[i]->Shape());
+	}
+	return ret;
 }

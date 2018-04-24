@@ -18,8 +18,14 @@ namespace servoce {
 		face make_intersect(const face& a, const face& b);
 
 		//solid make_union(const std::vector<solid>& vec);
-		solid make_union(const servoce::solid* vec, size_t size);
+		//solid make_union(const servoce::solid* vec, size_t size);
 		solid make_union(const std::vector<const solid*>& vec);
+
+		//solid make_difference(const servoce::solid* vec, size_t size);
+		solid make_difference(const std::vector<const solid*>& vec);
+
+		//solid make_intersect(const servoce::solid* vec, size_t size);
+		solid make_intersect(const std::vector<const solid*>& vec);
 	}
 }
 
