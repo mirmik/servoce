@@ -32,11 +32,11 @@ servoce::shape::~shape() {
 }
 
 servoce::solid::solid(const TopoDS_Shape& shp) : shape(shp) {
-	assert(m_shp->ShapeType() == TopAbs_SOLID || m_shp->ShapeType() == TopAbs_COMPOUND);
+	//assert(m_shp->ShapeType() == TopAbs_SOLID || m_shp->ShapeType() == TopAbs_COMPOUND);
 }
 
 servoce::face::face(const TopoDS_Shape& shp) : shape(shp) {
-	assert(m_shp->ShapeType() == TopAbs_FACE);
+	assert(m_shp->ShapeType() == TopAbs_FACE || m_shp->ShapeType() == TopAbs_COMPOUND);
 }
 
 servoce::wire::wire(const TopoDS_Shape& shp) : shape(shp) {

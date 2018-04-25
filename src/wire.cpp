@@ -5,6 +5,7 @@
 
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
 
 #include <TopoDS_Wire.hxx>
 #include <TopoDS_Shape.hxx>
@@ -24,7 +25,9 @@
 #include <TColgp_Array1OfVec.hxx>
 #include <GeomAPI_Interpolate.hxx>
 
-
+servoce::face servoce::wire::to_face() {
+	return BRepBuilderAPI_MakeFace(Wire()).Face();
+}
 
 servoce::wire servoce::curve::make_segment(const servoce::point3& a, const servoce::point3& b) {
 	return BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(a.Pnt(), b.Pnt())).Wire();
@@ -207,4 +210,22 @@ servoce::wire servoce::curve::make_interpolate(const std::vector<servoce::point3
 	
 	algo.Perform();
 	return BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(algo.Curve())).Wire();
+}
+
+servoce::wire servoce::curve::make_interpolate(const std::vector<servoce::point3>& pnts, bool closed) {
+	Handle(TColgp_HArray1OfPnt) _pnts = new TColgp_HArray1OfPnt(1, pnts.size());
+	for (int i = 0; i < pnts.size(); ++i) _pnts->SetValue(i + 1, pnts[i].Pnt());
+
+	GeomAPI_Interpolate algo(_pnts, /*_params,*/ closed, 0.0000001);
+	
+	algo.Perform();
+	return BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(algo.Curve())).Wire();
+}
+
+servoce::wire servoce::curve::make_complex_wire(const std::vector<const servoce::wire*>& arr) {
+	BRepBuilderAPI_MakeWire mk;
+	for (auto* ptr : arr) {
+		mk.Add(ptr->Wire());
+	}
+	return mk.Wire();
 }

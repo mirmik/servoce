@@ -7,6 +7,8 @@ namespace servoce {
 	class solid;
 	class face;
 	class wire;
+	class point3;
+	class vector3;
 
 	namespace trans {
 		struct transformation { virtual void init_native(gp_Trsf*) const = 0; };
@@ -18,6 +20,8 @@ namespace servoce {
 		solid create_transformed(const solid& shp, const transformation& trans);
 		face create_transformed(const face& shp, const transformation& trans);
 		wire create_transformed(const wire& shp, const transformation& trans);
+		point3 create_transformed(const point3& shp, const transformation& trans);
+		vector3 create_transformed(const vector3& shp, const transformation& trans);
 
 		axrotation rotateX(double a);		
 		axrotation rotateY(double a);

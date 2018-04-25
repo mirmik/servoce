@@ -20,6 +20,8 @@ namespace servoce {
 
 		wire make_helix(double pitch, double height, double radius, double angle = 0, bool leftHanded = false, bool newStyle = true);
 		wire make_long_helix(double pitch, double height, double radius, double angle = 0, bool leftHanded = false);
+	
+		wire make_complex_wire(const std::vector<const wire*>& arr);
 	}
 }
 

@@ -5,6 +5,8 @@
 #include <servoce/topo.h>
 #include <servoce/math3.h>
 
+class BRepPrimAPI_MakeSweep;
+
 namespace servoce {
 	namespace prim2d {
 		face make_circle(double r);
@@ -14,6 +16,20 @@ namespace servoce {
 		face make_ngon(double r, int n);
 		face make_square(double a, bool center = false);
 		face make_rectangle(double a, double b, bool center = false);
+	}
+	
+	struct sweep_face : public face {
+		TopoDS_Shape* m_first;
+		TopoDS_Shape* m_last;
+		sweep_face(BRepPrimAPI_MakeSweep&& builder);
+		virtual ~sweep_face();
+	
+		shape last() { return *m_last; } 
+		shape first() { return *m_first; } 
+	};
+
+	namespace sweep2d {
+		sweep_face make_sweep(const servoce::shape& profile, const servoce::wire& path);
 	}
 }
 

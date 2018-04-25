@@ -10,6 +10,10 @@ class TopoDS_Shape;
 class TopoDS_Solid;
 class TopoDS_Wire;
 class TopoDS_Face;
+class TopoDS_Vertex;
+
+class gp_Vec;
+class gp_Pnt;
 
 namespace servoce {
 	struct shape {
@@ -27,6 +31,7 @@ namespace servoce {
 	struct can_trans {
 		Self transform(const trans::transformation& trans) { Self& self = static_cast<Self&>(*this); return trans::create_transformed(self, trans); }
 		Self translate(double x, double y, double z) { return transform(trans::translate{x,y,z}); }
+		Self translate(double x, double y) { return transform(trans::translate{x,y,0}); }
 		Self rotate(double ax, double ay, double az, double angle) { return transform(trans::axrotation{ax,ay,az,angle}); }
 		Self up(double z) { return translate(0,0,z); }
 		Self down(double z) { return translate(0,0,-z); }
@@ -75,6 +80,26 @@ namespace servoce {
 		wire(const TopoDS_Shape& shp);
 		const TopoDS_Wire& Wire() const;
 		TopoDS_Wire& Wire();
+		face to_face();
+	};
+
+	struct vector3 : public can_trans<vector3> {
+		double x, y, z;
+		vector3() {}
+		vector3(double x, double y) : x(x), y(y), z(0) {}
+		vector3(double x, double y, double z) : x(x), y(y), z(z) {}
+		gp_Vec Vec() const;
+		bool operator==(const vector3& oth) const { return oth.x == x && oth.y == y && oth.z == z; }
+		bool operator!=(const vector3& oth) const { return oth.x != x || oth.y != y || oth.z != z; }
+	};
+
+	struct point3 : public can_trans<point3> {
+		double x, y, z;
+		point3() {}
+		point3(double x, double y) : x(x), y(y), z(0) {}
+		point3(double x, double y, double z) : x(x), y(y), z(z) {}
+		gp_Pnt Pnt() const;
+		TopoDS_Vertex Vtx() const;
 	};
 }
 

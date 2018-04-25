@@ -45,6 +45,18 @@ servoce::wire servoce::trans::create_transformed(const servoce::wire& shp, const
 	return BRepBuilderAPI_Transform(shp.Shape(), OCC_Trans(trans), true).Shape();
 }
 
+servoce::point3 servoce::trans::create_transformed(const servoce::point3& pnt, const servoce::trans::transformation& trans) {
+	auto p = pnt.Pnt();
+	p.Transform(OCC_Trans(trans));
+	return servoce::point3(p.X(), p.Y(), p.Z());
+}
+
+servoce::vector3 servoce::trans::create_transformed(const servoce::vector3& pnt, const servoce::trans::transformation& trans) {
+	auto v = pnt.Vec();
+	v.Transform(OCC_Trans(trans));
+	return servoce::vector3(v.X(), v.Y(), v.Z());
+}
+
 void servoce::trans::translate::init_native(gp_Trsf* trsf) const {
 	trsf->SetTranslation(gp_Vec(x,y,z));
 }

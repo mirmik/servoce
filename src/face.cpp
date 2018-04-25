@@ -14,6 +14,8 @@
 #include <BRepTools_WireExplorer.hxx>
 #include <TopExp_Explorer.hxx>
 
+#include <BRepOffsetAPI_MakePipe.hxx>
+
 servoce::face servoce::prim2d::make_circle(double r) { 
 	gp_Circ EL ( gp::XOY(), r );
 	Handle(Geom_Circle) anCircle = GC_MakeCircle(EL).Value();
@@ -73,4 +75,20 @@ servoce::face servoce::face::fillet(double r, const std::vector<int>& nums) {
 		}
 	}
 	return mk.Shape();
+}
+
+
+servoce::sweep_face::~sweep_face() {}
+
+servoce::sweep_face::sweep_face(BRepPrimAPI_MakeSweep&& builder) : face(builder.Shape()) {
+	m_first = new TopoDS_Shape(builder.FirstShape());
+	m_last = new TopoDS_Shape(builder.LastShape());
+}
+
+servoce::sweep_face servoce::sweep2d::make_sweep(const servoce::shape& profile, const servoce::wire& path) {
+    if (path.Shape().IsNull())
+        Standard_Failure::Raise("Cannot sweep along empty spine");
+    if (profile.Shape().IsNull())
+        Standard_Failure::Raise("Cannot sweep empty profile");
+    return BRepOffsetAPI_MakePipe(path.Wire(), profile.Shape());
 }
