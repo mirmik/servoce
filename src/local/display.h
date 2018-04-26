@@ -1,14 +1,15 @@
 #ifndef SERVOCE_LOCAL_DISPLAY_H
 #define SERVOCE_LOCAL_DISPLAY_H
 
-#include <QtWidgets/QMenuBar>
-#include <QtWidgets/QMainWindow>
-
-#include <QtOpenGL/QGLWidget>
-
 #include <AIS_InteractiveContext.hxx>
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
+
+#undef Unsorted
+
+#include <QtWidgets/QMenuBar>
+#include <QtWidgets/QMainWindow>
+#include <QtOpenGL/QGLWidget>
 
 #include <gxx/math/quaternion.h>
 
