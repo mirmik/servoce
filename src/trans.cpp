@@ -26,6 +26,7 @@ void ZenPlaneMirror::doit() {
 	trsf.SetMirror(gp_Ax2(gp_Pnt(0,0,0), gp_Vec(ax,ay,az)));
 }*/
 
+#include <gxx/print.h>
 #include <gp_Trsf.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
 

@@ -4,8 +4,8 @@
 #include <servoce/display.h>
 
 int main() {
-	auto m1 = servoce::prim3d::make_box(10,10,10);
-	auto m2 = m1.translate(10,20,30);
+	auto m1 = servoce::prim3d::make_torus(3,3);
+	auto m2 = m1.rotateX(1).translate(10,20,30);
 
 	servoce::scene scn;
 	scn.add(m1);

@@ -29,9 +29,15 @@ namespace servoce {
 
 	template<typename Self>
 	struct can_trans {
-		Self transform(const trans::transformation& trans) { Self& self = static_cast<Self&>(*this); return trans::create_transformed(self, trans); }
-		Self translate(double x, double y, double z) { return transform(trans::translate{x,y,z}); }
-		Self translate(double x, double y) { return transform(trans::translate{x,y,0}); }
+		Self transform(const trans::transformation& trans) { 
+			Self& self = static_cast<Self&>(*this); 
+			return trans::create_transformed(self, trans); 
+		}
+		Self translate(double x, double y, double z) { 
+			return transform(trans::translate{x,y,z}); 
+		}
+		//Self translate(double x, double y) { 
+		//	return transform(trans::translate{x,y,0}); }
 		Self rotate(double ax, double ay, double az, double angle) { return transform(trans::axrotation{ax,ay,az,angle}); }
 		Self up(double z) { return translate(0,0,z); }
 		Self down(double z) { return translate(0,0,-z); }
@@ -40,7 +46,9 @@ namespace servoce {
 		Self right(double x) { return translate(x,0,0); }
 		Self left(double x) { return translate(-x,0,0); }
 
-		Self rotateX(double a) { return transform(trans::rotateX(a)); }
+		Self rotateX(double a) { 
+			return transform(trans::rotateX(a)); 
+		}
 		Self rotateY(double a) { return transform(trans::rotateY(a)); }
 		Self rotateZ(double a) { return transform(trans::rotateZ(a)); }
 
