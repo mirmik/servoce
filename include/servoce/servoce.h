@@ -4,5 +4,6 @@
 #include <servoce/solid.h>
 #include <servoce/face.h>
 #include <servoce/wire.h>
+#include <servoce/trans.h>
 
 #endif

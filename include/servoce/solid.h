@@ -26,7 +26,7 @@ namespace servoce {
 	};
 
 	namespace sweep3d {
-		sweep_solid make_linear_extrude(const servoce::shape& base, const servoce::vector3& vec);
+		sweep_solid make_linear_extrude(const servoce::shape& base, const servoce::vector3& vec, bool center = false);
 		sweep_solid make_pipe(const servoce::shape& profile, const servoce::wire& path);
 	}
 }

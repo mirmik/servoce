@@ -56,8 +56,17 @@ servoce::sweep_solid::sweep_solid(BRepPrimAPI_MakeSweep&& builder) : solid(build
 	m_last = new TopoDS_Shape(builder.LastShape());
 }
 
-servoce::sweep_solid servoce::sweep3d::make_linear_extrude(const servoce::shape& base, const servoce::vector3& vec) {
-	return BRepPrimAPI_MakePrism(base.Shape(), vec.Vec());
+servoce::sweep_solid servoce::sweep3d::make_linear_extrude(const servoce::shape& base, const servoce::vector3& vec, bool center) {
+	if (center) {
+        trans::translate trs(-vec/2);
+        return make_linear_extrude(trs(base),vec);
+
+        //trans::translate trs(-vec/2);
+        //auto sld = make_linear_extrude(base, vec);
+        //return trs(sld);
+
+    }
+    return BRepPrimAPI_MakePrism(base.Shape(), vec.Vec());
 }
 
 servoce::sweep_solid servoce::sweep3d::make_pipe(const servoce::shape& profile, const servoce::wire& path) {

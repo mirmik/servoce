@@ -31,7 +31,7 @@ namespace servoce {
 	struct can_trans {
 		Self transform(const trans::transformation& trans) { 
 			Self& self = static_cast<Self&>(*this); 
-			return trans::create_transformed(self, trans); 
+			return trans(self); 
 		}
 		Self translate(double x, double y, double z) { 
 			return transform(trans::translate{x,y,z}); 
@@ -94,16 +94,20 @@ namespace servoce {
 	struct vector3 : public can_trans<vector3> {
 		double x, y, z;
 		vector3() {}
+		vector3(const gp_Vec& pnt) {}
 		vector3(double x, double y) : x(x), y(y), z(0) {}
 		vector3(double x, double y, double z) : x(x), y(y), z(z) {}
 		gp_Vec Vec() const;
 		bool operator==(const vector3& oth) const { return oth.x == x && oth.y == y && oth.z == z; }
 		bool operator!=(const vector3& oth) const { return oth.x != x || oth.y != y || oth.z != z; }
+		vector3 operator-() const { return vector3(-x,-y,-z); }
+		vector3 operator/(double a) const { return vector3(x/a,y/a,z/a); }
 	};
 
 	struct point3 : public can_trans<point3> {
 		double x, y, z;
 		point3() {}
+		point3(const gp_Pnt& pnt) {}
 		point3(double x, double y) : x(x), y(y), z(0) {}
 		point3(double x, double y, double z) : x(x), y(y), z(z) {}
 		gp_Pnt Pnt() const;
