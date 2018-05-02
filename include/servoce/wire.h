@@ -17,11 +17,14 @@ namespace servoce {
 		wire make_arc_by_points(const point3& a, const point3& b, const point3& c);
 		
 		wire make_circle(double r, double a, double b);
+		wire make_circle(double r);
 
 		wire make_helix(double pitch, double height, double radius, double angle = 0, bool leftHanded = false, bool newStyle = true);
 		wire make_long_helix(double pitch, double height, double radius, double angle = 0, bool leftHanded = false);
 	
 		wire make_complex_wire(const std::vector<const wire*>& arr);
+
+		wire simplify_with_bspline(const wire& wr);
 	}
 }
 

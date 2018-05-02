@@ -11,7 +11,7 @@ import os
 licant.libs.include("gxx")
 
 libqt_include_path = "/usr/include/x86_64-linux-gnu/qt5/"
-liboce_include_path = "/usr/include/oce"
+liboce_include_path = "/usr/local/include/opencascade/"
 python_include_prefix = "/usr/include/"
 
 install_lib_dir = "/usr/lib/"
@@ -64,9 +64,11 @@ shared_library("build/libservoce.so",
 		"boolops.cpp",
 		"display.cpp",
 		"test.cpp",
+		"convert.cpp",
 
 		"display/mainwidget.cpp",
 		"display/dispwidget.cpp",
+		"display/dispwidget_qt.cpp",
 	],
 
 	moc = ["local/display.h"],  

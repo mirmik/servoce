@@ -6,10 +6,12 @@
 #include <BRepAlgoAPI_Fuse.hxx>
 #include <BRepAlgoAPI_Common.hxx>
 #include <BRepAlgoAPI_Cut.hxx>
+#include <TopExp_Explorer.hxx>
 
 #include <gxx/print.h>
 #include <chrono>
 #include <iostream>
+#include <TopoDS.hxx>
 
 static inline TopoDS_Shape __make_union(const TopoDS_Shape& a, const TopoDS_Shape& b) {
 	return BRepAlgoAPI_Fuse(a, b).Shape();
@@ -23,16 +25,45 @@ static inline TopoDS_Shape __make_intersect(const TopoDS_Shape& a, const TopoDS_
 	return BRepAlgoAPI_Common(a, b).Shape();
 }
 
-servoce::solid servoce::boolops::make_union(const solid& a, const solid& b) {
+servoce::solid servoce::boolops::make_union(const solid& a, const shape& b) {
 	return __make_union(a.Shape(), b.Shape());
 }
 
-servoce::solid servoce::boolops::make_difference(const solid& a, const solid& b) {
+servoce::solid servoce::boolops::make_difference(const solid& a, const shape& b) {
 	return __make_difference(a.Shape(), b.Shape());
 }
 
-servoce::solid servoce::boolops::make_intersect(const solid& a, const solid& b) {
+servoce::solid servoce::boolops::make_intersect(const solid& a, const shape& b) {
 	return __make_intersect(a.Shape(), b.Shape());
+}
+
+servoce::face servoce::boolops::make_union(const face& a, const shape& b) {
+	return __make_union(a.Shape(), b.Shape());
+}
+
+servoce::face servoce::boolops::make_difference(const face& a, const shape& b) {
+	return __make_difference(a.Shape(), b.Shape());
+}
+
+servoce::face servoce::boolops::make_intersect(const face& a, const shape& b) {
+	return __make_intersect(a.Shape(), b.Shape());
+}
+
+servoce::wire servoce::boolops::make_union(const wire& a, const shape& b) {
+	gxx::panic("StrangeOperation");
+	//return __make_union(a.Shape(), b.Shape());
+}
+
+servoce::wire servoce::boolops::make_difference(const wire& a, const shape& b) {
+	auto inter = __make_difference(a.Shape(), b.Shape());
+	TopExp_Explorer explorer(inter, TopAbs_WIRE);
+	return explorer.Current();
+}
+
+servoce::wire servoce::boolops::make_intersect(const wire& a, const shape& b) {
+	auto inter = __make_intersect(a.Shape(), b.Shape());
+	TopExp_Explorer explorer(inter, TopAbs_WIRE);
+	return explorer.Current();
 }
 
 /*TopoDS_Shape __make_union(const TopoDS_Shape* vec, size_t size) {

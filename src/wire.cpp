@@ -11,6 +11,9 @@
 #include <TopoDS_Shape.hxx>
 #include <BRepLib.hxx>
 
+#include <gp_Circ.hxx>
+#include <GC_MakeCircle.hxx>
+
 #include <gp_Lin2d.hxx>
 #include <GCE2d_MakeSegment.hxx>
 #include <Geom_CylindricalSurface.hxx>
@@ -19,11 +22,16 @@
 #include <Geom2d_Ellipse.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <BRepOffsetAPI_ThruSections.hxx>
-#include <Handle_TColgp_HArray1OfPnt.hxx>
+//#include <Handle_TColgp_HArray1OfPnt.hxx>
 #include <TColStd_HArray1OfBoolean.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 #include <TColgp_Array1OfVec.hxx>
 #include <GeomAPI_Interpolate.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <gxx/print.h>
 
 servoce::face servoce::wire::to_face() {
 	return BRepBuilderAPI_MakeFace(Wire()).Face();
@@ -130,7 +138,7 @@ servoce::wire servoce::curve::make_long_helix(double pitch, double height,
 		isCylinder = true;
 	}
 	else {                                  // Conical helix
-		angle = to_radian(angle);
+		//angle = to_radian(angle);
 		if (angle < Precision::Confusion())
 			Standard_Failure::Raise("Angle of helix too small");
 		surf = new Geom_ConicalSurface(gp_Ax3(cylAx2), angle, radius);
@@ -228,4 +236,29 @@ servoce::wire servoce::curve::make_complex_wire(const std::vector<const servoce:
 		mk.Add(ptr->Wire());
 	}
 	return mk.Wire();
+}
+
+servoce::wire servoce::curve::make_circle(double r, double a, double b) { 
+	gp_Circ EL ( gp::XOY(), r );
+	Handle(Geom_Circle) anCircle = GC_MakeCircle(EL).Value();
+	TopoDS_Edge aEdge = BRepBuilderAPI_MakeEdge( anCircle, a, b );
+	TopoDS_Wire aCircle = BRepBuilderAPI_MakeWire( aEdge );
+	return aCircle;
+}
+
+servoce::wire servoce::curve::make_circle(double r) { 
+	gp_Circ EL ( gp::XOY(), r );
+	Handle(Geom_Circle) anCircle = GC_MakeCircle(EL).Value();
+	TopoDS_Edge aEdge = BRepBuilderAPI_MakeEdge( anCircle);
+	TopoDS_Wire aCircle = BRepBuilderAPI_MakeWire( aEdge );
+	return aCircle;
+}
+
+
+servoce::wire servoce::curve::simplify_with_bspline(const servoce::wire& wr) {
+	TopExp_Explorer explorer(wr.Shape(), TopAbs_EDGE);
+	TopoDS_Edge edg = TopoDS::Edge(explorer.Current());
+
+
+	return BRepBuilderAPI_MakeWire(edg).Shape();
 }

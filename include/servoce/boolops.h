@@ -5,17 +5,23 @@
 #include <cstdlib>
 
 namespace servoce {
+	class shape;
 	class solid;
+	class wire;
 	class face;
 
 	namespace boolops {
-		solid make_union(const solid& a, const solid& b);
-		solid make_difference(const solid& a, const solid& b);
-		solid make_intersect(const solid& a, const solid& b);
+		solid make_union(const solid& a, const shape& b);
+		solid make_difference(const solid& a, const shape& b);
+		solid make_intersect(const solid& a, const shape& b);
 
-		face make_union(const face& a, const face& b);
-		face make_difference(const face& a, const face& b);
-		face make_intersect(const face& a, const face& b);
+		face make_union(const face& a, const shape& b);
+		face make_difference(const face& a, const shape& b);
+		face make_intersect(const face& a, const shape& b);
+
+		wire make_union(const wire& a, const shape& b);
+		wire make_difference(const wire& a, const shape& b);
+		wire make_intersect(const wire& a, const shape& b);
 
 		//solid make_union(const std::vector<solid>& vec);
 		//solid make_union(const servoce::solid* vec, size_t size);

@@ -5,5 +5,6 @@
 #include <servoce/face.h>
 #include <servoce/wire.h>
 #include <servoce/trans.h>
+#include <servoce/convert.h>
 
 #endif

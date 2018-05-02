@@ -16,6 +16,10 @@ namespace servoce {
 		void add(const servoce::shape& shp) {
 			shapes.emplace_back(shp);
 		}
+
+		void add(const servoce::solid& shp) {
+			shapes.emplace_back(shp);
+		}
 	};
 }
 

@@ -1,15 +1,19 @@
 //#include <zencad/MainWidget.h>
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QFileDialog>
-#include <QtWidgets/QInputDialog>
-#include <QtCore/QDebug>
-#include <QtCore/QDir>
+//#include <QtWidgets/QMessageBox>
+//#include <QtWidgets/QFileDialog>
+//#include <QtWidgets/QInputDialog>
+//#include <QtCore/QDebug>
+//#include <QtCore/QDir>
+
+#include <QtCore/QtCore>
+#include <QtWidgets/QtWidgets>
 
 // occ header files.
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCone.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <StlAPI_Writer.hxx>
+//#include <StlAPI_ErrorStatus.hxx>
 
 #include <V3d_View.hxx>
 #include <AIS_Shape.hxx>
@@ -101,9 +105,12 @@ void servoce::disp::MainWidget::export_stl() {
     } 
 
     StlAPI_Writer stl_writer;
-    stl_writer.SetDeflection(d);
-    stl_writer.RelativeMode() = false;
+    //stl_writer.SetDeflection(d);
+    //stl_writer.RelativeMode() = false;
     stl_writer.Write(display->scn->shapes[0].shp.Shape(), path.toStdString().c_str());
+    //QMessageBox msgBox;
+    //msgBox.setText(QString::number((int)err));
+    //int ret = msgBox.exec();
 }
 
 void servoce::disp::MainWidget::screenshot() {

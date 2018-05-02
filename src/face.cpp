@@ -92,3 +92,15 @@ servoce::sweep_face servoce::sweep2d::make_sweep(const servoce::shape& profile, 
         Standard_Failure::Raise("Cannot sweep empty profile");
     return BRepOffsetAPI_MakePipe(path.Wire(), profile.Shape());
 }
+
+std::vector<servoce::wire> servoce::face::wires() {
+	TopExp_Explorer explorer(Shape(), TopAbs_WIRE);
+	std::vector<servoce::wire> ret;
+
+	while(explorer.More()) {
+		ret.emplace_back(explorer.Current());
+		explorer.Next();
+	}
+
+	return ret;
+}

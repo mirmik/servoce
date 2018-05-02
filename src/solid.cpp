@@ -9,8 +9,11 @@
 //#include <BRepPrimAPI_MakeWedge.hxx>
 //#include <BRepOffsetAPI_ThruSections.hxx>
 #include <BRepOffsetAPI_MakePipe.hxx>
+#include <BRepOffsetAPI_MakePipeShell.hxx>
 
 #include <gxx/panic.h>
+
+#include <gxx/print.h>
 
 servoce::solid servoce::prim3d::make_box(double x, double y, double z, bool center) {
 	if (!center) {
@@ -111,3 +114,42 @@ servoce::sweep_solid servoce::sweep3d::make_pipe(const servoce::shape& profile, 
 
     return mkPipeShell.Shape();
 }*/
+
+servoce::sweep_solid servoce::sweep3d::make_pipe_shell(
+    const servoce::shape& profile, 
+    const servoce::wire& path, 
+    bool isFrenet
+) {
+    try{
+        BRepOffsetAPI_MakePipeShell mkPipeShell(path.Wire());
+        mkPipeShell.SetMode(isFrenet);
+
+        /*BRepBuilderAPI_TransitionMode transMode;
+        switch () {
+            case 1: transMode = BRepBuilderAPI_RightCorner;
+                break;
+            case 2: transMode = BRepBuilderAPI_RoundCorner;
+                break;
+            default: transMode = BRepBuilderAPI_Transformed;
+                break;
+        }*/
+        mkPipeShell.SetMode(isFrenet);
+        //mkPipeShell.SetTransitionMode(transMode);
+
+        mkPipeShell.Add(profile.Shape());
+        if (!mkPipeShell.IsReady()) std::logic_error("shape is not ready to build");
+        mkPipeShell.Build();
+        mkPipeShell.MakeSolid();
+
+        return std::move(mkPipeShell);
+    } catch (...) {
+        gxx::println("ERROR");
+    }
+
+
+    /*if (path.Shape().IsNull())
+        Standard_Failure::Raise("Cannot sweep along empty spine");
+    if (profile.Shape().IsNull())
+        Standard_Failure::Raise("Cannot sweep empty profile");
+    return BRepOffsetAPI_MakePipe(path.Wire(), profile.Shape());*/
+}

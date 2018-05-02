@@ -32,7 +32,7 @@
 #include <AIS_Shape.hxx>
 
 // qt header files
-#include <QtGui/QMouseEvent>
+//#include <QtGui/QMouseEvent>
 
 #include <Geom_Line.hxx>
 #include <Geom_Axis1Placement.hxx>
@@ -80,10 +80,10 @@ void servoce::disp::DisplayWidget::paintEvent(QPaintEvent* e) {
         }
         autoscale();
 
-        getContext()->Display(new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0,0,0), gp_Vec(1,0,0))));
+    /*    getContext()->Display(new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0,0,0), gp_Vec(1,0,0))));
         getContext()->Display(new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0,0,0), gp_Vec(0,1,0))));
         getContext()->Display(new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0,0,0), gp_Vec(0,0,1))));
-    }
+    */}
 
     m_view->Redraw();
 }
@@ -154,32 +154,6 @@ void servoce::disp::DisplayWidget::init() {
     );
 }
 
-void servoce::disp::DisplayWidget::wheelEvent( QWheelEvent * e ) {
-    onMouseWheel(e->buttons(), e->delta(), e->pos());
-}
-
-void servoce::disp::DisplayWidget::mousePressEvent( QMouseEvent* e )
-{
-    if (e->button() == Qt::LeftButton) {
-        onLButtonDown((e->buttons() | e->modifiers()), e->pos());
-    }
-    else if (e->button() == Qt::MidButton)
-    {
-        onMButtonDown((e->buttons() | e->modifiers()), e->pos());
-    }
-    else if (e->button() == Qt::RightButton)
-    {
-        onRButtonDown((e->buttons() | e->modifiers()), e->pos());
-    }
-}
-
-void servoce::disp::DisplayWidget::mouseReleaseEvent( QMouseEvent* e ) {
-
-}
-
-void servoce::disp::DisplayWidget::mouseMoveEvent( QMouseEvent * e ) {
-    onMouseMove(e->buttons(), e->pos());
-}
 
 void servoce::disp::DisplayWidget::onMouseWheel( const int theFlags, const int theDelta, const QPoint thePoint )
 {

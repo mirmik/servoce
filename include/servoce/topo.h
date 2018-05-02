@@ -63,9 +63,9 @@ namespace servoce {
 
 	template<typename Self>
 	struct can_boolops {
-		Self operator+(const Self& oth) const { const Self& self = static_cast<const Self&>(*this); return boolops::make_union(self, oth); }
-		Self operator-(const Self& oth) const { const Self& self = static_cast<const Self&>(*this); return boolops::make_difference(self, oth); }
-		Self operator^(const Self& oth) const { const Self& self = static_cast<const Self&>(*this); return boolops::make_intersect(self, oth); }
+		Self operator+(const shape& oth) const { const Self& self = static_cast<const Self&>(*this); return boolops::make_union(self, oth); }
+		Self operator-(const shape& oth) const { const Self& self = static_cast<const Self&>(*this); return boolops::make_difference(self, oth); }
+		Self operator^(const shape& oth) const { const Self& self = static_cast<const Self&>(*this); return boolops::make_intersect(self, oth); }
 	};
 
 	struct solid : public shape, public can_trans<solid>, public can_boolops<solid> {
@@ -81,9 +81,10 @@ namespace servoce {
 		const TopoDS_Face& Face() const;
 		TopoDS_Face& Face();
 		face fillet(double r, const std::vector<int>& nums);
+		std::vector<servoce::wire> wires();
 	};
 
-	struct wire : public shape, public can_trans<wire> {
+	struct wire : public shape, public can_trans<wire>, public can_boolops<wire> {
 		wire();
 		wire(const TopoDS_Shape& shp);
 		const TopoDS_Wire& Wire() const;
