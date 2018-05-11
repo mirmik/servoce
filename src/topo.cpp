@@ -54,3 +54,16 @@ const TopoDS_Face& servoce::face::Face() const { return TopoDS::Face(*m_shp); }
 
 TopoDS_Solid& servoce::solid::Solid() { return TopoDS::Solid(*m_shp); }
 const TopoDS_Solid& servoce::solid::Solid() const { return TopoDS::Solid(*m_shp); }
+
+
+
+
+
+
+
+#include <TopoDS_Vertex.hxx>
+#include<servoce/scene.h>
+//scene
+		void servoce::scene::add(const servoce::point3& pnt) {
+			shapes.emplace_back(pnt.Vtx());
+		}

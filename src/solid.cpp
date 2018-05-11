@@ -72,6 +72,10 @@ servoce::sweep_solid servoce::sweep3d::make_linear_extrude(const servoce::shape&
     return BRepPrimAPI_MakePrism(base.Shape(), vec.Vec());
 }
 
+servoce::sweep_solid servoce::sweep3d::make_linear_extrude(const servoce::shape& base, double z, bool center) {
+    return servoce::sweep3d::make_linear_extrude(base, servoce::vector3(0,0,z), center);
+}
+
 servoce::sweep_solid servoce::sweep3d::make_pipe(const servoce::shape& profile, const servoce::wire& path) {
     if (path.Shape().IsNull())
         Standard_Failure::Raise("Cannot sweep along empty spine");
