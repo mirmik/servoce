@@ -12,6 +12,7 @@
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCone.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
+#include <BRepMesh_IncrementalMesh.hxx>
 #include <StlAPI_Writer.hxx>
 //#include <StlAPI_ErrorStatus.hxx>
 
@@ -96,7 +97,7 @@ void servoce::disp::MainWidget::export_stl() {
     QInputDialog *inputDialog = new QInputDialog();
     inputDialog->setTextValue("Test"); // has no effect
     
-    double d = QInputDialog::getDouble(this, tr("QInputDialog::getDouble()"),
+    double deflection = QInputDialog::getDouble(this, tr("QInputDialog::getDouble()"),
                                        tr("Amount:"), 0.01, 0, 10, 5, &ok);
 
     if (display->scn->shapes.size() != 1) {
@@ -104,10 +105,17 @@ void servoce::disp::MainWidget::export_stl() {
         //gxx::panic("TODO");
     } 
 
+    const TopoDS_Shape& shape = display->scn->shapes[0].shp.Shape();
+    BRepMesh_IncrementalMesh mesh(shape, deflection);
+
+    if (mesh.IsDone() == false) {
+        gxx::panic("Is not done TODO");
+    }
+
     StlAPI_Writer stl_writer;
     //stl_writer.SetDeflection(d);
     //stl_writer.RelativeMode() = false;
-    stl_writer.Write(display->scn->shapes[0].shp.Shape(), path.toStdString().c_str());
+    stl_writer.Write(shape, path.toStdString().c_str());
     //QMessageBox msgBox;
     //msgBox.setText(QString::number((int)err));
     //int ret = msgBox.exec();
