@@ -70,7 +70,8 @@ void servoce::disp::DisplayWidget::paintEvent(QPaintEvent* e) {
             Handle(AIS_Shape) anAisBox1 = new AIS_Shape(wrap.shp.Shape());
             Handle(AIS_Shape) anAisBox2 = new AIS_Shape(wrap.shp.Shape());
 
-            Quantity_Color shpcolor (0.6, 0.6, 0.8,  Quantity_TOC_RGB);  
+            //Quantity_Color shpcolor (0.6, 0.6, 0.8,  Quantity_TOC_RGB);  
+            Quantity_Color shpcolor (wrap.clr.r, wrap.clr.g, wrap.clr.b,  Quantity_TOC_RGB);  
             anAisBox1->SetColor(shpcolor);
             getContext()->Display(anAisBox1, false);
             
@@ -80,10 +81,18 @@ void servoce::disp::DisplayWidget::paintEvent(QPaintEvent* e) {
         }
         autoscale();
 
-    /*    getContext()->Display(new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0,0,0), gp_Vec(1,0,0))));
-        getContext()->Display(new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0,0,0), gp_Vec(0,1,0))));
-        getContext()->Display(new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0,0,0), gp_Vec(0,0,1))));
-    */}
+        auto axX = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0,0,0), gp_Vec(1,0,0)));
+        auto axY = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0,0,0), gp_Vec(0,1,0)));
+        auto axZ = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0,0,0), gp_Vec(0,0,1)));
+
+        axX->SetColor(Quantity_NOC_RED);
+        axY->SetColor(Quantity_NOC_GREEN);
+        axZ->SetColor(Quantity_NOC_BLUE1);
+
+        getContext()->Display(axX);
+        getContext()->Display(axY);
+        getContext()->Display(axZ);
+    }
 
     m_view->Redraw();
 }

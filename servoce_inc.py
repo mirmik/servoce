@@ -11,11 +11,8 @@ import os
 licant.libs.include("gxx")
 
 libqt_include_path = "/usr/include/x86_64-linux-gnu/qt5/"
-liboce_include_path = "/usr/local/include/opencascade/"
+liboce_include_path = "/usr/include/oce/"
 python_include_prefix = "/usr/include/"
-
-install_lib_dir = "/usr/lib/"
-install_inc_dir = "/usr/local/include/"
 
 module('liboce', 
 	libs = [     
