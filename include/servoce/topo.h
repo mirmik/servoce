@@ -1,6 +1,7 @@
 #ifndef ZENGEOM_TOPO_H
 #define ZENGEOM_TOPO_H
 
+#include <iostream>
 #include <memory>
 #include <set>
 #include <servoce/boolops.h>
@@ -23,6 +24,16 @@ namespace servoce {
 		shape(const shape& oth);
 		virtual ~shape();
 
+		solid to_solid();
+		wire to_wire();
+		face to_face();
+
+		void dump(std::ostream& out) const;
+		void load(std::istream& in);
+
+		std::string string_dump() const;
+		static shape restore_string_dump(const std::string& in);
+
 		TopoDS_Shape& Shape();
 		const TopoDS_Shape& Shape() const;
 	};
@@ -34,11 +45,11 @@ namespace servoce {
 			return trans(self); 
 		}
 		Self translate(double x, double y, double z) { 
-			return transform(trans::translate{x,y,z}); 
+			return transform(trans::translate(x,y,z)); 
 		}
 		//Self translate(double x, double y) { 
 		//	return transform(trans::translate{x,y,0}); }
-		Self rotate(double ax, double ay, double az, double angle) { return transform(trans::axrotation{ax,ay,az,angle}); }
+		Self rotate(double ax, double ay, double az, double angle) { return transform(trans::axrotation(ax,ay,az,angle)); }
 		Self up(double z) { return translate(0,0,z); }
 		Self down(double z) { return translate(0,0,-z); }
 		Self forw(double y) { return translate(0,y,0); }
@@ -72,6 +83,7 @@ namespace servoce {
 		solid();
 		solid(const TopoDS_Shape& shp);
 		const TopoDS_Solid& Solid() const;
+		solid fillet(double r, const std::vector<int>& nums);
 		TopoDS_Solid& Solid();
 	};
 

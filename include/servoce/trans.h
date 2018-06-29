@@ -12,10 +12,11 @@ namespace servoce {
 	class vector3;
 
 	namespace trans {
-		class complex_transformation;
-
 		struct transformation { 
 			gp_Trsf* trsf;
+			//transformation(){};
+			transformation(gp_Trsf* trsf) : trsf(trsf) {};
+			transformation(const transformation& oth);
 			transformation(transformation&& oth) : trsf(oth.trsf) { oth.trsf = nullptr; }
 			//virtual void init_native(gp_Trsf*) const; 
 			shape operator()(const servoce::shape& sld) const;
@@ -24,19 +25,25 @@ namespace servoce {
 			wire operator()(const servoce::wire& sld) const;
 			point3 operator()(const servoce::point3& sld) const;
 			vector3 operator()(const servoce::vector3& sld) const;
-			trans::complex_transformation operator()(const servoce::trans::transformation& sld) const;
-			trans::complex_transformation operator*(const servoce::trans::transformation& oth) const;
+			trans::transformation operator()(const servoce::trans::transformation& sld) const;
+			trans::transformation operator*(const servoce::trans::transformation& oth) const;
 		
 			transformation(){}
 			~transformation();
 
+
+			void dump(std::ostream& out) const;
+			void load(std::istream& in);
+
+			std::string string_dump() const;
+			static transformation restore_string_dump(const std::string& in);
 		};
 
-		struct complex_transformation : public transformation {
-			complex_transformation(gp_Trsf* l, gp_Trsf* r);
-		};
+		//struct complex_transformation : public transformation {
+		//	complex_transformation(gp_Trsf* l, gp_Trsf* r);
+		//};
 		
-		struct translate : public transformation { 
+		/*struct translate : public transformation { 
 			//void init_native(gp_Trsf*) const override; 
 			double x; double y; double z; 
 			translate(double x, double y);// : x(x), y(y), z(z) {} 
@@ -60,7 +67,7 @@ namespace servoce {
 			//void init_native(gp_Trsf*) const override; 
 			double ax; double ay; double az; 
 			plane_mirror(double ax, double ay, double az); //: ax(ax), ay(ay), az(az) {} 
-		};
+		};*/
 
 		/*shape create_transformed(const shape& shp, const transformation& trans);
 		solid create_transformed(const solid& shp, const transformation& trans);
@@ -69,22 +76,29 @@ namespace servoce {
 		point3 create_transformed(const point3& shp, const transformation& trans);
 		vector3 create_transformed(const vector3& shp, const transformation& trans);*/
 		
-		axrotation rotateX(double a);		
-		axrotation rotateY(double a);
-		axrotation rotateZ(double a);
-		axis_mirror mirrorX();
-		axis_mirror mirrorY();
-		axis_mirror mirrorZ();
-		plane_mirror mirrorXY();
-		plane_mirror mirrorYZ();
-		plane_mirror mirrorXZ();
+		transformation translate(double x, double y);
+		transformation translate(double x, double y, double z);
+		transformation translate(const vector3& vec);
+		transformation axrotation(double ax, double ay, double az, double angle);
+		transformation axis_mirror(double ax, double ay, double az);
+		transformation plane_mirror(double ax, double ay, double az);
 
-		translate up(double);
-		translate down(double);
-		translate forw(double);
-		translate back(double);
-		translate left(double);
-		translate right(double);
+		transformation rotateX(double a);		
+		transformation rotateY(double a);
+		transformation rotateZ(double a);
+		transformation mirrorX();
+		transformation mirrorY();
+		transformation mirrorZ();
+		transformation mirrorXY();
+		transformation mirrorYZ();
+		transformation mirrorXZ();
+
+		transformation up(double);
+		transformation down(double);
+		transformation forw(double);
+		transformation back(double);
+		transformation left(double);
+		transformation right(double);
 	}
 }
 

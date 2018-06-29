@@ -31,11 +31,16 @@ namespace servoce {
 		
 			double phi = - cos(M_PI / 4);
 			double psi = 0.61548;
+
+			uint8_t orient = 1;
 		
 		public:
 			void init();
 			const servoce::scene* scn;
 			void setScene(const servoce::scene* scn) { this->scn = scn; }
+
+			void orient1();
+			void orient2();
 
 		protected:
 			virtual void showEvent(QShowEvent* e) override;
@@ -76,6 +81,8 @@ namespace servoce {
 			QAction* mScreen;
 			QAction* mAboutAction;
 			QAction* mAutoscale;
+			QAction* mOrient1;
+			QAction* mOrient2;
 		
 			QMenu* mFileMenu;
 			QMenu* mNavigationMenu;
@@ -93,6 +100,8 @@ namespace servoce {
 			void about(void);
 			void export_stl();
 			void screenshot();
+			void orient1();
+			void orient2();
 		
 		public:
 			MainWidget(QWidget* parent = nullptr);		

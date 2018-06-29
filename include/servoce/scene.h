@@ -1,7 +1,6 @@
 #ifndef SERVOCE_SCENE_H
 #define SERVOCE_SCENE_H
 
-#include <gxx/panic.h>
 #include <servoce/topo.h>
 #include <vector>
 #include <cassert>
@@ -35,7 +34,8 @@ namespace servoce {
 		}
 
 		void add(const servoce::point3& pnt, servoce::color color = color()) {
-			PANIC_TRACED("TODO");
+			assert(0);
+			//PANIC_TRACED("TODO");
 		}
 
 		void append(const servoce::scene& scn) {

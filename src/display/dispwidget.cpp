@@ -98,8 +98,19 @@ void servoce::disp::DisplayWidget::paintEvent(QPaintEvent* e) {
 }
 
 void servoce::disp::DisplayWidget::autoscale() {
-    //gxx::println("autoscale emitted");
     m_view->FitAll (0.5, false);
+}
+
+void servoce::disp::DisplayWidget::orient1() {
+    orient = 1;
+    m_view->ResetViewOrientation();
+    autoscale();
+}
+
+void servoce::disp::DisplayWidget::orient2() {
+    orient = 2;
+    m_view->ResetViewOrientation();
+    autoscale();
 }
 
 void servoce::disp::DisplayWidget::resizeEvent(QResizeEvent* e) {
@@ -219,35 +230,32 @@ void servoce::disp::DisplayWidget::onMouseMove( const int theFlags, const QPoint
 
     //m_view->SetAxis(0, 0, 0, 0, 0, 1);
 
-    if (theFlags & Qt::LeftButton) {
-    //    m_view->Rotation(thePoint.x(), thePoint.y());
-    //    quat_orient.self_small_rotate1(thePoint.x() * 0.0001);
-    //    quat_orient.self_small_rotate3(thePoint.y() * 0.0001);
+    if (orient == 1) {
+        if (theFlags & Qt::LeftButton) {
+            phi -= mv.x() * 0.01;
+            psi += mv.y() * 0.01;
+            m_view->SetProj(cos(psi) * cos(phi), cos(psi) * sin(phi), sin(psi));
+        }
     
-        //gxx::println(mv.x());
-        phi -= mv.x() * 0.01;
-        psi += mv.y() * 0.01;
-        //psi = 0.5;
+        if (theFlags & Qt::RightButton) {
+            m_view->Pan(mv.x(), -mv.y());
+        }
     }
 
-    if (theFlags & Qt::RightButton) {
-        m_view->Pan(mv.x(), -mv.y());
+    if (orient == 2) {
+        if (theFlags & Qt::LeftButton) {
+            m_view->Rotation(thePoint.x(), thePoint.y());
+            Quantity_Parameter Vx; 
+            Quantity_Parameter Vy; 
+            Quantity_Parameter Vz;
+            m_view->Proj(Vx,Vy,Vz);
+        }
+
+        if (theFlags & Qt::RightButton) {
+            m_view->Pan(mv.x(), -mv.y());
+        }
     }
 
-    //Quantity_Parameter Vx; 
-    //Quantity_Parameter Vy; 
-    //Quantity_Parameter Vz;
-    //m_view->Proj(Vx,Vy,Vz);
-    //gxx::println(quat_orient);
-//
-    //double mod = sqrt(quat_orient.q1*quat_orient.q1 + quat_orient.q2*quat_orient.q2 + quat_orient.q3*quat_orient.q3);
-    //Vx = quat_orient.q1 / mod;
-    //Vy = quat_orient.q2 / mod;
-    //Vz = quat_orient.q3 / mod;
-//
-    //malgo::vector3<double> vect = quat_orient * malgo::vector3<double>(0,1,0);
-//
-    m_view->SetProj(cos(psi) * cos(phi), cos(psi) * sin(phi), sin(psi));
-    //m_view->Proj(Vx,Vy,Vz);
+    
     //gxx::println(Vx,Vy,Vz);
 }

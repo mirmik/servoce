@@ -1,5 +1,10 @@
 #include <servoce/solid.h>
 
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS.hxx>
+
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCone.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
@@ -8,6 +13,9 @@
 #include <BRepPrimAPI_MakePrism.hxx>
 //#include <BRepPrimAPI_MakeWedge.hxx>
 //#include <BRepOffsetAPI_ThruSections.hxx>
+#include <BRepFilletAPI_MakeFillet.hxx>
+#include <TopExp_Explorer.hxx>
+
 #include <BRepOffsetAPI_MakePipe.hxx>
 #include <BRepOffsetAPI_MakePipeShell.hxx>
 
@@ -59,9 +67,9 @@ servoce::sweep_solid::sweep_solid(BRepPrimAPI_MakeSweep&& builder) : solid(build
 	m_last = new TopoDS_Shape(builder.LastShape());
 }
 
-servoce::sweep_solid servoce::sweep3d::make_linear_extrude(const servoce::shape& base, const servoce::vector3& vec, bool center) {
+servoce::solid servoce::sweep3d::make_linear_extrude(const servoce::shape& base, const servoce::vector3& vec, bool center) {
 	if (center) {
-        trans::translate trs(-vec/2);
+        auto trs = servoce::trans::translate(-vec/2);
         return make_linear_extrude(trs(base),vec);
 
         //trans::translate trs(-vec/2);
@@ -69,20 +77,35 @@ servoce::sweep_solid servoce::sweep3d::make_linear_extrude(const servoce::shape&
         //return trs(sld);
 
     }
-    return BRepPrimAPI_MakePrism(base.Shape(), vec.Vec());
+    return BRepPrimAPI_MakePrism(base.Shape(), vec.Vec()).Shape();
 }
 
-servoce::sweep_solid servoce::sweep3d::make_linear_extrude(const servoce::shape& base, double z, bool center) {
+servoce::solid servoce::solid::fillet(double r, const std::vector<int>& nums) {
+    std::set<int>snums(nums.begin(), nums.end());
+    BRepFilletAPI_MakeFillet mk(*m_shp);//
+    int idx = 0;
+    for (TopExp_Explorer ex(*m_shp,TopAbs_EDGE); ex.More(); ex.Next()) {
+        TopoDS_Edge Edge =TopoDS::Edge(ex.Current());
+        if (snums.count(idx)) mk.Add(r, Edge);
+        ++idx;
+    }
+
+    return mk.Shape();
+}
+
+servoce::solid servoce::sweep3d::make_linear_extrude(const servoce::shape& base, double z, bool center) {
     return servoce::sweep3d::make_linear_extrude(base, servoce::vector3(0,0,z), center);
 }
 
-servoce::sweep_solid servoce::sweep3d::make_pipe(const servoce::shape& profile, const servoce::wire& path) {
+servoce::solid servoce::sweep3d::make_pipe(const servoce::shape& profile, const servoce::wire& path) {
     if (path.Shape().IsNull())
         Standard_Failure::Raise("Cannot sweep along empty spine");
     if (profile.Shape().IsNull())
         Standard_Failure::Raise("Cannot sweep empty profile");
-    return BRepOffsetAPI_MakePipe(path.Wire(), profile.Shape());
+    return BRepOffsetAPI_MakePipe(path.Wire(), profile.Shape()).Shape();
 }
+
+
 
 /*TopoDS_Shape TopoShape::makePipeShell(const TopTools_ListOfShape& profiles,
                                       const Standard_Boolean make_solid,
@@ -119,7 +142,7 @@ servoce::sweep_solid servoce::sweep3d::make_pipe(const servoce::shape& profile, 
     return mkPipeShell.Shape();
 }*/
 
-servoce::sweep_solid servoce::sweep3d::make_pipe_shell(
+servoce::solid servoce::sweep3d::make_pipe_shell(
     const servoce::shape& profile, 
     const servoce::wire& path, 
     bool isFrenet
@@ -145,7 +168,7 @@ servoce::sweep_solid servoce::sweep3d::make_pipe_shell(
         mkPipeShell.Build();
         mkPipeShell.MakeSolid();
 
-        return std::move(mkPipeShell);
+        return mkPipeShell.Shape();
     } catch (...) {
         gxx::println("ERROR");
     }

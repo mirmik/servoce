@@ -22,9 +22,12 @@
 #include <servoce/display.h>
 #include <local/display.h>
 
+
 servoce::disp::MainWidget::MainWidget(QWidget* parent) : QMainWindow(parent) {
     display = new DisplayWidget(this);
-    
+    QWidget::setWindowTitle("zenwidget");
+    QWidget::setWindowIcon(QIcon(":/industrial-robot.svg"));
+
     createActions();
     createMenus();
 
@@ -53,6 +56,14 @@ void servoce::disp::MainWidget::createActions() {
     mAutoscale = new QAction(tr("Autoscale"), this);
     mAutoscale->setStatusTip(tr("Autoscale"));
     connect(mAutoscale, SIGNAL(triggered()), display, SLOT(autoscale()));
+
+    mOrient1 = new QAction(tr("Orient1"), this);
+    mOrient1->setStatusTip(tr("Orient1"));
+    connect(mOrient1, SIGNAL(triggered()), this, SLOT(orient1()));
+
+    mOrient2 = new QAction(tr("Orient2"), this);
+    mOrient2->setStatusTip(tr("Orient2"));
+    connect(mOrient2, SIGNAL(triggered()), this, SLOT(orient2()));
 }
 
 void servoce::disp::MainWidget::createMenus() {
@@ -64,6 +75,8 @@ void servoce::disp::MainWidget::createMenus() {
 
     mNavigationMenu = menuBar()->addMenu(tr("&Navigation"));
     mNavigationMenu->addAction(mAutoscale);
+    mNavigationMenu->addAction(mOrient1);
+    mNavigationMenu->addAction(mOrient2);
 
     mHelpMenu = menuBar()->addMenu(tr("&Help"));
     mHelpMenu->addAction(mAboutAction);
@@ -74,11 +87,10 @@ void servoce::disp::MainWidget::createToolbars() {
 }
 
 void servoce::disp::MainWidget::about() {
-    QMessageBox::about(this, tr("About MainWidget"),
-        tr("<h2>MainWidget</h2>"
+    QMessageBox::about(this, tr("About ZenCad Shower"),
+        tr("<h2>Shower</h2>"
         "<p>Author: mirmik(mirmikns@yandex.ru) 2018"
-        "<p>ZenCad shower."
-        "<p>Based on occQt demo applicaton."));
+        "<p>Widget for display zencad geometry."));
 }
 
 
@@ -157,6 +169,14 @@ void servoce::disp::MainWidget::screenshot() {
     //stl_writer.SetDeflection(d);
     //stl_writer.RelativeMode() = false;
     //stl_writer.Write(display->display_on_init_list[0], path.toStdString().c_str());*/
+}
+
+void servoce::disp::MainWidget::orient1() {
+    display->orient1();
+}
+
+void servoce::disp::MainWidget::orient2() {
+    display->orient2();
 }
 
 /*void servoce::disp::MainWidget::makeBox() {

@@ -79,39 +79,41 @@ void ZenPlaneMirror::doit() {
 //	trsf->SetMirror(gp_Ax2(gp_Pnt(0,0,0), gp_Vec(ax,ay,az)));
 //}
 
-servoce::trans::axrotation servoce::trans::rotateX(double a) {
+servoce::trans::transformation::transformation(const transformation& oth) : trsf(new gp_Trsf(*oth.trsf)) {}
+
+servoce::trans::transformation servoce::trans::rotateX(double a) {
 	return servoce::trans::axrotation(1,0,0,a);
 }
 
-servoce::trans::axrotation servoce::trans::rotateY(double a) {
+servoce::trans::transformation servoce::trans::rotateY(double a) {
 	return servoce::trans::axrotation(0,1,0,a);
 }
 
-servoce::trans::axrotation servoce::trans::rotateZ(double a) {
+servoce::trans::transformation servoce::trans::rotateZ(double a) {
 	return servoce::trans::axrotation(0,0,1,a);
 }
 
-servoce::trans::axis_mirror servoce::trans::mirrorX() {
+servoce::trans::transformation servoce::trans::mirrorX() {
 	return servoce::trans::axis_mirror(1,0,0);
 }
 
-servoce::trans::axis_mirror servoce::trans::mirrorY() {
+servoce::trans::transformation servoce::trans::mirrorY() {
 	return servoce::trans::axis_mirror(0,1,0);
 }
 
-servoce::trans::axis_mirror servoce::trans::mirrorZ() {
+servoce::trans::transformation servoce::trans::mirrorZ() {
 	return servoce::trans::axis_mirror(0,0,1);
 }
 
-servoce::trans::plane_mirror servoce::trans::mirrorXY() {
+servoce::trans::transformation servoce::trans::mirrorXY() {
 	return servoce::trans::plane_mirror(0,0,1);
 }
 
-servoce::trans::plane_mirror servoce::trans::mirrorYZ() {
+servoce::trans::transformation servoce::trans::mirrorYZ() {
 	return servoce::trans::plane_mirror(1,0,0);
 }
 
-servoce::trans::plane_mirror servoce::trans::mirrorXZ() {
+servoce::trans::transformation servoce::trans::mirrorXZ() {
 	return servoce::trans::plane_mirror(0,1,0);
 }
 
@@ -145,28 +147,61 @@ servoce::vector3 servoce::trans::transformation::operator()(const servoce::vecto
 	return pnt.Vec().Transformed(*trsf);
 }
 
-servoce::trans::complex_transformation servoce::trans::transformation::operator()(const servoce::trans::transformation& right) const {
-	return servoce::trans::complex_transformation(trsf, right.trsf);
+servoce::trans::transformation servoce::trans::transformation::operator()(const servoce::trans::transformation& oth) const {
+	return *this * oth;
 }
 
-servoce::trans::complex_transformation  servoce::trans::transformation::operator*(const servoce::trans::transformation& oth) const {
-	return servoce::trans::complex_transformation(trsf, oth.trsf);
+servoce::trans::transformation  servoce::trans::transformation::operator*(const servoce::trans::transformation& oth) const {
+	return servoce::trans::transformation(new gp_Trsf(this->trsf->Multiplied(*oth.trsf)));
 }
 
-servoce::trans::complex_transformation::complex_transformation(gp_Trsf* left, gp_Trsf* right) {
+/*servoce::trans::complex_transformation::complex_transformation(gp_Trsf* left, gp_Trsf* right) {
 	trsf = new gp_Trsf(left->Multiplied(*right));
-}
+}*/
 
 servoce::trans::transformation::~transformation() {
 	delete trsf;
 }
 
-servoce::trans::translate::translate(double x, double y, double z) : x(x), y(y), z(z) {
+/*servoce::trans::translate::translate(double x, double y, double z) : x(x), y(y), z(z) {
 	trsf = new gp_Trsf();
 	trsf->SetTranslation(gp_Vec(x,y,z));
-} 
+} */
 
-servoce::trans::translate::translate(double x, double y) : translate(x,y,0) {} 
+
+servoce::trans::transformation servoce::trans::translate(double x, double y) {
+	return servoce::trans::translate(x, y, 0);
+}
+
+servoce::trans::transformation servoce::trans::translate(double x, double y, double z) {
+	auto trsf = new gp_Trsf();
+	trsf->SetTranslation(gp_Vec(x,y,z));
+	return servoce::trans::transformation(trsf);
+}
+
+servoce::trans::transformation servoce::trans::translate(const vector3& vec) {
+	return servoce::trans::translate(vec.x, vec.y, vec.z);
+}
+
+servoce::trans::transformation servoce::trans::axrotation(double ax, double ay, double az, double angle) {
+	auto trsf = new gp_Trsf();
+	trsf->SetRotation(gp_Ax1(gp_Pnt(0,0,0), gp_Vec(ax,ay,az)), angle);
+	return servoce::trans::transformation(trsf);
+}
+
+servoce::trans::transformation servoce::trans::axis_mirror(double ax, double ay, double az) {
+	auto trsf = new gp_Trsf();
+	trsf->SetMirror(gp_Ax1(gp_Pnt(0,0,0), gp_Vec(ax,ay,az)));
+	return servoce::trans::transformation(trsf);
+}
+
+servoce::trans::transformation servoce::trans::plane_mirror(double ax, double ay, double az) {
+	auto trsf = new gp_Trsf();
+	trsf->SetMirror(gp_Ax2(gp_Pnt(0,0,0), gp_Vec(ax,ay,az)));
+	return servoce::trans::transformation(trsf);
+}
+
+/*servoce::trans::translate::translate(double x, double y) : translate(x,y,0) {} 
 servoce::trans::translate::translate(const vector3& vec) : translate(vec.x,vec.y,vec.z) {} 
 
 servoce::trans::axrotation::axrotation(double ax, double ay, double az, double angle) : ax(ax), ay(ay), az(az), angle(angle) {
@@ -182,28 +217,52 @@ servoce::trans::axis_mirror::axis_mirror(double ax, double ay, double az) : ax(a
 servoce::trans::plane_mirror::plane_mirror(double ax, double ay, double az) : ax(ax), ay(ay), az(az) {
 	trsf = new gp_Trsf();
 	trsf->SetMirror(gp_Ax2(gp_Pnt(0,0,0), gp_Vec(ax,ay,az)));
-}
+}*/
 
-servoce::trans::translate servoce::trans::up(double z){
+servoce::trans::transformation servoce::trans::up(double z){
 	return servoce::trans::translate(0,0,z);
 }
 
-servoce::trans::translate servoce::trans::down(double z){
+servoce::trans::transformation servoce::trans::down(double z){
 	return servoce::trans::translate(0,0,-z);
 }
 
-servoce::trans::translate servoce::trans::forw(double y){
+servoce::trans::transformation servoce::trans::forw(double y){
 	return servoce::trans::translate(0,y,0);
 }
 
-servoce::trans::translate servoce::trans::back(double y){
+servoce::trans::transformation servoce::trans::back(double y){
 	return servoce::trans::translate(0,-y,0);
 }
 
-servoce::trans::translate servoce::trans::left(double x){
+servoce::trans::transformation servoce::trans::left(double x){
 	return servoce::trans::translate(-x,0,0);
 }
 
-servoce::trans::translate servoce::trans::right(double x){
+servoce::trans::transformation servoce::trans::right(double x){
 	return servoce::trans::translate(x,0,0);
+}
+
+
+void servoce::trans::transformation::dump(std::ostream& out) const {
+	out.write((char*)trsf, sizeof(gp_Trsf));
+}
+
+void servoce::trans::transformation::load(std::istream& in) {
+	in.read((char*)trsf, sizeof(gp_Trsf));
+}
+
+std::string servoce::trans::transformation::string_dump() const {
+	std::stringstream sstrm;
+	dump(sstrm);
+	return sstrm.str();
+
+}
+
+servoce::trans::transformation servoce::trans::transformation::restore_string_dump(const std::string& in) {
+	std::stringstream sstrm(in);
+	servoce::trans::transformation tr;
+	tr.trsf = new gp_Trsf;
+	tr.load(sstrm);
+	return tr;
 }
