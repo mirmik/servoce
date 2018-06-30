@@ -50,6 +50,7 @@ module('libqt',
 
 module('servoce_sources', 
 	srcdir = "src",
+	
 	sources = [
 		"math3.cpp",
 		"topo.cpp",
@@ -59,7 +60,7 @@ module('servoce_sources',
 		"wire.cpp",
 		"boolops.cpp",
 		"display.cpp",
-		"test.cpp",
+		#"test.cpp",
 		"convert.cpp",
 
 		"display/mainwidget.cpp",
@@ -67,8 +68,11 @@ module('servoce_sources',
 		"display/dispwidget_qt.cpp",
 		"display/icons.cpp",
 	],
+	
 	moc = ["local/display.h"],  
+	
 	include_paths = [ "include", ".", "src" ],
+	
 	include_modules = [
 		submodule("liboce"), 
 		submodule("libqt"), 
@@ -77,7 +81,9 @@ module('servoce_sources',
 		submodule("gxx.print", "cout"),
 		submodule("gxx.dprint", "cout"),
 	],
+	
 	cxx_flags = '-fPIC -DQT_NO_VERSION_TAGGING',
+	
 	cc_flags = '-fPIC',
 )
 

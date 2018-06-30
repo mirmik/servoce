@@ -12,7 +12,7 @@
 #include <cassert>
 #include <gxx/print.h>
 
-const char* topotype_to_cstr(TopAbs_ShapeEnum e) {
+/*const char* topotype_to_cstr(TopAbs_ShapeEnum e) {
 	switch(e) {
 		case TopAbs_SOLID: return "TopAbs_SOLID";
 		case TopAbs_WIRE: return "TopAbs_WIRE";
@@ -27,13 +27,21 @@ servoce::shape::shape() {}
 servoce::solid::solid() {}
 servoce::face::face() {}
 servoce::wire::wire() {}
-
+*/
 servoce::shape::shape(const TopoDS_Shape& shp) : m_shp(new TopoDS_Shape(shp)) {}
 servoce::shape::shape(const shape& oth) : m_shp(new TopoDS_Shape(*oth.m_shp)) {}
-servoce::shape::~shape() { 
-	delete m_shp; 
-}
+servoce::shape::~shape() { delete m_shp; }
 
+TopoDS_Shape& servoce::shape::Shape() { return *m_shp; }
+const TopoDS_Shape& servoce::shape::Shape() const { return *m_shp; }
+TopoDS_Wire& servoce::shape::Wire() { return TopoDS::Wire(*m_shp); }
+const TopoDS_Wire& servoce::shape::Wire() const { return TopoDS::Wire(*m_shp); }
+TopoDS_Face& servoce::shape::Face() { return TopoDS::Face(*m_shp); }
+const TopoDS_Face& servoce::shape::Face() const { return TopoDS::Face(*m_shp); }
+TopoDS_Solid& servoce::shape::Solid() { return TopoDS::Solid(*m_shp); }
+const TopoDS_Solid& servoce::shape::Solid() const { return TopoDS::Solid(*m_shp); }
+
+/*
 servoce::solid::solid(const TopoDS_Shape& shp) : shape(shp) {
 	//assert(m_shp->ShapeType() == TopAbs_SOLID || m_shp->ShapeType() == TopAbs_COMPOUND);
 }
@@ -62,9 +70,9 @@ servoce::solid servoce::shape::to_solid() { return servoce::solid(*m_shp); }
 servoce::wire servoce::shape::to_wire() { return servoce::wire(*m_shp); }
 servoce::face servoce::shape::to_face() { return servoce::face(*m_shp); }
 
+*/
 
-
-
+/*
 void servoce::shape::dump(std::ostream& out) const {
 	BinTools_ShapeSet theShapeSet;
 	if (m_shp->IsNull()) {
@@ -122,4 +130,4 @@ servoce::shape servoce::shape::restore_string_dump(const std::string& in) {
 	shp.m_shp = new TopoDS_Solid;
 	shp.load(sstrm);
 	return shp;
-}
+}*/

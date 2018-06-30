@@ -33,15 +33,15 @@
 #include <BRepAdaptor_Curve.hxx>
 #include <gxx/print.h>
 
-servoce::face servoce::wire::to_face() {
+servoce::shape servoce::shape::infill_face() {
 	return BRepBuilderAPI_MakeFace(Wire()).Face();
 }
 
-servoce::wire servoce::curve::make_segment(const servoce::point3& a, const servoce::point3& b) {
+servoce::shape servoce::make_segment(const servoce::point3& a, const servoce::point3& b) {
 	return BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(a.Pnt(), b.Pnt())).Wire();
 }
 
-servoce::wire servoce::curve::make_polysegment(const std::vector<servoce::point3>& pnts, bool closed) {
+servoce::shape servoce::make_polysegment(const std::vector<servoce::point3>& pnts, bool closed) {
 	if (pnts.size() <= 1) 
 		throw std::logic_error("Need at least two points for polysegment");
 
@@ -54,7 +54,7 @@ servoce::wire servoce::curve::make_polysegment(const std::vector<servoce::point3
 }
 
 //Взято в коде FreeCad.
-servoce::wire servoce::curve::make_helix(
+servoce::shape servoce::make_helix(
 	double pitch, double height, double radius, 
 	double angle, bool leftHanded, bool newStyle
 ) {
@@ -108,16 +108,16 @@ servoce::wire servoce::curve::make_helix(
 	Handle(Geom2d_TrimmedCurve) segm = GCE2d_MakeSegment(beg , end);
 
 	TopoDS_Edge edgeOnSurf = BRepBuilderAPI_MakeEdge(segm , surf);
-	TopoDS_Wire wire = BRepBuilderAPI_MakeWire(edgeOnSurf);
-	BRepLib::BuildCurves3d(wire);
-	return wire;
+	TopoDS_Wire shape = BRepBuilderAPI_MakeWire(edgeOnSurf);
+	BRepLib::BuildCurves3d(shape);
+	return shape;
 }
 
 //***********
 // makeLongHelix is a workaround for an OCC problem found in helices with more than
-// some magic number of turns.  See Mantis #0954.
+// some magic number of turns.  See Mantis #0954. (FreeCad)
 //***********
-servoce::wire servoce::curve::make_long_helix(double pitch, double height,
+servoce::shape servoce::make_long_helix(double pitch, double height,
 									  double radius, double angle,
 									  bool leftHanded)
 {
@@ -194,12 +194,12 @@ servoce::wire servoce::curve::make_long_helix(double pitch, double height,
 		mkWire.Add(edgeOnSurf);
 	}
 
-	TopoDS_Wire wire = mkWire.Wire();
-	BRepLib::BuildCurves3d(wire);
-	return wire;
+	TopoDS_Wire shape = mkWire.Wire();
+	BRepLib::BuildCurves3d(shape);
+	return shape;
 }
 
-servoce::wire servoce::curve::make_interpolate(const std::vector<servoce::point3>& pnts, const std::vector<servoce::vector3>& tang, bool closed) {
+servoce::shape servoce::make_interpolate(const std::vector<servoce::point3>& pnts, const std::vector<servoce::vector3>& tang, bool closed) {
 	Handle(TColgp_HArray1OfPnt) _pnts = new TColgp_HArray1OfPnt(1, pnts.size());
 	for (int i = 0; i < pnts.size(); ++i) _pnts->SetValue(i + 1, pnts[i].Pnt());
 
@@ -220,7 +220,7 @@ servoce::wire servoce::curve::make_interpolate(const std::vector<servoce::point3
 	return BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(algo.Curve())).Wire();
 }
 
-servoce::wire servoce::curve::make_interpolate(const std::vector<servoce::point3>& pnts, bool closed) {
+servoce::shape servoce::make_interpolate(const std::vector<servoce::point3>& pnts, bool closed) {
 	Handle(TColgp_HArray1OfPnt) _pnts = new TColgp_HArray1OfPnt(1, pnts.size());
 	for (int i = 0; i < pnts.size(); ++i) _pnts->SetValue(i + 1, pnts[i].Pnt());
 
@@ -230,7 +230,7 @@ servoce::wire servoce::curve::make_interpolate(const std::vector<servoce::point3
 	return BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(algo.Curve())).Wire();
 }
 
-servoce::wire servoce::curve::make_complex_wire(const std::vector<const servoce::wire*>& arr) {
+servoce::shape servoce::sew(const std::vector<const servoce::shape*>& arr) {
 	BRepBuilderAPI_MakeWire mk;
 	for (auto* ptr : arr) {
 		mk.Add(ptr->Wire());
@@ -238,7 +238,7 @@ servoce::wire servoce::curve::make_complex_wire(const std::vector<const servoce:
 	return mk.Wire();
 }
 
-servoce::wire servoce::curve::make_circle(double r, double a, double b) { 
+servoce::shape servoce::make_circle_arc(double r, double a, double b) { 
 	gp_Circ EL ( gp::XOY(), r );
 	Handle(Geom_Circle) anCircle = GC_MakeCircle(EL).Value();
 	TopoDS_Edge aEdge = BRepBuilderAPI_MakeEdge( anCircle, a, b );
@@ -246,19 +246,10 @@ servoce::wire servoce::curve::make_circle(double r, double a, double b) {
 	return aCircle;
 }
 
-servoce::wire servoce::curve::make_circle(double r) { 
+servoce::shape servoce::make_circle_arc(double r) { 
 	gp_Circ EL ( gp::XOY(), r );
 	Handle(Geom_Circle) anCircle = GC_MakeCircle(EL).Value();
 	TopoDS_Edge aEdge = BRepBuilderAPI_MakeEdge( anCircle);
 	TopoDS_Wire aCircle = BRepBuilderAPI_MakeWire( aEdge );
 	return aCircle;
-}
-
-
-servoce::wire servoce::curve::simplify_with_bspline(const servoce::wire& wr) {
-	TopExp_Explorer explorer(wr.Shape(), TopAbs_EDGE);
-	TopoDS_Edge edg = TopoDS::Edge(explorer.Current());
-
-
-	return BRepBuilderAPI_MakeWire(edg).Shape();
 }

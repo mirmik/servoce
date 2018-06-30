@@ -25,4 +25,4 @@ def install():
 	os.system("cp -r include/servoce {}".format(install_inc_dir))
 	print("success install")
 
-licant.ex(default = "build/libservoce.so")
+licant.ex(default = "build/libservoce.so", colorwrap = True)

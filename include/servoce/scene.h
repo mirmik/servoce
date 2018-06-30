@@ -6,19 +6,16 @@
 #include <cassert>
 
 namespace servoce {
-	struct color {
-		float r;
-		float g;
-		float b;
+	struct color { float r, g, b; };
 
-		color() : r(0.6), g(0.6), b(0.8) {}
+	static constexpr color white = 	color { 1,1,1 };
+	static constexpr color black = 	color { 0,0,0 };
+	static constexpr color red = 	color { 1,0,0 };
+	static constexpr color green = 	color { 0,1,0 };
+	static constexpr color blue = 	color { 0,0,1 };
 
-		color(float r, float g, float b) : r(r), g(g), b(b) {
-			assert(r >= 0 && r <= 1);
-			assert(g >= 0 && g <= 1);
-			assert(b >= 0 && b <= 1);
-		}
-	};
+	static constexpr color gray = 	color { 0.5,0.5,0.5 };
+	static constexpr color mech = 	color { 0.6,0.6,0.8 };
 
 	struct scene {
 		struct shape_view {
@@ -29,11 +26,11 @@ namespace servoce {
 
 		std::vector<shape_view> shapes;
 
-		void add(const servoce::shape& shp, servoce::color color = color()) {
+		void add(const servoce::shape& shp, servoce::color color = mech) {
 			shapes.emplace_back(shp, color);
 		}
 
-		void add(const servoce::point3& pnt, servoce::color color = color()) {
+		void add(const servoce::point3& pnt, servoce::color color = mech) {
 			assert(0);
 			//PANIC_TRACED("TODO");
 		}

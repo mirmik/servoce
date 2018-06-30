@@ -5,7 +5,7 @@
 
 namespace servoce {
 	class shape;
-	void make_stl(const std::string& path, const servoce::shape& shp);
+	bool make_stl(const std::string& path, const servoce::shape& shp, double deflection = 0.01);
 }
 
 #endif

@@ -16,26 +16,26 @@
 
 #include <BRepOffsetAPI_MakePipe.hxx>
 
-servoce::face servoce::prim2d::make_circle(double r) { 
+servoce::shape servoce::make_circle(double r) { 
 	gp_Circ EL ( gp::XOY(), r );
 	Handle(Geom_Circle) anCircle = GC_MakeCircle(EL).Value();
 	TopoDS_Edge aEdge = BRepBuilderAPI_MakeEdge( anCircle );
 	TopoDS_Wire aCircle = BRepBuilderAPI_MakeWire( aEdge );
-	return BRepBuilderAPI_MakeFace(aCircle).Face();
+	return BRepBuilderAPI_MakeFace(aCircle).Shape();
 }
 
-servoce::face servoce::prim2d::make_polygon(const servoce::point3* pnts, size_t size) {
+servoce::shape servoce::make_polygon(const servoce::point3* pnts, size_t size) {
 	BRepBuilderAPI_MakePolygon mk;
 	for (int i = 0; i < size; ++i) mk.Add(pnts[i].Pnt());
 	mk.Close();
-	return BRepBuilderAPI_MakeFace(mk).Face();
+	return BRepBuilderAPI_MakeFace(mk).Shape();
 } 
 
-servoce::face servoce::prim2d::make_polygon(const std::vector<servoce::point3>& pnts) {
+servoce::shape servoce::make_polygon(const std::vector<servoce::point3>& pnts) {
 	return make_polygon(pnts.data(), pnts.size());
 } 
 
-servoce::face servoce::prim2d::make_ngon(double r, int n) { 
+servoce::shape servoce::make_ngon(double r, int n) { 
 	double angle;
 	servoce::point3 pnts[n];
 	for (int i = 0; i < n; ++i) {
@@ -45,7 +45,7 @@ servoce::face servoce::prim2d::make_ngon(double r, int n) {
 	return make_polygon(pnts, n);
 }
 
-servoce::face servoce::prim2d::make_rectangle(double a, double b, bool center) { 
+servoce::shape servoce::make_rectangle(double a, double b, bool center) { 
 	if (center) {
 		double x = a/2;
 		double y = b/2;
@@ -56,17 +56,17 @@ servoce::face servoce::prim2d::make_rectangle(double a, double b, bool center) {
 	}
 }
 
-servoce::face servoce::prim2d::make_square(double a, bool center) { 
+servoce::shape servoce::make_square(double a, bool center) { 
 	return make_rectangle(a,a,center);
 }
-
-servoce::face servoce::face::fillet(double r, const std::vector<int>& nums) {
+/*
+servoce::shape servoce::shape::fillet(double r, const std::vector<int>& nums) {
 	std::set<int>snums(nums.begin(), nums.end());
-	BRepFilletAPI_MakeFillet2d mk(Face());
+	BRepFilletAPI_MakeFillet2d mk(shape());
 
 	int idx = 0;
 
-	for(TopExp_Explorer expWire(TopoDS::Face(Face()), TopAbs_WIRE); expWire.More(); expWire.Next()) {
+	for(TopExp_Explorer expWire(TopoDS::shape(shape()), TopAbs_WIRE); expWire.More(); expWire.Next()) {
 		BRepTools_WireExplorer explorer(TopoDS::Wire(expWire.Current()));
     	while (explorer.More()) {
 			if (nums.size() == 0 || snums.count(idx))mk.AddFillet(explorer.CurrentVertex(), r);
@@ -75,17 +75,17 @@ servoce::face servoce::face::fillet(double r, const std::vector<int>& nums) {
 		}
 	}
 	return mk.Shape();
-}
+}*/
 
 
-servoce::sweep_face::~sweep_face() {}
+/*servoce::sweep_shape::~sweep_shape() {}
 
-servoce::sweep_face::sweep_face(BRepPrimAPI_MakeSweep&& builder) : face(builder.Shape()) {
+servoce::sweep_shape::sweep_shape(BRepPrimAPI_MakeSweep&& builder) : shape(builder.Shape()) {
 	m_first = new TopoDS_Shape(builder.FirstShape());
 	m_last = new TopoDS_Shape(builder.LastShape());
 }
 
-servoce::sweep_face servoce::sweep2d::make_sweep(const servoce::shape& profile, const servoce::wire& path) {
+servoce::sweep_shape servoce::sweep2d::make_sweep(const servoce::shape& profile, const servoce::wire& path) {
     if (path.Shape().IsNull())
         Standard_Failure::Raise("Cannot sweep along empty spine");
     if (profile.Shape().IsNull())
@@ -93,7 +93,7 @@ servoce::sweep_face servoce::sweep2d::make_sweep(const servoce::shape& profile, 
     return BRepOffsetAPI_MakePipe(path.Wire(), profile.Shape());
 }
 
-std::vector<servoce::wire> servoce::face::wires() {
+std::vector<servoce::wire> servoce::shape::wires() {
 	TopExp_Explorer explorer(Shape(), TopAbs_WIRE);
 	std::vector<servoce::wire> ret;
 
@@ -103,4 +103,4 @@ std::vector<servoce::wire> servoce::face::wires() {
 	}
 
 	return ret;
-}
+}*/
