@@ -63,6 +63,7 @@ module('servoce_sources',
 		#"test.cpp",
 		"convert.cpp",
 		"view.cpp",
+		"camera.cpp",
 
 		"display/mainwidget.cpp",
 		"display/dispwidget.cpp",

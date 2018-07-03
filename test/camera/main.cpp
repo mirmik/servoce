@@ -5,10 +5,12 @@
 
 int main() {
 	servoce::drone_camera cam;
+	cam.pitch(0);
+	cam.yaw(0);
 
-	auto box = servoce::make_box(100,100,100);
+	auto model = servoce::make_box(100,100,100) + servoce::make_sphere(100);
 	servoce::scene scn;
-	scn.add(box);
+	scn.add(model);
 
 	servoce::viewer vw(&cam, &scn);
 	vw.trigedron();

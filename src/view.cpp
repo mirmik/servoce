@@ -130,14 +130,7 @@ void servoce::viewer::see() {
 	m_graphicDriver = new OpenGl_GraphicDriver(m_displayConnection);
 	m_viewer = new V3d_Viewer(m_graphicDriver, (Standard_ExtString)"viewer");
 	m_context = new AIS_InteractiveContext (m_viewer);  
-	//m_window = new Xw_Window (m_displayConnection, "virtual", 0, 0, 800, 800);
 	m_view = m_viewer->CreateView();
-
-	//m_window->SetVirtual  (Standard_True); 
-	
-
-	//m_view->FitAll();
-	//m_view->Dump(path.c_str()); 
 
 	for (auto& shp : scn->shapes) {
 		Handle (AIS_Shape) ais = new AIS_Shape(shp.shp.Shape());
@@ -169,7 +162,6 @@ void servoce::viewer::see() {
    	m_viewer->SetLightOn(new V3d_DirectionalLight (m_viewer, V3d_Zneg , Quantity_NOC_WHITE, true));
     m_context->SetDisplayMode(AIS_Shaded, false);
 
-
 	Atom wmDeleteMessage = XInternAtom(d, "WM_DELETE_WINDOW", False);
 	XSetWMProtocols(d, w, &wmDeleteMessage, 1);
 
@@ -187,7 +179,14 @@ void servoce::viewer::see() {
 					Handle(Xw_Window) wind = new Xw_Window(m_displayConnection, w);
 					m_view->SetWindow(wind);
     				m_view->TriedronDisplay(Aspect_TOTP_LEFT_LOWER, Quantity_NOC_GOLD, 0.08, V3d_ZBUFFER);
-    				inited = true;
+
+					auto m_cam = m_view->Camera();
+					m_cam->SetDirection(cam->native_dir());
+					m_cam->SetUp(cam->native_up());
+					m_cam->SetEye(cam->native_eye());
+					//m_cam->SetScale(cam->native_scale());
+	
+					inited = true;
     			}
     			m_view->Redraw();
 			}

@@ -2,37 +2,48 @@
 #define SERVOCE_CAMERA_H
 
 #include <servoce/linalg/linalg.h>
+#include <servoce/util/setget.h>
 
 using namespace linalg::aliases;
+
+class gp_Dir;
+class gp_Pnt;
 
 namespace servoce {
 	class viewer;
 
 	class camera {
-		//float4 _orient;
-		//float3 _center;
-		//float _zoom;
-
-		//camera(float4 orient={1,0,0,0}, float3 center = {0,0,0}, float zoom = 1) : _orient(orient), _center(center), _zoom(zoom) {}
-
-		//void pan(float x, float y);
-		//void rot(float x, float y);
-		//void zoom(float x, float y);
-
+	public:
+		virtual void set_eye(viewer* v) = 0;
+		virtual void set_scale(viewer* v) = 0;
 		virtual void set_orient(viewer* v) = 0;
-		virtual void set_pan(viewer* v) = 0;
-		virtual void set_zoom(viewer* v) = 0;
+
+		virtual gp_Dir native_up() = 0;
+		virtual gp_Dir native_dir() = 0;
+		virtual gp_Pnt native_eye() = 0;
+		virtual float native_scale() = 0;
 	};
 
 	class drone_camera : public camera {
-		float phi;
-		float psi;
-		float3 _center;
-		float _zoom;
+		float _yaw = 0;
+		float _pitch = 70;
+		float3 _center = {50, 60, 70};
+		float _scale = 200;
 
+	public:
+		FLOW_ACCESSOR(yaw, _yaw);
+		FLOW_ACCESSOR(pitch, _pitch);
+		FLOW_ACCESSOR(center, _center);
+		FLOW_ACCESSOR(scale, _scale);
+
+		void set_eye(viewer* v) override {};
+		void set_scale(viewer* v) override {};
 		void set_orient(viewer* v) override {};
-		void set_pan(viewer* v) override {};
-		void set_zoom(viewer* v) override {};
+
+		gp_Dir native_up() override;
+		gp_Dir native_dir() override;
+		gp_Pnt native_eye() override;
+		float native_scale() override;
 	};
 }
 
