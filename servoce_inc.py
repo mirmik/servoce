@@ -10,7 +10,7 @@ import os
 
 licant.libs.include("gxx")
 
-libqt_include_path = "/usr/include/x86_64-linux-gnu/qt5/"
+libqt_include_path = "/usr/include/i386-linux-gnu/qt5/"
 liboce_include_path = "/usr/include/oce/"
 python_include_prefix = "/usr/include/"
 
@@ -69,6 +69,8 @@ module('servoce_sources',
 		"display/dispwidget.cpp",
 		"display/dispwidget_qt.cpp",
 		"display/icons.cpp",
+
+		"widgets/gtk_widget.cpp"
 	],
 	
 	moc = ["local/display.h"],  
@@ -84,8 +86,8 @@ module('servoce_sources',
 		submodule("gxx.dprint", "cout"),
 	],
 	
-	cxx_flags = '-fPIC -DQT_NO_VERSION_TAGGING',
-	
+	cxx_flags = '-fPIC -DQT_NO_VERSION_TAGGING $(pkg-config --cflags --libs gtk+-3.0)',
+	ld_flags = '$(pkg-config --cflags --libs gtk+-3.0)',	
 	cc_flags = '-fPIC',
 )
 
