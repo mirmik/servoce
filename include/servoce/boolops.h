@@ -19,17 +19,18 @@ namespace servoce {
 		wire make_difference(const wire& a, const shape& b);
 		wire make_intersect(const wire& a, const shape& b);*/
 
-		//solid make_union(const std::vector<solid>& vec);
+	shape make_union(const std::vector<const shape*>& vec);
+	shape make_difference(const std::vector<const shape*>& vec);
+	shape make_intersect(const std::vector<const shape*>& vec);
+		
 		//solid make_union(const servoce::solid* vec, size_t size);
 		/*solid make_union(const std::vector<const solid*>& vec);
 		face make_union(const std::vector<const face*>& vec);
 
 		//solid make_difference(const servoce::solid* vec, size_t size);
-		solid make_difference(const std::vector<const solid*>& vec);
 		face make_difference(const std::vector<const face*>& vec);
 
 		//solid make_intersect(const servoce::solid* vec, size_t size);
-		solid make_intersect(const std::vector<const solid*>& vec);
 		face make_intersect(const std::vector<const face*>& vec);*/
 	
 }

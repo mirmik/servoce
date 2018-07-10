@@ -136,10 +136,6 @@ PYBIND11_MODULE(libservoce, m) {
 	m.def("make_difference", (servoce::shape(*)(const std::vector<const servoce::shape*>&))&servoce::make_difference);
 	m.def("make_intersect", (servoce::shape(*)(const std::vector<const servoce::shape*>&))&servoce::make_intersect);
 
-	m.def("make_union", (servoce::shape(*)(const std::vector<const servoce::shape*>&))&servoce::make_union);
-	m.def("make_difference", (servoce::shape(*)(const std::vector<const servoce::shape*>&))&servoce::make_difference);
-	m.def("make_intersect", (servoce::shape(*)(const std::vector<const servoce::shape*>&))&servoce::make_intersect);
-
 	m.def("display_scene", 	servoce::display);
 
 	py::class_<servoce::transformation>(m, "transformation")
