@@ -1,1 +1,0 @@
-cp /usr/local/lib/libTK* pyservoce/libs

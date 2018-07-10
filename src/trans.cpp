@@ -77,9 +77,9 @@ void ZenPlaneMirror::doit() {
 //void servoce::plane_mirror::init_native(gp_Trsf* trsf) const {
 //	trsf->SetMirror(gp_Ax2(gp_Pnt(0,0,0), gp_Vec(ax,ay,az)));
 //}
-/*
+
 servoce::transformation::transformation(const transformation& oth) : trsf(new gp_Trsf(*oth.trsf)) {}
-*/
+
 servoce::transformation servoce::rotateX(double a) {
 	return servoce::axrotation(1,0,0,a);
 }
@@ -145,11 +145,11 @@ servoce::vector3 servoce::transformation::operator()(const servoce::vector3& pnt
 
 	return pnt.Vec().Transformed(*trsf);
 }
-
+*/
 servoce::transformation servoce::transformation::operator()(const servoce::transformation& oth) const {
 	return *this * oth;
 }
-*/
+
 servoce::transformation  servoce::transformation::operator*(const servoce::transformation& oth) const {
 	return servoce::transformation(new gp_Trsf(this->trsf->Multiplied(*oth.trsf)));
 }

@@ -136,3 +136,6 @@ ENV/
 
 target
 pyservoce/libs
+
+build 
+dist

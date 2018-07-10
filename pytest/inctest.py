@@ -3,7 +3,7 @@
 
 import pyservoce
 
-m = pyservoce.make_box(8,9,10)
+m = pyservoce.make_box(8,9,10) + pyservoce.make_sphere(10)
 
 scn = pyservoce.Scene()
 

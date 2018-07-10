@@ -32,6 +32,8 @@ namespace servoce {
 		shape& operator= (const shape& oth);
 		shape& operator= (shape&& oth);
 
+		shape fillet(double r, const std::vector<int>& nums);
+
 		//solid to_solid();
 		//wire to_wire();
 		//face to_face();

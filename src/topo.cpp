@@ -9,6 +9,14 @@
 #include <BinTools_ShapeSet.hxx>
 #include <BinTools.hxx>
 
+#include <BRepTools_WireExplorer.hxx>
+#include <BRepFilletAPI_MakeFillet.hxx>
+#include <BRepFilletAPI_MakeFillet2d.hxx>
+
+#include <TopAbs_ShapeEnum.hxx>
+
+#include <TopExp_Explorer.hxx>
+
 #include <cassert>
 
 /*const char* topotype_to_cstr(TopAbs_ShapeEnum e) {
@@ -89,7 +97,7 @@ servoce::face servoce::shape::to_face() { return servoce::face(*m_shp); }
 
 */
 
-/*
+
 void servoce::shape::dump(std::ostream& out) const {
 	BinTools_ShapeSet theShapeSet;
 	if (m_shp->IsNull()) {
@@ -123,15 +131,15 @@ void servoce::shape::load(std::istream& in) {
     BinTools::GetInteger(in, orient);
     TopAbs_Orientation anOrient = static_cast<TopAbs_Orientation>(orient);
 
-    try {
+    //try {
         *m_shp = theShapeSet.Shape(shapeId);
         m_shp->Location(theShapeSet.Locations().Location (locId));
         m_shp->Orientation (anOrient);
-    }
+    /*}
     catch (Standard_Failure) {
         gxx::println("Failed to read shape from binary stream");
         exit(-1);	
-    }
+    }*/
 }
 
 
@@ -147,4 +155,57 @@ servoce::shape servoce::shape::restore_string_dump(const std::string& in) {
 	shp.m_shp = new TopoDS_Solid;
 	shp.load(sstrm);
 	return shp;
+}
+
+
+
+
+servoce::shape servoce::shape::fillet(double r, const std::vector<int>& nums) {
+    if (TopAbs_FACE != m_shp->ShapeType()) {
+    	std::set<int>snums(nums.begin(), nums.end());
+    	BRepFilletAPI_MakeFillet mk(*m_shp);//
+    	int idx = 0;
+    	for (TopExp_Explorer ex(*m_shp,TopAbs_EDGE); ex.More(); ex.Next()) {
+    	    TopoDS_Edge Edge =TopoDS::Edge(ex.Current());
+    	    if (snums.count(idx)) mk.Add(r, Edge);
+    	    ++idx;
+    	}
+	
+    	return mk.Shape();
+	}
+	else {
+		std::set<int>snums(nums.begin(), nums.end());
+		BRepFilletAPI_MakeFillet2d mk(Face());
+
+		int idx = 0;
+
+		for(TopExp_Explorer expWire(Shape(), TopAbs_WIRE); expWire.More(); expWire.Next()) {
+			BRepTools_WireExplorer explorer(TopoDS::Wire(expWire.Current()));
+ 			while (explorer.More()) {
+				if (nums.size() == 0 || snums.count(idx))mk.AddFillet(explorer.CurrentVertex(), r);
+				explorer.Next();
+				++idx;
+			}
+		}
+		return mk.Shape();	
+	}
+}
+
+
+/*
+servoce::shape servoce::shape::fillet(double r, const std::vector<int>& nums) {
+	std::set<int>snums(nums.begin(), nums.end());
+	BRepFilletAPI_MakeFillet2d mk(shape());
+
+	int idx = 0;
+
+	for(TopExp_Explorer expWire(TopoDS::shape(shape()), TopAbs_WIRE); expWire.More(); expWire.Next()) {
+		BRepTools_WireExplorer explorer(TopoDS::Wire(expWire.Current()));
+    	while (explorer.More()) {
+			if (nums.size() == 0 || snums.count(idx))mk.AddFillet(explorer.CurrentVertex(), r);
+			explorer.Next();
+			++idx;
+		}
+	}
+	return mk.Shape();
 }*/

@@ -5,18 +5,18 @@ from setuptools import setup, Extension, Command
 from distutils.util import get_platform
 import os
 
-#class bdist_wheel(bdist_wheel_):
-#    def finalize_options(self):
-#        from sys import platform as _platform
-#        platform_name = get_platform()
-#        if _platform == "linux" or _platform == "linux2":
+class bdist_wheel(bdist_wheel_):
+    def finalize_options(self):
+        from sys import platform as _platform
+        platform_name = get_platform()
+        if _platform == "linux" or _platform == "linux2":
             # Linux
-#            platform_name = 'manylinux1_x86_64'
+            platform_name = 'manylinux1_x86_64'
 
-#        bdist_wheel_.finalize_options(self)
-#        self.universal = True
-#        self.plat_name_supplied = True
-#        self.plat_name = platform_name
+        bdist_wheel_.finalize_options(self)
+        self.universal = True
+        self.plat_name_supplied = True
+        self.plat_name = platform_name
 
 
 class Found(Exception): pass
@@ -38,6 +38,7 @@ liboce_include_path = "/usr/local/include/opencascade"
 pyservoce_lib = Extension("pyservoce.libservoce",
     sources = [
     	"src/pywrap.cpp",
+    	"src/b64.cpp",
 
 		"src/math3.cpp",
 		"src/topo.cpp",
@@ -108,4 +109,5 @@ setup(
 
     include_package_data=True,
     ext_modules = [pyservoce_lib],
+    cmdclass = {"bdist_wheel" : bdist_wheel}
 )

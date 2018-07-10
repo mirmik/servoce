@@ -1,6 +1,6 @@
 #include <servoce/servoce.h>
 #include <servoce/display.h>
-//#include <gxx/util/base64.h>
+#include <servoce/util/b64.h>
 
 #include <pybind11/pybind11.h>
 #include <pybind11/operators.h>
@@ -29,7 +29,7 @@ namespace py = pybind11;
 PYBIND11_MODULE(libservoce, m) {
 	//py::register_exception<servoce::RuntimeException>(m, "ServoceRuntimeException");
 
-/*	py::class_<servoce::point3>(m, "point3")
+	py::class_<servoce::point3>(m, "point3")
 		//DEF_TRANSFORM_OPERATIONS(servoce::point3)
 		.def(py::init<double,double,double>())
 		.def(py::init<double,double>())
@@ -45,17 +45,19 @@ PYBIND11_MODULE(libservoce, m) {
 		.def_readwrite("x", &servoce::vector3::x)
 		.def_readwrite("y", &servoce::vector3::y)
 		.def_readwrite("z", &servoce::vector3::z)
-	;*/
+	;
 
-	py::class_<servoce::shape>(m, "Shape")/*
+	py::class_<servoce::shape>(m, "Shape")
+		DEF_TRANSFORM_OPERATIONS(servoce::shape)
 		.def("__add__", &servoce::shape::operator+)
 		.def("__sub__", &servoce::shape::operator-)
 		.def("__xor__", &servoce::shape::operator^)
-	*/
-		//.def(py::pickle(
-        	//[](const servoce::shape &self) { return gxx::base64_encode(self.string_dump()); },
-        	//[](const std::string& in) { return servoce::shape::restore_string_dump(gxx::base64_decode(in)); }
-    	//))
+	
+		.def(py::pickle(
+        	[](const servoce::shape &self) { return b64::base64_encode(self.string_dump()); },
+        	[](const std::string& in) { return servoce::shape::restore_string_dump(b64::base64_decode(in)); }
+    	))
+		.def("fillet", &servoce::shape::fillet, py::arg("r"), py::arg("nums"))
     ;
 
 	/*py::class_<servoce::shape, servoce::shape>(m, "Solid")
@@ -91,7 +93,7 @@ PYBIND11_MODULE(libservoce, m) {
 		.def("__sub__", &servoce::shape::operator-)
 		.def("__xor__", &servoce::shape::operator^)
 		.def("fillet", &servoce::shape::fillet, py::arg("r"), py::arg("nums"))
-		.def("wires", &servoce::shape::wires)
+		.def("shapes", &servoce::shape::shapes)
 	;*/
 	m.def("make_circle", 	servoce::make_circle, py::arg("r"));
 	m.def("make_ngon", 		servoce::make_ngon, py::arg("r"), py::arg("n"));
@@ -100,24 +102,24 @@ PYBIND11_MODULE(libservoce, m) {
 	m.def("make_polygon", 	(servoce::shape(*)(const std::vector<servoce::point3>&))&servoce::make_polygon, py::arg("pnts"));
 	//m.def("make_sweep", 	servoce::make_sweep, py::arg("prof"), py::arg("path"));
 /*
-	py::class_<servoce::wire, servoce::shape>(m, "Wire")
-		DEF_TRANSFORM_OPERATIONS(servoce::wire)
-		.def("__add__", &servoce::wire::operator+)
-		.def("__sub__", &servoce::wire::operator-)
-		.def("__xor__", &servoce::wire::operator^)
-		.def("shape", &servoce::wire::to_shape)
+	py::class_<servoce::shape, servoce::shape>(m, "Wire")
+		DEF_TRANSFORM_OPERATIONS(servoce::shape)
+		.def("__add__", &servoce::operator+)
+		.def("__sub__", &servoce::operator-)
+		.def("__xor__", &servoce::operator^)
+		.def("shape", &servoce::to_shape)
 	;
-	
-	m.def("make_segment", servoce::curve::make_segment);
-	m.def("make_polysegment", servoce::curve::make_polysegment, py::arg("pnts"), py::arg("closed") = false);
-	m.def("make_interpolate", (servoce::wire(*)(const std::vector<servoce::point3>&, const std::vector<servoce::vector3>&, bool))&servoce::curve::make_interpolate, py::arg("pnts"), py::arg("tang"), py::arg("closed") = false);
-	m.def("make_interpolate", (servoce::wire(*)(const std::vector<servoce::point3>&, const bool))&servoce::curve::make_interpolate, py::arg("pnts"), py::arg("closed") = false);
-	m.def("make_helix", servoce::curve::make_helix, py::arg("step"), py::arg("height"), py::arg("radius"), py::arg("angle") = 0, py::arg("leftHanded") = false, py::arg("newStyle") = true);
-	m.def("make_long_helix", servoce::curve::make_long_helix, py::arg("step"), py::arg("height"), py::arg("radius"), py::arg("angle") = 0, py::arg("leftHanded") = false);
-	m.def("make_complex_wire", servoce::curve::make_complex_wire, py::arg("wires"));
-	m.def("make_wcircle", (servoce::wire(*)(double))&servoce::curve::make_circle);
-	m.def("make_wcircle", (servoce::wire(*)(double,double,double))&servoce::curve::make_circle);
-
+	*/
+	m.def("make_segment", servoce::make_segment);
+	m.def("make_polysegment", (servoce::shape(*)(const std::vector<servoce::point3>&, const bool))&servoce::make_polysegment, py::arg("pnts"), py::arg("closed") = false);
+	m.def("make_interpolate", (servoce::shape(*)(const std::vector<servoce::point3>&, const std::vector<servoce::vector3>&, bool))&servoce::make_interpolate, py::arg("pnts"), py::arg("tang"), py::arg("closed") = false);
+	m.def("make_interpolate", (servoce::shape(*)(const std::vector<servoce::point3>&, const bool))&servoce::make_interpolate, py::arg("pnts"), py::arg("closed") = false);
+	m.def("make_helix", servoce::make_helix, py::arg("step"), py::arg("height"), py::arg("radius"), py::arg("angle") = 0, py::arg("leftHanded") = false, py::arg("newStyle") = true);
+	m.def("make_long_helix", servoce::make_long_helix, py::arg("step"), py::arg("height"), py::arg("radius"), py::arg("angle") = 0, py::arg("leftHanded") = false);
+	//m.def("make_complex_shape", servoce::make_complex_shape, py::arg("shapes"));
+	m.def("make_wcircle", (servoce::shape(*)(double))&servoce::make_circle);
+	m.def("make_wcircle", (servoce::shape(*)(double,double,double))&servoce::make_circle);
+/*
 	py::class_<servoce::sweep_shape, servoce::shape>(m, "SolidSweep");
 	py::class_<servoce::sweep_shape, servoce::shape>(m, "FaceSweep");
 	*/
@@ -125,67 +127,63 @@ PYBIND11_MODULE(libservoce, m) {
 		.def(py::init<float, float, float>());
 	py::class_<servoce::scene>(m, "Scene")
 		.def(py::init<>())
-		.def("add", (void(servoce::scene::*)(const servoce::shape&, servoce::color))&servoce::scene::add, py::arg("shape"), py::arg("color") = servoce::color())
-		.def("add", (void(servoce::scene::*)(const servoce::point3&, servoce::color))&servoce::scene::add, py::arg("shape"), py::arg("color") = servoce::color())
+		.def("add", (void(servoce::scene::*)(const servoce::shape&, servoce::color))&servoce::scene::add, py::arg("shape"), py::arg("color") = servoce::color{0.6,0.6,0.8})
+		.def("add", (void(servoce::scene::*)(const servoce::point3&, servoce::color))&servoce::scene::add, py::arg("shape"), py::arg("color") = servoce::color{0.6,0.6,0.8})
 		.def("append", (void(servoce::scene::*)(const servoce::scene&))&servoce::scene::append, py::arg("scene"))
 	;
-/*
-	m.def("make_union", (servoce::shape(*)(const std::vector<const servoce::shape*>&))&servoce::boolops::make_union);
-	m.def("make_difference", (servoce::shape(*)(const std::vector<const servoce::shape*>&))&servoce::boolops::make_difference);
-	m.def("make_intersect", (servoce::shape(*)(const std::vector<const servoce::shape*>&))&servoce::boolops::make_intersect);
 
-	m.def("make_union", (servoce::shape(*)(const std::vector<const servoce::shape*>&))&servoce::boolops::make_union);
-	m.def("make_difference", (servoce::shape(*)(const std::vector<const servoce::shape*>&))&servoce::boolops::make_difference);
-	m.def("make_intersect", (servoce::shape(*)(const std::vector<const servoce::shape*>&))&servoce::boolops::make_intersect);
-*/
+	m.def("make_union", (servoce::shape(*)(const std::vector<const servoce::shape*>&))&servoce::make_union);
+	m.def("make_difference", (servoce::shape(*)(const std::vector<const servoce::shape*>&))&servoce::make_difference);
+	m.def("make_intersect", (servoce::shape(*)(const std::vector<const servoce::shape*>&))&servoce::make_intersect);
+
+	m.def("make_union", (servoce::shape(*)(const std::vector<const servoce::shape*>&))&servoce::make_union);
+	m.def("make_difference", (servoce::shape(*)(const std::vector<const servoce::shape*>&))&servoce::make_difference);
+	m.def("make_intersect", (servoce::shape(*)(const std::vector<const servoce::shape*>&))&servoce::make_intersect);
+
 	m.def("display_scene", 	servoce::display);
-/*
-	py::class_<servoce::trans::transformation>(m, "transformation")
+
+	py::class_<servoce::transformation>(m, "transformation")
 		//.def(py::init<>())
-		.def("__call__", (servoce::shape(servoce::trans::transformation::*)(const servoce::shape&)const)&servoce::trans::transformation::operator())
-		.def("__call__", (servoce::shape(servoce::trans::transformation::*)(const servoce::shape&)const)&servoce::trans::transformation::operator())
-		.def("__call__", (servoce::wire(servoce::trans::transformation::*)(const servoce::wire&)const)&servoce::trans::transformation::operator())
-		.def("__call__", (servoce::trans::transformation(servoce::trans::transformation::*)(const servoce::trans::transformation&)const)&servoce::trans::transformation::operator())
-		.def("__mul__", &servoce::trans::transformation::operator* )
+		.def("__call__", (servoce::shape(servoce::transformation::*)(const servoce::shape&)const)&servoce::transformation::operator())
+		.def("__call__", (servoce::transformation(servoce::transformation::*)(const servoce::transformation&)const)&servoce::transformation::operator())
+		.def("__mul__", &servoce::transformation::operator* )
 
 		.def(py::pickle(
-        	[](const servoce::trans::transformation &self) { return gxx::base64_encode(self.string_dump()); },
-        	[](const std::string& in) { return servoce::trans::transformation::restore_string_dump(gxx::base64_decode(in)); }
+        	[](const servoce::transformation &self) { return b64::base64_encode(self.string_dump()); },
+        	[](const std::string& in) { return servoce::transformation::restore_string_dump(b64::base64_decode(in)); }
     	))
 	;
 
-	//py::class_<servoce::trans::translate, servoce::trans::transformation>(m, "translate")
+	//py::class_<servoce::translate, servoce::transformation>(m, "translate")
 	//	.def(py::init<double,double,double>());
-	//py::class_<servoce::trans::axrotation, servoce::trans::transformation>(m, "axrotation")
+	//py::class_<servoce::axrotation, servoce::transformation>(m, "axrotation")
 	//	.def(py::init<double,double,double,double>());
-	//py::class_<servoce::trans::axis_mirror, servoce::trans::transformation>(m, "axis_mirror")
+	//py::class_<servoce::axis_mirror, servoce::transformation>(m, "axis_mirror")
 	//	.def(py::init<double,double,double>());
-	//py::class_<servoce::trans::plane_mirror, servoce::trans::transformation>(m, "plane_mirror")
+	//py::class_<servoce::plane_mirror, servoce::transformation>(m, "plane_mirror")
 	//	.def(py::init<double,double,double>());
-	m.def("translate", (servoce::trans::transformation(*)(double,double,double)) &servoce::trans::translate);
-	m.def("translate", (servoce::trans::transformation(*)(double,double)) &servoce::trans::translate);
-	m.def("translate", (servoce::trans::transformation(*)(const servoce::vector3&)) &servoce::trans::translate);
-	m.def("axrotation", servoce::trans::axrotation);
-	m.def("axis_mirror", servoce::trans::axis_mirror);
-	m.def("plane_mirror", servoce::trans::plane_mirror);
+	m.def("translate", (servoce::transformation(*)(double,double,double)) &servoce::translate);
+	m.def("translate", (servoce::transformation(*)(double,double)) &servoce::translate);
+	m.def("translate", (servoce::transformation(*)(const servoce::vector3&)) &servoce::translate);
+	m.def("axrotation", servoce::axrotation);
+	m.def("axis_mirror", servoce::axis_mirror);
+	m.def("plane_mirror", servoce::plane_mirror);
 
-	m.def("rotateX", servoce::trans::rotateX);
-	m.def("rotateY", servoce::trans::rotateY);
-	m.def("rotateZ", servoce::trans::rotateZ);
-	m.def("mirrorX", servoce::trans::mirrorX);
-	m.def("mirrorY", servoce::trans::mirrorY);
-	m.def("mirrorZ", servoce::trans::mirrorZ);
-	m.def("mirrorXY", servoce::trans::mirrorXY);
-	m.def("mirrorXZ", servoce::trans::mirrorXZ);
-	m.def("mirrorYZ", servoce::trans::mirrorYZ);
-	m.def("up", servoce::trans::up);
-	m.def("down", servoce::trans::down);
-	m.def("left", servoce::trans::left);
-	m.def("right", servoce::trans::right);
-	m.def("forw", servoce::trans::forw);
-	m.def("back", servoce::trans::back);
-
-
+	m.def("rotateX", servoce::rotateX);
+	m.def("rotateY", servoce::rotateY);
+	m.def("rotateZ", servoce::rotateZ);
+	m.def("mirrorX", servoce::mirrorX);
+	m.def("mirrorY", servoce::mirrorY);
+	m.def("mirrorZ", servoce::mirrorZ);
+	m.def("mirrorXY", servoce::mirrorXY);
+	m.def("mirrorXZ", servoce::mirrorXZ);
+	m.def("mirrorYZ", servoce::mirrorYZ);
+	m.def("up", servoce::up);
+	m.def("down", servoce::down);
+	m.def("left", servoce::left);
+	m.def("right", servoce::right);
+	m.def("forw", servoce::forw);
+	m.def("back", servoce::back);
 
 
 
@@ -193,8 +191,10 @@ PYBIND11_MODULE(libservoce, m) {
 
 
 
-	m.def("simplify_with_bspline", &servoce::curve::simplify_with_bspline);
+
+
+	//m.def("simplify_with_bspline", &servoce::simplify_with_bspline);
 	m.def("make_stl", &servoce::make_stl);
-*/
+
 
 }
