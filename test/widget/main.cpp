@@ -1,5 +1,6 @@
 #include <servoce/solid.h>
 #include <servoce/display.h>
+#include <servoce/view.h>
 
 int main() {
 	auto box = servoce::make_box(10,10,10,true);
@@ -28,5 +29,10 @@ int main() {
 	scn.add(torus 	.right(30)	.down(30), servoce::gray);
 	scn.add(cone 	.right(60)	.down(30), servoce::gray);
 
-	servoce::show(scn);
+	servoce::drone_camera cam;
+	servoce::viewer v(&cam, &scn);
+
+	//v.see();
+
+	servoce::display(scn);
 }

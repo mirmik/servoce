@@ -10,7 +10,19 @@ import os
 
 licant.libs.include("gxx")
 
-libqt_include_path = "/usr/include/i386-linux-gnu/qt5/"
+class Found(Exception): pass
+try:
+	for root, dirs, files in os.walk("/usr/include"):
+		for dr in dirs:
+			if dr == "qt5":
+				libqt_include_path = os.path.join(root, dr)
+				raise Found()
+	else:
+		print("NeedInstall Qt5")
+		exit(-1)
+except (Found):
+	pass
+
 liboce_include_path = "/usr/include/oce/"
 python_include_prefix = "/usr/include/"
 
