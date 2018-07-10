@@ -19,10 +19,6 @@
 #include <BRepOffsetAPI_MakePipe.hxx>
 #include <BRepOffsetAPI_MakePipeShell.hxx>
 
-#include <gxx/panic.h>
-
-#include <gxx/print.h>
-
 using namespace servoce;
 
 shape servoce::make_box(double x, double y, double z, bool center) {
@@ -162,7 +158,7 @@ shape servoce::make_pipe_shell(
 
         return mkPipeShell.Shape();
     } catch (...) {
-        gxx::println("ERROR");
+        Standard_Failure::Raise("ERROR");
     }
 
 

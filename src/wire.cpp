@@ -31,7 +31,6 @@
 #include <TopoDS.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
-#include <gxx/print.h>
 
 servoce::shape servoce::shape::infill_face() {
 	return BRepBuilderAPI_MakeFace(Wire()).Face();

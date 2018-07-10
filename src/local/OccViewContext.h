@@ -37,7 +37,6 @@
 #include <BRepPrimAPI_MakeCylinder.hxx>
 
 #include <X11/Xlib.h>
-#include <gxx/print.h>
 
 class OccViewContext {
     Handle(Aspect_DisplayConnection) m_displayConnection;	
@@ -53,7 +52,7 @@ public:
 	void init() {
     	m_displayConnection = new Aspect_DisplayConnection();
 		m_graphicDriver = new OpenGl_GraphicDriver(m_displayConnection);
-		m_viewer = new V3d_Viewer(m_graphicDriver, (Standard_ExtString)"viewer");
+		m_viewer = new V3d_Viewer(m_graphicDriver);
 		m_context = new AIS_InteractiveContext (m_viewer);  
 		m_view = m_viewer->CreateView();
 
@@ -71,7 +70,7 @@ public:
 			Handle (AIS_Shape) ais2 = new AIS_Shape(shp.shp.Shape()); 
 			Quantity_Color shpcolor (shp.clr.r, shp.clr.g, shp.clr.b,  Quantity_TOC_RGB);  
     	    ais->SetColor(shpcolor);
-			m_context->Display (ais);
+			m_context->Display (ais, false);
 	
     	    ais2->SetColor(Quantity_NOC_BLACK);
     	    ais2->SetDisplayMode(AIS_WireFrame);  
@@ -82,17 +81,17 @@ public:
 	void set_triedron() {
 		m_view->TriedronDisplay(Aspect_TOTP_LEFT_LOWER, Quantity_NOC_GOLD, 0.08, V3d_ZBUFFER);
 
-        auto axX = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0,0,0), gp_Vec(1,0,0)));
-        auto axY = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0,0,0), gp_Vec(0,1,0)));
-        auto axZ = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0,0,0), gp_Vec(0,0,1)));
+        Handle(AIS_Axis) axX = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0,0,0), gp_Vec(1,0,0)));
+        Handle(AIS_Axis) axY = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0,0,0), gp_Vec(0,1,0)));
+        Handle(AIS_Axis) axZ = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0,0,0), gp_Vec(0,0,1)));
 
         axX->SetColor(Quantity_NOC_RED);
         axY->SetColor(Quantity_NOC_GREEN);
         axZ->SetColor(Quantity_NOC_BLUE1);
 
-        m_context->Display(axX);
-        m_context->Display(axY);
-        m_context->Display(axZ);
+        m_context->Display(axX, false);
+        m_context->Display(axY, false);
+        m_context->Display(axZ, false);
 	}
 
 	void set_virtual_window(int w, int h) {
@@ -102,11 +101,8 @@ public:
 	}
 
 	void set_window(int wind) {
-		gxx::println("here");
 		m_window = new Xw_Window(m_displayConnection, wind);
-		gxx::println("here", wind);
 		m_view->SetWindow(m_window);
-		gxx::println("here");
 	}
 
 	void fit_all() {

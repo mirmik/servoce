@@ -10,7 +10,6 @@
 #include <BinTools.hxx>
 
 #include <cassert>
-#include <gxx/print.h>
 
 /*const char* topotype_to_cstr(TopAbs_ShapeEnum e) {
 	switch(e) {
@@ -30,7 +29,23 @@ servoce::wire::wire() {}
 */
 servoce::shape::shape(const TopoDS_Shape& shp) : m_shp(new TopoDS_Shape(shp)) {}
 servoce::shape::shape(const shape& oth) : m_shp(new TopoDS_Shape(*oth.m_shp)) {}
+servoce::shape::shape(shape&& oth) : m_shp(oth.m_shp) { oth.m_shp = nullptr; }
 servoce::shape::~shape() { delete m_shp; }
+
+servoce::shape& servoce::shape::operator= (const shape& oth) {
+	if (m_shp != oth.m_shp) {
+		delete m_shp;
+		m_shp = new TopoDS_Shape(*oth.m_shp);
+	}
+	return *this;
+}
+
+servoce::shape& servoce::shape::operator= (shape&& oth) {
+	delete m_shp;
+	m_shp = oth.m_shp;
+	m_shp = nullptr;
+	return *this;
+}
 
 TopoDS_Shape& servoce::shape::Shape() { return *m_shp; }
 const TopoDS_Shape& servoce::shape::Shape() const { return *m_shp; }
@@ -40,6 +55,8 @@ TopoDS_Face& servoce::shape::Face() { return TopoDS::Face(*m_shp); }
 const TopoDS_Face& servoce::shape::Face() const { return TopoDS::Face(*m_shp); }
 TopoDS_Solid& servoce::shape::Solid() { return TopoDS::Solid(*m_shp); }
 const TopoDS_Solid& servoce::shape::Solid() const { return TopoDS::Solid(*m_shp); }
+TopoDS_Compound& servoce::shape::Compound() { return TopoDS::Compound(*m_shp); }
+const TopoDS_Compound& servoce::shape::Compound() const { return TopoDS::Compound(*m_shp); }
 
 /*
 servoce::solid::solid(const TopoDS_Shape& shp) : shape(shp) {

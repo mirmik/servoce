@@ -3,7 +3,6 @@
 
 #include <StlAPI_Writer.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
-#include <gxx/print.h>
 
 bool servoce::make_stl(const std::string& path, const servoce::shape& shp, double deflection) {
 	BRepMesh_IncrementalMesh mesh(shp.Shape(), deflection);

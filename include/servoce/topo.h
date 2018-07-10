@@ -22,15 +22,15 @@ class gp_Pnt;
 namespace servoce {
 	struct shape {
 		TopoDS_Shape* m_shp;
-		shape();
+		shape(){};
 		shape(TopoDS_Shape* shp);
 		shape(const TopoDS_Shape& shp);
 		shape(const shape& oth);
 		shape(shape&& oth);
 		~shape();
 
-		shape operator= (const shape& oth);
-		shape operator= (shape&& oth);
+		shape& operator= (const shape& oth);
+		shape& operator= (shape&& oth);
 
 		//solid to_solid();
 		//wire to_wire();

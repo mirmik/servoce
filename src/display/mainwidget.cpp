@@ -121,7 +121,8 @@ void servoce::disp::MainWidget::export_stl() {
     BRepMesh_IncrementalMesh mesh(shape, deflection);
 
     if (mesh.IsDone() == false) {
-        gxx::panic("Is not done TODO");
+        //gxx::panic("Is not done TODO");
+        throw Standard_Failure("Is not done TODO");
     }
 
     StlAPI_Writer stl_writer;

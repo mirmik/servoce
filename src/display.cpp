@@ -17,7 +17,7 @@ void servoce::display(const servoce::scene& scn) {
 	a.exec();
 }
 
-#include <servoce/widgets/gtk_widget.h>
+/*#include <servoce/widgets/gtk_widget.h>
 void servoce::show(const servoce::scene& scn) {
 	servoce::gtk_widget_show(scn);
-}
+}*/

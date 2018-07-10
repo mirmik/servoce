@@ -5,7 +5,7 @@
 
 namespace servoce {
 	void display(const servoce::scene& scn);
-	void show(const servoce::scene& scn);
+	//void show(const servoce::scene& scn);
 }
 
 #endif

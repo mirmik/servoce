@@ -23,7 +23,8 @@ try:
 except (Found):
 	pass
 
-liboce_include_path = "/usr/include/oce/"
+#liboce_include_path = "/usr/include/oce/"
+liboce_include_path = "/usr/local/include/opencascade"
 python_include_prefix = "/usr/include/"
 
 module('liboce', 
@@ -82,7 +83,7 @@ module('servoce_sources',
 		"display/dispwidget_qt.cpp",
 		"display/icons.cpp",
 
-		"widgets/gtk_widget.cpp"
+		#"widgets/gtk_widget.cpp"
 	],
 	
 	moc = ["local/display.h"],  
@@ -98,8 +99,7 @@ module('servoce_sources',
 		submodule("gxx.dprint", "cout"),
 	],
 	
-	cxx_flags = '-fPIC -DQT_NO_VERSION_TAGGING $(pkg-config --cflags --libs gtk+-3.0)',
-	ld_flags = '$(pkg-config --cflags --libs gtk+-3.0)',	
+	cxx_flags = '-fPIC -DQT_NO_VERSION_TAGGING',
 	cc_flags = '-fPIC',
 )
 

@@ -11,7 +11,7 @@
 #include <QtWidgets/QMainWindow>
 #include <QtOpenGL/QGLWidget>
 
-#include <gxx/math/quaternion.h>
+#include <servoce/linalg/linalg.h>
 
 #include <servoce/scene.h>
 
@@ -27,8 +27,9 @@ namespace servoce {
 		
 		private:
 			QPoint temporary1;
-			malgo::quaternion<double> quat_orient;
-		
+			//malgo::quaternion<double> quat_orient;
+			linalg::vec<float, 4> quat_orient;
+
 			double phi = - cos(M_PI / 4);
 			double psi = 0.61548;
 

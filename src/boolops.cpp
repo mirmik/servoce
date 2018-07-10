@@ -8,7 +8,6 @@
 #include <BRepAlgoAPI_Cut.hxx>
 #include <TopExp_Explorer.hxx>
 
-#include <gxx/print.h>
 #include <chrono>
 #include <iostream>
 #include <TopoDS.hxx>
