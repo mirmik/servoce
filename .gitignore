@@ -32,3 +32,4 @@
 *.app
 
 target
+pyservoce/libs
