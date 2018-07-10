@@ -62,10 +62,21 @@ void servoce::disp::DisplayWidget::showEvent(QShowEvent* e) {
 }
 
 void servoce::disp::DisplayWidget::paintEvent(QPaintEvent* e) {
+    gxx::println("paintEvent");
     Q_UNUSED(e);
 
     if (m_context.IsNull()) {
+        gxx::println("init");
         init();
+        
+        Handle(Geom_Line) ln = new Geom_Line(gp_Pnt(0,0,0), gp_Vec(1,0,0));
+        gxx::println("h0");
+                  
+        //Handle(AIS_Axis)  axX = new 
+        AIS_Axis a(ln);
+        
+
+        gxx::println("init ex");
         for (auto& wrap : scn->shapes) {
             Handle(AIS_Shape) anAisBox1 = new AIS_Shape(wrap.shp.Shape());
             Handle(AIS_Shape) anAisBox2 = new AIS_Shape(wrap.shp.Shape());
@@ -79,21 +90,29 @@ void servoce::disp::DisplayWidget::paintEvent(QPaintEvent* e) {
             anAisBox2->SetDisplayMode(AIS_WireFrame);  
             getContext()->Display(anAisBox2, false);
         }
-        autoscale();
-
-        auto axX = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0,0,0), gp_Vec(1,0,0)));
-        auto axY = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0,0,0), gp_Vec(0,1,0)));
+        gxx::println("autoscale");
+        
+         //Handle(Geom_Line) ln = new Geom_Line(gp_Pnt(0,0,0), gp_Vec(1,0,0));
+  gxx::println("h0");
+                  
+        //Handle(AIS_Axis)  axX = new 
+        //AIS_Axis a(ln);
+        /*auto axY = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0,0,0), gp_Vec(0,1,0)));
         auto axZ = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0,0,0), gp_Vec(0,0,1)));
-
-        axX->SetColor(Quantity_NOC_RED);
-        axY->SetColor(Quantity_NOC_GREEN);
+*/
+        gxx::println("h1");
+        //axX->SetColor(Quantity_NOC_RED);
+  /*      axY->SetColor(Quantity_NOC_GREEN);
         axZ->SetColor(Quantity_NOC_BLUE1);
-
-        getContext()->Display(axX);
-        getContext()->Display(axY);
-        getContext()->Display(axZ);
+*/
+        gxx::println("h2");
+  /*      gxx::println("disp ax");
+    */    //getContext()->Display(axX);
+      /*  getContext()->Display(axY);
+        getContext()->Display(axZ);*/
+        autoscale();
     }
-
+    gxx::println("ReDraw");
     m_view->Redraw();
 }
 
