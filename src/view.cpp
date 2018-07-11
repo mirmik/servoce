@@ -1,18 +1,33 @@
 #include <servoce/view.h>
 #include <local/OccViewContext.h>
 
-void servoce::viewer::screen(const std::string& path) {
-	OccViewContext oc;
-
-	oc.init();
-	oc.set_virtual_window(800,600);
-	oc.set_scene(*scn);
-	oc.set_triedron();
-	oc.fit_all();
-	oc.dump(path);
+servoce::viewer::viewer() {
+	occ = new OccViewerContext();
 }
 
-void servoce::viewer::see() {
+servoce::viewer::viewer(const servoce::scene& scn) : viewer() {
+	occ->set_scene(scn);
+}
+
+servoce::view servoce::viewer::create_view() {
+	return servoce::view( occ->create_vw() );
+}
+
+void servoce::view::redraw() { occ->redraw(); }
+void servoce::view::set_triedron() { occ->set_triedron(); }
+void servoce::view::dump(const std::string& path) { occ->dump(path); }
+void servoce::view::fit_all() { occ->fit_all(); }
+void servoce::view::set_virtual_window(int w, int h) { occ->set_virtual_window(w, h); }
+void servoce::view::set_window(int n) { occ->set_window(n); }
+
+void servoce::view::screen(const std::string& path) {
+	set_virtual_window(800,600);
+	set_triedron();
+	fit_all();
+	dump(path);
+}
+
+void servoce::view::see(int width, int height) {
 	int s;
 	Display *d;
 	Window w;
@@ -28,11 +43,12 @@ void servoce::viewer::see() {
 	XSelectInput(d, w, KeyPressMask | StructureNotifyMask);
 	XMapWindow(d, w);
 
-	OccViewContext oc;
+	/*OccViewerContext oc;
+	auto vw = oc.create_vw();
 
-	oc.init();
 	oc.set_scene(*scn);
-
+	oc.set_triedron_axes();
+*/
 	Atom wmDeleteMessage = XInternAtom(d, "WM_DELETE_WINDOW", False);
 	XSetWMProtocols(d, w, &wmDeleteMessage, 1);
 
@@ -46,19 +62,19 @@ void servoce::viewer::see() {
 				XConfigureEvent xce = e.xconfigure;
 				static bool inited = false;
 				if (!inited) {
-					oc.set_window(w);
-					oc.set_triedron();
-					oc.fit_all();
+					set_window(w);
+					set_triedron();
+					fit_all();
 
 					/*auto m_cam = m_view->Camera();
 					m_cam->SetDirection(cam->native_dir());
 					m_cam->SetUp(cam->native_up());
 					m_cam->SetEye(cam->native_eye());*/
 					//m_cam->SetScale(cam->native_scale());
-	
+
 					inited = true;
     			}
-    			oc.redraw();
+    			redraw();
 			}
 			break;
 	
@@ -83,4 +99,35 @@ servoce::shape_view::shape_view(const servoce::shape& a, servoce::color color) {
     Quantity_Color shpcolor (color.r, color.g, color.b,  Quantity_TOC_RGB);  
     m_ashp->SetColor(shpcolor);
     m_ashp->SetMaterial(Graphic3d_NOM_STEEL);
+}
+
+servoce::shape_view::shape_view(const servoce::shape_view& a) {
+	m_ashp = new AIS_Shape(*a.m_ashp);
+}
+
+servoce::shape_view::shape_view(servoce::shape_view&& a) {
+	m_ashp = a.m_ashp;
+	a.m_ashp = nullptr;
+}
+
+servoce::shape_view& servoce::shape_view::operator= (const servoce::shape_view& oth) {
+	if (m_ashp != oth.m_ashp) {
+		delete m_ashp;
+		m_ashp = new AIS_Shape(*oth.m_ashp);
+	}
+	return *this;
+}
+
+servoce::shape_view& servoce::shape_view::operator= (servoce::shape_view&& oth) {
+	delete m_ashp;
+	m_ashp = oth.m_ashp;
+	m_ashp = nullptr;
+	return *this;
+}
+
+
+void servoce::see(const servoce::scene& scn) {
+	auto v = viewer(scn);
+	auto vv = v.create_view();
+	vv.see();
 }

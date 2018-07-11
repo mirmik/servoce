@@ -21,11 +21,19 @@ namespace servoce {
 
 	struct shape_view {
 		AIS_Shape* m_ashp;
-		shape_view(const servoce::shape& a, servoce::color color);
+		shape_view(){}
+		shape_view(const servoce::shape& a, servoce::color color = servoce::color {0.6,0.6,0.8});
+		shape_view(const shape_view& oth);
+		shape_view(shape_view&& oth);
+	
+		shape_view& operator=(const shape_view& oth);
+		shape_view& operator=(shape_view&& oth);
 	};
 
 	struct scene {
 		std::vector<shape_view> shapes;
+
+		scene(std::initializer_list<const servoce::shape_view> shps) : shapes(shps.begin(), shps.end()) {}
 
 		void add(const servoce::shape& shp, servoce::color color = mech) {
 			shapes.emplace_back(shp, color);

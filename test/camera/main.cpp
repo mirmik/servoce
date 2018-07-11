@@ -1,5 +1,6 @@
 #include <servoce/camera.h>
 #include <servoce/view.h>
+#include <servoce/display.h>
 #include <servoce/scene.h>
 #include <servoce/solid.h>
 
@@ -9,12 +10,14 @@ int main() {
 	cam.yaw(0);
 
 	auto model = servoce::make_box(100,100,100) + servoce::make_sphere(100);
-	servoce::scene scn;
-	scn.add(model);
+	auto model2 = servoce::make_sphere(100).left(200);
+	auto model3 = servoce::make_box(100,100,100).right(200);
+	
+	servoce::scene scn { 
+		model,
+		{ model2, servoce::green },
+		{ model3, servoce::blue },
+	};
 
-	servoce::viewer vw(&cam, &scn);
-	vw.trigedron();
-
-	//vw.screen("mirmik.png");
-	vw.see();
+	servoce::see(scn);
 }
