@@ -98,7 +98,7 @@ pyservoce_lib = Extension("pyservoce.libservoce",
 setup(
 	name = 'pyservoce',
 	packages = ['pyservoce'],
-	version = '0.0.1',
+	version = '1.0.0',
 	license='MIT',
 	description = 'CAD system for righteous zen programmers ',
 	author = 'Sorokin Nikolay',
