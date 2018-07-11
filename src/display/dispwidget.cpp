@@ -69,7 +69,7 @@ void servoce::disp::DisplayWidget::paintEvent(QPaintEvent* e) {
     if (m_context.IsNull()) {
         init();
         
-        gp_Pln pln(gp_Pnt(0, 0, 0), gp_Dir(0, 1, 0));
+        /*gp_Pln pln(gp_Pnt(0, 0, 0), gp_Dir(0, 1, 0));
         Handle(Graphic3d_ClipPlane) thePlane = new Graphic3d_ClipPlane(pln);
         thePlane->SetUseObjectMaterial(true);
         thePlane->SetCappingHatch(Aspect_HS_GRID_DIAGONAL );
@@ -84,9 +84,9 @@ void servoce::disp::DisplayWidget::paintEvent(QPaintEvent* e) {
         thePlane->SetOn(Standard_True);
         //thePlane->SetUseObjectShader(true);
         //thePlane->SetUseObjectTexture(true);
-
+*/
         for (auto& shp : scn->shapes) {
-            shp.m_ashp->AddClipPlane(thePlane);
+  //          shp.m_ashp->AddClipPlane(thePlane);
             m_context->Display (shp.m_ashp, false);
         }
         
