@@ -71,9 +71,22 @@ void servoce::disp::DisplayWidget::paintEvent(QPaintEvent* e) {
         
         gp_Pln pln(gp_Pnt(0, 0, 0), gp_Dir(0, 1, 0));
         Handle(Graphic3d_ClipPlane) thePlane = new Graphic3d_ClipPlane(pln);
+        thePlane->SetUseObjectMaterial(true);
+        thePlane->SetCappingHatch(Aspect_HS_GRID_DIAGONAL );
+        thePlane->SetCappingHatchOn();
+        thePlane->SetUseObjectMaterial(true);
+        //Handle(Graphic3d_AspectFillArea3d) aspect = new Graphic3d_AspectFillArea3d;
+        
+        //aspect->SetDrawEdges(true);
+
+        thePlane->SetCapping(Standard_True);
+        //thePlane->SetCappingAspect(aspect);
+        thePlane->SetOn(Standard_True);
+        //thePlane->SetUseObjectShader(true);
+        //thePlane->SetUseObjectTexture(true);
 
         for (auto& shp : scn->shapes) {
-            shm.m_ashp->AddClipPlane(thePlane);
+            shp.m_ashp->AddClipPlane(thePlane);
             m_context->Display (shp.m_ashp, false);
         }
         
