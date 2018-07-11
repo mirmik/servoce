@@ -66,7 +66,7 @@ public:
 	}*/
 
 	void set_scene(const servoce::scene& scn) {
-		for (auto& shp : scn.shapes) {
+		for (auto& shp : scn.shapes) {			
 			m_context->Display (shp.m_ashp, false);
 		}
 	}

@@ -69,9 +69,11 @@ void servoce::disp::DisplayWidget::paintEvent(QPaintEvent* e) {
     if (m_context.IsNull()) {
         init();
         
-        
+        gp_Pln pln(gp_Pnt(0, 0, 0), gp_Dir(0, 1, 0));
+        Handle(Graphic3d_ClipPlane) thePlane = new Graphic3d_ClipPlane(pln);
 
         for (auto& shp : scn->shapes) {
+            shm.m_ashp->AddClipPlane(thePlane);
             m_context->Display (shp.m_ashp, false);
         }
         
