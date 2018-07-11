@@ -85,6 +85,18 @@ shape servoce::make_linear_extrude(const shape& base, double z, bool center) {
     return make_linear_extrude(base, vector3(0,0,z), center);
 }
 
+servoce::shape servoce::shape::extrude(double z, bool center) {
+    return make_linear_extrude(*this, z, center);
+}
+
+servoce::shape servoce::shape::extrude(double x, double y, double z, bool center) {
+    return make_linear_extrude(*this, vector3(x,y,z), center);
+}
+
+servoce::shape servoce::shape::extrude(const vector3& vec, bool center) {
+    return make_linear_extrude(*this, vec, center);
+}
+
 shape servoce::make_pipe(const shape& profile, const shape& path) {
     if (path.Shape().IsNull())
         Standard_Failure::Raise("Cannot sweep along empty spine");

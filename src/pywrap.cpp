@@ -58,6 +58,11 @@ PYBIND11_MODULE(libservoce, m) {
         	[](const std::string& in) { return servoce::shape::restore_string_dump(b64::base64_decode(in)); }
     	))
 		.def("fillet", &servoce::shape::fillet, py::arg("r"), py::arg("nums"))
+
+		.def("extrude", (servoce::shape(servoce::shape::*)(const servoce::vector3&,bool)) &servoce::shape::extrude, py::arg("vec"), py::arg("center")=false)
+		.def("extrude", (servoce::shape(servoce::shape::*)(double,double,double,bool)) &servoce::shape::extrude, py::arg("x"),py::arg("y"),py::arg("z"), py::arg("center")=false)
+		.def("extrude", (servoce::shape(servoce::shape::*)(double,bool)) &servoce::shape::extrude, py::arg("z"), py::arg("center")=false)
+	
     ;
 
 	/*py::class_<servoce::shape, servoce::shape>(m, "Solid")

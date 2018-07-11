@@ -20,6 +20,29 @@ class gp_Vec;
 class gp_Pnt;
 
 namespace servoce {
+	struct vector3 {
+		double x, y, z;
+		vector3() {}
+		vector3(const gp_Vec& pnt) {}
+		vector3(double x, double y) : x(x), y(y), z(0) {}
+		vector3(double x, double y, double z) : x(x), y(y), z(z) {}
+		gp_Vec Vec() const;
+		bool operator==(const vector3& oth) const { return oth.x == x && oth.y == y && oth.z == z; }
+		bool operator!=(const vector3& oth) const { return oth.x != x || oth.y != y || oth.z != z; }
+		vector3 operator-() const { return vector3(-x,-y,-z); }
+		vector3 operator/(double a) const { return vector3(x/a,y/a,z/a); }
+	};
+
+	struct point3 {
+		double x, y, z;
+		point3() {}
+		point3(const gp_Pnt& pnt) {}
+		point3(double x, double y) : x(x), y(y), z(0) {}
+		point3(double x, double y, double z) : x(x), y(y), z(z) {}
+		gp_Pnt Pnt() const;
+		TopoDS_Vertex Vtx() const;
+	};
+
 	struct shape {
 		TopoDS_Shape* m_shp;
 		shape(){};
@@ -87,6 +110,10 @@ namespace servoce {
 		servoce::shape operator+(const shape& oth) const { return servoce::make_union(*this, oth); }
 		servoce::shape operator-(const shape& oth) const { return servoce::make_difference(*this, oth); }
 		servoce::shape operator^(const shape& oth) const { return servoce::make_intersect(*this, oth); }
+	
+		servoce::shape extrude(double z, bool center = false);
+		servoce::shape extrude(const vector3& vec, bool center = false);
+		servoce::shape extrude(double x, double y, double z, bool center = false);
 	};
 
 	/*template<typename Self>
@@ -152,28 +179,6 @@ namespace servoce {
 		face to_face();
 	};*/
 
-	struct vector3 {
-		double x, y, z;
-		vector3() {}
-		vector3(const gp_Vec& pnt) {}
-		vector3(double x, double y) : x(x), y(y), z(0) {}
-		vector3(double x, double y, double z) : x(x), y(y), z(z) {}
-		gp_Vec Vec() const;
-		bool operator==(const vector3& oth) const { return oth.x == x && oth.y == y && oth.z == z; }
-		bool operator!=(const vector3& oth) const { return oth.x != x || oth.y != y || oth.z != z; }
-		vector3 operator-() const { return vector3(-x,-y,-z); }
-		vector3 operator/(double a) const { return vector3(x/a,y/a,z/a); }
-	};
-
-	struct point3 {
-		double x, y, z;
-		point3() {}
-		point3(const gp_Pnt& pnt) {}
-		point3(double x, double y) : x(x), y(y), z(0) {}
-		point3(double x, double y, double z) : x(x), y(y), z(z) {}
-		gp_Pnt Pnt() const;
-		TopoDS_Vertex Vtx() const;
-	};
 }
 
 #endif
