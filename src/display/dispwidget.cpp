@@ -71,18 +71,8 @@ void servoce::disp::DisplayWidget::paintEvent(QPaintEvent* e) {
         
         
 
-        for (auto& wrap : scn->shapes) {
-            Handle(AIS_Shape) anAisBox1 = new AIS_Shape(wrap.shp.Shape());
-            Handle(AIS_Shape) anAisBox2 = new AIS_Shape(wrap.shp.Shape());
-
-            //Quantity_Color shpcolor (0.6, 0.6, 0.8,  Quantity_TOC_RGB);  
-            Quantity_Color shpcolor (wrap.clr.r, wrap.clr.g, wrap.clr.b,  Quantity_TOC_RGB);  
-            anAisBox1->SetColor(shpcolor);
-            getContext()->Display(anAisBox1, false);
-            
-            anAisBox2->SetColor(Quantity_NOC_BLACK);
-            anAisBox2->SetDisplayMode(AIS_WireFrame);  
-            getContext()->Display(anAisBox2, false);
+        for (auto& shp : scn->shapes) {
+            m_context->Display (shp.m_ashp, false);
         }
         
         auto axX = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0,0,0), gp_Vec(1,0,0)));
@@ -156,6 +146,7 @@ void servoce::disp::DisplayWidget::init() {
 
     // Create AISInteractiveContext
     m_context = new AIS_InteractiveContext(m_viewer);
+    m_context->DefaultDrawer ()->SetFaceBoundaryDraw(true);
 
     // Set up lights etc
     //m_viewer->SetDefaultLights();

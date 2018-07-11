@@ -76,3 +76,11 @@ void servoce::viewer::see() {
 
 	return;
 }
+
+
+servoce::shape_view::shape_view(const servoce::shape& a, servoce::color color) {
+	m_ashp = new AIS_Shape(a.Shape());
+    Quantity_Color shpcolor (color.r, color.g, color.b,  Quantity_TOC_RGB);  
+    m_ashp->SetColor(shpcolor);
+    m_ashp->SetMaterial(Graphic3d_NOM_STEEL);
+}

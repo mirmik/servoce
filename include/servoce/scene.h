@@ -5,6 +5,8 @@
 #include <vector>
 #include <cassert>
 
+class AIS_Shape;
+
 namespace servoce {
 	struct color { float r, g, b; };
 
@@ -17,13 +19,12 @@ namespace servoce {
 	static constexpr color gray = 	color { 0.5,0.5,0.5 };
 	static constexpr color mech = 	color { 0.6,0.6,0.8 };
 
-	struct scene {
-		struct shape_view {
-			servoce::shape shp;
-			servoce::color clr;
-			shape_view(const servoce::shape& a, servoce::color color) : shp(a), clr(color) {}
-		};
+	struct shape_view {
+		AIS_Shape* m_ashp;
+		shape_view(const servoce::shape& a, servoce::color color);
+	};
 
+	struct scene {
 		std::vector<shape_view> shapes;
 
 		void add(const servoce::shape& shp, servoce::color color = mech) {

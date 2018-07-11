@@ -58,6 +58,7 @@ public:
 
     	m_viewer->SetLightOn(new V3d_DirectionalLight (m_viewer, V3d_Zneg , Quantity_NOC_WHITE, true));
     	m_context->SetDisplayMode(AIS_Shaded, false);
+    	m_context->DefaultDrawer ()->SetFaceBoundaryDraw(true);
 	}
 
 	/*auto& displayConnection() {
@@ -66,15 +67,7 @@ public:
 
 	void set_scene(const servoce::scene& scn) {
 		for (auto& shp : scn.shapes) {
-			Handle (AIS_Shape) ais = new AIS_Shape(shp.shp.Shape());
-			Handle (AIS_Shape) ais2 = new AIS_Shape(shp.shp.Shape()); 
-			Quantity_Color shpcolor (shp.clr.r, shp.clr.g, shp.clr.b,  Quantity_TOC_RGB);  
-    	    ais->SetColor(shpcolor);
-			m_context->Display (ais, false);
-	
-    	    ais2->SetColor(Quantity_NOC_BLACK);
-    	    ais2->SetDisplayMode(AIS_WireFrame);  
-    	   	m_context->Display(ais2, false);
+			m_context->Display (shp.m_ashp, false);
 		}
 	}
 

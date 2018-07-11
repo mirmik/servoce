@@ -18,6 +18,7 @@
 
 #include <V3d_View.hxx>
 #include <AIS_Shape.hxx>
+#include <TopoDS.hxx>
 
 #include <servoce/display.h>
 #include <local/display.h>
@@ -117,7 +118,7 @@ void servoce::disp::MainWidget::export_stl() {
         //gxx::panic("TODO");
     } 
 
-    const TopoDS_Shape& shape = display->scn->shapes[0].shp.Shape();
+    const TopoDS_Shape& shape = display->scn->shapes[0].m_ashp->Shape();
     BRepMesh_IncrementalMesh mesh(shape, deflection);
 
     if (mesh.IsDone() == false) {
