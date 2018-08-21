@@ -33,6 +33,7 @@ namespace servoce {
 	struct scene {
 		std::vector<shape_view> shapes;
 
+		scene(){};
 		scene(std::initializer_list<const servoce::shape_view> shps) : shapes(shps.begin(), shps.end()) {}
 
 		void add(const servoce::shape& shp, servoce::color color = mech) {
