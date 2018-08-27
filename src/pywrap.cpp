@@ -36,6 +36,11 @@ PYBIND11_MODULE(libservoce, m) {
 		.def_readwrite("x", &servoce::point3::x)
 		.def_readwrite("y", &servoce::point3::y)
 		.def_readwrite("z", &servoce::point3::z)
+		.def("__repr__", [](const servoce::point3& pnt) { 
+			char buf[128];
+			sprintf(buf, "point3(%f,%f,%f)", pnt.x, pnt.y, pnt.z);
+			return std::string(buf);
+		})
 	;
 	
 	py::class_<servoce::vector3>(m, "vector3")
@@ -45,6 +50,11 @@ PYBIND11_MODULE(libservoce, m) {
 		.def_readwrite("x", &servoce::vector3::x)
 		.def_readwrite("y", &servoce::vector3::y)
 		.def_readwrite("z", &servoce::vector3::z)
+		.def("__repr__", [](const servoce::vector3& pnt) { 
+			char buf[128];
+			sprintf(buf, "vector3(%f,%f,%f)", pnt.x, pnt.y, pnt.z);
+			return std::string(buf);
+		})
 	;
 
 	py::class_<servoce::shape>(m, "Shape")

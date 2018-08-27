@@ -83,6 +83,8 @@ module('servoce_sources',
 		"display/dispwidget_qt.cpp",
 		"display/icons.cpp",
 
+		"occversion.cpp",
+
 		#"widgets/gtk_widget.cpp"
 	],
 	
