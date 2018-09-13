@@ -46,6 +46,9 @@ module('liboce',
 		'TKFillet',
 		'TKSTL',
 		'TKBin',
+
+		'TKG2d',
+		'TKMesh',
 	],
 	include_paths = [liboce_include_path]    
 )
@@ -83,12 +86,16 @@ module('servoce_sources',
 		"display/dispwidget_qt.cpp",
 		"display/icons.cpp",
 
+		"shower/mainwidget.cpp",
+		"shower/dispwidget.cpp",
+		"shower/dispwidget_qt.cpp",
+
 		"occversion.cpp",
 
 		#"widgets/gtk_widget.cpp"
 	],
 	
-	moc = ["local/display.h"],  
+	moc = ["local/display.h", "shower/display.h"],
 	
 	include_paths = [ "include", ".", "src" ],
 	
@@ -100,8 +107,11 @@ module('servoce_sources',
 		submodule("gxx.print", "cout"),
 		submodule("gxx.dprint", "cout"),
 	],
+
+	libs = ['X11'],
 	
-	cxx_flags = '-fPIC -DQT_NO_VERSION_TAGGING',
-	cc_flags = '-fPIC',
+	cxx_flags = '-fPIC -DQT_NO_VERSION_TAGGING -ffunction-sections -fdata-sections',
+	cc_flags = '-fPIC -ffunction-sections -fdata-sections',
+	ld_flags = '-ffunction-sections -fdata-sections -Wl,--gc-sections -Wl,--as-needed'
 )
 
