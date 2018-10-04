@@ -29,6 +29,7 @@ shape servoce::make_box(double x, double y, double z, bool center) {
 		return BRepPrimAPI_MakeBox(ax2, x, y, z).Solid(); 			
 	}
 }
+
 shape servoce::make_cylinder(double r, double h, bool center) { 
 	if (!center) {
 		return BRepPrimAPI_MakeCylinder(r, h).Solid(); 
@@ -36,6 +37,15 @@ shape servoce::make_cylinder(double r, double h, bool center) {
 		gp_Ax2 ax2(gp_Pnt(0,0,-h/2), gp_Vec(0,0,1));
 		return BRepPrimAPI_MakeCylinder(ax2, r, h).Solid(); 		
 	}
+}
+
+shape servoce::make_cylinder(double r, double h, double angle, bool center) { 
+    if (!center) {
+        return BRepPrimAPI_MakeCylinder(r, h, angle).Solid(); 
+    } else {
+        gp_Ax2 ax2(gp_Pnt(0,0,-h/2), gp_Vec(0,0,1));
+        return BRepPrimAPI_MakeCylinder(ax2, r, h, angle).Solid();         
+    }
 }
 
 shape servoce::make_cone(double r1, double r2, double h, bool center) { 

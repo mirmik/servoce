@@ -93,7 +93,8 @@ PYBIND11_MODULE(libservoce, m) {
 /**/
 	m.def("make_box", 		servoce::make_box, py::arg("x"), py::arg("y"), py::arg("z"), py::arg("center") = false);
 	m.def("make_sphere", 	servoce::make_sphere, py::arg("r"));
-	m.def("make_cylinder", 	servoce::make_cylinder, py::arg("r"), py::arg("h"), py::arg("center") = false);
+	m.def("make_cylinder", 	(servoce::shape(*)(double, double, bool)) &servoce::make_cylinder, py::arg("r"), py::arg("h"), py::arg("center") = false);
+	m.def("make_cylinder", 	(servoce::shape(*)(double, double, double, bool)) &servoce::make_cylinder, py::arg("r"), py::arg("h"), py::arg("angle"), py::arg("center") = false);
 	m.def("make_cone", 		servoce::make_cone, py::arg("r1"), py::arg("r2"), py::arg("h"), py::arg("center") = false);
 	m.def("make_torus", 	servoce::make_torus, py::arg("r1"), py::arg("r2"));
 

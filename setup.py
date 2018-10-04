@@ -62,6 +62,12 @@ pyservoce_lib = Extension("pyservoce.libservoce",
 		"src/display/dispwidget_qt.cpp",
 		"src/local/display_h_moc.cpp",
 		"src/display/icons.cpp",
+
+
+		"src/shower/mainwidget.cpp",
+		"src/shower/dispwidget.cpp",
+		"src/shower/dispwidget_qt.cpp",
+		"src/local/shower_h_moc.cpp",
 	],
 	extra_compile_args=['-fPIC', '-std=c++14'],
 	#extra_link_args=['-Wl,-rpath,\'$ORIGIN/libs/\''],

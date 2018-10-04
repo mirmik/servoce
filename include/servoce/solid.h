@@ -9,6 +9,7 @@ namespace servoce {
 	shape make_box(double x, double y, double z, bool center = false);
 	shape make_sphere(double r);
 	shape make_cylinder(double r, double h, bool center = false);
+	shape make_cylinder(double r, double h, double angle, bool center = false);
 	shape make_cone(double r1, double r2, double h, bool center = false);
 	shape make_torus(double r1, double r2);
 
