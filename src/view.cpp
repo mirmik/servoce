@@ -59,7 +59,7 @@ void servoce::view::see(int width, int height) {
 		switch (e.type)
     	{
     		case ConfigureNotify: {
-				XConfigureEvent xce = e.xconfigure;
+				//XConfigureEvent xce = e.xconfigure;
 				static bool inited = false;
 				if (!inited) {
 					set_window(w);
@@ -79,7 +79,7 @@ void servoce::view::see(int width, int height) {
 			break;
 	
     	    case ClientMessage:
-    	        if (e.xclient.data.l[0] == wmDeleteMessage)
+    	        if (e.xclient.data.l[0] == (signed)wmDeleteMessage)
     	            running = false;
     	        break;
 	

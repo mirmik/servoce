@@ -183,6 +183,7 @@ shape servoce::make_pipe_shell(
         Standard_Failure::Raise("ERROR");
     }
 
+    return shape();
 
     /*if (path.Shape().IsNull())
         Standard_Failure::Raise("Cannot sweep along empty spine");

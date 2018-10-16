@@ -1,6 +1,6 @@
 #include <servoce/display.h>
 #include <local/display.h>
-#include <shower/display.h>
+//#include <shower/display.h>
 
 #include <QtWidgets/QApplication>
 
@@ -22,7 +22,7 @@ void servoce::show(const servoce::scene& scn) {
 	servoce::gtk_widget_show(scn);
 }*/
 
-void servoce::show_future(const servoce::scene& scn) {
+/*void servoce::show_future(const servoce::scene& scn) {
 	QLocale curLocale(QLocale("en_EN"));
 	QLocale::setDefault(curLocale);
 
@@ -33,4 +33,4 @@ void servoce::show_future(const servoce::scene& scn) {
 
 	w->show();
 	a.exec();	
-}
+}*/

@@ -26,7 +26,7 @@ servoce::shape servoce::make_circle(double r) {
 
 servoce::shape servoce::make_polygon(const servoce::point3* pnts, size_t size) {
 	BRepBuilderAPI_MakePolygon mk;
-	for (int i = 0; i < size; ++i) mk.Add(pnts[i].Pnt());
+	for (uint i = 0; i < size; ++i) mk.Add(pnts[i].Pnt());
 	mk.Close();
 	return BRepBuilderAPI_MakeFace(mk).Shape();
 } 

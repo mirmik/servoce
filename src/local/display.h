@@ -15,6 +15,10 @@
 
 #include <servoce/scene.h>
 
+// DisplayWidget может не быть QGLWidget.
+// фактически он QGLWidget только ради grabFrameBuffer. 
+// см. mainwidget.cpp
+
 namespace servoce {
 	namespace disp {
 		class DisplayWidget : public QGLWidget {

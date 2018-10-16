@@ -86,16 +86,16 @@ module('servoce_sources',
 		"display/dispwidget_qt.cpp",
 		"display/icons.cpp",
 
-		"shower/mainwidget.cpp",
-		"shower/dispwidget.cpp",
-		"shower/dispwidget_qt.cpp",
+#		"shower/mainwidget.cpp",
+#		"shower/dispwidget.cpp",
+#		"shower/dispwidget_qt.cpp",
 
 		"occversion.cpp",
 
 		#"widgets/gtk_widget.cpp"
 	],
 	
-	moc = ["local/display.h", "shower/display.h"],
+	moc = ["local/display.h"],
 	
 	include_paths = [ "include", ".", "src" ],
 	
@@ -110,8 +110,8 @@ module('servoce_sources',
 
 	libs = ['X11'],
 	
-	cxx_flags = '-fPIC -DQT_NO_VERSION_TAGGING -ffunction-sections -fdata-sections',
-	cc_flags = '-fPIC -ffunction-sections -fdata-sections',
+	cxx_flags = '-Wall -fPIC -DQT_NO_VERSION_TAGGING -ffunction-sections -fdata-sections',
+	cc_flags = '-Wall -fPIC -ffunction-sections -fdata-sections',
 	ld_flags = '-ffunction-sections -fdata-sections -Wl,--gc-sections -Wl,--as-needed'
 )
 

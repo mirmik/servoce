@@ -6,5 +6,6 @@
 #include <servoce/wire.h>
 #include <servoce/trans.h>
 #include <servoce/convert.h>
+#include <servoce/view.h>
 
 #endif
