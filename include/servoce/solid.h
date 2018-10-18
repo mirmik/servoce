@@ -4,7 +4,8 @@
 #include <servoce/topo.h>
 #include <servoce/math3.h>
 
-namespace servoce {
+namespace servoce
+{
 	//prim3d
 	shape make_box(double x, double y, double z, bool center = false);
 	shape make_sphere(double r);

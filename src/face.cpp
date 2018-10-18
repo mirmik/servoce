@@ -37,7 +37,7 @@ servoce::shape servoce::make_polygon(const std::vector<servoce::point3>& pnts) {
 
 servoce::shape servoce::make_ngon(double r, int n) { 
 	double angle;
-	servoce::point3 pnts[n];
+	servoce::point3* pnts = (servoce::point3*) alloca(sizeof(servoce::point3) * n);
 	for (int i = 0; i < n; ++i) {
 		angle = 2 * M_PI / n * i;
 		pnts[i] = servoce::point3(r*cos(angle), r*sin(angle), 0);

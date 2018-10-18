@@ -12,7 +12,9 @@ application("target",
 		"main.cpp"
 	],
 	#libs = ["servoce"],
-	include_modules = ["servoce_sources"]
+	include_modules = ["servoce_sources"],
+
+	cxx_flags = "--pedantic-error -Wall"
 )
 
 licant.ex(default = "target")

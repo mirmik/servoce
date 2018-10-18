@@ -9,10 +9,12 @@ using namespace linalg::aliases;
 class gp_Dir;
 class gp_Pnt;
 
-namespace servoce {
+namespace servoce
+{
 	class viewer;
 
-	class camera {
+	class camera
+	{
 	public:
 		virtual void set_eye(viewer* v) = 0;
 		virtual void set_scale(viewer* v) = 0;
@@ -24,7 +26,8 @@ namespace servoce {
 		virtual float native_scale() = 0;
 	};
 
-	class drone_camera : public camera {
+	class drone_camera : public camera
+	{
 		float _yaw = 0;
 		float _pitch = 70;
 		float3 _center = {50, 60, 70};

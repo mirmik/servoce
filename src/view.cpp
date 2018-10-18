@@ -1,15 +1,18 @@
 #include <servoce/view.h>
 #include <local/OccViewContext.h>
 
-servoce::viewer::viewer() {
+servoce::viewer::viewer()
+{
 	occ = new OccViewerContext();
 }
 
-servoce::viewer::viewer(const servoce::scene& scn) : viewer() {
+servoce::viewer::viewer(const servoce::scene& scn) : viewer()
+{
 	occ->set_scene(scn);
 }
 
-servoce::view servoce::viewer::create_view() {
+servoce::view servoce::viewer::create_view()
+{
 	return servoce::view( occ->create_view_window() );
 }
 
@@ -21,20 +24,23 @@ void servoce::view::fit_all() { occ->fit_all(); }
 void servoce::view::set_virtual_window(int w, int h) { occ->set_virtual_window(w, h); }
 void servoce::view::set_window(int n) { occ->set_window(n); }
 
-void servoce::view::screen(const std::string& path) {
-	set_virtual_window(800,600);
+void servoce::view::screen(const std::string& path)
+{
+	set_virtual_window(800, 600);
 	set_triedron();
 	fit_all();
 	dump(path);
 }
 
-void servoce::view::see(int width, int height) {
+void servoce::view::see(int width, int height)
+{
 	int s;
 	Display *d;
 	Window w;
 	XEvent e;
-	
-	if ((d = XOpenDisplay(getenv("DISPLAY"))) == NULL) {
+
+	if ((d = XOpenDisplay(getenv("DISPLAY"))) == NULL)
+	{
 		printf("Can't connect X server:%s\n", strerror(errno));
 		exit(1);
 	}
@@ -49,44 +55,51 @@ void servoce::view::see(int width, int height) {
 
 	oc.set_scene(*scn);
 	oc.set_triedron_axes();
-*/
+	*/
 	Atom wmDeleteMessage = XInternAtom(d, "WM_DELETE_WINDOW", False);
 	XSetWMProtocols(d, w, &wmDeleteMessage, 1);
 
 	bool running = true;
-	while (running) {
+
+	while (running)
+	{
 		XNextEvent(d, &e);
 
 		switch (e.type)
-    	{
-    		case ConfigureNotify: {
-				//XConfigureEvent xce = e.xconfigure;
-				static bool inited = false;
-				if (!inited) {
-					set_window(w);
-					set_triedron();
-					fit_all();
+		{
+		case ConfigureNotify:
+		{
+			//XConfigureEvent xce = e.xconfigure;
+			static bool inited = false;
 
-					/*auto m_cam = m_view->Camera();
-					m_cam->SetDirection(cam->native_dir());
-					m_cam->SetUp(cam->native_up());
-					m_cam->SetEye(cam->native_eye());*/
-					//m_cam->SetScale(cam->native_scale());
+			if (!inited)
+			{
+				set_window(w);
+				set_triedron();
+				fit_all();
 
-					inited = true;
-    			}
-    			redraw();
+				/*auto m_cam = m_view->Camera();
+				m_cam->SetDirection(cam->native_dir());
+				m_cam->SetUp(cam->native_up());
+				m_cam->SetEye(cam->native_eye());*/
+				//m_cam->SetScale(cam->native_scale());
+
+				inited = true;
 			}
+
+			redraw();
+		}
+		break;
+
+		case ClientMessage:
+			if (e.xclient.data.l[0] == (signed)wmDeleteMessage)
+				running = false;
+
 			break;
-	
-    	    case ClientMessage:
-    	        if (e.xclient.data.l[0] == (signed)wmDeleteMessage)
-    	            running = false;
-    	        break;
-	
-    	    default:
-    	        break;
-    	}
+
+		default:
+			break;
+		}
 	}
 
 	XCloseDisplay(d);
@@ -95,31 +108,38 @@ void servoce::view::see(int width, int height) {
 }
 
 
-servoce::shape_view::shape_view(const servoce::shape& a, servoce::color color) {
+servoce::shape_view::shape_view(const servoce::shape& a, servoce::color color)
+{
 	m_ashp = new AIS_Shape(a.Shape());
-    Quantity_Color shpcolor (color.r, color.g, color.b,  Quantity_TOC_RGB);  
-    m_ashp->SetColor(shpcolor);
-    m_ashp->SetMaterial(Graphic3d_NOM_STEEL);
+	Quantity_Color shpcolor (color.r, color.g, color.b,  Quantity_TOC_RGB);
+	m_ashp->SetColor(shpcolor);
+	m_ashp->SetMaterial(Graphic3d_NOM_STEEL);
 }
 
-servoce::shape_view::shape_view(const servoce::shape_view& a) {
+servoce::shape_view::shape_view(const servoce::shape_view& a)
+{
 	m_ashp = new AIS_Shape(*a.m_ashp);
 }
 
-servoce::shape_view::shape_view(servoce::shape_view&& a) {
+servoce::shape_view::shape_view(servoce::shape_view&& a)
+{
 	m_ashp = a.m_ashp;
 	a.m_ashp = nullptr;
 }
 
-servoce::shape_view& servoce::shape_view::operator= (const servoce::shape_view& oth) {
-	if (m_ashp != oth.m_ashp) {
+servoce::shape_view& servoce::shape_view::operator= (const servoce::shape_view& oth)
+{
+	if (m_ashp != oth.m_ashp)
+	{
 		delete m_ashp;
 		m_ashp = new AIS_Shape(*oth.m_ashp);
 	}
+
 	return *this;
 }
 
-servoce::shape_view& servoce::shape_view::operator= (servoce::shape_view&& oth) {
+servoce::shape_view& servoce::shape_view::operator= (servoce::shape_view&& oth)
+{
 	delete m_ashp;
 	m_ashp = oth.m_ashp;
 	m_ashp = nullptr;
@@ -127,7 +147,8 @@ servoce::shape_view& servoce::shape_view::operator= (servoce::shape_view&& oth) 
 }
 
 
-void servoce::see(const servoce::scene& scn) {
+void servoce::see(const servoce::scene& scn)
+{
 	auto v = viewer(scn);
 	auto vv = v.create_view();
 	vv.see();

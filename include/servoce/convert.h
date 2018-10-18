@@ -3,7 +3,8 @@
 
 #include <string>
 
-namespace servoce {
+namespace servoce
+{
 	class shape;
 	bool make_stl(const std::string& path, const servoce::shape& shp, double deflection = 0.01);
 }

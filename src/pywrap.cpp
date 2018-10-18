@@ -26,73 +26,56 @@ using namespace servoce;
 .def("mirrorZ", &TYPE::mirrorZ)					\
 .def("mirrorXY", &TYPE::mirrorXY)				\
 .def("mirrorYZ", &TYPE::mirrorYZ)				\
-.def("mirrorXZ", &TYPE::mirrorXZ)			
+.def("mirrorXZ", &TYPE::mirrorXZ)
 
-PYBIND11_MODULE(libservoce, m) {
+PYBIND11_MODULE(libservoce, m)
+{
 	//py::register_exception<RuntimeException>(m, "ServoceRuntimeException");
 
 	py::class_<point3>(m, "point3")
-		//DEF_TRANSFORM_OPERATIONS(point3)
-		.def(py::init<double,double,double>())
-		.def(py::init<double,double>())
-		.def_readwrite("x", &point3::x)
-		.def_readwrite("y", &point3::y)
-		.def_readwrite("z", &point3::z)
-		.def("__repr__", [](const point3& pnt) { 
-			char buf[128];
-			sprintf(buf, "point3(%f,%f,%f)", pnt.x, pnt.y, pnt.z);
-			return std::string(buf);
-		})
+	//DEF_TRANSFORM_OPERATIONS(point3)
+	.def(py::init<double, double, double>())
+	.def(py::init<double, double>())
+	.def_readwrite("x", &point3::x)
+	.def_readwrite("y", &point3::y)
+	.def_readwrite("z", &point3::z)
+	.def("__repr__", [](const point3 & pnt)
+	{
+		char buf[128];
+		sprintf(buf, "point3(%f,%f,%f)", pnt.x, pnt.y, pnt.z);
+		return std::string(buf);
+	})
 	;
-	
+
 	py::class_<vector3>(m, "vector3")
-		//DEF_TRANSFORM_OPERATIONS(vector3)
-		.def(py::init<double,double,double>())
-		.def(py::init<double,double>())
-		.def_readwrite("x", &vector3::x)
-		.def_readwrite("y", &vector3::y)
-		.def_readwrite("z", &vector3::z)
-		.def("__repr__", [](const vector3& pnt) { 
-			char buf[128];
-			sprintf(buf, "vector3(%f,%f,%f)", pnt.x, pnt.y, pnt.z);
-			return std::string(buf);
-		})
+	//DEF_TRANSFORM_OPERATIONS(vector3)
+	.def(py::init<double, double, double>())
+	.def(py::init<double, double>())
+	.def_readwrite("x", &vector3::x)
+	.def_readwrite("y", &vector3::y)
+	.def_readwrite("z", &vector3::z)
+	.def("__repr__", [](const vector3 & pnt)
+	{
+		char buf[128];
+		sprintf(buf, "vector3(%f,%f,%f)", pnt.x, pnt.y, pnt.z);
+		return std::string(buf);
+	})
 	;
 
 	py::class_<shape>(m, "Shape")
-		DEF_TRANSFORM_OPERATIONS(shape)
-		.def("__add__", &shape::operator+)
-		.def("__sub__", &shape::operator-)
-		.def("__xor__", &shape::operator^)
-	
-		.def(py::pickle(
-        	[](const shape &self) { return b64::base64_encode(self.string_dump()); },
-        	[](const std::string& in) { return shape::restore_string_dump(b64::base64_decode(in)); }
-    	))
-		.def("fillet", &shape::fillet, py::arg("r"), py::arg("nums"))
+	DEF_TRANSFORM_OPERATIONS(shape)
+	.def("__add__", &shape::operator+)
+	.def("__sub__", &shape::operator-)
+	.def("__xor__", &shape::operator^)
+	.def(py::pickle(
+	[](const shape & self) { return b64::base64_encode(self.string_dump()); },
+	[](const std::string & in) { return shape::restore_string_dump(b64::base64_decode(in)); }))
+	.def("fillet", &shape::fillet, py::arg("r"), py::arg("nums"))
+	.def("extrude", (shape(shape::*)(const vector3&, bool)) &shape::extrude, py::arg("vec"), py::arg("center") = false)
+	.def("extrude", (shape(shape::*)(double, double, double, bool)) &shape::extrude, py::arg("x"), py::arg("y"), py::arg("z"), py::arg("center") = false)
+	.def("extrude", (shape(shape::*)(double, bool)) &shape::extrude, py::arg("z"), py::arg("center") = false)
+	;
 
-		.def("extrude", (shape(shape::*)(const vector3&,bool)) &shape::extrude, py::arg("vec"), py::arg("center")=false)
-		.def("extrude", (shape(shape::*)(double,double,double,bool)) &shape::extrude, py::arg("x"),py::arg("y"),py::arg("z"), py::arg("center")=false)
-		.def("extrude", (shape(shape::*)(double,bool)) &shape::extrude, py::arg("z"), py::arg("center")=false)
-	
-    ;
-
-	/*py::class_<shape, shape>(m, "Solid")
-		DEF_TRANSFORM_OPERATIONS(shape)
-		.def("__add__", &shape::operator+)
-		.def("__sub__", &shape::operator-)
-		.def("__xor__", &shape::operator^)
-		//.def(py::self - shape)
-		//.def(py::self ^ shape)
-		.def("fillet", &shape::fillet, py::arg("r"), py::arg("nums"))
-
-		.def(py::pickle(
-        	[](const shape &self) { return gxx::base64_encode(self.string_dump()); },
-        	[](const std::string& in) { return shape::restore_string_dump(gxx::base64_decode(in)).to_shape(); }
-    	))
-    ;*/
-	
-/**/
 	m.def("make_box", 		make_box, py::arg("x"), py::arg("y"), py::arg("z"), py::arg("center") = false);
 	m.def("make_sphere", 	make_sphere, py::arg("r"));
 	m.def("make_cylinder", 	(shape(*)(double, double, bool)) &make_cylinder, py::arg("r"), py::arg("h"), py::arg("center") = false);
@@ -100,70 +83,50 @@ PYBIND11_MODULE(libservoce, m) {
 	m.def("make_cone", 		make_cone, py::arg("r1"), py::arg("r2"), py::arg("h"), py::arg("center") = false);
 	m.def("make_torus", 	make_torus, py::arg("r1"), py::arg("r2"));
 
-	m.def("make_linear_extrude", (shape(*)(const shape&,const vector3&,bool)) &make_linear_extrude, py::arg("shp"), py::arg("vec"), py::arg("center")=false);
-	m.def("make_linear_extrude", (shape(*)(const shape&,double,bool)) &make_linear_extrude, py::arg("shp"), py::arg("z"), py::arg("center")=false);
+	m.def("make_linear_extrude", (shape(*)(const shape&, const vector3&, bool)) &make_linear_extrude, py::arg("shp"), py::arg("vec"), py::arg("center") = false);
+	m.def("make_linear_extrude", (shape(*)(const shape&, double, bool)) &make_linear_extrude, py::arg("shp"), py::arg("z"), py::arg("center") = false);
 	m.def("make_pipe", 			make_pipe, py::arg("prof"), py::arg("path"));
 	m.def("make_pipe_shell", 	make_pipe_shell, py::arg("prof"), py::arg("path"), py::arg("isFrenet") = false);
-/*
-	py::class_<shape, shape>(m, "Face")
-		DEF_TRANSFORM_OPERATIONS(shape)
-		.def("__add__", &shape::operator+)
-		.def("__sub__", &shape::operator-)
-		.def("__xor__", &shape::operator^)
-		.def("fillet", &shape::fillet, py::arg("r"), py::arg("nums"))
-		.def("shapes", &shape::shapes)
-	;*/
+
 	m.def("make_circle", 	make_circle, py::arg("r"));
 	m.def("make_ngon", 		make_ngon, py::arg("r"), py::arg("n"));
 	m.def("make_square", 	make_square, py::arg("a"), py::arg("center") = false);
 	m.def("make_rectangle", make_rectangle, py::arg("a"), py::arg("b"), py::arg("center") = false);
 	m.def("make_polygon", 	(shape(*)(const std::vector<point3>&))&make_polygon, py::arg("pnts"));
-	//m.def("make_sweep", 	make_sweep, py::arg("prof"), py::arg("path"));
-/*
-	py::class_<shape, shape>(m, "Wire")
-		DEF_TRANSFORM_OPERATIONS(shape)
-		.def("__add__", &operator+)
-		.def("__sub__", &operator-)
-		.def("__xor__", &operator^)
-		.def("shape", &to_shape)
-	;
-	*/
+
 	m.def("make_segment", make_segment);
 	m.def("make_polysegment", (shape(*)(const std::vector<point3>&, const bool))&make_polysegment, py::arg("pnts"), py::arg("closed") = false);
 	m.def("make_interpolate", (shape(*)(const std::vector<point3>&, const std::vector<vector3>&, bool))&make_interpolate, py::arg("pnts"), py::arg("tang"), py::arg("closed") = false);
 	m.def("make_interpolate", (shape(*)(const std::vector<point3>&, const bool))&make_interpolate, py::arg("pnts"), py::arg("closed") = false);
 	m.def("make_helix", make_helix, py::arg("step"), py::arg("height"), py::arg("radius"), py::arg("angle") = 0, py::arg("leftHanded") = false, py::arg("newStyle") = true);
 	m.def("make_long_helix", make_long_helix, py::arg("step"), py::arg("height"), py::arg("radius"), py::arg("angle") = 0, py::arg("leftHanded") = false);
-	//m.def("make_complex_shape", make_complex_shape, py::arg("shapes"));
+
 	m.def("make_wcircle", (shape(*)(double))&make_circle);
-	m.def("make_wcircle", (shape(*)(double,double,double))&make_circle);
-/*
-	py::class_<sweep_shape, shape>(m, "SolidSweep");
-	py::class_<sweep_shape, shape>(m, "FaceSweep");
-	*/
+	m.def("make_wcircle", (shape(*)(double, double, double))&make_circle);
+
 	py::class_<color>(m, "Color")
-		.def(py::init<float, float, float>());
-	
+	.def(py::init<float, float, float>());
+
 	py::class_<scene>(m, "Scene")
-		.def(py::init<>())
-		.def("add", (void(scene::*)(const shape&, color))&scene::add, py::arg("shape"), py::arg("color") = color{0.6,0.6,0.8})
-		.def("add", (void(scene::*)(const point3&, color))&scene::add, py::arg("shape"), py::arg("color") = color{0.6,0.6,0.8})
-		.def("append", (void(scene::*)(const scene&))&scene::append, py::arg("scene"))
+	.def(py::init<>())
+	.def("add", (void(scene::*)(const shape&, color))&scene::add, py::arg("shape"), py::arg("color") = color{0.6, 0.6, 0.8})
+	.def("add", (void(scene::*)(const point3&, color))&scene::add, py::arg("shape"), py::arg("color") = color{0.6, 0.6, 0.8})
+	.def("append", (void(scene::*)(const scene&))&scene::append, py::arg("scene"))
 	;
 
 	py::class_<viewer>(m, "Viewer")
-		.def(py::init<>())
-		.def(py::init<const scene&>())
-		.def("create_view", &viewer::create_view)
+	.def(py::init<>())
+	.def(py::init<const scene&>())
+	.def("create_view", &viewer::create_view)
 	;
 
 	py::class_<view>(m, "View")
-		.def("set_window", &view::set_window)
-		.def("set_triedron", &view::set_triedron)
-		.def("see", &view::see)
-		.def("redraw", &view::redraw)
-		.def("must_be_resized", &view::redraw)
-		.def("fit_all", &view::fit_all)
+	.def("set_window", &view::set_window)
+	.def("set_triedron", &view::set_triedron)
+	.def("see", &view::see)
+	.def("redraw", &view::redraw)
+	.def("must_be_resized", &view::redraw)
+	.def("fit_all", &view::fit_all)
 	;
 
 
@@ -174,27 +137,16 @@ PYBIND11_MODULE(libservoce, m) {
 	m.def("display_scene", 	display);
 
 	py::class_<transformation>(m, "transformation")
-		//.def(py::init<>())
-		.def("__call__", (shape(transformation::*)(const shape&)const)&transformation::operator())
-		.def("__call__", (transformation(transformation::*)(const transformation&)const)&transformation::operator())
-		.def("__mul__", &transformation::operator* )
-
-		.def(py::pickle(
-        	[](const transformation &self) { return b64::base64_encode(self.string_dump()); },
-        	[](const std::string& in) { return transformation::restore_string_dump(b64::base64_decode(in)); }
-    	))
+	.def("__call__", (shape(transformation::*)(const shape&)const)&transformation::operator())
+	.def("__call__", (transformation(transformation::*)(const transformation&)const)&transformation::operator())
+	.def("__mul__", &transformation::operator* )
+	.def(py::pickle(
+	[](const transformation & self) { return b64::base64_encode(self.string_dump()); },
+	[](const std::string & in) { return transformation::restore_string_dump(b64::base64_decode(in)); }))
 	;
 
-	//py::class_<translate, transformation>(m, "translate")
-	//	.def(py::init<double,double,double>());
-	//py::class_<axrotation, transformation>(m, "axrotation")
-	//	.def(py::init<double,double,double,double>());
-	//py::class_<axis_mirror, transformation>(m, "axis_mirror")
-	//	.def(py::init<double,double,double>());
-	//py::class_<plane_mirror, transformation>(m, "plane_mirror")
-	//	.def(py::init<double,double,double>());
-	m.def("translate", (transformation(*)(double,double,double)) &translate);
-	m.def("translate", (transformation(*)(double,double)) &translate);
+	m.def("translate", (transformation(*)(double, double, double)) &translate);
+	m.def("translate", (transformation(*)(double, double)) &translate);
 	m.def("translate", (transformation(*)(const vector3&)) &translate);
 	m.def("axrotation", axrotation);
 	m.def("axis_mirror", axis_mirror);
@@ -215,14 +167,6 @@ PYBIND11_MODULE(libservoce, m) {
 	m.def("right", right);
 	m.def("forw", forw);
 	m.def("back", back);
-
-
-
-
-
-
-
-
 
 	//m.def("simplify_with_bspline", &simplify_with_bspline);
 	m.def("make_stl", &make_stl);

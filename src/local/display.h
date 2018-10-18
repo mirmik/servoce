@@ -16,19 +16,22 @@
 #include <servoce/scene.h>
 
 // DisplayWidget может не быть QGLWidget.
-// фактически он QGLWidget только ради grabFrameBuffer. 
+// фактически он QGLWidget только ради grabFrameBuffer.
 // см. mainwidget.cpp
 
-namespace servoce {
-	namespace disp {
-		class DisplayWidget : public QGLWidget {
+namespace servoce
+{
+	namespace disp
+	{
+		class DisplayWidget : public QGLWidget
+		{
 			Q_OBJECT
-		
+
 		public:
 			Handle(V3d_Viewer) m_viewer;
 			Handle(V3d_View) m_view;
 			Handle(AIS_InteractiveContext) m_context;
-		
+
 		private:
 			QPoint temporary1;
 			//malgo::quaternion<double> quat_orient;
@@ -38,7 +41,7 @@ namespace servoce {
 			double psi = 0.61548;
 
 			uint8_t orient = 1;
-		
+
 		public:
 			void init();
 			const servoce::scene* scn;
@@ -51,12 +54,12 @@ namespace servoce {
 			virtual void showEvent(QShowEvent* e) override;
 			virtual void paintEvent(QPaintEvent* e) override;
 			virtual void resizeEvent(QResizeEvent* e) override;
-		
+
 			virtual void mousePressEvent(QMouseEvent* e) override;
 			virtual void mouseReleaseEvent(QMouseEvent* e) override;
 			virtual void mouseMoveEvent(QMouseEvent * e) override;
 			virtual void wheelEvent(QWheelEvent * e) override;
-		
+
 			virtual void onLButtonDown(const int theFlags, const QPoint thePoint);
 			virtual void onMButtonDown(const int theFlags, const QPoint thePoint);
 			virtual void onRButtonDown(const int theFlags, const QPoint thePoint);
@@ -65,23 +68,25 @@ namespace servoce {
 			virtual void onMButtonUp(const int theFlags, const QPoint thePoint);
 			virtual void onRButtonUp(const int theFlags, const QPoint thePoint);
 			virtual void onMouseMove(const int theFlags, const QPoint thePoint);
-		
+
 		public:
-			DisplayWidget(QWidget* parent = nullptr) : QGLWidget(parent) {
-				//setAttribute(Qt::WA_PaintOnScreen, true); 
+			DisplayWidget(QWidget* parent = nullptr) : QGLWidget(parent)
+			{
+				//setAttribute(Qt::WA_PaintOnScreen, true);
 				setBackgroundRole( QPalette::NoRole );
 			}
-		
+
 		public:
 			const Handle_AIS_InteractiveContext& getContext() const;
-		
+
 		public slots:
 			void autoscale();
 		};
 
-		class MainWidget : public QMainWindow {
+		class MainWidget : public QMainWindow
+		{
 			Q_OBJECT
-		
+
 			QAction* mStlExport;
 			QAction* mExitAction;
 			QAction* mScreen;
@@ -89,30 +94,30 @@ namespace servoce {
 			QAction* mAutoscale;
 			QAction* mOrient1;
 			QAction* mOrient2;
-		
+
 			QMenu* mFileMenu;
 			QMenu* mNavigationMenu;
 			QMenu* mHelpMenu;
-			
+
 		public:
 			DisplayWidget* display;
-		
+
 		private:
 			void createActions();
 			void createMenus();
 			void createToolbars();
-		
+
 		private slots:
 			void about(void);
 			void export_stl();
 			void screenshot();
 			void orient1();
 			void orient2();
-		
+
 		public:
-			MainWidget(QWidget* parent = nullptr);		
+			MainWidget(QWidget* parent = nullptr);
 		};
-	}	
+	}
 }
 
 #endif

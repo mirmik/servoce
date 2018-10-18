@@ -32,31 +32,39 @@
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
 
-servoce::shape servoce::shape::infill_face() {
+servoce::shape servoce::shape::infill_face()
+{
 	return BRepBuilderAPI_MakeFace(Wire()).Face();
 }
 
-servoce::shape servoce::make_segment(const servoce::point3& a, const servoce::point3& b) {
+servoce::shape servoce::make_segment(const servoce::point3& a, const servoce::point3& b)
+{
 	return BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(a.Pnt(), b.Pnt())).Wire();
 }
 
-servoce::shape servoce::make_polysegment(const std::vector<servoce::point3>& pnts, bool closed) {
-	if (pnts.size() <= 1) 
+servoce::shape servoce::make_polysegment(const std::vector<servoce::point3>& pnts, bool closed)
+{
+	if (pnts.size() <= 1)
 		throw std::logic_error("Need at least two points for polysegment");
 
 	BRepBuilderAPI_MakeWire mkWire;
-	for (uint i = 0; i < pnts.size() - 1; ++i) {
-		mkWire.Add(BRepBuilderAPI_MakeEdge(pnts[i].Pnt(), pnts[i+1].Pnt()));
+
+	for (uint i = 0; i < pnts.size() - 1; ++i)
+	{
+		mkWire.Add(BRepBuilderAPI_MakeEdge(pnts[i].Pnt(), pnts[i + 1].Pnt()));
 	}
-	if (closed) mkWire.Add(BRepBuilderAPI_MakeEdge(pnts[pnts.size()-1].Pnt(), pnts[0].Pnt()));
-	return mkWire.Wire(); 
+
+	if (closed) mkWire.Add(BRepBuilderAPI_MakeEdge(pnts[pnts.size() - 1].Pnt(), pnts[0].Pnt()));
+
+	return mkWire.Wire();
 }
 
 //Взято в коде FreeCad.
 servoce::shape servoce::make_helix(
-	double pitch, double height, double radius, 
-	double angle, bool leftHanded, bool newStyle
-) {
+    double pitch, double height, double radius,
+    double angle, bool leftHanded, bool newStyle
+)
+{
 	if (fabs(pitch) < Precision::Confusion())
 		Standard_Failure::Raise("Pitch of helix too small");
 
@@ -66,39 +74,50 @@ servoce::shape servoce::make_helix(
 	if ((height > 0 && pitch < 0) || (height < 0 && pitch > 0))
 		Standard_Failure::Raise("Pitch and height of helix not compatible");
 
-	gp_Ax2 cylAx2(gp_Pnt(0.0,0.0,0.0) , gp::DZ());
+	gp_Ax2 cylAx2(gp_Pnt(0.0, 0.0, 0.0) , gp::DZ());
 	Handle(Geom_Surface) surf;
-	if (angle < Precision::Confusion()) {
+
+	if (angle < Precision::Confusion())
+	{
 		if (radius < Precision::Confusion())
 			Standard_Failure::Raise("Radius of helix too small");
+
 		surf = new Geom_CylindricalSurface(cylAx2, radius);
 	}
-	else {
+	else
+	{
 		angle = to_radian(angle);
+
 		if (angle < Precision::Confusion())
 			Standard_Failure::Raise("Angle of helix too small");
+
 		surf = new Geom_ConicalSurface(gp_Ax3(cylAx2), angle, radius);
 	}
 
 	gp_Pnt2d aPnt(0, 0);
 	gp_Dir2d aDir(2. * M_PI, pitch);
 	Standard_Real coneDir = 1.0;
-	if (leftHanded) {
+
+	if (leftHanded)
+	{
 		aDir.SetCoord(-2. * M_PI, pitch);
 		coneDir = -1.0;
 	}
+
 	gp_Ax2d aAx2d(aPnt, aDir);
 
 	Handle(Geom2d_Line) line = new Geom2d_Line(aAx2d);
 	gp_Pnt2d beg = line->Value(0);
-	gp_Pnt2d end = line->Value(sqrt(4.0*M_PI*M_PI+pitch*pitch)*(height/pitch));
+	gp_Pnt2d end = line->Value(sqrt(4.0 * M_PI * M_PI + pitch * pitch) * (height / pitch));
 
-	if (newStyle) {
+	if (newStyle)
+	{
 		// See discussion at 0001247: Part Conical Helix Height/Pitch Incorrect
-		if (angle >= Precision::Confusion()) {
+		if (angle >= Precision::Confusion())
+		{
 			// calculate end point for conical helix
 			Standard_Real v = height / cos(angle);
-			Standard_Real u = coneDir * (height/pitch) * 2.0 * M_PI;
+			Standard_Real u = coneDir * (height / pitch) * 2.0 * M_PI;
 			gp_Pnt2d cend(u, v);
 			end = cend;
 		}
@@ -117,8 +136,8 @@ servoce::shape servoce::make_helix(
 // some magic number of turns.  See Mantis #0954. (FreeCad)
 //***********
 servoce::shape servoce::make_long_helix(double pitch, double height,
-									  double radius, double angle,
-									  bool leftHanded)
+                                        double radius, double angle,
+                                        bool leftHanded)
 {
 	if (pitch < Precision::Confusion())
 		Standard_Failure::Raise("Pitch of helix too small");
@@ -126,68 +145,83 @@ servoce::shape servoce::make_long_helix(double pitch, double height,
 	if (height < Precision::Confusion())
 		Standard_Failure::Raise("Height of helix too small");
 
-	gp_Ax2 cylAx2(gp_Pnt(0.0,0.0,0.0) , gp::DZ());
+	gp_Ax2 cylAx2(gp_Pnt(0.0, 0.0, 0.0) , gp::DZ());
 	Handle(Geom_Surface) surf;
 	Standard_Boolean isCylinder;
 
-	if (angle < Precision::Confusion()) {   // Cylindrical helix
+	if (angle < Precision::Confusion())     // Cylindrical helix
+	{
 		if (radius < Precision::Confusion())
 			Standard_Failure::Raise("Radius of helix too small");
-		surf= new Geom_CylindricalSurface(cylAx2, radius);
+
+		surf = new Geom_CylindricalSurface(cylAx2, radius);
 		isCylinder = true;
 	}
-	else {                                  // Conical helix
+	else                                    // Conical helix
+	{
 		//angle = to_radian(angle);
 		if (angle < Precision::Confusion())
 			Standard_Failure::Raise("Angle of helix too small");
+
 		surf = new Geom_ConicalSurface(gp_Ax3(cylAx2), angle, radius);
 		isCylinder = false;
 	}
 
-	Standard_Real turns = height/pitch;
+	Standard_Real turns = height / pitch;
 	unsigned long wholeTurns = floor(turns);
 	Standard_Real partTurn = turns - wholeTurns;
 
 	gp_Pnt2d aPnt(0, 0);
 	gp_Dir2d aDir(2. * M_PI, pitch);
 	Standard_Real coneDir = 1.0;
-	if (leftHanded) {
+
+	if (leftHanded)
+	{
 		aDir.SetCoord(-2. * M_PI, pitch);
 		coneDir = -1.0;
 	}
+
 	gp_Ax2d aAx2d(aPnt, aDir);
 	Handle(Geom2d_Line) line = new Geom2d_Line(aAx2d);
 	gp_Pnt2d beg = line->Value(0);
 	gp_Pnt2d end;
-	Standard_Real u,v;
+	Standard_Real u, v;
 	BRepBuilderAPI_MakeWire mkWire;
 	Handle(Geom2d_TrimmedCurve) segm;
 	TopoDS_Edge edgeOnSurf;
 
-	for (unsigned long i = 0; i < wholeTurns; i++) {
-		if (isCylinder) {
-			end = line->Value(sqrt(4.0*M_PI*M_PI+pitch*pitch)*(i+1));
+	for (unsigned long i = 0; i < wholeTurns; i++)
+	{
+		if (isCylinder)
+		{
+			end = line->Value(sqrt(4.0 * M_PI * M_PI + pitch * pitch) * (i + 1));
 		}
-		else {
-			u = coneDir * (i+1) * 2.0 * M_PI;
-			v = ((i+1) * pitch) / cos(angle);
+		else
+		{
+			u = coneDir * (i + 1) * 2.0 * M_PI;
+			v = ((i + 1) * pitch) / cos(angle);
 			end = gp_Pnt2d(u, v);
 		}
+
 		segm = GCE2d_MakeSegment(beg , end);
 		edgeOnSurf = BRepBuilderAPI_MakeEdge(segm , surf);
 		mkWire.Add(edgeOnSurf);
 		beg = end;
 	}
 
-	if (partTurn > Precision::Confusion()) {
-		if (isCylinder) {
-			end = line->Value(sqrt(4.0*M_PI*M_PI+pitch*pitch)*turns);
+	if (partTurn > Precision::Confusion())
+	{
+		if (isCylinder)
+		{
+			end = line->Value(sqrt(4.0 * M_PI * M_PI + pitch * pitch) * turns);
 		}
-		else {
+		else
+		{
 			u = coneDir * turns * 2.0 * M_PI;
 			v = height / cos(angle);
 			end = gp_Pnt2d(u, v);
 		}
+
 		segm = GCE2d_MakeSegment(beg , end);
 		edgeOnSurf = BRepBuilderAPI_MakeEdge(segm , surf);
 		mkWire.Add(edgeOnSurf);
@@ -198,46 +232,59 @@ servoce::shape servoce::make_long_helix(double pitch, double height,
 	return shape;
 }
 
-servoce::shape servoce::make_interpolate(const std::vector<servoce::point3>& pnts, const std::vector<servoce::vector3>& tang, bool closed) {
+servoce::shape servoce::make_interpolate(const std::vector<servoce::point3>& pnts, const std::vector<servoce::vector3>& tang, bool closed)
+{
 	Handle(TColgp_HArray1OfPnt) _pnts = new TColgp_HArray1OfPnt(1, pnts.size());
+
 	for (uint i = 0; i < pnts.size(); ++i) _pnts->SetValue(i + 1, pnts[i].Pnt());
 
 	/*Handle(TColStd_HArray1OfReal) _params = new TColStd_HArray1OfReal(1, pnts.size());
 	for (int i = 0; i < pnts.size(); ++i) _params->SetValue(i + 1, params[i]);*/
 
 	GeomAPI_Interpolate algo(_pnts, /*_params,*/ closed, 0.0000001);
-	
-	if (tang.size()) {
+
+	if (tang.size())
+	{
 		TColgp_Array1OfVec _tang(1, tang.size());
 		Handle(TColStd_HArray1OfBoolean) _bools = new TColStd_HArray1OfBoolean(1, tang.size());
+
 		for (uint i = 0; i < pnts.size(); ++i) _tang.SetValue(i + 1, tang[i].Vec());
-		for (uint i = 0; i < pnts.size(); ++i) _bools->SetValue(i + 1, tang[i] != servoce::vector3(0,0,0));
+
+		for (uint i = 0; i < pnts.size(); ++i) _bools->SetValue(i + 1, tang[i] != servoce::vector3(0, 0, 0));
+
 		algo.Load(_tang, _bools);
 	}
-	
+
 	algo.Perform();
 	return BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(algo.Curve())).Wire();
 }
 
-servoce::shape servoce::make_interpolate(const std::vector<servoce::point3>& pnts, bool closed) {
+servoce::shape servoce::make_interpolate(const std::vector<servoce::point3>& pnts, bool closed)
+{
 	Handle(TColgp_HArray1OfPnt) _pnts = new TColgp_HArray1OfPnt(1, pnts.size());
+
 	for (uint i = 0; i < pnts.size(); ++i) _pnts->SetValue(i + 1, pnts[i].Pnt());
 
 	GeomAPI_Interpolate algo(_pnts, /*_params,*/ closed, 0.0000001);
-	
+
 	algo.Perform();
 	return BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(algo.Curve())).Wire();
 }
 
-servoce::shape servoce::sew(const std::vector<const servoce::shape*>& arr) {
+servoce::shape servoce::sew(const std::vector<const servoce::shape*>& arr)
+{
 	BRepBuilderAPI_MakeWire mk;
-	for (auto* ptr : arr) {
+
+	for (auto* ptr : arr)
+	{
 		mk.Add(ptr->Wire());
 	}
+
 	return mk.Wire();
 }
 
-servoce::shape servoce::make_circle_arc(double r, double a, double b) { 
+servoce::shape servoce::make_circle_arc(double r, double a, double b)
+{
 	gp_Circ EL ( gp::XOY(), r );
 	Handle(Geom_Circle) anCircle = GC_MakeCircle(EL).Value();
 	TopoDS_Edge aEdge = BRepBuilderAPI_MakeEdge( anCircle, a, b );
@@ -245,7 +292,8 @@ servoce::shape servoce::make_circle_arc(double r, double a, double b) {
 	return aCircle;
 }
 
-servoce::shape servoce::make_circle_arc(double r) { 
+servoce::shape servoce::make_circle_arc(double r)
+{
 	gp_Circ EL ( gp::XOY(), r );
 	Handle(Geom_Circle) anCircle = GC_MakeCircle(EL).Value();
 	TopoDS_Edge aEdge = BRepBuilderAPI_MakeEdge( anCircle);

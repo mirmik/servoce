@@ -194,9 +194,9 @@ namespace linalg
     template<class T, int M, int N, class F> constexpr auto zip(                 T a, const mat<T,M,N> & b, F f) -> mat<decltype(f(T(),T())),M,N> { return zip(mat<T,M,N>(a), b, f); }
 
     // Produce a vector/matrix by applying f(T) to elements from vector/matrix a
-    template<class F> struct zip_to_map_adaptor { F f; constexpr auto operator()(const auto& a, const auto& b) { return f(a); } };
-    template<class T, int M,        class F> constexpr auto map(const vec<T,M  > & a, F f) -> vec<decltype(f(T())),M  > { return zip(a, a, zip_to_map_adaptor<F>{f}); }
-    template<class T, int M, int N, class F> constexpr auto map(const mat<T,M,N> & a, F f) -> mat<decltype(f(T())),M,N> { return zip(a, a, zip_to_map_adaptor<F>{f}); }
+    template<class F, class T> struct zip_to_map_adaptor { F f; constexpr T operator()(const T& a, const T& b) { return f(a); } };
+    template<class T, int M,        class F> constexpr auto map(const vec<T,M  > & a, F f) -> vec<decltype(f(T())),M  > { return zip(a, a, zip_to_map_adaptor<F,T>{f}); }
+    template<class T, int M, int N, class F> constexpr auto map(const mat<T,M,N> & a, F f) -> mat<decltype(f(T())),M,N> { return zip(a, a, zip_to_map_adaptor<F,T>{f}); }
 
     // Relational operators are defined to compare the elements of two vectors or matrices lexicographically, in column-major order
     template<class A, class C=typename traits<A,A>::compare_as> constexpr bool operator == (const A & a, const A & b) { return reinterpret_cast<const C &>(a) == reinterpret_cast<const C &>(b); } 

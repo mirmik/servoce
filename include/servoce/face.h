@@ -7,7 +7,8 @@
 
 class BRepPrimAPI_MakeSweep;
 
-namespace servoce {
+namespace servoce
+{
 	//prim2d
 	shape make_circle(double r);
 	shape make_polygon(const servoce::point3* pnts, size_t size);

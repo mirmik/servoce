@@ -7,19 +7,21 @@
 class OccViewWindow;
 class OccViewerContext;
 
-namespace servoce {
-	class view {
+namespace servoce
+{
+	class view
+	{
 		OccViewWindow* occ;
-	
+
 	public:
 		view(OccViewWindow* view) : occ(view) {}
-	
-		void set_virtual_window(int w, int h);	
+
+		void set_virtual_window(int w, int h);
 		void set_window(int wind);
-	
+
 		void fit_all();
 		void dump(const std::string& path);
-	
+
 		void set_triedron();
 
 		void redraw();
@@ -29,7 +31,8 @@ namespace servoce {
 		void screen(const std::string& path);
 	};
 
-	class viewer {
+	class viewer
+	{
 		OccViewerContext* occ;
 
 	public:
@@ -38,17 +41,17 @@ namespace servoce {
 
 		view create_view();
 
-	    /*AIS_InteractiveContext* m_context;
-	    V3d_Viewer* m_viewer;
-	    //std::vector<servoce::shape_view> sviews;
-	
-	public:
-		viewer();
-		viewer(const servoce::scene& scn);
-	
-		view create_view();	
-		void set_scene(servoce::scene* scn);
-		void set_triedron_axes();*/
+		/*AIS_InteractiveContext* m_context;
+		V3d_Viewer* m_viewer;
+		//std::vector<servoce::shape_view> sviews;
+
+		public:
+			viewer();
+			viewer(const servoce::scene& scn);
+
+			view create_view();
+			void set_scene(servoce::scene* scn);
+			void set_triedron_axes();*/
 	};
 
 	void see(const servoce::scene& scn);

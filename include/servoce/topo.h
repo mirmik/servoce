@@ -19,8 +19,10 @@ class TopoDS_Compound;
 class gp_Vec;
 class gp_Pnt;
 
-namespace servoce {
-	struct vector3 {
+namespace servoce
+{
+	struct vector3
+	{
 		double x, y, z;
 		vector3() {}
 		vector3(const gp_Vec& pnt) {}
@@ -29,11 +31,12 @@ namespace servoce {
 		gp_Vec Vec() const;
 		bool operator==(const vector3& oth) const { return oth.x == x && oth.y == y && oth.z == z; }
 		bool operator!=(const vector3& oth) const { return oth.x != x || oth.y != y || oth.z != z; }
-		vector3 operator-() const { return vector3(-x,-y,-z); }
-		vector3 operator/(double a) const { return vector3(x/a,y/a,z/a); }
+		vector3 operator-() const { return vector3(-x, -y, -z); }
+		vector3 operator/(double a) const { return vector3(x / a, y / a, z / a); }
 	};
 
-	struct point3 {
+	struct point3
+	{
 		double x, y, z;
 		point3() {}
 		point3(const gp_Pnt& pnt) {}
@@ -43,9 +46,10 @@ namespace servoce {
 		TopoDS_Vertex Vtx() const;
 	};
 
-	struct shape {
+	struct shape
+	{
 		TopoDS_Shape* m_shp;
-		shape(){};
+		shape() {};
 		shape(TopoDS_Shape* shp);
 		shape(const TopoDS_Shape& shp);
 		shape(const shape& oth);
@@ -83,15 +87,15 @@ namespace servoce {
 		const TopoDS_Compound& Compound() const;
 
 		shape transform(const transformation& trans) { return trans(*this); }
-		shape translate(double x, double y, double z) { return transform(servoce::translate(x,y,z)); }
-		shape rotate(double ax, double ay, double az, double angle) { return transform(servoce::axrotation(ax,ay,az,angle)); }
+		shape translate(double x, double y, double z) { return transform(servoce::translate(x, y, z)); }
+		shape rotate(double ax, double ay, double az, double angle) { return transform(servoce::axrotation(ax, ay, az, angle)); }
 
-		shape up(double z) { return translate(0,0,z); }
-		shape down(double z) { return translate(0,0,-z); }
-		shape forw(double y) { return translate(0,y,0); }
-		shape back(double y) { return translate(0,-y,0); }
-		shape right(double x) { return translate(x,0,0); }
-		shape left(double x) { return translate(-x,0,0); }
+		shape up(double z) { return translate(0, 0, z); }
+		shape down(double z) { return translate(0, 0, -z); }
+		shape forw(double y) { return translate(0, y, 0); }
+		shape back(double y) { return translate(0, -y, 0); }
+		shape right(double x) { return translate(x, 0, 0); }
+		shape left(double x) { return translate(-x, 0, 0); }
 
 		shape rotateX(double a) { return transform(servoce::rotateX(a)); }
 		shape rotateY(double a) { return transform(servoce::rotateY(a)); }
@@ -110,7 +114,7 @@ namespace servoce {
 		servoce::shape operator+(const shape& oth) const { return servoce::make_union(*this, oth); }
 		servoce::shape operator-(const shape& oth) const { return servoce::make_difference(*this, oth); }
 		servoce::shape operator^(const shape& oth) const { return servoce::make_intersect(*this, oth); }
-	
+
 		servoce::shape extrude(double z, bool center = false);
 		servoce::shape extrude(const vector3& vec, bool center = false);
 		servoce::shape extrude(double x, double y, double z, bool center = false);
@@ -118,14 +122,14 @@ namespace servoce {
 
 	/*template<typename Self>
 	struct can_trans {
-		Self transform(const transformation& trans) { 
-			Self& self = static_cast<Self&>(*this); 
-			return trans(self); 
+		Self transform(const transformation& trans) {
+			Self& self = static_cast<Self&>(*this);
+			return trans(self);
 		}
-		Self translate(double x, double y, double z) { 
-			return transform(translate(x,y,z)); 
+		Self translate(double x, double y, double z) {
+			return transform(translate(x,y,z));
 		}
-		//Self translate(double x, double y) { 
+		//Self translate(double x, double y) {
 		//	return transform(translate{x,y,0}); }
 		Self rotate(double ax, double ay, double az, double angle) { return transform(axrotation(ax,ay,az,angle)); }
 		Self up(double z) { return translate(0,0,z); }
@@ -135,8 +139,8 @@ namespace servoce {
 		Self right(double x) { return translate(x,0,0); }
 		Self left(double x) { return translate(-x,0,0); }
 
-		Self rotateX(double a) { 
-			return transform(rotateX(a)); 
+		Self rotateX(double a) {
+			return transform(rotateX(a));
 		}
 		Self rotateY(double a) { return transform(rotateY(a)); }
 		Self rotateZ(double a) { return transform(rotateZ(a)); }

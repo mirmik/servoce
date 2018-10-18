@@ -21,60 +21,81 @@
 
 using namespace servoce;
 
-shape servoce::make_box(double x, double y, double z, bool center) {
-	if (!center) {
-		return BRepPrimAPI_MakeBox(x, y, z).Solid(); 
-	} else {
-		gp_Ax2 ax2(gp_Pnt(-x/2,-y/2,-z/2), gp_Vec(0,0,1));
-		return BRepPrimAPI_MakeBox(ax2, x, y, z).Solid(); 			
-	}
-}
-
-shape servoce::make_cylinder(double r, double h, bool center) { 
-	if (!center) {
-		return BRepPrimAPI_MakeCylinder(r, h).Solid(); 
-	} else {
-		gp_Ax2 ax2(gp_Pnt(0,0,-h/2), gp_Vec(0,0,1));
-		return BRepPrimAPI_MakeCylinder(ax2, r, h).Solid(); 		
-	}
-}
-
-shape servoce::make_cylinder(double r, double h, double angle, bool center) { 
-    if (!center) {
-        return BRepPrimAPI_MakeCylinder(r, h, angle).Solid(); 
-    } else {
-        gp_Ax2 ax2(gp_Pnt(0,0,-h/2), gp_Vec(0,0,1));
-        return BRepPrimAPI_MakeCylinder(ax2, r, h, angle).Solid();         
+shape servoce::make_box(double x, double y, double z, bool center)
+{
+    if (!center)
+    {
+        return BRepPrimAPI_MakeBox(x, y, z).Solid();
+    }
+    else
+    {
+        gp_Ax2 ax2(gp_Pnt(-x / 2, -y / 2, -z / 2), gp_Vec(0, 0, 1));
+        return BRepPrimAPI_MakeBox(ax2, x, y, z).Solid();
     }
 }
 
-shape servoce::make_cone(double r1, double r2, double h, bool center) { 
-	if (!center) {
-		return BRepPrimAPI_MakeCone(r1, r2, h).Solid(); 
-	} else {
-		gp_Ax2 ax2(gp_Pnt(0,0,-h/2), gp_Vec(0,0,1));
-		return BRepPrimAPI_MakeCone(ax2, r1, r2, h).Solid(); 		
-	}
+shape servoce::make_cylinder(double r, double h, bool center)
+{
+    if (!center)
+    {
+        return BRepPrimAPI_MakeCylinder(r, h).Solid();
+    }
+    else
+    {
+        gp_Ax2 ax2(gp_Pnt(0, 0, -h / 2), gp_Vec(0, 0, 1));
+        return BRepPrimAPI_MakeCylinder(ax2, r, h).Solid();
+    }
 }
 
-shape servoce::make_sphere(double r) { 
-	return BRepPrimAPI_MakeSphere(r).Solid(); 
+shape servoce::make_cylinder(double r, double h, double angle, bool center)
+{
+    if (!center)
+    {
+        return BRepPrimAPI_MakeCylinder(r, h, angle).Solid();
+    }
+    else
+    {
+        gp_Ax2 ax2(gp_Pnt(0, 0, -h / 2), gp_Vec(0, 0, 1));
+        return BRepPrimAPI_MakeCylinder(ax2, r, h, angle).Solid();
+    }
 }
 
-shape servoce::make_torus(double r1, double r2) { 
-	return BRepPrimAPI_MakeTorus(r1,r2).Solid(); 
+shape servoce::make_cone(double r1, double r2, double h, bool center)
+{
+    if (!center)
+    {
+        return BRepPrimAPI_MakeCone(r1, r2, h).Solid();
+    }
+    else
+    {
+        gp_Ax2 ax2(gp_Pnt(0, 0, -h / 2), gp_Vec(0, 0, 1));
+        return BRepPrimAPI_MakeCone(ax2, r1, r2, h).Solid();
+    }
 }
 
-shape servoce::make_linear_extrude(const shape& base, const vector3& vec, bool center) {
-	if (center) {
-        auto trs = translate(-vec/2);
-        return make_linear_extrude(trs(base),vec);
+shape servoce::make_sphere(double r)
+{
+    return BRepPrimAPI_MakeSphere(r).Solid();
+}
+
+shape servoce::make_torus(double r1, double r2)
+{
+    return BRepPrimAPI_MakeTorus(r1, r2).Solid();
+}
+
+shape servoce::make_linear_extrude(const shape& base, const vector3& vec, bool center)
+{
+    if (center)
+    {
+        auto trs = translate(-vec / 2);
+        return make_linear_extrude(trs(base), vec);
 
         //trans::translate trs(-vec/2);
         //auto sld = make_linear_extrude(base, vec);
         //return trs(sld);
 
     }
+
     return BRepPrimAPI_MakePrism(base.Shape(), vec.Vec()).Shape();
 }
 
@@ -91,27 +112,34 @@ shape servoce::make_linear_extrude(const shape& base, const vector3& vec, bool c
     return mk.Shape();
 }*/
 
-shape servoce::make_linear_extrude(const shape& base, double z, bool center) {
-    return make_linear_extrude(base, vector3(0,0,z), center);
+shape servoce::make_linear_extrude(const shape& base, double z, bool center)
+{
+    return make_linear_extrude(base, vector3(0, 0, z), center);
 }
 
-servoce::shape servoce::shape::extrude(double z, bool center) {
+servoce::shape servoce::shape::extrude(double z, bool center)
+{
     return make_linear_extrude(*this, z, center);
 }
 
-servoce::shape servoce::shape::extrude(double x, double y, double z, bool center) {
-    return make_linear_extrude(*this, vector3(x,y,z), center);
+servoce::shape servoce::shape::extrude(double x, double y, double z, bool center)
+{
+    return make_linear_extrude(*this, vector3(x, y, z), center);
 }
 
-servoce::shape servoce::shape::extrude(const vector3& vec, bool center) {
+servoce::shape servoce::shape::extrude(const vector3& vec, bool center)
+{
     return make_linear_extrude(*this, vec, center);
 }
 
-shape servoce::make_pipe(const shape& profile, const shape& path) {
+shape servoce::make_pipe(const shape& profile, const shape& path)
+{
     if (path.Shape().IsNull())
         Standard_Failure::Raise("Cannot sweep along empty spine");
+
     if (profile.Shape().IsNull())
         Standard_Failure::Raise("Cannot sweep empty profile");
+
     return BRepOffsetAPI_MakePipe(path.Wire(), profile.Shape()).Shape();
 }
 
@@ -147,17 +175,19 @@ shape servoce::make_pipe(const shape& profile, const shape& path) {
     if (!mkPipeShell.IsReady()) Standard_Failure::Raise("shape is not ready to build");
     else mkPipeShell.Build();
 
-    if (make_solid)	mkPipeShell.MakeSolid();
+    if (make_solid) mkPipeShell.MakeSolid();
 
     return mkPipeShell.Shape();
 }*/
 
 shape servoce::make_pipe_shell(
-    const shape& profile, 
-    const shape& path, 
+    const shape& profile,
+    const shape& path,
     bool isFrenet
-) {
-    try{
+)
+{
+    try
+    {
         BRepOffsetAPI_MakePipeShell mkPipeShell(path.Wire());
         mkPipeShell.SetMode(isFrenet);
 
@@ -174,12 +204,16 @@ shape servoce::make_pipe_shell(
         //mkPipeShell.SetTransitionMode(transMode);
 
         mkPipeShell.Add(profile.Shape());
+
         if (!mkPipeShell.IsReady()) std::logic_error("shape is not ready to build");
+
         mkPipeShell.Build();
         mkPipeShell.MakeSolid();
 
         return mkPipeShell.Shape();
-    } catch (...) {
+    }
+    catch (...)
+    {
         Standard_Failure::Raise("ERROR");
     }
 
