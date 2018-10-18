@@ -23,6 +23,7 @@ namespace servoce {
 		void set_triedron();
 
 		void redraw();
+		void must_be_resized();
 
 		void see(int width = 800, int height = 600);
 		void screen(const std::string& path);

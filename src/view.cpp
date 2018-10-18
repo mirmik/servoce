@@ -14,6 +14,7 @@ servoce::view servoce::viewer::create_view() {
 }
 
 void servoce::view::redraw() { occ->redraw(); }
+void servoce::view::must_be_resized() { occ->must_be_resized(); }
 void servoce::view::set_triedron() { occ->set_triedron(); }
 void servoce::view::dump(const std::string& path) { occ->dump(path); }
 void servoce::view::fit_all() { occ->fit_all(); }

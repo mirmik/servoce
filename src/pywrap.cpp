@@ -162,6 +162,7 @@ PYBIND11_MODULE(libservoce, m) {
 		.def("set_triedron", &view::set_triedron)
 		.def("see", &view::see)
 		.def("redraw", &view::redraw)
+		.def("must_be_resized", &view::redraw)
 		.def("fit_all", &view::fit_all)
 	;
 

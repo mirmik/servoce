@@ -17,14 +17,16 @@ int main(int argc, char**argv) {
 	
 	QApplication a(argc, argv);
 
-	servoce::viewer viewer( scn );
-	servoce::view view( viewer.create_view() );
+	//servoce::viewer viewer( scn );
+	//servoce::view view( viewer.create_view() );
 
-	Disp w(&view);
-	view.set_window(w.winId());
-	view.fit_all();
-	
-	w.show();
+	QMainWindow mw;
+	Disp w(&scn);
+
+	mw.setCentralWidget(&w);
+
+	mw.show();
+	//mw.resize(800,600);	
 
 	a.exec();
 }

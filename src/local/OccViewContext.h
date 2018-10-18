@@ -73,7 +73,9 @@ public:
 	void set_window(int wind) {
 		m_window = new Xw_Window(GetDisplayConnection(), wind);
 		m_view->SetWindow(m_window);
-		if (!m_window->IsMapped()) m_window->Map();
+		//if (!m_window->IsMapped()) m_window->Map();
+		//m_window->DoResize();
+		//m_view.ReSize(800,600);
 	}
 
 	void fit_all() {
@@ -86,6 +88,10 @@ public:
 
 	void redraw() {
 		m_view->Redraw();
+	}
+
+	void must_be_resized() {
+		m_view->MustBeResized();
 	}
 
 	void set_triedron() {
