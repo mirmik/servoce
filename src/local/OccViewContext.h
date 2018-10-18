@@ -73,6 +73,7 @@ public:
 	void set_window(int wind) {
 		m_window = new Xw_Window(GetDisplayConnection(), wind);
 		m_view->SetWindow(m_window);
+		if (!m_window->IsMapped()) m_window->Map();
 	}
 
 	void fit_all() {
@@ -107,7 +108,7 @@ public:
     	m_context->DefaultDrawer ()->SetFaceBoundaryDraw(true);
 	}
 
-	OccViewWindow* create_vw() {
+	OccViewWindow* create_view_window() {
 		return new OccViewWindow( m_viewer->CreateView() );
 	}
 

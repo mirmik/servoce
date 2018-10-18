@@ -68,6 +68,7 @@ namespace servoce {
 		
 		public:
 			DisplayWidget(QWidget* parent = nullptr) : QGLWidget(parent) {
+				//setAttribute(Qt::WA_PaintOnScreen, true); 
 				setBackgroundRole( QPalette::NoRole );
 			}
 		

@@ -10,7 +10,7 @@ servoce::viewer::viewer(const servoce::scene& scn) : viewer() {
 }
 
 servoce::view servoce::viewer::create_view() {
-	return servoce::view( occ->create_vw() );
+	return servoce::view( occ->create_view_window() );
 }
 
 void servoce::view::redraw() { occ->redraw(); }
