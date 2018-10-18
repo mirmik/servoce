@@ -18,6 +18,7 @@ class Disp : public QGLWidget {
 
 	int inited = 0;
 	int showed = 0;
+	int fitted = 0;
 
 public:
 	Disp(servoce::scene * scn, QGLWidget* parent = nullptr) : QGLWidget(parent), scene(scn) {
@@ -45,8 +46,10 @@ public:
 	void paintEvent(QPaintEvent* e) override {
 		printf("paintevent\n");
 
-		if (!inited) {
-			init();
+		if (!fitted) {
+			fitted = 1;
+			view->fit_all();
+			view->must_be_resized();
 		}
 
 		view->redraw();
@@ -58,7 +61,7 @@ public:
 		view = new servoce::view( viewer->create_view() );
 		
 		view->set_window(winId());
-		view->fit_all();
+		//view->fit_all();
 		//view->must_be_resized();
 
 		inited = 1;
@@ -67,16 +70,11 @@ public:
 
 	void showEvent(QShowEvent* e) override {
 		printf("showevent\n");
-		showed = 1;
-		if (inited)
-			view->redraw();
+		init();
 	}
 
 	void resizeEvent(QResizeEvent* e) override {
 		printf("resizeevent\n");
-		if (!inited && showed)
-			init();
-
 		if (inited)
 			view->must_be_resized();
 	}
