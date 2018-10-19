@@ -23,18 +23,18 @@ class bdist_wheel(bdist_wheel_):
 		self.plat_name = platform_name
 
 
-class Found(Exception): pass
-try:
-	for root, dirs, files in os.walk("/usr/include"):
-		for dr in dirs:
-			if dr == "qt5":
-				libqt_include_path = os.path.join(root, dr)
-				raise Found()
-	else:
-		print("NeedInstall Qt5")
-		exit(-1)
-except (Found):
-	pass
+#class Found(Exception): pass
+#try:
+#	for root, dirs, files in os.walk("/usr/include"):
+#		for dr in dirs:
+#			if dr == "qt5":
+#				libqt_include_path = os.path.join(root, dr)
+#				raise Found()
+#	else:
+#		print("NeedInstall Qt5")
+#		exit(-1)
+#except (Found):
+#	pass
 
 
 liboce_include_path = "/usr/local/include/opencascade"
@@ -51,17 +51,17 @@ pyservoce_lib = Extension("pyservoce.libservoce",
 		"src/face.cpp",
 		"src/wire.cpp",
 		"src/boolops.cpp",
-		"src/display.cpp",
+		#"src/display.cpp",
 		
 		"src/convert.cpp",
 		"src/view.cpp",
 		"src/camera.cpp",
 
-		"src/display/mainwidget.cpp",
-		"src/display/dispwidget.cpp",
-		"src/display/dispwidget_qt.cpp",
-		"src/local/display_h_moc.cpp",
-		"src/display/icons.cpp",
+#		"src/display/mainwidget.cpp",
+#		"src/display/dispwidget.cpp",
+#		"src/display/dispwidget_qt.cpp",
+#		"src/local/display_h_moc.cpp",
+#		"src/display/icons.cpp",
 
 #		"src/shower/mainwidget.cpp",
 #		"src/shower/dispwidget.cpp",
@@ -72,13 +72,11 @@ pyservoce_lib = Extension("pyservoce.libservoce",
 	#extra_link_args=['-Wl,-rpath,\'$ORIGIN/libs/\''],
 	extra_link_args=['-Wl,-rpath,$ORIGIN/libs'],
 	#extra_link_args=['-Wl,-rpath,./libs'],
-	include_dirs = [liboce_include_path, "src", "include",
-		libqt_include_path,
-
-	],
+	include_dirs = [liboce_include_path, "src", "include"],
 	libraries = [
 		'TKernel',
 		'TKMath',
+		'TKG2d',
 		'TKG3d',
 		'TKBRep',
 		'TKGeomBase',
@@ -94,20 +92,22 @@ pyservoce_lib = Extension("pyservoce.libservoce",
 		'TKFillet',
 		'TKSTL',
 		'TKBin',
-
+		'TKShHealing',
+		'TKMesh',
+		'TKHLR',
 		
-		'Qt5Core', 
-		'Qt5Widgets', 
-		'Qt5Test', 
-		'Qt5Gui', 
-		'Qt5OpenGL',
+		#'Qt5Core', 
+		#'Qt5Widgets', 
+		#'Qt5Test', 
+		#'Qt5Gui', 
+		#'Qt5OpenGL',
 	],
 )
 
 setup(
 	name = 'pyservoce',
 	packages = ['pyservoce'],
-	version = '1.0.1',
+	version = '1.1.2',
 	license='MIT',
 	description = 'CAD system for righteous zen programmers ',
 	author = 'Sorokin Nikolay',

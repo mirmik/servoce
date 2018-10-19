@@ -1,5 +1,5 @@
 #include <servoce/servoce.h>
-#include <servoce/display.h>
+//#include <servoce/display.h>
 #include <servoce/util/b64.h>
 
 #include <pybind11/pybind11.h>
@@ -140,7 +140,7 @@ PYBIND11_MODULE(libservoce, m)
 	m.def("make_difference", (shape(*)(const std::vector<const shape*>&))&make_difference);
 	m.def("make_intersect", (shape(*)(const std::vector<const shape*>&))&make_intersect);
 
-	m.def("display_scene", 	display);
+	//m.def("display_scene", 	display);
 
 	py::class_<transformation>(m, "transformation")
 	.def("__call__", (shape(transformation::*)(const shape&)const)&transformation::operator())
