@@ -17,6 +17,14 @@ int main(int argc, char**argv) {
 	
 	QApplication a(argc, argv);
 
+	auto * fmt = new QSurfaceFormat();
+	fmt->setDepthBufferSize(24);
+	fmt->setStencilBufferSize(8);
+	fmt->setVersion(3, 2);
+	fmt->setProfile(QSurfaceFormat::CoreProfile);
+	QSurfaceFormat::setDefaultFormat(*fmt);
+
+
 	//servoce::viewer viewer( scn );
 	//servoce::view view( viewer.create_view() );
 
@@ -25,8 +33,8 @@ int main(int argc, char**argv) {
 
 	mw.setCentralWidget(&w);
 
-	mw.show();
-	//mw.resize(800,600);	
+	mw.resize(800,600);
+	mw.show();	
 
 	a.exec();
 }

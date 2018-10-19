@@ -20,12 +20,21 @@ namespace servoce
 		void set_window(int wind);
 
 		void fit_all();
+		void set_projection(float a, float b, float c);
+		void pan(float a, float b);
+		void zoom(float a, float b, float aa, float ba);
+
+		void start_mouse_rotation();
+		void mouse_rotation();
+
 		void dump(const std::string& path);
 
 		void set_triedron();
 
 		void redraw();
 		void must_be_resized();
+
+		void set_gradient();
 
 		void see(int width = 800, int height = 600);
 		void screen(const std::string& path);
@@ -50,8 +59,8 @@ namespace servoce
 			viewer(const servoce::scene& scn);
 
 			view create_view();
-			void set_scene(servoce::scene* scn);
-			void set_triedron_axes();*/
+			void set_scene(servoce::scene* scn);*/
+		void set_triedron_axes();
 	};
 
 	void see(const servoce::scene& scn);

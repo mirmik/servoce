@@ -118,6 +118,7 @@ PYBIND11_MODULE(libservoce, m)
 	.def(py::init<>())
 	.def(py::init<const scene&>())
 	.def("create_view", &viewer::create_view)
+	.def("set_triedron_axes", &viewer::set_triedron_axes)
 	;
 
 	py::class_<view>(m, "View")
@@ -125,8 +126,13 @@ PYBIND11_MODULE(libservoce, m)
 	.def("set_triedron", &view::set_triedron)
 	.def("see", &view::see)
 	.def("redraw", &view::redraw)
-	.def("must_be_resized", &view::redraw)
+	.def("must_be_resized", &view::must_be_resized)
 	.def("fit_all", &view::fit_all)
+	.def("set_projection", &view::set_projection)
+	.def("pan", &view::pan)
+	.def("zoom", &view::zoom)
+
+	.def("set_gradient", &view::set_gradient)
 	;
 
 

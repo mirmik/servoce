@@ -11,9 +11,34 @@ servoce::viewer::viewer(const servoce::scene& scn) : viewer()
 	occ->set_scene(scn);
 }
 
+void servoce::viewer::set_triedron_axes()
+{
+	Handle(AIS_Axis) axX = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0, 0, 0), gp_Vec(1, 0, 0)));
+	Handle(AIS_Axis) axY = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0, 0, 0), gp_Vec(0, 1, 0)));
+	Handle(AIS_Axis) axZ = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0, 0, 0), gp_Vec(0, 0, 1)));
+
+	axX->SetColor(Quantity_NOC_RED);
+	axY->SetColor(Quantity_NOC_GREEN);
+	axZ->SetColor(Quantity_NOC_BLUE1);
+
+	occ->m_context->Display(axX, false);
+	occ->m_context->Display(axY, false);
+	occ->m_context->Display(axZ, false);
+}
+
 servoce::view servoce::viewer::create_view()
 {
 	return servoce::view( occ->create_view_window() );
+}
+
+void servoce::view::set_gradient()
+{
+	occ->m_view->SetBgGradientColors(
+	    Quantity_Color(0.5, 0.5, 0.5, Quantity_TOC_RGB),
+	    Quantity_Color(0.3, 0.3, 0.3, Quantity_TOC_RGB),
+	    Aspect_GFM_VER,
+	    Standard_True
+	);
 }
 
 void servoce::view::redraw() { occ->redraw(); }
@@ -23,6 +48,21 @@ void servoce::view::dump(const std::string& path) { occ->dump(path); }
 void servoce::view::fit_all() { occ->fit_all(); }
 void servoce::view::set_virtual_window(int w, int h) { occ->set_virtual_window(w, h); }
 void servoce::view::set_window(int n) { occ->set_window(n); }
+
+void servoce::view::set_projection(float a, float b, float c)
+{
+	occ->m_view->SetProj(a, b, c);
+}
+
+void servoce::view::pan(float a, float b)
+{
+	occ->m_view->Pan(a, b);
+}
+
+void servoce::view::zoom(float a, float b, float aa, float ba)
+{
+	occ->m_view->Zoom(a, b, aa, ba);
+}
 
 void servoce::view::screen(const std::string& path)
 {

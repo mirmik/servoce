@@ -65,7 +65,7 @@ Handle(Graphic3d_GraphicDriver) GetGraphicDriver()
 	return g_graphicDriver;
 }
 
-class OccViewWindow
+struct OccViewWindow
 {
 	Handle(V3d_View) m_view;
 	Handle(Xw_Window) m_window;
@@ -116,7 +116,7 @@ public:
 };
 
 
-class OccViewerContext
+struct OccViewerContext
 {
 	Handle(AIS_InteractiveContext) m_context;
 	Handle(V3d_Viewer) m_viewer;
