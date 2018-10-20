@@ -8,6 +8,66 @@ from licant.modules import module, submodule
 import licant.libs
 import os
 
+full_list = [
+	'TKBinL',
+	'TKBin',
+	'TKBinTObj',
+	'TKBinXCAF',
+	'TKBool',
+	'TKBO',
+	'TKBRep',
+	'TKCAF ',
+	'TKCDF ',
+	'TKDCAF',
+	'TKDraw',
+	'TKernel',
+	'TKFeat',
+	'TKFillet',
+	'TKG2d',
+	'TKG3d',
+	'TKGeomAlgo',
+	'TKGeomBase',
+	'TKHLR',
+	'TKIGES',
+	'TKLCAF',
+	'TKMath',
+	'TKMesh',
+	'TKMeshVS',
+	'TKOffset',
+	'TKOpenGl',
+	'TKPrim',
+	'TKQADraw',
+	'TKService',
+	'TKShHealing ',
+	'TKStdL',
+	'TKStd ',
+	'TKSTEP209 ',
+	'TKSTEPAttr',
+	'TKSTEPBase',
+	'TKSTEP',
+	'TKSTL',
+	'TKTObjDRAW',
+	'TKTObj',
+	'TKTopAlgo',
+	'TKTopTest',
+	'TKV3d',
+	'TKVCAF',
+	'TKViewerTest',
+	'TKVRML',
+	'TKXCAF',
+	'TKXCAF',
+	'TKXDEDRAW',
+	'TKXDEIGES',
+	'TKXDESTEP',
+	'TKXMesh',
+	'TKXmlL',
+	'TKXml',
+	'TKXmlTObj',
+	'TKXmlXCAF',
+	'TKXSBase',
+	'TKXSDRAW',
+]
+
 licant.libs.include("gxx")
 
 class Found(Exception): pass
@@ -28,9 +88,10 @@ liboce_include_path = "/usr/local/include/opencascade"
 python_include_prefix = "/usr/include/"
 
 module('liboce', 
-	libs = [     
+	libs = [
 		'TKernel',
 		'TKMath',
+		'TKG2d',
 		'TKG3d',
 		'TKBRep',
 		'TKGeomBase',
@@ -46,9 +107,9 @@ module('liboce',
 		'TKFillet',
 		'TKSTL',
 		'TKBin',
-
-		'TKG2d',
+		'TKShHealing',
 		'TKMesh',
+		'TKHLR',
 	],
 	include_paths = [liboce_include_path]    
 )

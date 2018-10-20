@@ -1,4 +1,4 @@
-#include <servoce/solid.h>
+#include <servoce/servoce.h>
 #include <servoce/display.h>
 
 int main() {

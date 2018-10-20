@@ -167,11 +167,19 @@ void servoce::disp::DisplayWidget::init()
 
     // Create V3dViewer and V3d_View
     m_viewer = new V3d_Viewer(GetGraphicDriver());
+    //m_viewer->SetLightOn (new V3d_DirectionalLight (m_viewer, V3d_Zneg , Quantity_NOC_WHITE, true));
+    m_viewer->SetDefaultLights();
+    m_viewer->SetLightOn();
 
     m_view = m_viewer->CreateView();
+    m_view->SetBgGradientColors(
+        Quantity_Color(0.5, 0.5, 0.5, Quantity_TOC_RGB),
+        Quantity_Color(0.3, 0.3, 0.3, Quantity_TOC_RGB),
+        Aspect_GFM_VER,
+        Standard_True
+    );
 
     m_view->SetWindow(wind);
-
     if (!wind->IsMapped()) wind->Map();
 
     // Create AISInteractiveContext
@@ -180,7 +188,6 @@ void servoce::disp::DisplayWidget::init()
 
     // Set up lights etc
     //m_viewer->SetDefaultLights();
-    m_viewer->SetLightOn (new V3d_DirectionalLight (m_viewer, V3d_Zneg , Quantity_NOC_WHITE, true));
     //m_viewer->SetLightOn(new V3d_AmbientLight (m_viewer, Quantity_NOC_BLUE1));
 
     //m_view->SetBackgroundColor(Quantity_NOC_FOREST);
@@ -190,13 +197,6 @@ void servoce::disp::DisplayWidget::init()
     //m_context->SetDisplayMode(AIS_Shaded, false);
     m_context->SetDisplayMode(AIS_Shaded, false);
     //m_context->SetHilightColor(Quantity_NOC_AZURE);
-
-    m_view->SetBgGradientColors(
-        Quantity_Color(0.5, 0.5, 0.5, Quantity_TOC_RGB),
-        Quantity_Color(0.3, 0.3, 0.3, Quantity_TOC_RGB),
-        Aspect_GFM_VER,
-        Standard_False
-    );
 }
 
 

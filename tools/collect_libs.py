@@ -33,7 +33,7 @@ filelist = os.listdir("/usr/local/lib/")
 
 for l in listlibs:
 	for f in filelist:
-		if l + '.so.7.2.0' in f:
+		if l + '.so.7.3.0' in f:
 			cmd0 = "cp {0} pyservoce/libs/".format(os.path.join("/usr/local/lib/",f))
 			cmd05= "patchelf --set-rpath '$ORIGIN' pyservoce/libs/{0}".format(f)
 			cmd1 = "ln -s {2}/pyservoce/libs/{0} {2}/pyservoce/libs/{1}".format(f, f[:-4], os.getcwd())

@@ -127,7 +127,10 @@ public:
 		m_viewer = new V3d_Viewer(GetGraphicDriver());
 		m_context = new AIS_InteractiveContext (m_viewer);
 
-		m_viewer->SetLightOn(new V3d_DirectionalLight (m_viewer, V3d_Zneg , Quantity_NOC_WHITE, true));
+		//m_viewer->SetLightOn(new V3d_DirectionalLight (m_viewer, V3d_Zneg , Quantity_NOC_WHITE, true));
+		m_viewer->SetDefaultLights();
+	    m_viewer->SetLightOn();
+
 		m_context->SetDisplayMode(AIS_Shaded, false);
 		m_context->DefaultDrawer ()->SetFaceBoundaryDraw(true);
 	}
