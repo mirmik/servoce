@@ -39,6 +39,8 @@ void servoce::view::set_gradient()
 	    Aspect_GFM_VER,
 	    Standard_True
 	);
+	//if (!occ->m_window->IsMapped()) 
+	//	occ->m_window->Map();
 }
 
 void servoce::view::redraw() { occ->redraw(); }
@@ -192,4 +194,20 @@ void servoce::see(const servoce::scene& scn)
 	auto v = viewer(scn);
 	auto vv = v.create_view();
 	vv.see();
+}
+
+void servoce::view::reset_orientation() {
+	occ->m_view->ResetViewOrientation();
+}
+
+void servoce::view::autoscale() {
+	occ->m_view->FitAll();
+}
+
+void servoce::view::start_rotation(int x, int y, float treshold) {
+	occ->m_view->StartRotation(x, y, treshold);
+}
+
+void servoce::view::rotation(int x, int y) {
+	occ->m_view->Rotation(x, y);
 }

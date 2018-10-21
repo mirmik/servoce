@@ -38,6 +38,11 @@ namespace servoce
 
 		void see(int width = 800, int height = 600);
 		void screen(const std::string& path);
+
+		void reset_orientation();
+		void autoscale();
+		void start_rotation(int x, int y, float tresh);
+		void rotation(int x, int y);
 	};
 
 	class viewer

@@ -124,13 +124,27 @@ struct OccViewerContext
 public:
 	OccViewerContext()
 	{
+		static Quantity_Color c1(0.5, 0.5, 0.5, Quantity_TOC_RGB);
+	    static Quantity_Color c2(0.3, 0.3, 0.3, Quantity_TOC_RGB);
+
 		m_viewer = new V3d_Viewer(GetGraphicDriver());
-		m_context = new AIS_InteractiveContext (m_viewer);
+
+		//m_viewer->setDefaultBackgroundColor(0.5,0.3,0.3);
+		//m_viewer->SetZBufferManagment(Standard_False);
+//		m_viewer->SetDefaultTypeOfView(V3d_ORTHOGRAPHIC); //V3d_PERSPECTIVE also possible
+//		m_viewer->SetDefaultViewProj(V3d_Zpos); // Top view
+		//m_viewer->SetUpdateMode(V3d_WAIT);
+//		m_viewer->SetComputedMode(false);
+//		m_viewer->RedrawImmediate();
+
+		//m_viewer->SetDefaultBgGradientColors (c1, c2);
 
 		//m_viewer->SetLightOn(new V3d_DirectionalLight (m_viewer, V3d_Zneg , Quantity_NOC_WHITE, true));
+		
 		m_viewer->SetDefaultLights();
 	    m_viewer->SetLightOn();
 
+		m_context = new AIS_InteractiveContext (m_viewer);
 		m_context->SetDisplayMode(AIS_Shaded, false);
 		m_context->DefaultDrawer ()->SetFaceBoundaryDraw(true);
 	}

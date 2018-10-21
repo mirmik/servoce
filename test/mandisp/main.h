@@ -77,6 +77,7 @@ public:
 		view = new servoce::view( viewer->create_view() );
 
 		view->set_window(winId());
+		//view->set_gradient();
 		//view->fit_all();
 		//view->must_be_resized();
 

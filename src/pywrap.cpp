@@ -133,6 +133,10 @@ PYBIND11_MODULE(libservoce, m)
 	.def("zoom", &view::zoom)
 
 	.def("set_gradient", &view::set_gradient)
+	.def("reset_orientation", &view::reset_orientation)
+	.def("autoscale", &view::autoscale)
+	.def("start_rotation", &view::start_rotation)
+	.def("rotation", &view::rotation)
 	;
 
 

@@ -70,7 +70,7 @@ pyservoce_lib = Extension("pyservoce.libservoce",
 	],
 	extra_compile_args=['-fPIC', '-std=c++14'],
 	#extra_link_args=['-Wl,-rpath,\'$ORIGIN/libs/\''],
-	extra_link_args=['-Wl,-rpath,$ORIGIN/libs'],
+	#extra_link_args=['-Wl,-rpath,$ORIGIN/libs'],
 	#extra_link_args=['-Wl,-rpath,./libs'],
 	include_dirs = [liboce_include_path, "src", "include"],
 	libraries = [
