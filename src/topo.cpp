@@ -14,8 +14,9 @@
 #include <BRepFilletAPI_MakeFillet2d.hxx>
 
 #include <TopAbs_ShapeEnum.hxx>
-
 #include <TopExp_Explorer.hxx>
+#include <GProp_GProps.hxx>
+#include <BRepGProp.hxx>
 
 #include <cassert>
 
@@ -163,4 +164,12 @@ servoce::shape servoce::shape::fillet(double r, const std::vector<int>& nums)
 
 		return mk.Shape();
 	}
+}
+
+servoce::point3 servoce::shape::center()
+{
+	GProp_GProps props;
+    BRepGProp::LinearProperties(Shape(), props);
+    gp_Pnt centerMass = props.CentreOfMass();
+    return point3(centerMass);
 }

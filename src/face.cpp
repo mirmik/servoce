@@ -24,6 +24,16 @@ servoce::shape servoce::make_circle(double r) {
 	return BRepBuilderAPI_MakeFace(aCircle).Shape();
 }
 
+servoce::shape servoce::make_circle(double r, double angle) { 
+	gp_Circ EL ( gp::XOY(), r );
+	Handle(Geom_Circle) anCircle = GC_MakeCircle(EL).Value();
+	TopoDS_Edge aEdge = BRepBuilderAPI_MakeEdge( anCircle, 0, angle );
+	TopoDS_Edge aEdge1 = BRepBuilderAPI_MakeEdge( gp_Pnt(0,0,0), gp_Pnt(r,0,0) );
+	TopoDS_Edge aEdge2 = BRepBuilderAPI_MakeEdge( gp_Pnt(0,0,0), gp_Pnt(r*cos(angle),r*sin(angle),0)  );
+	TopoDS_Wire aCircle = BRepBuilderAPI_MakeWire( aEdge, aEdge1, aEdge2 );
+	return BRepBuilderAPI_MakeFace(aCircle).Shape();
+}
+
 servoce::shape servoce::make_polygon(const servoce::point3* pnts, size_t size) {
 	BRepBuilderAPI_MakePolygon mk;
 	for (uint i = 0; i < size; ++i) mk.Add(pnts[i].Pnt());

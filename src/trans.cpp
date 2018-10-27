@@ -90,6 +90,13 @@ servoce::transformation servoce::translate(double x, double y, double z)
 	return servoce::transformation(trsf);
 }
 
+servoce::transformation servoce::scale(double s, point3 center)
+{
+	auto trsf = new gp_Trsf();
+	trsf->SetScale(center.Pnt(), s);
+	return servoce::transformation(trsf);
+}
+
 servoce::transformation servoce::translate(const vector3& vec)
 {
 	return servoce::translate(vec.x, vec.y, vec.z);

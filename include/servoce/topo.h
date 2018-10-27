@@ -8,44 +8,16 @@
 #include <set>
 #include <servoce/boolops.h>
 #include <servoce/trans.h>
+#include <servoce/geombase.h>
 
 class TopoDS_Shape;
 class TopoDS_Solid;
 class TopoDS_Wire;
 class TopoDS_Face;
-class TopoDS_Vertex;
 class TopoDS_Compound;
-
-class gp_Vec;
-class gp_Pnt;
 
 namespace servoce
 {
-	struct vector3
-	{
-		double x, y, z;
-		vector3() {}
-		vector3(const gp_Vec& pnt) {}
-		vector3(double x, double y) : x(x), y(y), z(0) {}
-		vector3(double x, double y, double z) : x(x), y(y), z(z) {}
-		gp_Vec Vec() const;
-		bool operator==(const vector3& oth) const { return oth.x == x && oth.y == y && oth.z == z; }
-		bool operator!=(const vector3& oth) const { return oth.x != x || oth.y != y || oth.z != z; }
-		vector3 operator-() const { return vector3(-x, -y, -z); }
-		vector3 operator/(double a) const { return vector3(x / a, y / a, z / a); }
-	};
-
-	struct point3
-	{
-		double x, y, z;
-		point3() {}
-		point3(const gp_Pnt& pnt) {}
-		point3(double x, double y) : x(x), y(y), z(0) {}
-		point3(double x, double y, double z) : x(x), y(y), z(z) {}
-		gp_Pnt Pnt() const;
-		TopoDS_Vertex Vtx() const;
-	};
-
 	struct shape
 	{
 		TopoDS_Shape* m_shp;
@@ -108,6 +80,9 @@ namespace servoce
 		shape mirrorXY() { return transform(servoce::mirrorXY()); }
 		shape mirrorYZ() { return transform(servoce::mirrorYZ()); }
 		shape mirrorXZ() { return transform(servoce::mirrorXZ()); }
+
+		shape scale(double s, point3 center = point3()) { return transform(servoce::scale(s, center)); }
+		point3 center();
 
 		servoce::shape infill_face(); ///< Превращает замкнутый двумерный контур в 2d объект
 

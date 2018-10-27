@@ -51,6 +51,7 @@ pyservoce_lib = Extension("pyservoce.libservoce",
 		"src/face.cpp",
 		"src/wire.cpp",
 		"src/boolops.cpp",
+		"src/geombase.cpp",
 		#"src/display.cpp",
 		
 		"src/convert.cpp",

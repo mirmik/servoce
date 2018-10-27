@@ -1,6 +1,8 @@
 #ifndef SERVOCE_TRANS_H
 #define SERVOCE_TRANS_H
 
+#include <servoce/geombase.h>
+
 class gp_Trsf;
 
 namespace servoce
@@ -96,6 +98,8 @@ namespace servoce
 	transformation back(double);
 	transformation left(double);
 	transformation right(double);
+
+	transformation scale(double, point3 center = point3());
 }
 
 #endif

@@ -11,6 +11,7 @@ namespace servoce
 {
 	//prim2d
 	shape make_circle(double r);
+	shape make_circle(double r, double angle);
 	shape make_polygon(const servoce::point3* pnts, size_t size);
 	shape make_polygon(const std::vector<servoce::point3>& pnts);
 	shape make_ngon(double r, int n);

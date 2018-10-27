@@ -26,7 +26,9 @@ using namespace servoce;
 .def("mirrorZ", &TYPE::mirrorZ)					\
 .def("mirrorXY", &TYPE::mirrorXY)				\
 .def("mirrorYZ", &TYPE::mirrorYZ)				\
-.def("mirrorXZ", &TYPE::mirrorXZ)
+.def("mirrorXZ", &TYPE::mirrorXZ)				\
+.def("scale", [](TYPE& obj, double s, const py::list& tpl){ return obj.scale(s, point3(tpl[0].cast<double>(), tpl[1].cast<double>(), tpl[2].cast<double>())); }, py::arg("factor"), py::arg("center")) \
+.def("scale", (shape(TYPE::*)(double,point3))&TYPE::scale, py::arg("factor"), py::arg("center") = point3())
 
 PYBIND11_MODULE(libservoce, m)
 {
@@ -71,6 +73,7 @@ PYBIND11_MODULE(libservoce, m)
 	[](const shape & self) { return b64::base64_encode(self.string_dump()); },
 	[](const std::string & in) { return shape::restore_string_dump(b64::base64_decode(in)); }))
 	.def("fillet", &shape::fillet, py::arg("r"), py::arg("nums"))
+	.def("center", &shape::center)
 	.def("extrude", (shape(shape::*)(const vector3&, bool)) &shape::extrude, py::arg("vec"), py::arg("center") = false)
 	.def("extrude", (shape(shape::*)(double, double, double, bool)) &shape::extrude, py::arg("x"), py::arg("y"), py::arg("z"), py::arg("center") = false)
 	.def("extrude", (shape(shape::*)(double, bool)) &shape::extrude, py::arg("z"), py::arg("center") = false)
@@ -88,7 +91,8 @@ PYBIND11_MODULE(libservoce, m)
 	m.def("make_pipe", 			make_pipe, py::arg("prof"), py::arg("path"));
 	m.def("make_pipe_shell", 	make_pipe_shell, py::arg("prof"), py::arg("path"), py::arg("isFrenet") = false);
 
-	m.def("make_circle", 	make_circle, py::arg("r"));
+	m.def("make_circle", 	(shape(*)(double)) &make_circle, py::arg("r"));
+	m.def("make_circle", 	(shape(*)(double, double)) &make_circle, py::arg("r"), py::arg("angle"));
 	m.def("make_ngon", 		make_ngon, py::arg("r"), py::arg("n"));
 	m.def("make_square", 	make_square, py::arg("a"), py::arg("center") = false);
 	m.def("make_rectangle", make_rectangle, py::arg("a"), py::arg("b"), py::arg("center") = false);
@@ -101,8 +105,8 @@ PYBIND11_MODULE(libservoce, m)
 	m.def("make_helix", make_helix, py::arg("step"), py::arg("height"), py::arg("radius"), py::arg("angle") = 0, py::arg("leftHanded") = false, py::arg("newStyle") = true);
 	m.def("make_long_helix", make_long_helix, py::arg("step"), py::arg("height"), py::arg("radius"), py::arg("angle") = 0, py::arg("leftHanded") = false);
 
-	m.def("make_wcircle", (shape(*)(double))&make_circle);
-	m.def("make_wcircle", (shape(*)(double, double, double))&make_circle);
+	m.def("make_circle_arc", (shape(*)(double))&make_circle_arc);
+	m.def("make_circle_arc", (shape(*)(double, double, double))&make_circle_arc);
 
 	py::class_<color>(m, "Color")
 	.def(py::init<float, float, float>());
@@ -181,6 +185,7 @@ PYBIND11_MODULE(libservoce, m)
 	m.def("right", right);
 	m.def("forw", forw);
 	m.def("back", back);
+	m.def("scale", scale, py::arg("factor"), py::arg("center") = servoce::point3());
 
 	//m.def("simplify_with_bspline", &simplify_with_bspline);
 	m.def("make_stl", &make_stl);

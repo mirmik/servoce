@@ -139,6 +139,7 @@ module('servoce_sources',
 		"display.cpp",
 		#"test.cpp",
 		"convert.cpp",
+		"geombase.cpp",
 		"view.cpp",
 		"camera.cpp",
 
