@@ -137,6 +137,10 @@ PYBIND11_MODULE(libservoce, m)
 	.def("autoscale", &view::autoscale)
 	.def("start_rotation", &view::start_rotation)
 	.def("rotation", &view::rotation)
+
+	.def("rawarray", &view::rawarray)
+	.def("screen", &view::screen)
+	.def("see", &view::see)
 	;
 
 

@@ -1,7 +1,7 @@
 #include <servoce/view.h>
 #include <local/OccViewContext.h>
 
-#include <gxx/debug/dprint.h>
+//#include <gxx/debug/dprint.h>
 
 servoce::viewer::viewer()
 {
@@ -70,16 +70,68 @@ void servoce::view::zoom(float a, float b, float aa, float ba)
 
 void servoce::view::screen(const std::string& path)
 {
-	dprln("1");
-	set_virtual_window(800, 600);
-	dprln("2");
-	set_triedron();
-	dprln("3");
+	//set_triedron();
+
+	/*set_virtual_window(800, 600);
 	fit_all();
-	dprln("4");
-	dump(path);
-	dprln("5");
+	redraw();
+	//dump(path);
+*/
+	/*auto display = XOpenDisplay(NULL);
+
+   XWindowAttributes gwa;
+   XGetWindowAttributes(display, occ->winddesc, &gwa);
+   int width = gwa.width;
+   int height = gwa.height;
+
+	XImage *ximage = XGetImage(display, occ->winddesc, 
+                   0, 0, width, height, AllPlanes, ZPixmap); */
+	
+	/*Image_PixMap pixmap;
+	occ->m_view->ToPixMap(
+		pixmap, 
+		800, 
+		600, 
+		Graphic3d_BT_RGB, 
+		Standard_True, 
+		V3d_SDO_MONO
+	);
+
+
+	const unsigned char * data = pixmap.Data();
+
+	uint w = 800;
+	uint h = 600;
+	uint c = 3;*/
+
+	//for(int c = 0; c < 3 * 800 * 600; ++c)
+	//	dprhexln(*(data + c));
+
+
+	//pixmap.Save("a.png");*/
+
+	//occ->m_view->Dump("a.png", Graphic3d_BT_BRG);
 }
+
+std::vector<unsigned char> servoce::view::rawarray()
+{
+//	set_virtual_window(800, 600);
+//	fit_all();
+//	redraw();
+
+	Image_PixMap pixmap;
+	occ->m_view->ToPixMap(
+		pixmap, 
+		800, 
+		600 
+		//Graphic3d_BT_RGB, 
+		//Standard_True, 
+		//V3d_SDO_MONO
+	);
+
+	return std::vector<unsigned char>(pixmap.Data(), pixmap.Data() + 3 * 800 * 600);
+}
+
 
 void servoce::view::see(int width, int height)
 {

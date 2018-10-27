@@ -136,10 +136,13 @@ void servoce::disp::MainWidget::export_stl() {
 	//int ret = msgBox.exec();
 }
 
-void servoce::disp::MainWidget::screenshot() {
-	/*bool ok;
 
-	auto disp = display->grabFrameBuffer();
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+void servoce::disp::MainWidget::screenshot() {
+	bool ok;
+
+	//auto disp = display->grabFrameBuffer();
 
 	QFileDialog fileDialog(this, "Choose file to export");
 	fileDialog.setDirectory(QDir::current());
@@ -151,10 +154,90 @@ void servoce::disp::MainWidget::screenshot() {
 	QString path = fileDialog.selectedFiles().first();
 
 	QFile file(path);
-	disp.save(&file, "PNG");
-	file.close();*/
+	//disp.save(&file, "PNG");
+	
+	/*QScreen *screen = QGuiApplication::primaryScreen();
+	if (screen) {
+    	QPixmap originalPixmap = screen->grabWindow(display->winId());
+    	originalPixmap.save(path);
+	}*/
+	auto _display = XOpenDisplay(NULL);
 
-	gxx::println("screen stub");
+    XWindowAttributes gwa;
+    XGetWindowAttributes(_display, display->winId(), &gwa);
+    int width = gwa.width;
+    int height = gwa.height;
+
+	XImage *image = XGetImage(_display, display->winId(), 
+                   0, 0, width, height, AllPlanes, ZPixmap); 
+
+	unsigned char *array = new unsigned char[width * height * 3];
+
+   unsigned long red_mask = image->red_mask;
+   unsigned long green_mask = image->green_mask;
+   unsigned long blue_mask = image->blue_mask;
+
+   for (int x = 0; x < width; x++)
+      for (int y = 0; y < height ; y++)
+      {
+         unsigned long pixel = XGetPixel(image,x,y);
+
+         unsigned char blue = pixel & blue_mask;
+         unsigned char green = (pixel & green_mask) >> 8;
+         unsigned char red = (pixel & red_mask) >> 16;
+
+         //dprhexln(pixel);
+
+         array[(x + width * y) * 3] = red;
+         array[(x + width * y) * 3+1] = green;
+         array[(x + width * y) * 3+2] = blue;
+      }
+
+		    
+
+
+	file.close();
+
+	/*gxx::println("screen stub");
+
+	auto _display = XOpenDisplay(NULL);
+
+    XWindowAttributes gwa;
+    XGetWindowAttributes(_display, display->winId(), &gwa);
+    int width = gwa.width;
+    int height = gwa.height;
+
+	XImage *image = XGetImage(_display, display->winId(), 
+                   0, 0, width, height, AllPlanes, ZPixmap); 
+
+	unsigned char *array = new unsigned char[width * height * 3];
+
+   unsigned long red_mask = image->red_mask;
+   unsigned long green_mask = image->green_mask;
+   unsigned long blue_mask = image->blue_mask;
+
+   for (int x = 0; x < width; x++)
+      for (int y = 0; y < height ; y++)
+      {
+         unsigned long pixel = XGetPixel(image,x,y);
+
+         unsigned char blue = pixel & blue_mask;
+         unsigned char green = (pixel & green_mask) >> 8;
+         unsigned char red = (pixel & red_mask) >> 16;
+
+         //dprhexln(pixel);
+
+         array[(x + width * y) * 3] = red;
+         array[(x + width * y) * 3+1] = green;
+         array[(x + width * y) * 3+2] = blue;
+      }*/
+
+    //QScreen *screen = QGuiApplication::primaryScreen();
+	//if (screen) {
+    //	QPixmap originalPixmap = screen->grabWindow(display->winId());
+  //  	originalPixmap.save("mirmik2.png");
+//	}
+
 
 	/*bool ok;
 

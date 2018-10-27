@@ -43,6 +43,8 @@ namespace servoce
 		void autoscale();
 		void start_rotation(int x, int y, float tresh);
 		void rotation(int x, int y);
+
+		std::vector<unsigned char> rawarray();
 	};
 
 	class viewer

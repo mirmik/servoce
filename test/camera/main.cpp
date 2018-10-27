@@ -24,6 +24,7 @@ int main() {
 	servoce::viewer vw(scn);
 	servoce::view v = vw.create_view();
 
+
 	v.screen("screen.png");
 	//servoce::screen(scn);
 }

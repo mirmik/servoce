@@ -69,6 +69,7 @@ struct OccViewWindow
 {
 	Handle(V3d_View) m_view;
 	Handle(Xw_Window) m_window;
+	int winddesc;
 
 public:
 	OccViewWindow(Handle(V3d_View) view) : m_view(view) {}
@@ -77,11 +78,13 @@ public:
 	{
 		m_window = new Xw_Window (GetDisplayConnection(), "virtual", 0, 0, w, h);
 		m_window->SetVirtual  (Standard_True);
+		winddesc = m_window->NativeHandle();
 		m_view->SetWindow  (m_window);
 	}
 
 	void set_window(int wind)
 	{
+		winddesc = wind;
 		m_window = new Xw_Window(GetDisplayConnection(), wind);
 		m_view->SetWindow(m_window);
 		//if (!m_window->IsMapped()) m_window->Map();
