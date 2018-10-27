@@ -5,6 +5,7 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopoDS.hxx>
+#include <gp_Pln.hxx>
 
 #include <BinTools_ShapeSet.hxx>
 #include <BinTools.hxx>
@@ -12,6 +13,12 @@
 #include <BRepTools_WireExplorer.hxx>
 #include <BRepFilletAPI_MakeFillet.hxx>
 #include <BRepFilletAPI_MakeFillet2d.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepAlgoAPI_Section.hxx>
+#include <BRepAlgoAPI_Cut.hxx>
+#include <BRepAlgoAPI_Fuse.hxx>
+#include <BRepAlgoAPI_Common.hxx>
+#include <Geom_Plane.hxx>
 
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp_Explorer.hxx>
@@ -172,4 +179,10 @@ servoce::point3 servoce::shape::center()
     BRepGProp::LinearProperties(Shape(), props);
     gp_Pnt centerMass = props.CentreOfMass();
     return point3(centerMass);
+}
+
+servoce::shape servoce::make_section(const servoce::shape& shp) 
+{
+	TopoDS_Face face = BRepBuilderAPI_MakeFace(gp_Pln(gp_Pnt(0,0,0), gp_Vec(0,0,1)));
+	return BRepAlgoAPI_Common(shp.Shape(), face).Shape();
 }

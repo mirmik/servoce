@@ -95,6 +95,8 @@ namespace servoce
 		servoce::shape extrude(double x, double y, double z, bool center = false);
 	};
 
+	shape make_section(const shape& shp);
+
 	/*template<typename Self>
 	struct can_trans {
 		Self transform(const transformation& trans) {
