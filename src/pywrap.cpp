@@ -88,6 +88,7 @@ PYBIND11_MODULE(libservoce, m)
 
 	m.def("make_linear_extrude", (shape(*)(const shape&, const vector3&, bool)) &make_linear_extrude, py::arg("shp"), py::arg("vec"), py::arg("center") = false);
 	m.def("make_linear_extrude", (shape(*)(const shape&, double, bool)) &make_linear_extrude, py::arg("shp"), py::arg("z"), py::arg("center") = false);
+	m.def("make_linear_extrude", [](const shape& shp, const py::list& lst, bool center){ return servoce::make_linear_extrude(shp, vector3(lst[0].cast<double>(), lst[1].cast<double>(), lst[2].cast<double>()), center); }, py::arg("shp"), py::arg("vec"), py::arg("center") = false);
 	m.def("make_pipe", 			make_pipe, py::arg("prof"), py::arg("path"));
 	m.def("make_pipe_shell", 	make_pipe_shell, py::arg("prof"), py::arg("path"), py::arg("isFrenet") = false);
 
