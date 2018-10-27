@@ -19,5 +19,11 @@ int main() {
 		{ model3, servoce::blue },
 	};
 
-	servoce::see(scn);
+//	servoce::see(scn);
+	
+	servoce::viewer vw(scn);
+	servoce::view v = vw.create_view();
+
+	v.screen("screen.png");
+	//servoce::screen(scn);
 }

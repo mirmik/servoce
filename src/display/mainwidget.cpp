@@ -23,6 +23,7 @@
 #include <servoce/display.h>
 #include <local/display.h>
 
+#include <gxx/print.h>
 
 servoce::disp::MainWidget::MainWidget(QWidget* parent) : QMainWindow(parent) {
 	display = new DisplayWidget(this);
@@ -136,11 +137,8 @@ void servoce::disp::MainWidget::export_stl() {
 }
 
 void servoce::disp::MainWidget::screenshot() {
-	bool ok;
+	/*bool ok;
 
-	//QPixmap pixmap(size()); 
-	//render(&pixmap, QPoint(), QRegion(display->rect()));
-	
 	auto disp = display->grabFrameBuffer();
 
 	QFileDialog fileDialog(this, "Choose file to export");
@@ -154,23 +152,23 @@ void servoce::disp::MainWidget::screenshot() {
 
 	QFile file(path);
 	disp.save(&file, "PNG");
-	file.close();
+	file.close();*/
 
-	//QInputDialog *inputDialog = new QInputDialog();
-	//inputDialog->setTextValue("Test"); // has no effect
-	
-	//double d = QInputDialog::getDouble(this, tr("QInputDialog::getDouble()"),
-	  //                                 tr("Amount:"), 0.01, 0, 10, 5, &ok);
+	gxx::println("screen stub");
 
-	//if (display->display_on_init_list.size() != 1) {
-	 //   exit(1);
-		//gxx::panic("TODO");
-	//} 
+	/*bool ok;
 
-	//StlAPI_Writer stl_writer;
-	//stl_writer.SetDeflection(d);
-	//stl_writer.RelativeMode() = false;
-	//stl_writer.Write(display->display_on_init_list[0], path.toStdString().c_str());*/
+	ok = display->m_view->Dump("mirm.png", Graphic3d_BT_RGB);
+	gxx::println(ok);
+
+	ok = display->m_view->Dump("mirm.bmp", Graphic3d_BT_RGB);
+	gxx::println(ok);
+
+	ok = display->m_view->Dump("mirm.jpg", Graphic3d_BT_RGB);
+	gxx::println(ok);
+
+	ok = display->m_view->Dump("mirm.gif", Graphic3d_BT_RGB);
+	gxx::println(ok);*/
 }
 
 void servoce::disp::MainWidget::orient1() {

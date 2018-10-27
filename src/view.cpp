@@ -1,6 +1,8 @@
 #include <servoce/view.h>
 #include <local/OccViewContext.h>
 
+#include <gxx/debug/dprint.h>
+
 servoce::viewer::viewer()
 {
 	occ = new OccViewerContext();
@@ -68,10 +70,15 @@ void servoce::view::zoom(float a, float b, float aa, float ba)
 
 void servoce::view::screen(const std::string& path)
 {
+	dprln("1");
 	set_virtual_window(800, 600);
+	dprln("2");
 	set_triedron();
+	dprln("3");
 	fit_all();
+	dprln("4");
 	dump(path);
+	dprln("5");
 }
 
 void servoce::view::see(int width, int height)

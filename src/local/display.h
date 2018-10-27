@@ -23,7 +23,7 @@ namespace servoce
 {
 	namespace disp
 	{
-		class DisplayWidget : public QGLWidget
+		class DisplayWidget : public QWidget
 		{
 			Q_OBJECT
 
@@ -70,7 +70,7 @@ namespace servoce
 			virtual void onMouseMove(const int theFlags, const QPoint thePoint);
 
 		public:
-			DisplayWidget(QWidget* parent = nullptr) : QGLWidget(parent)
+			DisplayWidget(QWidget* parent = nullptr) : QWidget(parent)
 			{
 				//setAttribute(Qt::WA_PaintOnScreen, true);
 				setBackgroundRole( QPalette::NoRole );
