@@ -128,6 +128,7 @@ PYBIND11_MODULE(libservoce, m)
 
 	py::class_<view>(m, "View")
 	.def("set_window", &view::set_window)
+	.def("set_virtual_window", &view::set_virtual_window)
 	.def("set_triedron", &view::set_triedron)
 	.def("see", &view::see)
 	.def("redraw", &view::redraw)

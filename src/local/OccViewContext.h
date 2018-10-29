@@ -1,6 +1,8 @@
 #ifndef SERVOCE_OCCVIEWCONTEXT_H
 #define SERVOCE_OCCVIEWCONTEXT_H
 
+#include <string>
+
 #include <OpenGl_GraphicDriver.hxx>
 #undef Bool
 #undef CursorShape
@@ -76,7 +78,8 @@ public:
 
 	void set_virtual_window(int w, int h)
 	{
-		m_window = new Xw_Window (GetDisplayConnection(), "virtual", 0, 0, w, h);
+		static int i = 0;
+		m_window = new Xw_Window (GetDisplayConnection(), (std::string("virtual") + std::to_string(i++)).c_str(), 0, 0, w, h);
 		m_window->SetVirtual  (Standard_True);
 		winddesc = m_window->NativeHandle();
 		m_view->SetWindow  (m_window);
