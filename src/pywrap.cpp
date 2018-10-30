@@ -27,7 +27,6 @@ using namespace servoce;
 .def("mirrorXY", &TYPE::mirrorXY)				\
 .def("mirrorYZ", &TYPE::mirrorYZ)				\
 .def("mirrorXZ", &TYPE::mirrorXZ)				\
-.def("scale", [](TYPE& obj, double s, const py::list& tpl){ return obj.scale(s, point3(tpl[0].cast<double>(), tpl[1].cast<double>(), tpl[2].cast<double>())); }, py::arg("factor"), py::arg("center")) \
 .def("scale", (shape(TYPE::*)(double,point3))&TYPE::scale, py::arg("factor"), py::arg("center") = point3())
 
 PYBIND11_MODULE(libservoce, m)
@@ -191,6 +190,18 @@ PYBIND11_MODULE(libservoce, m)
 
 	//m.def("simplify_with_bspline", &simplify_with_bspline);
 	m.def("make_stl", &make_stl);
+}
 
+servoce::point3::point3(const py::list& lst) 
+{
+	if (lst.size() >= 1) x = lst[0].cast<double>();
+	if (lst.size() >= 2) y = lst[1].cast<double>();
+	if (lst.size() >= 3) z = lst[2].cast<double>();
+}
 
+servoce::vector3::vector3(const py::list& lst) 
+{
+	if (lst.size() >= 1) x = lst[0].cast<double>();
+	if (lst.size() >= 2) y = lst[1].cast<double>();
+	if (lst.size() >= 3) z = lst[2].cast<double>();
 }
