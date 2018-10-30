@@ -23,6 +23,7 @@ namespace servoce
 	shape make_helix(double pitch, double height, double radius, double angle = 0, bool leftHanded = false, bool newStyle = true);
 	shape make_long_helix(double pitch, double height, double radius, double angle = 0, bool leftHanded = false);
 
+	/// Сшить wire или edge между собой.
 	shape sew(const std::vector<const shape*>& arr);
 }
 
