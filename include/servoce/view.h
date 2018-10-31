@@ -16,6 +16,9 @@ namespace servoce
 	public:
 		view(OccViewWindow* view) : occ(view) {}
 
+		int w;
+		int h;
+
 		void set_virtual_window(int w, int h);
 		void set_window(int wind);
 

@@ -50,7 +50,12 @@ void servoce::view::must_be_resized() { occ->must_be_resized(); }
 void servoce::view::set_triedron() { occ->set_triedron(); }
 void servoce::view::dump(const std::string& path) { occ->dump(path); }
 void servoce::view::fit_all() { occ->fit_all(); }
-void servoce::view::set_virtual_window(int w, int h) { occ->set_virtual_window(w, h); }
+void servoce::view::set_virtual_window(int w, int h) 
+{ 
+	this->w = w;
+	this->h = h;
+	occ->set_virtual_window(w, h); 
+}
 void servoce::view::set_window(int n) { occ->set_window(n); }
 
 void servoce::view::set_projection(float a, float b, float c)
@@ -122,14 +127,14 @@ std::vector<unsigned char> servoce::view::rawarray()
 	Image_PixMap pixmap;
 	occ->m_view->ToPixMap(
 		pixmap, 
-		800, 
-		600 
+		w, 
+		h 
 		//Graphic3d_BT_RGB, 
 		//Standard_True, 
 		//V3d_SDO_MONO
 	);
 
-	return std::vector<unsigned char>(pixmap.Data(), pixmap.Data() + 3 * 800 * 600);
+	return std::vector<unsigned char>(pixmap.Data(), pixmap.Data() + 3 * w * h);
 }
 
 
