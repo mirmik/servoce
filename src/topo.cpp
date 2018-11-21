@@ -25,6 +25,7 @@
 #include <GProp_GProps.hxx>
 #include <BRepGProp.hxx>
 
+#include <algorithm>
 #include <cassert>
 
 servoce::shape::shape(const TopoDS_Shape& shp) : m_shp(new TopoDS_Shape(shp)) {}
@@ -132,7 +133,7 @@ servoce::shape servoce::shape::restore_string_dump(const std::string& in)
 
 servoce::shape servoce::shape::fillet(double r, const std::vector<int>& nums)
 {
-	if (TopAbs_FACE != m_shp->ShapeType())
+	if (TopAbs_SOLID == m_shp->ShapeType())
 	{
 		std::set<int>snums(nums.begin(), nums.end());
 		BRepFilletAPI_MakeFillet mk(*m_shp);//
@@ -149,41 +150,103 @@ servoce::shape servoce::shape::fillet(double r, const std::vector<int>& nums)
 
 		return mk.Shape();
 	}
-	else
+	else if (TopAbs_FACE == m_shp->ShapeType())
 	{
 		std::set<int>snums(nums.begin(), nums.end());
 		BRepFilletAPI_MakeFillet2d mk(Face());
 
-		int idx = 0;
+		std::vector<servoce::point3> pnts;
+		std::vector<servoce::point3> pnts_filtered;
 
-		for (TopExp_Explorer expWire(Shape(), TopAbs_WIRE); expWire.More(); expWire.Next())
+		if (nums.size() == 0)
 		{
-			BRepTools_WireExplorer explorer(TopoDS::Wire(expWire.Current()));
-
-			while (explorer.More())
+			for (TopExp_Explorer expWire(Shape(), TopAbs_WIRE); expWire.More(); expWire.Next())
 			{
-				if (nums.size() == 0 || snums.count(idx))mk.AddFillet(explorer.CurrentVertex(), r);
+				BRepTools_WireExplorer explorer(TopoDS::Wire(expWire.Current()));
 
-				explorer.Next();
-				++idx;
+				while (explorer.More())
+				{
+					const TopoDS_Vertex& vtx = explorer.CurrentVertex();
+					mk.AddFillet(vtx, r);
+
+					explorer.Next();
+				}
+			}
+		}
+
+		else
+		{
+			for (TopExp_Explorer expVertex(Shape(), TopAbs_VERTEX); expVertex.More(); expVertex.Next())
+			{
+				const TopoDS_Vertex& vtx = TopoDS::Vertex(expVertex.Current());
+				servoce::point3 pnt(vtx);
+				bool needadd = true;
+
+				for (auto& p : pnts)
+				{
+					if (point3::early(pnt, p))
+					{
+						needadd = false;
+						break;
+					}
+
+				}
+
+				if (needadd)
+					pnts.push_back(pnt);
+			}
+
+			std::sort(pnts.begin(), pnts.end(), [](const servoce::point3 & a, const servoce::point3 & b)
+			{
+				return servoce::point3::lexless_xyz(a, b);
+			});
+
+			for (unsigned int i = 0; i < pnts.size(); ++i)
+			{
+				if (snums.count(i))
+				{
+					pnts_filtered.emplace_back(pnts[i]);
+				}
+			}
+
+			for (TopExp_Explorer expWire(Shape(), TopAbs_WIRE); expWire.More(); expWire.Next())
+			{
+				BRepTools_WireExplorer explorer(TopoDS::Wire(expWire.Current()));
+
+				while (explorer.More())
+				{
+					const TopoDS_Vertex& vtx = explorer.CurrentVertex();
+
+					for (unsigned int i = 0; i < pnts_filtered.size(); ++i)
+					{
+						if (servoce::point3::early(servoce::point3(vtx), pnts_filtered[i]))
+							mk.AddFillet(vtx, r);
+					}
+
+					explorer.Next();
+				}
 			}
 		}
 
 		return mk.Shape();
+	}
+	else
+	{
+		throw std::runtime_error("Fillet argument should be Face or Solid");
 	}
 }
 
 servoce::point3 servoce::shape::center()
 {
 	GProp_GProps props;
-    BRepGProp::LinearProperties(Shape(), props);
-    gp_Pnt centerMass = props.CentreOfMass();
-    return point3(centerMass);
+	BRepGProp::LinearProperties(Shape(), props);
+	gp_Pnt centerMass = props.CentreOfMass();
+	return point3(centerMass);
 }
 
-servoce::shape servoce::make_section(const servoce::shape& shp) 
+servoce::shape servoce::make_section(const servoce::shape& shp)
 {
-	TopoDS_Face face = BRepBuilderAPI_MakeFace(gp_Pln(gp_Pnt(0,0,0), gp_Vec(0,0,1)));
+	TopoDS_Face face = BRepBuilderAPI_MakeFace(gp_Pln(gp_Pnt(0, 0, 0), gp_Vec(0, 0, 1)));
 	return BRepAlgoAPI_Common(shp.Shape(), face).Shape();
 }
 

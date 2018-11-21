@@ -5,6 +5,8 @@ class TopoDS_Vertex;
 
 class gp_Vec;
 class gp_Pnt;
+class gp_Vtx;
+class TopoDS_Vertex;
 
 namespace pybind11 
 {
@@ -27,20 +29,25 @@ namespace servoce
 		vector3 operator/(double a) const { return vector3(x / a, y / a, z / a); }
 
 		vector3(const pybind11::list&);
-	};
+	} __attribute__((packed));
 
 	struct point3
 	{
 		double x, y, z;
 		point3() : x(0), y(0), z(0) {}
 		point3(const gp_Pnt& pnt);
+		point3(const gp_Vtx& vtx);
+		point3(const TopoDS_Vertex& vtx);
 		point3(double x, double y) : x(x), y(y), z(0) {}
 		point3(double x, double y, double z) : x(x), y(y), z(z) {}
 		gp_Pnt Pnt() const;
 		TopoDS_Vertex Vtx() const;
 
 		point3(const pybind11::list&);
-	};
+
+		static bool lexless_xyz(const point3& a, const point3& b);
+		static bool early(const point3& a, const point3& b);
+	} __attribute__((packed));
 }
 
 #endif

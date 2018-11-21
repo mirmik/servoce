@@ -6,6 +6,8 @@
 #include <pybind11/operators.h>
 #include <pybind11/stl.h>
 
+#include <exception>
+
 namespace py = pybind11;
 using namespace servoce;
 
@@ -31,7 +33,7 @@ using namespace servoce;
 
 PYBIND11_MODULE(libservoce, m)
 {
-	//py::register_exception<RuntimeException>(m, "ServoceRuntimeException");
+	py::register_exception<std::runtime_error>(m, "std::runtime_error");
 
 	py::class_<point3>(m, "point3")
 	//DEF_TRANSFORM_OPERATIONS(point3)
@@ -73,7 +75,7 @@ PYBIND11_MODULE(libservoce, m)
 	.def(py::pickle(
 	[](const shape & self) { return b64::base64_encode(self.string_dump()); },
 	[](const std::string & in) { return shape::restore_string_dump(b64::base64_decode(in)); }))
-	.def("fillet", &shape::fillet, py::arg("r"), py::arg("nums"))
+	.def("fillet", &shape::fillet, py::arg("r"), py::arg("nums")=py::tuple())
 	.def("fill", &shape::fill)
 	.def("center", &shape::center)
 	.def("extrude", (shape(shape::*)(const vector3&, bool)) &shape::extrude, py::arg("vec"), py::arg("center") = false)
