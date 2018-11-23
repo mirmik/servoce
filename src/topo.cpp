@@ -133,7 +133,8 @@ servoce::shape servoce::shape::restore_string_dump(const std::string& in)
 
 servoce::shape servoce::shape::fillet(double r, const std::vector<int>& nums)
 {
-	if (TopAbs_SOLID == m_shp->ShapeType())
+	auto type = m_shp->ShapeType();
+	if (TopAbs_SOLID == type || TopAbs_COMPSOLID == type || type == TopAbs_COMPOUND)
 	{
 		std::set<int>snums(nums.begin(), nums.end());
 		BRepFilletAPI_MakeFillet mk(*m_shp);//
@@ -150,7 +151,7 @@ servoce::shape servoce::shape::fillet(double r, const std::vector<int>& nums)
 
 		return mk.Shape();
 	}
-	else if (TopAbs_FACE == m_shp->ShapeType())
+	else if (TopAbs_FACE == type)
 	{
 		std::set<int>snums(nums.begin(), nums.end());
 		BRepFilletAPI_MakeFillet2d mk(Face());
@@ -232,7 +233,7 @@ servoce::shape servoce::shape::fillet(double r, const std::vector<int>& nums)
 	}
 	else
 	{
-		throw std::runtime_error("Fillet argument should be Face or Solid");
+		throw std::runtime_error("Fillet argument has unsuported type.");
 	}
 }
 
