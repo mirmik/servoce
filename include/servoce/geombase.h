@@ -40,6 +40,7 @@ namespace servoce
 		point3(const TopoDS_Vertex& vtx);
 		point3(double x, double y) : x(x), y(y), z(0) {}
 		point3(double x, double y, double z) : x(x), y(y), z(z) {}
+		point3(double* arr) : x(arr[0]), y(arr[1]), z(arr[2]) {}
 		gp_Pnt Pnt() const;
 		TopoDS_Vertex Vtx() const;
 
@@ -47,6 +48,10 @@ namespace servoce
 
 		static bool lexless_xyz(const point3& a, const point3& b);
 		static bool early(const point3& a, const point3& b);
+
+		bool operator < (const servoce::point3& b) { 
+			return lexless_xyz(*this, b);
+		}
 	} __attribute__((packed));
 }
 

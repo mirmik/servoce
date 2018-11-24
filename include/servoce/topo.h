@@ -94,6 +94,8 @@ namespace servoce
 		servoce::shape extrude(double z, bool center = false);
 		servoce::shape extrude(const vector3& vec, bool center = false);
 		servoce::shape extrude(double x, double y, double z, bool center = false);
+
+		std::vector<servoce::point3> vertices();
 	};
 
 	shape make_section(const shape& shp);

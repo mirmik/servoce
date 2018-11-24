@@ -177,30 +177,7 @@ servoce::shape servoce::shape::fillet(double r, const std::vector<int>& nums)
 
 		else
 		{
-			for (TopExp_Explorer expVertex(Shape(), TopAbs_VERTEX); expVertex.More(); expVertex.Next())
-			{
-				const TopoDS_Vertex& vtx = TopoDS::Vertex(expVertex.Current());
-				servoce::point3 pnt(vtx);
-				bool needadd = true;
-
-				for (auto& p : pnts)
-				{
-					if (point3::early(pnt, p))
-					{
-						needadd = false;
-						break;
-					}
-
-				}
-
-				if (needadd)
-					pnts.push_back(pnt);
-			}
-
-			std::sort(pnts.begin(), pnts.end(), [](const servoce::point3 & a, const servoce::point3 & b)
-			{
-				return servoce::point3::lexless_xyz(a, b);
-			});
+			pnts = vertices();
 
 			for (unsigned int i = 0; i < pnts.size(); ++i)
 			{
@@ -255,4 +232,36 @@ servoce::shape servoce::shape::fill()
 {
 	auto ret = BRepBuilderAPI_MakeFace(Wire());
 	return ret.Shape();
+}
+
+std::vector<servoce::point3> servoce::shape::vertices() 
+{
+	std::vector<servoce::point3> pnts;	
+
+	for (TopExp_Explorer expVertex(Shape(), TopAbs_VERTEX); expVertex.More(); expVertex.Next())
+	{
+		const TopoDS_Vertex& vtx = TopoDS::Vertex(expVertex.Current());
+		servoce::point3 pnt(vtx);
+		bool needadd = true;
+
+		for (auto& p : pnts)
+		{
+			if (point3::early(pnt, p))
+			{
+				needadd = false;
+				break;
+			}
+
+		}
+
+		if (needadd)
+			pnts.push_back(pnt);
+	}
+
+	std::sort(pnts.begin(), pnts.end(), [](const servoce::point3 & a, const servoce::point3 & b)
+	{
+		return servoce::point3::lexless_xyz(a, b);
+	});
+
+	return pnts;
 }

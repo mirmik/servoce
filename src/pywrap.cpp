@@ -43,12 +43,27 @@ PYBIND11_MODULE(libservoce, m)
 	.def_readwrite("x", &point3::x)
 	.def_readwrite("y", &point3::y)
 	.def_readwrite("z", &point3::z)
+	.def("__eq__", [](const point3 & a, const point3 & b) 
+	{
+		return point3::early(a, b);
+	})
 	.def("__repr__", [](const point3 & pnt)
 	{
 		char buf[128];
 		sprintf(buf, "point3(%f,%f,%f)", pnt.x, pnt.y, pnt.z);
 		return std::string(buf);
 	})
+	.def(py::pickle(
+	[](const point3 & self) { 
+		double arr[3] = {self.x,self.y,self.z};
+		return b64::base64_encode((uint8_t*)&arr, 3*sizeof(double)); 
+	},
+	[](const std::string & in) { 
+		double arr[3];
+		std::string decoded = b64::base64_decode(in);
+		memcpy(&arr, decoded.data(), 3*sizeof(double));
+		return point3(arr); 
+	}))
 	;
 
 	py::class_<vector3>(m, "vector3")
@@ -77,6 +92,7 @@ PYBIND11_MODULE(libservoce, m)
 	[](const std::string & in) { return shape::restore_string_dump(b64::base64_decode(in)); }))
 	.def("fillet", &shape::fillet, py::arg("r"), py::arg("nums")=py::tuple())
 	.def("fill", &shape::fill)
+	.def("vertices", &shape::vertices)
 	.def("center", &shape::center)
 	.def("extrude", (shape(shape::*)(const vector3&, bool)) &shape::extrude, py::arg("vec"), py::arg("center") = false)
 	.def("extrude", (shape(shape::*)(double, double, double, bool)) &shape::extrude, py::arg("x"), py::arg("y"), py::arg("z"), py::arg("center") = false)
