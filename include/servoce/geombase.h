@@ -1,6 +1,8 @@
 #ifndef SERVOCE_GEOMBASE_H
 #define SERVOCE_GEOMBASE_H
 
+#include <servoce/linalg/linalg.h>
+
 class TopoDS_Vertex;
 
 class gp_Vec;
@@ -31,16 +33,17 @@ namespace servoce
 		vector3(const pybind11::list&);
 	} __attribute__((packed));
 
-	struct point3
+	struct point3 : public linalg::vec<double, 3>
 	{
-		double x, y, z;
-		point3() : x(0), y(0), z(0) {}
+		using vec = linalg::vec<double, 3>;
+		//double x, y, z;
+		point3() : vec{0,0,0} {}
 		point3(const gp_Pnt& pnt);
 		point3(const gp_Vtx& vtx);
 		point3(const TopoDS_Vertex& vtx);
-		point3(double x, double y) : x(x), y(y), z(0) {}
-		point3(double x, double y, double z) : x(x), y(y), z(z) {}
-		point3(double* arr) : x(arr[0]), y(arr[1]), z(arr[2]) {}
+		point3(double x, double y) : vec{ x,y,0 } {}
+		point3(double x, double y, double z) : vec { x,y,z } {}
+		point3(double* arr) : vec { arr } {}
 		gp_Pnt Pnt() const;
 		TopoDS_Vertex Vtx() const;
 
