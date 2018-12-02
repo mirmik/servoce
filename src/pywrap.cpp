@@ -44,7 +44,7 @@ PYBIND11_MODULE(libservoce, m)
 	.def_readwrite("x", &point3::x)
 	.def_readwrite("y", &point3::y)
 	.def_readwrite("z", &point3::z)
-	.def("__eq__", [](const point3 & a, const point3 & b) 
+	.def("__eq__", [](const point3 & a, const point3 & b)
 	{
 		return point3::early(a, b);
 	})
@@ -55,15 +55,17 @@ PYBIND11_MODULE(libservoce, m)
 		return std::string(buf);
 	})
 	.def(py::pickle(
-	[](const point3 & self) { 
-		double arr[3] = {self.x,self.y,self.z};
-		return b64::base64_encode((uint8_t*)&arr, 3*sizeof(double)); 
+	         [](const point3 & self)
+	{
+		double arr[3] = {self.x, self.y, self.z};
+		return b64::base64_encode((uint8_t*)&arr, 3 * sizeof(double));
 	},
-	[](const std::string & in) { 
+	[](const std::string & in)
+	{
 		double arr[3];
 		std::string decoded = b64::base64_decode(in);
-		memcpy(&arr, decoded.data(), 3*sizeof(double));
-		return point3(arr); 
+		memcpy(&arr, decoded.data(), 3 * sizeof(double));
+		return point3(arr);
 	}))
 	;
 
@@ -91,7 +93,7 @@ PYBIND11_MODULE(libservoce, m)
 	.def(py::pickle(
 	[](const shape & self) { return b64::base64_encode(self.string_dump()); },
 	[](const std::string & in) { return shape::restore_string_dump(b64::base64_decode(in)); }))
-	.def("fillet", &shape::fillet, py::arg("r"), py::arg("nums")=py::tuple())
+	.def("fillet", &shape::fillet, py::arg("r"), py::arg("nums") = py::tuple())
 	.def("fill", &shape::fill)
 	.def("vertices", &shape::vertices)
 	.def("center", &shape::center)
@@ -109,7 +111,7 @@ PYBIND11_MODULE(libservoce, m)
 
 	m.def("make_linear_extrude", (shape(*)(const shape&, const vector3&, bool)) &make_linear_extrude, py::arg("shp"), py::arg("vec"), py::arg("center") = false);
 	m.def("make_linear_extrude", (shape(*)(const shape&, double, bool)) &make_linear_extrude, py::arg("shp"), py::arg("z"), py::arg("center") = false);
-	m.def("make_linear_extrude", [](const shape& shp, const py::list& lst, bool center){ return servoce::make_linear_extrude(shp, vector3(lst[0].cast<double>(), lst[1].cast<double>(), lst[2].cast<double>()), center); }, py::arg("shp"), py::arg("vec"), py::arg("center") = false);
+	m.def("make_linear_extrude", [](const shape & shp, const py::list & lst, bool center) { return servoce::make_linear_extrude(shp, vector3(lst[0].cast<double>(), lst[1].cast<double>(), lst[2].cast<double>()), center); }, py::arg("shp"), py::arg("vec"), py::arg("center") = false);
 	m.def("make_pipe", 			make_pipe, py::arg("prof"), py::arg("path"));
 	m.def("make_pipe_shell", 	make_pipe_shell, py::arg("prof"), py::arg("path"), py::arg("isFrenet") = false);
 
@@ -138,6 +140,12 @@ PYBIND11_MODULE(libservoce, m)
 	.def("add", (void(scene::*)(const shape&, color))&scene::add, py::arg("shape"), py::arg("color") = color{0.6, 0.6, 0.8})
 	.def("add", (void(scene::*)(const point3&, color))&scene::add, py::arg("shape"), py::arg("color") = color{0.6, 0.6, 0.8})
 	.def("append", (void(scene::*)(const scene&))&scene::append, py::arg("scene"))
+	.def("__getitem__", [](const scene & s, size_t i) { return s[i]; })
+	;
+
+	py::class_<shape_view>(m, "ShapeView")
+	.def("shape", &shape_view::shape)
+	.def("color", &shape_view::color)
 	;
 
 	py::class_<viewer>(m, "Viewer")
@@ -211,19 +219,27 @@ PYBIND11_MODULE(libservoce, m)
 	m.def("scale", scale, py::arg("factor"), py::arg("center") = servoce::point3());
 
 	//m.def("simplify_with_bspline", &simplify_with_bspline);
+
+//CONVERT
 	m.def("make_stl", &make_stl);
+	m.def("brep_write", &brep_write);
+	m.def("brep_read", &brep_read);
 }
 
-servoce::point3::point3(const py::list& lst) 
+servoce::point3::point3(const py::list& lst)
 {
 	if (lst.size() >= 1) x = lst[0].cast<double>();
+
 	if (lst.size() >= 2) y = lst[1].cast<double>();
+
 	if (lst.size() >= 3) z = lst[2].cast<double>();
 }
 
-servoce::vector3::vector3(const py::list& lst) 
+servoce::vector3::vector3(const py::list& lst)
 {
 	if (lst.size() >= 1) x = lst[0].cast<double>();
+
 	if (lst.size() >= 2) y = lst[1].cast<double>();
+
 	if (lst.size() >= 3) z = lst[2].cast<double>();
 }

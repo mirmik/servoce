@@ -1,5 +1,6 @@
 #include <servoce/view.h>
 #include <local/OccViewContext.h>
+//#include <Standart_Real.hxx>
 
 //#include <gxx/debug/dprint.h>
 
@@ -123,12 +124,16 @@ std::vector<unsigned char> servoce::view::rawarray()
 //	set_virtual_window(800, 600);
 //	fit_all();
 //	redraw();
+	double Width; 
+	double Height;
+	
+	occ->m_view->Size(Width, Height); 
 
 	Image_PixMap pixmap;
 	occ->m_view->ToPixMap(
 		pixmap, 
-		w, 
-		h 
+		Width, 
+		Height 
 		//Graphic3d_BT_RGB, 
 		//Standard_True, 
 		//V3d_SDO_MONO
@@ -214,43 +219,6 @@ void servoce::view::see(int width, int height)
 }
 
 
-servoce::shape_view::shape_view(const servoce::shape& a, servoce::color color)
-{
-	m_ashp = new AIS_Shape(a.Shape());
-	Quantity_Color shpcolor (color.r, color.g, color.b,  Quantity_TOC_RGB);
-	m_ashp->SetColor(shpcolor);
-	m_ashp->SetMaterial(Graphic3d_NOM_STEEL);
-}
-
-servoce::shape_view::shape_view(const servoce::shape_view& a)
-{
-	m_ashp = new AIS_Shape(*a.m_ashp);
-}
-
-servoce::shape_view::shape_view(servoce::shape_view&& a)
-{
-	m_ashp = a.m_ashp;
-	a.m_ashp = nullptr;
-}
-
-servoce::shape_view& servoce::shape_view::operator= (const servoce::shape_view& oth)
-{
-	if (m_ashp != oth.m_ashp)
-	{
-		delete m_ashp;
-		m_ashp = new AIS_Shape(*oth.m_ashp);
-	}
-
-	return *this;
-}
-
-servoce::shape_view& servoce::shape_view::operator= (servoce::shape_view&& oth)
-{
-	delete m_ashp;
-	m_ashp = oth.m_ashp;
-	m_ashp = nullptr;
-	return *this;
-}
 
 
 void servoce::see(const servoce::scene& scn)

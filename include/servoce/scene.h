@@ -23,10 +23,15 @@ namespace servoce
 	struct shape_view
 	{
 		AIS_Shape* m_ashp;
+		servoce::color m_color;
+
 		shape_view() {}
 		shape_view(const servoce::shape& a, servoce::color color = servoce::color {0.6, 0.6, 0.8});
 		shape_view(const shape_view& oth);
 		shape_view(shape_view&& oth);
+
+		servoce::shape shape();
+		servoce::color color();
 
 		shape_view& operator=(const shape_view& oth);
 		shape_view& operator=(shape_view&& oth);
@@ -53,6 +58,16 @@ namespace servoce
 		void append(const servoce::scene& scn)
 		{
 			shapes.insert(shapes.end(), scn.shapes.begin(), scn.shapes.end());
+		}
+
+		shape_view& operator[](size_t i) 
+		{
+			return shapes[i];
+		}
+
+		const shape_view& operator[](size_t i) const
+		{
+			return shapes[i];
 		}
 	};
 }
