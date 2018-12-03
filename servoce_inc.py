@@ -153,7 +153,7 @@ module('servoce_sources',
 #		"shower/dispwidget.cpp",
 #		"shower/dispwidget_qt.cpp",
 
-		"occversion.cpp",
+#		"occversion.cpp",
 
 		#"widgets/gtk_widget.cpp"
 	],
@@ -165,10 +165,10 @@ module('servoce_sources',
 	include_modules = [
 		submodule("liboce"), 
 		submodule("libqt"), 
-		submodule("gxx.include"),
-		submodule("gxx", "posix"),
-		submodule("gxx.print", "cout"),
-		submodule("gxx.dprint", "cout"),
+#		submodule("gxx.include"),
+#		submodule("gxx", "posix"),
+#		submodule("gxx.print", "cout"),
+#		submodule("gxx.dprint", "cout"),
 	],
 
 	libs = ['X11'],

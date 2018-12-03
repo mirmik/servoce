@@ -23,7 +23,7 @@
 #include <servoce/display.h>
 #include <local/display.h>
 
-#include <gxx/print.h>
+//#include <gxx/print.h>
 
 servoce::disp::MainWidget::MainWidget(QWidget* parent) : QMainWindow(parent) {
 	display = new DisplayWidget(this);

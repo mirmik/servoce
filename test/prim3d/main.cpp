@@ -2,11 +2,11 @@
 #include <servoce/display.h>
 
 int main() {
-	auto box = servoce::make_box(10,10,10,true);
-	auto sphere = servoce::make_sphere(10);
-	auto cylinder = servoce::make_cylinder(10,10,true);
-	auto cone = servoce::make_cone(10,5,10,true);
-	auto torus = servoce::make_torus(10, 3);
+	auto box = servoce::box(10,10,10,true);
+	auto sphere = servoce::sphere(10);
+	auto cylinder = servoce::cylinder(10,10,true);
+	auto cone = servoce::cone(10,5,10,true);
+	auto torus = servoce::torus(10, 3);
 
 	servoce::scene scn;
 	scn.add(sphere 	.left(60), 	servoce::black);
