@@ -6,26 +6,6 @@
 
 namespace servoce
 {
-	//prim3d
-	[[deprecated]]
-	shape make_box(double x, double y, double z, bool center = false);
-	
-	[[deprecated]]
-	shape make_sphere(double r);
-	
-	[[deprecated]]
-	shape make_cylinder(double r, double h, bool center = false);
-	
-	[[deprecated]]
-	shape make_cylinder(double r, double h, double angle, bool center = false);
-	
-	[[deprecated]]
-	shape make_cone(double r1, double r2, double h, bool center = false);
-	
-	[[deprecated]]
-	shape make_torus(double r1, double r2);
-
-
 	shape box(double x, double y, double z, bool center = false);
 	shape sphere(double r);
 	shape cylinder(double r, double h, bool center = false);

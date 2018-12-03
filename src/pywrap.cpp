@@ -105,13 +105,6 @@ PYBIND11_MODULE(libservoce, m)
 	;
 
 //PRIM3D
-	m.def("make_box", 		box, py::arg("x"), py::arg("y"), py::arg("z"), py::arg("center") = false);
-	m.def("make_sphere", 	sphere, py::arg("r"));
-	m.def("make_cylinder", 	(shape(*)(double, double, bool)) &cylinder, py::arg("r"), py::arg("h"), py::arg("center") = false);
-	m.def("make_cylinder", 	(shape(*)(double, double, double, bool)) &cylinder, py::arg("r"), py::arg("h"), py::arg("angle"), py::arg("center") = false);
-	m.def("make_cone", 		cone, py::arg("r1"), py::arg("r2"), py::arg("h"), py::arg("center") = false);
-	m.def("make_torus", 	torus, py::arg("r1"), py::arg("r2"));
-
 	m.def("box", 		box, py::arg("x"), py::arg("y"), py::arg("z"), py::arg("center") = false);
 	m.def("sphere", 	sphere, py::arg("r"));
 	m.def("cylinder", 	(shape(*)(double, double, bool)) &cylinder, py::arg("r"), py::arg("h"), py::arg("center") = false);
@@ -127,13 +120,6 @@ PYBIND11_MODULE(libservoce, m)
 	m.def("make_pipe_shell", 	make_pipe_shell, py::arg("prof"), py::arg("path"), py::arg("isFrenet") = false);
 
 //PRIM2D
-	m.def("make_circle", 	(shape(*)(double)) &circle, py::arg("r"));
-	m.def("make_circle", 	(shape(*)(double, double)) &circle, py::arg("r"), py::arg("angle"));
-	m.def("make_ngon", 		ngon, py::arg("r"), py::arg("n"));
-	m.def("make_square", 	square, py::arg("a"), py::arg("center") = false);
-	m.def("make_rectangle", rectangle, py::arg("a"), py::arg("b"), py::arg("center") = false);
-	m.def("make_polygon", 	(shape(*)(const std::vector<point3>&))&polygon, py::arg("pnts"));
-
 	m.def("square", 	square, py::arg("a"), py::arg("center") = false);
 	m.def("rectangle", 	rectangle, py::arg("a"), py::arg("b"), py::arg("center") = false);
 	m.def("circle", 	(shape(*)(double)) &circle, py::arg("r"));

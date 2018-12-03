@@ -16,60 +16,6 @@
 
 #include <BRepOffsetAPI_MakePipe.hxx>
 
-servoce::shape servoce::make_circle(double r) { 
-	gp_Circ EL ( gp::XOY(), r );
-	Handle(Geom_Circle) anCircle = GC_MakeCircle(EL).Value();
-	TopoDS_Edge aEdge = BRepBuilderAPI_MakeEdge( anCircle );
-	TopoDS_Wire aCircle = BRepBuilderAPI_MakeWire( aEdge );
-	return BRepBuilderAPI_MakeFace(aCircle).Shape();
-}
-
-servoce::shape servoce::make_circle(double r, double angle) { 
-	gp_Circ EL ( gp::XOY(), r );
-	Handle(Geom_Circle) anCircle = GC_MakeCircle(EL).Value();
-	TopoDS_Edge aEdge = BRepBuilderAPI_MakeEdge( anCircle, 0, angle );
-	TopoDS_Edge aEdge1 = BRepBuilderAPI_MakeEdge( gp_Pnt(0,0,0), gp_Pnt(r,0,0) );
-	TopoDS_Edge aEdge2 = BRepBuilderAPI_MakeEdge( gp_Pnt(0,0,0), gp_Pnt(r*cos(angle),r*sin(angle),0)  );
-	TopoDS_Wire aCircle = BRepBuilderAPI_MakeWire( aEdge, aEdge1, aEdge2 );
-	return BRepBuilderAPI_MakeFace(aCircle).Shape();
-}
-
-servoce::shape servoce::make_polygon(const servoce::point3* pnts, size_t size) {
-	BRepBuilderAPI_MakePolygon mk;
-	for (uint i = 0; i < size; ++i) mk.Add(pnts[i].Pnt());
-	mk.Close();
-	return BRepBuilderAPI_MakeFace(mk).Shape();
-} 
-
-servoce::shape servoce::make_polygon(const std::vector<servoce::point3>& pnts) {
-	return make_polygon(pnts.data(), pnts.size());
-} 
-
-servoce::shape servoce::make_ngon(double r, int n) { 
-	double angle;
-	servoce::point3* pnts = (servoce::point3*) alloca(sizeof(servoce::point3) * n);
-	for (int i = 0; i < n; ++i) {
-		angle = 2 * M_PI / n * i;
-		pnts[i] = servoce::point3(r*cos(angle), r*sin(angle), 0);
-	}
-	return make_polygon(pnts, n);
-}
-
-servoce::shape servoce::make_rectangle(double a, double b, bool center) { 
-	if (center) {
-		double x = a/2;
-		double y = b/2;
-		return make_polygon({{-x,-y},{x,-y},{x,y},{-x,y}});
-	}
-	else {
-		return make_polygon({{0,0},{0,b},{a,b},{a,0}});
-	}
-}
-
-servoce::shape servoce::make_square(double a, bool center) { 
-	return make_rectangle(a,a,center);
-}
-
 servoce::shape servoce::circle(double r) { 
 	gp_Circ EL ( gp::XOY(), r );
 	Handle(Geom_Circle) anCircle = GC_MakeCircle(EL).Value();
@@ -96,7 +42,7 @@ servoce::shape servoce::polygon(const servoce::point3* pnts, size_t size) {
 } 
 
 servoce::shape servoce::polygon(const std::vector<servoce::point3>& pnts) {
-	return make_polygon(pnts.data(), pnts.size());
+	return polygon(pnts.data(), pnts.size());
 } 
 
 servoce::shape servoce::ngon(double r, int n) { 
@@ -106,22 +52,22 @@ servoce::shape servoce::ngon(double r, int n) {
 		angle = 2 * M_PI / n * i;
 		pnts[i] = servoce::point3(r*cos(angle), r*sin(angle), 0);
 	}
-	return make_polygon(pnts, n);
+	return polygon(pnts, n);
 }
 
 servoce::shape servoce::rectangle(double a, double b, bool center) { 
 	if (center) {
 		double x = a/2;
 		double y = b/2;
-		return make_polygon({{-x,-y},{x,-y},{x,y},{-x,y}});
+		return polygon({{-x,-y},{x,-y},{x,y},{-x,y}});
 	}
 	else {
-		return make_polygon({{0,0},{0,b},{a,b},{a,0}});
+		return polygon({{0,0},{0,b},{a,b},{a,0}});
 	}
 }
 
 servoce::shape servoce::square(double a, bool center) { 
-	return make_rectangle(a,a,center);
+	return rectangle(a,a,center);
 }
 
 

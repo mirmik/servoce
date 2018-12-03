@@ -34,11 +34,6 @@ shape servoce::box(double x, double y, double z, bool center)
     }
 }
 
-shape servoce::make_box(double x, double y, double z, bool center) 
-{
-    return box(x,y,z,center);
-}
-
 shape servoce::cylinder(double r, double h, bool center)
 {
     if (!center)
@@ -52,12 +47,6 @@ shape servoce::cylinder(double r, double h, bool center)
     }
 }
 
-shape servoce::make_cylinder(double r, double h, bool center) 
-{
-    return cylinder(r,h,center);
-}
-
-
 shape servoce::cylinder(double r, double h, double angle, bool center)
 {
     if (!center)
@@ -69,10 +58,6 @@ shape servoce::cylinder(double r, double h, double angle, bool center)
         gp_Ax2 ax2(gp_Pnt(0, 0, -h / 2), gp_Vec(0, 0, 1));
         return BRepPrimAPI_MakeCylinder(ax2, r, h, angle).Solid();
     }
-}
-shape servoce::make_cylinder(double r, double h, double angle, bool center) 
-{
-    return cylinder(r,h,angle,center);
 }
 
 shape servoce::cone(double r1, double r2, double h, bool center)
@@ -88,29 +73,14 @@ shape servoce::cone(double r1, double r2, double h, bool center)
     }
 }
 
-shape servoce::make_cone(double r1, double r2, double h, bool center) 
-{
-    return cone(r1,r2,h,center);
-}
-
 shape servoce::sphere(double r)
 {
     return BRepPrimAPI_MakeSphere(r).Solid();
 }
 
-shape servoce::make_sphere(double r)
-{
-    return servoce::sphere(r);
-}
-
 shape servoce::torus(double r1, double r2)
 {
     return BRepPrimAPI_MakeTorus(r1, r2).Solid();
-}
-
-shape servoce::make_torus(double r1, double r2) 
-{
-    return torus(r1,r2);
 }
 
 shape servoce::make_linear_extrude(const shape& base, const vector3& vec, bool center)
