@@ -230,6 +230,15 @@ PYBIND11_MODULE(libservoce, m)
 	m.def("make_stl", &make_stl);
 	m.def("brep_write", &brep_write);
 	m.def("brep_read", &brep_read);
+
+//TEST
+	m.def("test", [](py::object o)
+		{
+			std::cout << "test" << std::endl;
+			auto write_attr = o.attr("write");
+			write_attr("hello");
+		});
+
 }
 
 servoce::point3::point3(const py::list& lst)
