@@ -11,10 +11,16 @@
 #include <gp_Ax1.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Trsf.hxx>
+#include <gp_GTrsf.hxx>
 
 #include <BRepBuilderAPI_Transform.hxx>
+#include <BRepBuilderAPI_GTransform.hxx>
 
-servoce::transformation::transformation(const transformation& oth) : trsf(new gp_Trsf(*oth.trsf)) {}
+servoce::transformation::transformation(const transformation& oth)
+	: trsf(new gp_Trsf(*oth.trsf)) {}
+
+servoce::general_transformation::general_transformation(const general_transformation& oth)
+	: gtrsf(new gp_GTrsf(*oth.gtrsf)) {}
 
 servoce::transformation servoce::rotateX(double a)
 {
@@ -66,6 +72,11 @@ servoce::shape servoce::transformation::operator()(const servoce::shape& shp) co
 	return BRepBuilderAPI_Transform(shp.Shape(), *trsf, true).Shape();
 }
 
+servoce::shape servoce::general_transformation::operator()(const servoce::shape& shp) const
+{
+	return BRepBuilderAPI_GTransform(shp.Shape(), *gtrsf, true).Shape();
+}
+
 servoce::transformation servoce::transformation::operator()(const servoce::transformation& oth) const
 {
 	return *this * oth;
@@ -76,7 +87,14 @@ servoce::transformation  servoce::transformation::operator*(const servoce::trans
 	return servoce::transformation(new gp_Trsf(this->trsf->Multiplied(*oth.trsf)));
 }
 
-servoce::transformation::~transformation() { delete trsf; }
+servoce::transformation::~transformation()
+{
+	delete trsf;
+}
+servoce::general_transformation::~general_transformation()
+{
+	delete gtrsf;
+}
 
 servoce::transformation servoce::translate(double x, double y)
 {
@@ -95,6 +113,27 @@ servoce::transformation servoce::scale(double s, point3 center)
 	auto trsf = new gp_Trsf();
 	trsf->SetScale(center.Pnt(), s);
 	return servoce::transformation(trsf);
+}
+
+servoce::general_transformation servoce::scaleX(double s)
+{
+	auto gtrsf = new gp_GTrsf();
+	gtrsf->SetVectorialPart(gp_Mat(s,0,0,0,1,0,0,0,1));
+	return servoce::general_transformation(gtrsf);
+}
+
+servoce::general_transformation servoce::scaleY(double s)
+{
+	auto gtrsf = new gp_GTrsf();
+	gtrsf->SetVectorialPart(gp_Mat(1,0,0,0,s,0,0,0,1));
+	return servoce::general_transformation(gtrsf);
+}
+
+servoce::general_transformation servoce::scaleZ(double s)
+{
+	auto gtrsf = new gp_GTrsf();
+	gtrsf->SetVectorialPart(gp_Mat(1,0,0,0,1,0,0,0,s));
+	return servoce::general_transformation(gtrsf);
 }
 
 servoce::transformation servoce::translate(const vector3& vec)
@@ -159,9 +198,19 @@ void servoce::transformation::dump(std::ostream& out) const
 	out.write((char*)trsf, sizeof(gp_Trsf));
 }
 
+void servoce::general_transformation::dump(std::ostream& out) const
+{
+	out.write((char*)gtrsf, sizeof(gp_GTrsf));
+}
+
 void servoce::transformation::load(std::istream& in)
 {
 	in.read((char*)trsf, sizeof(gp_Trsf));
+}
+
+void servoce::general_transformation::load(std::istream& in)
+{
+	in.read((char*)gtrsf, sizeof(gp_GTrsf));
 }
 
 std::string servoce::transformation::string_dump() const
@@ -177,6 +226,22 @@ servoce::transformation servoce::transformation::restore_string_dump(const std::
 	std::stringstream sstrm(in);
 	servoce::transformation tr;
 	tr.trsf = new gp_Trsf;
+	tr.load(sstrm);
+	return tr;
+}
+
+std::string servoce::general_transformation::string_dump() const
+{
+	std::stringstream sstrm;
+	dump(sstrm);
+	return sstrm.str();
+}
+
+servoce::general_transformation servoce::general_transformation::restore_string_dump(const std::string& in)
+{
+	std::stringstream sstrm(in);
+	servoce::general_transformation tr;
+	tr.gtrsf = new gp_GTrsf;
 	tr.load(sstrm);
 	return tr;
 }

@@ -73,6 +73,19 @@ shape servoce::cone(double r1, double r2, double h, bool center)
     }
 }
 
+shape servoce::cone(double r1, double r2, double h, double angle, bool center)
+{
+    if (!center)
+    {
+        return BRepPrimAPI_MakeCone(r1, r2, h, angle).Solid();
+    }
+    else
+    {
+        gp_Ax2 ax2(gp_Pnt(0, 0, -h / 2), gp_Vec(0, 0, 1));
+        return BRepPrimAPI_MakeCone(ax2, r1, r2, h, angle).Solid();
+    }
+}
+
 shape servoce::sphere(double r)
 {
     return BRepPrimAPI_MakeSphere(r).Solid();

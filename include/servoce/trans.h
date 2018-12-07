@@ -4,6 +4,7 @@
 #include <servoce/geombase.h>
 
 class gp_Trsf;
+class gp_GTrsf;
 
 namespace servoce
 {
@@ -28,7 +29,7 @@ namespace servoce
 		transformation operator()(const servoce::transformation& sld) const;
 		transformation operator*(const servoce::transformation& oth) const;
 
-		transformation() {}
+		transformation() : trsf(nullptr) {}
 		~transformation();
 
 		void dump(std::ostream& out) const;
@@ -36,6 +37,33 @@ namespace servoce
 
 		std::string string_dump() const;
 		static transformation restore_string_dump(const std::string& in);
+	};
+
+	struct general_transformation
+	{
+		gp_GTrsf* gtrsf;
+		//transformation(){};
+		general_transformation(gp_GTrsf* gtrsf) : gtrsf(gtrsf) {};
+		general_transformation(const general_transformation& oth); //: trsf(new oth.trsf) {}
+		general_transformation(general_transformation&& oth) : gtrsf(oth.gtrsf) { oth.gtrsf = nullptr; }
+		//virtual void init_native(gp_Trsf*) const;
+		shape operator()(const servoce::shape& sld) const;
+		//solid operator()(const servoce::solid& sld) const;
+		//face operator()(const servoce::face& sld) const;
+		//wire operator()(const servoce::wire& sld) const;
+		//point3 operator()(const servoce::point3& sld) const;
+		//vector3 operator()(const servoce::vector3& sld) const;
+		//general_transformation operator()(const servoce::transformation& sld) const;
+		//general_transformation operator*(const servoce::transformation& oth) const;
+
+		general_transformation() : gtrsf(nullptr) {}
+		~general_transformation();
+
+		void dump(std::ostream& out) const;
+		void load(std::istream& in);
+
+		std::string string_dump() const;
+		static general_transformation restore_string_dump(const std::string& in);
 	};
 
 	//struct complex_transformation : public transformation {
@@ -100,6 +128,11 @@ namespace servoce
 	transformation right(double);
 
 	transformation scale(double, point3 center = point3());
+
+	//Non Aphine Transforms
+	general_transformation scaleX(double);
+	general_transformation scaleY(double);
+	general_transformation scaleZ(double);
 }
 
 #endif

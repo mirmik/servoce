@@ -122,7 +122,8 @@ PYBIND11_MODULE(libservoce, m)
 	m.def("sphere", 	sphere, py::arg("r"));
 	m.def("cylinder", 	(shape(*)(double, double, bool)) &cylinder, py::arg("r"), py::arg("h"), py::arg("center") = false);
 	m.def("cylinder", 	(shape(*)(double, double, double, bool)) &cylinder, py::arg("r"), py::arg("h"), py::arg("angle"), py::arg("center") = false);
-	m.def("cone", 		cone, py::arg("r1"), py::arg("r2"), py::arg("h"), py::arg("center") = false);
+	m.def("cone", 		(shape(*)(double, double, double, bool)) &cone, py::arg("r1"), py::arg("r2"), py::arg("h"), py::arg("center") = false);
+	m.def("cone", 		(shape(*)(double, double, double, double, bool)) &cone, py::arg("r1"), py::arg("r2"), py::arg("h"), py::arg("angle"), py::arg("center") = false);
 	m.def("torus", 		torus, py::arg("r1"), py::arg("r2"));
 
 //OPS3D
@@ -166,6 +167,15 @@ PYBIND11_MODULE(libservoce, m)
 	[](const std::string & in) { return transformation::restore_string_dump(b64::base64_decode(in)); }))
 	;
 
+	py::class_<general_transformation>(m, "general_transformation")
+	.def("__call__", (shape(general_transformation::*)(const shape&)const)&general_transformation::operator())
+	.def("__call__", (general_transformation(general_transformation::*)(const general_transformation&)const)&general_transformation::operator())
+	//.def("__mul__", &general_transformation::operator* )
+	.def(py::pickle(
+	[](const general_transformation & self) { return b64::base64_encode(self.string_dump()); },
+	[](const std::string & in) { return general_transformation::restore_string_dump(b64::base64_decode(in)); }))
+	;
+
 	m.def("translate", (transformation(*)(double, double, double)) &translate);
 	m.def("translate", (transformation(*)(double, double)) &translate);
 	m.def("translate", (transformation(*)(const vector3&)) &translate);
@@ -189,6 +199,13 @@ PYBIND11_MODULE(libservoce, m)
 	m.def("forw", forw);
 	m.def("back", back);
 	m.def("scale", scale, py::arg("factor"), py::arg("center") = servoce::point3());
+	m.def("scaleX", scaleX, py::arg("factor"));
+	m.def("scaleY", scaleY, py::arg("factor"));
+	m.def("scaleZ", scaleZ, py::arg("factor"));
+
+	//m.def("scaleX", scale, py::arg("factor"), py::arg("center") = servoce::point3());
+	//m.def("scaleY", scale, py::arg("factor"), py::arg("center") = servoce::point3());
+	//m.def("scaleZ", scale, py::arg("factor"), py::arg("center") = servoce::point3());
 
 	//m.def("simplify_with_bspline", &simplify_with_bspline);
 

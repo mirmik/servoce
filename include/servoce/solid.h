@@ -11,6 +11,7 @@ namespace servoce
 	shape cylinder(double r, double h, bool center = false);
 	shape cylinder(double r, double h, double angle, bool center = false);
 	shape cone(double r1, double r2, double h, bool center = false);
+	shape cone(double r1, double r2, double h, double angle, bool center = false);
 	shape torus(double r1, double r2);
 
 
