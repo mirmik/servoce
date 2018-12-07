@@ -134,22 +134,31 @@ servoce::shape servoce::shape::restore_string_dump(const std::string& in)
 servoce::shape servoce::shape::fillet(double r, const std::vector<int>& nums)
 {
 	auto type = m_shp->ShapeType();
+
 	if (TopAbs_SOLID == type || TopAbs_COMPSOLID == type || type == TopAbs_COMPOUND)
 	{
-		std::set<int>snums(nums.begin(), nums.end());
-		BRepFilletAPI_MakeFillet mk(*m_shp);//
-		int idx = 0;
-
-		for (TopExp_Explorer ex(*m_shp, TopAbs_EDGE); ex.More(); ex.Next())
+		try
 		{
-			TopoDS_Edge Edge = TopoDS::Edge(ex.Current());
+			std::set<int>snums(nums.begin(), nums.end());
+			BRepFilletAPI_MakeFillet mk(*m_shp);//
+			int idx = 0;
 
-			if (snums.count(idx)) mk.Add(r, Edge);
+			for (TopExp_Explorer ex(*m_shp, TopAbs_EDGE); ex.More(); ex.Next())
+			{
+				TopoDS_Edge Edge = TopoDS::Edge(ex.Current());
 
-			++idx;
+				if (snums.count(idx) || nums.size() == 0) mk.Add(r, Edge);
+
+				++idx;
+			}
+
+			return mk.Shape();
 		}
-
-		return mk.Shape();
+		catch (std::exception ex)
+		{
+			std::cout << ex.what() << std::endl;
+			throw ex;
+		}
 	}
 	else if (TopAbs_FACE == type)
 	{
@@ -210,6 +219,7 @@ servoce::shape servoce::shape::fillet(double r, const std::vector<int>& nums)
 	}
 	else
 	{
+		std::cout << "fillet 3" << std::endl;
 		throw std::runtime_error("Fillet argument has unsuported type.");
 	}
 }
@@ -234,9 +244,9 @@ servoce::shape servoce::shape::fill()
 	return ret.Shape();
 }
 
-std::vector<servoce::point3> servoce::shape::vertices() 
+std::vector<servoce::point3> servoce::shape::vertices()
 {
-	std::vector<servoce::point3> pnts;	
+	std::vector<servoce::point3> pnts;
 
 	for (TopExp_Explorer expVertex(Shape(), TopAbs_VERTEX); expVertex.More(); expVertex.Next())
 	{

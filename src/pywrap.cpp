@@ -8,6 +8,8 @@
 
 #include <exception>
 
+#include <Standard_Failure.hxx>
+
 namespace py = pybind11;
 using namespace servoce;
 
@@ -34,7 +36,18 @@ using namespace servoce;
 PYBIND11_MODULE(libservoce, m)
 {
 //EXCEPTONS
-	py::register_exception<std::runtime_error>(m, "std::runtime_error");
+	//py::register_exception<std::exception>(m, "std::exception");
+	//py::register_exception<std::runtime_error>(m, "std::runtime_error");
+	//py::register_exception<Standard_Failure>(m, "Standard_Failure");
+
+	static py::exception<Standard_Failure> exc(m, "OpenCascade_Standard_Failure");
+	py::register_exception_translator([](std::exception_ptr p) {
+	    try {
+	        if (p) std::rethrow_exception(p);
+	    } catch (const Standard_Failure &e) {
+	        exc(e.GetMessageString());
+	    }
+	});
 
 //OBJECTS
 	py::class_<point3>(m, "point3")
