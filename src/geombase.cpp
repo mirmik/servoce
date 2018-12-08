@@ -9,7 +9,7 @@
 #include <servoce/util/math.h>
 
 servoce::vector3::vector3(const gp_Vec& pnt) 
-	: x(pnt.X()), y(pnt.Y()), z(pnt.Z()) {}
+	: vec(pnt.X(), pnt.Y(), pnt.Z()) {}
 
 servoce::point3::point3(const gp_Pnt& pnt) 
 	: vec(pnt.X(), pnt.Y(), pnt.Z()) {}

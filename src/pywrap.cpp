@@ -41,12 +41,16 @@ PYBIND11_MODULE(libservoce, m)
 	//py::register_exception<Standard_Failure>(m, "Standard_Failure");
 
 	static py::exception<Standard_Failure> exc(m, "OpenCascade_Standard_Failure");
-	py::register_exception_translator([](std::exception_ptr p) {
-	    try {
-	        if (p) std::rethrow_exception(p);
-	    } catch (const Standard_Failure &e) {
-	        exc(e.GetMessageString());
-	    }
+	py::register_exception_translator([](std::exception_ptr p)
+	{
+		try
+		{
+			if (p) std::rethrow_exception(p);
+		}
+		catch (const Standard_Failure &e)
+		{
+			exc(e.GetMessageString());
+		}
 	});
 
 //OBJECTS
@@ -56,6 +60,7 @@ PYBIND11_MODULE(libservoce, m)
 	.def(py::init<double, double>())
 	.def(py::init<const servoce::point3&>())
 	.def(py::init<py::list>())
+	.def(py::init<py::tuple>())
 	.def_readwrite("x", &point3::x)
 	.def_readwrite("y", &point3::y)
 	.def_readwrite("z", &point3::z)
@@ -89,6 +94,7 @@ PYBIND11_MODULE(libservoce, m)
 	.def(py::init<double, double, double>())
 	.def(py::init<double, double>())
 	.def(py::init<py::list>())
+	.def(py::init<py::tuple>())
 	.def_readwrite("x", &vector3::x)
 	.def_readwrite("y", &vector3::y)
 	.def_readwrite("z", &vector3::z)
@@ -119,12 +125,21 @@ PYBIND11_MODULE(libservoce, m)
 
 //PRIM3D
 	m.def("box", 		box, py::arg("x"), py::arg("y"), py::arg("z"), py::arg("center") = false);
+
 	m.def("sphere", 	sphere, py::arg("r"));
+
 	m.def("cylinder", 	(shape(*)(double, double, bool)) &cylinder, py::arg("r"), py::arg("h"), py::arg("center") = false);
 	m.def("cylinder", 	(shape(*)(double, double, double, bool)) &cylinder, py::arg("r"), py::arg("h"), py::arg("angle"), py::arg("center") = false);
+	m.def("cylinder", 	(shape(*)(double, double, double, double, bool)) &cylinder, py::arg("r"), py::arg("h"), py::arg("a1"), py::arg("a2"), py::arg("center") = false);
+
 	m.def("cone", 		(shape(*)(double, double, double, bool)) &cone, py::arg("r1"), py::arg("r2"), py::arg("h"), py::arg("center") = false);
 	m.def("cone", 		(shape(*)(double, double, double, double, bool)) &cone, py::arg("r1"), py::arg("r2"), py::arg("h"), py::arg("angle"), py::arg("center") = false);
-	m.def("torus", 		torus, py::arg("r1"), py::arg("r2"));
+	m.def("cone", 		(shape(*)(double, double, double, double, double, bool)) &cone, py::arg("r1"), py::arg("r2"), py::arg("h"), py::arg("a1"), py::arg("a2"), py::arg("center") = false);
+
+	m.def("torus", 		(shape(*)(double, double)) &torus, py::arg("r1"), py::arg("r2"));
+	m.def("torus", 		(shape(*)(double, double, double)) &torus, py::arg("r1"), py::arg("r2"), py::arg("ua"));
+	m.def("torus", 		(shape(*)(double, double, double, double)) &torus, py::arg("r1"), py::arg("r2"), py::arg("va1"), py::arg("va2"));
+	m.def("torus", 		(shape(*)(double, double, double, double, double)) &torus, py::arg("r1"), py::arg("r2"), py::arg("va1"), py::arg("va2"), py::arg("ua"));
 
 //OPS3D
 	m.def("make_linear_extrude", (shape(*)(const shape&, const vector3&, bool)) &make_linear_extrude, py::arg("shp"), py::arg("vec"), py::arg("center") = false);
@@ -138,6 +153,10 @@ PYBIND11_MODULE(libservoce, m)
 	m.def("rectangle", 	rectangle, py::arg("a"), py::arg("b"), py::arg("center") = false);
 	m.def("circle", 	(shape(*)(double)) &circle, py::arg("r"));
 	m.def("circle", 	(shape(*)(double, double)) &circle, py::arg("r"), py::arg("angle"));
+	m.def("circle", 	(shape(*)(double, double, double)) &circle, py::arg("r"), py::arg("a1"), py::arg("a2"));
+	m.def("circle_wire", (shape(*)(double)) &circle_wire, py::arg("r"));
+	m.def("circle_wire", (shape(*)(double, double)) &circle_wire, py::arg("r"), py::arg("angle"));
+	m.def("circle_wire", (shape(*)(double, double, double)) &circle_wire, py::arg("r"), py::arg("a1"), py::arg("a2"));
 	m.def("ngon", 		ngon, py::arg("r"), py::arg("n"));
 	m.def("polygon", 	(shape(*)(const std::vector<point3>&))&polygon, py::arg("pnts"));
 
@@ -263,11 +282,11 @@ PYBIND11_MODULE(libservoce, m)
 
 //TEST
 	m.def("test", [](py::object o)
-		{
-			std::cout << "test" << std::endl;
-			auto write_attr = o.attr("write");
-			write_attr("hello");
-		});
+	{
+		std::cout << "test" << std::endl;
+		auto write_attr = o.attr("write");
+		write_attr("hello");
+	});
 
 }
 
@@ -280,7 +299,25 @@ servoce::point3::point3(const py::list& lst)
 	if (lst.size() >= 3) z = lst[2].cast<double>();
 }
 
+servoce::point3::point3(const py::tuple& lst)
+{
+	if (lst.size() >= 1) x = lst[0].cast<double>();
+
+	if (lst.size() >= 2) y = lst[1].cast<double>();
+
+	if (lst.size() >= 3) z = lst[2].cast<double>();
+}
+
 servoce::vector3::vector3(const py::list& lst)
+{
+	if (lst.size() >= 1) x = lst[0].cast<double>();
+
+	if (lst.size() >= 2) y = lst[1].cast<double>();
+
+	if (lst.size() >= 3) z = lst[2].cast<double>();
+}
+
+servoce::vector3::vector3(const py::tuple& lst)
 {
 	if (lst.size() >= 1) x = lst[0].cast<double>();
 

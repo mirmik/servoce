@@ -10,9 +10,14 @@ namespace servoce
 	shape sphere(double r);
 	shape cylinder(double r, double h, bool center = false);
 	shape cylinder(double r, double h, double angle, bool center = false);
+	shape cylinder(double r, double h, double a1, double a2, bool center = false);
 	shape cone(double r1, double r2, double h, bool center = false);
 	shape cone(double r1, double r2, double h, double angle, bool center = false);
+	shape cone(double r1, double r2, double h, double a1, double a2, bool center = false);
 	shape torus(double r1, double r2);
+	shape torus(double r1, double r2, double ua);
+	shape torus(double r1, double r2, double va1, double va2);
+	shape torus(double r1, double r2, double va1, double va2, double ua);
 
 
 	//sweep3d
