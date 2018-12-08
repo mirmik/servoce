@@ -163,20 +163,20 @@ PYBIND11_MODULE(libservoce, m)
 	m.def("polygon", 	(shape(*)(const std::vector<point3>&))&polygon, py::arg("pnts"));
 
 //PRIM1D
-	m.def("make_segment", make_segment);
-	m.def("make_polysegment", (shape(*)(const std::vector<point3>&, const bool))&make_polysegment, py::arg("pnts"), py::arg("closed") = false);
-	m.def("make_interpolate", (shape(*)(const std::vector<point3>&, const std::vector<vector3>&, bool))&make_interpolate, py::arg("pnts"), py::arg("tang"), py::arg("closed") = false);
-	m.def("make_interpolate", (shape(*)(const std::vector<point3>&, const bool))&make_interpolate, py::arg("pnts"), py::arg("closed") = false);
-	m.def("make_helix", make_helix, py::arg("step"), py::arg("height"), py::arg("radius"), py::arg("angle") = 0, py::arg("leftHanded") = false, py::arg("newStyle") = true);
-	m.def("make_long_helix", make_long_helix, py::arg("step"), py::arg("height"), py::arg("radius"), py::arg("angle") = 0, py::arg("leftHanded") = false);
+	m.def("segment", make_segment);
+	m.def("polysegment", (shape(*)(const std::vector<point3>&, const bool))&make_polysegment, py::arg("pnts"), py::arg("closed") = false);
+	m.def("interpolate", (shape(*)(const std::vector<point3>&, const std::vector<vector3>&, bool))&make_interpolate, py::arg("pnts"), py::arg("tang"), py::arg("closed") = false);
+	m.def("interpolate", (shape(*)(const std::vector<point3>&, const bool))&make_interpolate, py::arg("pnts"), py::arg("closed") = false);
+	m.def("helix", make_helix, py::arg("step"), py::arg("height"), py::arg("radius"), py::arg("angle") = 0, py::arg("leftHanded") = false, py::arg("newStyle") = true);
+	m.def("long_helix", make_long_helix, py::arg("step"), py::arg("height"), py::arg("radius"), py::arg("angle") = 0, py::arg("leftHanded") = false);
 
 	m.def("make_circle_arc", (shape(*)(double))&make_circle_arc);
 	m.def("make_circle_arc", (shape(*)(double, double, double))&make_circle_arc);
 
 //BOOLEAN
-	m.def("make_union", (shape(*)(const std::vector<const shape*>&))&make_union);
-	m.def("make_difference", (shape(*)(const std::vector<const shape*>&))&make_difference);
-	m.def("make_intersect", (shape(*)(const std::vector<const shape*>&))&make_intersect);
+	m.def("union", (shape(*)(const std::vector<const shape*>&))&make_union);
+	m.def("difference", (shape(*)(const std::vector<const shape*>&))&make_difference);
+	m.def("intersect", (shape(*)(const std::vector<const shape*>&))&make_intersect);
 
 //TRANS
 	py::class_<transformation>(m, "transformation")
