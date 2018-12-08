@@ -151,12 +151,14 @@ PYBIND11_MODULE(libservoce, m)
 //PRIM2D
 	m.def("square", 	square, py::arg("a"), py::arg("center") = false);
 	m.def("rectangle", 	rectangle, py::arg("a"), py::arg("b"), py::arg("center") = false);
-	m.def("circle", 	(shape(*)(double)) &circle, py::arg("r"));
-	m.def("circle", 	(shape(*)(double, double)) &circle, py::arg("r"), py::arg("angle"));
-	m.def("circle", 	(shape(*)(double, double, double)) &circle, py::arg("r"), py::arg("a1"), py::arg("a2"));
-	m.def("circle_wire", (shape(*)(double)) &circle_wire, py::arg("r"));
-	m.def("circle_wire", (shape(*)(double, double)) &circle_wire, py::arg("r"), py::arg("angle"));
-	m.def("circle_wire", (shape(*)(double, double, double)) &circle_wire, py::arg("r"), py::arg("a1"), py::arg("a2"));
+	
+	m.def("circle", 	(shape(*)(double, bool)) &circle, py::arg("r"), py::arg("wire")=false);
+	m.def("circle", 	(shape(*)(double, double, bool)) &circle, py::arg("r"), py::arg("angle"), py::arg("wire")=false);
+	m.def("circle", 	(shape(*)(double, double, double, bool)) &circle, py::arg("r"), py::arg("a1"), py::arg("a2"), py::arg("wire")=false);
+	
+	m.def("ellipse", 	(shape(*)(double, double, bool)) &ellipse, py::arg("r1"), py::arg("r2"), py::arg("wire")=false);
+	m.def("ellipse", 	(shape(*)(double, double, double, double, bool)) &ellipse, py::arg("r1"), py::arg("r2"), py::arg("a1"), py::arg("a2"), py::arg("wire")=false);
+	
 	m.def("ngon", 		ngon, py::arg("r"), py::arg("n"));
 	m.def("polygon", 	(shape(*)(const std::vector<point3>&))&polygon, py::arg("pnts"));
 

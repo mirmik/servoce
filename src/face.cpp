@@ -1,7 +1,9 @@
 #include <servoce/face.h>
 
 #include <gp_Circ.hxx>
+#include <gp_Elips.hxx>
 #include <GC_MakeCircle.hxx>
+#include <GC_MakeEllipse.hxx>
 
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Wire.hxx>
@@ -14,59 +16,76 @@
 #include <BRepTools_WireExplorer.hxx>
 #include <TopExp_Explorer.hxx>
 
+#include <BRepAdaptor_Curve.hxx>
+
 #include <BRepOffsetAPI_MakePipe.hxx>
 
-servoce::shape servoce::circle(double r) { 
+servoce::shape servoce::circle(double r, bool wire) { 
 	gp_Circ EL ( gp::XOY(), r );
 	Handle(Geom_Circle) anCircle = GC_MakeCircle(EL).Value();
 	TopoDS_Edge aEdge = BRepBuilderAPI_MakeEdge( anCircle );
 	TopoDS_Wire aCircle = BRepBuilderAPI_MakeWire( aEdge );
+	if (wire)
+		return aCircle;
 	return BRepBuilderAPI_MakeFace(aCircle).Shape();
 }
 
-servoce::shape servoce::circle(double r, double angle) { 
+servoce::shape servoce::circle(double r, double angle, bool wire) { 
 	gp_Circ EL ( gp::XOY(), r );
 	Handle(Geom_Circle) anCircle = GC_MakeCircle(EL).Value();
 	TopoDS_Edge aEdge = BRepBuilderAPI_MakeEdge( anCircle, 0, angle );
+	if (wire)
+		return BRepBuilderAPI_MakeWire( aEdge ).Shape();
 	TopoDS_Edge aEdge1 = BRepBuilderAPI_MakeEdge( gp_Pnt(0,0,0), gp_Pnt(r,0,0) );
 	TopoDS_Edge aEdge2 = BRepBuilderAPI_MakeEdge( gp_Pnt(0,0,0), gp_Pnt(r*cos(angle),r*sin(angle),0)  );
 	TopoDS_Wire aCircle = BRepBuilderAPI_MakeWire( aEdge, aEdge1, aEdge2 );
 	return BRepBuilderAPI_MakeFace(aCircle).Shape();
 }
 
-servoce::shape servoce::circle(double r, double a1, double a2) { 
+servoce::shape servoce::circle(double r, double a1, double a2, bool wire) { 
 	gp_Circ EL ( gp::XOY(), r );
 	Handle(Geom_Circle) anCircle = GC_MakeCircle(EL).Value();
 	TopoDS_Edge aEdge = BRepBuilderAPI_MakeEdge( anCircle, a1, a2 );
+	if (wire)
+		return BRepBuilderAPI_MakeWire( aEdge ).Shape();
 	TopoDS_Edge aEdge1 = BRepBuilderAPI_MakeEdge( gp_Pnt(0,0,0), gp_Pnt(r*cos(a1),r*sin(a1),0) );
 	TopoDS_Edge aEdge2 = BRepBuilderAPI_MakeEdge( gp_Pnt(0,0,0), gp_Pnt(r*cos(a2),r*sin(a2),0)  );
 	TopoDS_Wire aCircle = BRepBuilderAPI_MakeWire( aEdge, aEdge1, aEdge2 );
 	return BRepBuilderAPI_MakeFace(aCircle).Shape();
 }
 
-servoce::shape servoce::circle_wire(double r) { 
-	gp_Circ EL ( gp::XOY(), r );
-	Handle(Geom_Circle) anCircle = GC_MakeCircle(EL).Value();
+
+servoce::shape servoce::ellipse(double r1, double r2, bool wire) { 
+	gp_Elips EL ( gp::XOY(), r1, r2 );
+	Handle(Geom_Ellipse) anCircle = GC_MakeEllipse(EL).Value();
 	TopoDS_Edge aEdge = BRepBuilderAPI_MakeEdge( anCircle );
-	TopoDS_Wire aCircle = BRepBuilderAPI_MakeWire( aEdge );
-	return aCircle;
+	TopoDS_Wire w = BRepBuilderAPI_MakeWire( aEdge );
+	if (wire)
+		return w;
+	return BRepBuilderAPI_MakeFace(w).Shape();
 }
 
-servoce::shape servoce::circle_wire(double r, double angle) { 
-	gp_Circ EL ( gp::XOY(), r );
-	Handle(Geom_Circle) anCircle = GC_MakeCircle(EL).Value();
-	TopoDS_Edge aEdge = BRepBuilderAPI_MakeEdge( anCircle, 0, angle );
-	TopoDS_Wire aCircle = BRepBuilderAPI_MakeWire( aEdge );
-	return aCircle;
-}
-
-servoce::shape servoce::circle_wire(double r, double a1, double a2) { 
-	gp_Circ EL ( gp::XOY(), r );
-	Handle(Geom_Circle) anCircle = GC_MakeCircle(EL).Value();
+servoce::shape servoce::ellipse(double r1, double r2, double a1, double a2, bool wire) { 
+	gp_Elips EL ( gp::XOY(), r1, r2 );
+	Handle(Geom_Ellipse) anCircle = GC_MakeEllipse(EL).Value();
 	TopoDS_Edge aEdge = BRepBuilderAPI_MakeEdge( anCircle, a1, a2 );
-	TopoDS_Wire aCircle = BRepBuilderAPI_MakeWire( aEdge );
-	return aCircle;
+	if (wire)
+		return BRepBuilderAPI_MakeWire( aEdge ).Shape();
+
+	BRepAdaptor_Curve curve(aEdge);
+	gp_Pnt p1, p2;
+	curve.D0(a1, p1);
+	curve.D0(a2, p2);
+
+	TopoDS_Edge aEdge1 = BRepBuilderAPI_MakeEdge( gp_Pnt(0,0,0), p1 );
+	TopoDS_Edge aEdge2 = BRepBuilderAPI_MakeEdge( gp_Pnt(0,0,0), p2 );
+	TopoDS_Wire aCircle = BRepBuilderAPI_MakeWire( aEdge, aEdge1, aEdge2 );
+	return BRepBuilderAPI_MakeFace(aCircle).Shape();
 }
+
+
+
+
 
 servoce::shape servoce::polygon(const servoce::point3* pnts, size_t size) {
 	BRepBuilderAPI_MakePolygon mk;

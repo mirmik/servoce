@@ -10,13 +10,13 @@ class BRepPrimAPI_MakeSweep;
 namespace servoce
 {
 	//prim2d
-	shape circle(double r);
-	shape circle(double r, double angle);
-	shape circle(double r, double a1, double a2);
+	shape circle(double r, bool wire = false);
+	shape circle(double r, double angle, bool wire = false);
+	shape circle(double r, double a1, double a2, bool wire = false);
 
-	shape circle_wire(double r);
-	shape circle_wire(double r, double angle);
-	shape circle_wire(double r, double a1, double a2);
+	shape ellipse(double r1, double r2, bool wire = false);
+	shape ellipse(double r1, double r2, double a1, double a2, bool wire = false);
+
 	
 	shape polygon(const servoce::point3* pnts, size_t size);
 	shape polygon(const std::vector<servoce::point3>& pnts);
