@@ -25,6 +25,8 @@ namespace servoce
 	shape make_linear_extrude(const shape& base, double z, bool center = false);
 	shape make_pipe(const shape& profile, const shape& path);
 	shape make_pipe_shell(const shape& profile, const shape& path, bool isFrenet = false);
+
+	shape halfspace();
 }
 
 #endif

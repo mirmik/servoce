@@ -28,9 +28,22 @@
 #include <algorithm>
 #include <cassert>
 
-servoce::shape::shape(const TopoDS_Shape& shp) : m_shp(new TopoDS_Shape(shp)) {}
-servoce::shape::shape(const shape& oth) : m_shp(new TopoDS_Shape(*oth.m_shp)) {}
-servoce::shape::shape(shape&& oth) : m_shp(oth.m_shp) { oth.m_shp = nullptr; }
+servoce::shape::shape(const TopoDS_Shape& shp) : m_shp(new TopoDS_Shape(shp))
+{
+	if (m_shp->IsNull()) 
+	{
+		printf("warn: null shape contruct\n");
+	}
+}
+
+servoce::shape::shape(const shape& oth) : m_shp(new TopoDS_Shape(*oth.m_shp))
+{}
+
+servoce::shape::shape(shape&& oth) : m_shp(oth.m_shp)
+{
+	oth.m_shp = nullptr;
+}
+
 servoce::shape::~shape() { delete m_shp; }
 
 servoce::shape& servoce::shape::operator= (const shape& oth)

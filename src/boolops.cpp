@@ -14,17 +14,32 @@
 
 static inline TopoDS_Shape __make_union(const TopoDS_Shape& a, const TopoDS_Shape& b)
 {
-	return BRepAlgoAPI_Fuse(a, b).Shape();
+	BRepAlgoAPI_Fuse algo(a, b);//.Shape();
+	algo.Build();
+	if ( ! algo.IsDone() ) {
+		printf("warn: union algotithm failed\n");
+	}
+	return algo.Shape();
 }
 
 static inline TopoDS_Shape __make_difference(const TopoDS_Shape& a, const TopoDS_Shape& b)
 {
-	return BRepAlgoAPI_Cut(a, b).Shape();
+	BRepAlgoAPI_Cut algo(a, b);//.Shape();
+	algo.Build();
+	if ( ! algo.IsDone() ) {
+		printf("warn: difference algotithm failed\n");
+	}
+	return algo.Shape();
 }
 
 static inline TopoDS_Shape __make_intersect(const TopoDS_Shape& a, const TopoDS_Shape& b)
 {
-	return BRepAlgoAPI_Common(a, b).Shape();
+	BRepAlgoAPI_Common algo(a, b);//.Shape();
+	algo.Build();
+	if ( ! algo.IsDone() ) {
+		printf("warn: intersect algotithm failed\n");
+	}
+	return algo.Shape();
 }
 
 servoce::shape servoce::make_union(const shape& a, const shape& b)

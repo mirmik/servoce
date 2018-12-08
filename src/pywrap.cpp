@@ -140,6 +140,7 @@ PYBIND11_MODULE(libservoce, m)
 	m.def("torus", 		(shape(*)(double, double, double)) &torus, py::arg("r1"), py::arg("r2"), py::arg("ua"));
 	m.def("torus", 		(shape(*)(double, double, double, double)) &torus, py::arg("r1"), py::arg("r2"), py::arg("va1"), py::arg("va2"));
 	m.def("torus", 		(shape(*)(double, double, double, double, double)) &torus, py::arg("r1"), py::arg("r2"), py::arg("va1"), py::arg("va2"), py::arg("ua"));
+	m.def("halfspace", &halfspace);
 
 //OPS3D
 	m.def("make_linear_extrude", (shape(*)(const shape&, const vector3&, bool)) &make_linear_extrude, py::arg("shp"), py::arg("vec"), py::arg("center") = false);

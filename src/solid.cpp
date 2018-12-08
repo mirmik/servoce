@@ -1,5 +1,7 @@
 #include <servoce/solid.h>
 
+#include <gp_Pln.hxx>
+
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopoDS_Face.hxx>
@@ -18,6 +20,9 @@
 
 #include <BRepOffsetAPI_MakePipe.hxx>
 #include <BRepOffsetAPI_MakePipeShell.hxx>
+
+#include <BRepLib_MakeFace.hxx>
+#include <BRepPrimAPI_MakeHalfSpace.hxx>
 
 #include <assert.h>
 
@@ -69,7 +74,7 @@ shape servoce::cylinder(double r, double h, double a1, double a2, bool center)
     assert(a2 > a1);
     double diff = a2 - a1;
 
-    assert(diff > M_2PI);
+    assert(diff > M_PI*2);
 
     if (!center)
     {
@@ -115,7 +120,7 @@ shape servoce::cone(double r1, double r2, double h, double a1, double a2, bool c
     assert(a2 > a1);
     double diff = a2 - a1;
 
-    assert(diff > M_2PI);
+    assert(diff > M_PI*2);
 
     if (!center)
     {
@@ -295,4 +300,12 @@ shape servoce::make_pipe_shell(
     if (profile.Shape().IsNull())
         Standard_Failure::Raise("Cannot sweep empty profile");
     return BRepOffsetAPI_MakePipe(path.Wire(), profile.Shape());*/
+}
+
+shape servoce::halfspace() 
+{
+    gp_Pln P;
+    TopoDS_Face F = BRepLib_MakeFace(P);
+    BRepPrimAPI_MakeHalfSpace MHS(F, gp_Pnt(0,0,-1));
+    return MHS.Solid();
 }
