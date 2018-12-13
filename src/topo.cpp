@@ -61,7 +61,14 @@ servoce::shape& servoce::shape::operator= (shape&& oth)
 {
 	delete m_shp;
 	m_shp = oth.m_shp;
-	m_shp = nullptr;
+	oth.m_shp = nullptr;
+	return *this;
+}
+
+servoce::shape& servoce::shape::operator= (const TopoDS_Shape& shp) 
+{
+	delete m_shp;
+	m_shp = new TopoDS_Shape(shp);
 	return *this;
 }
 

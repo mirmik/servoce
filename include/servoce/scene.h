@@ -44,12 +44,15 @@ namespace servoce
 
 	struct shape_view_controller 
 	{
-		shape_view * ctr;
+		std::vector<shape_view> * ctr;
+		int idx;
 
-		shape_view_controller(shape_view * ctr) : ctr(ctr) {}
-		shape_view_controller(const shape_view_controller& oth) : ctr(oth.ctr) {}
+		shape_view_controller(std::vector<shape_view> * ctr, int idx) : ctr(ctr), idx(idx) {}
+		shape_view_controller(const shape_view_controller& oth) : ctr(oth.ctr), idx(oth.idx) {}
+		shape_view_controller(shape_view_controller&& oth) : ctr(oth.ctr), idx(oth.idx) {}
 
-		void set_location(double x, double y, double z);
+		//void set_location(double x, double y, double z);
+		void set_location(const servoce::transformation& trans);
 	};
 
 	struct scene
@@ -58,23 +61,31 @@ namespace servoce
 		struct viewer * vwer = nullptr;
 
 		scene() {};
-		scene(std::initializer_list<const servoce::shape_view> shps) : shapes(shps.begin(), shps.end()) {}
+		~scene() 
+		{
+			//printf("scene::dtor %p\n", this);
+		};
+		//scene(std::initializer_list<const servoce::shape_view> shps) : shapes(shps.begin(), shps.end()) {}
 
 		shape_view_controller add(const servoce::shape& shp, servoce::color color = mech)
 		{
+			//printf("add %p %d\n", this, shapes.size());
 			shapes.emplace_back(shp, color);
 			shapes[shapes.size() - 1].scn = this;
-			return shape_view_controller(&shapes[shapes.size() - 1]);
+			return shape_view_controller(&shapes, shapes.size() - 1);
 		}
 
 		void add(const servoce::point3& pnt, servoce::color color = mech)
 		{
-			assert(0);
+			printf("scene.h\n");
+			exit(-1);
 			//PANIC_TRACED("TODO");
 		}
 
 		void append(const servoce::scene& scn)
 		{
+			printf("scene.h\n");
+			exit(-1);
 			shapes.insert(shapes.end(), scn.shapes.begin(), scn.shapes.end());
 		}
 

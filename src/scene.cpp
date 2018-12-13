@@ -2,6 +2,7 @@
 
 #include <AIS_Shape.hxx>
 #include <local/OccViewContext.h>
+#include <BRepBuilderAPI_Copy.hxx>
 
 servoce::shape servoce::shape_view::shape() 
 {
@@ -15,7 +16,10 @@ servoce::color servoce::shape_view::color()
 
 servoce::shape_view::shape_view(const servoce::shape& a, servoce::color color)
 {
-	shp = a;
+	BRepBuilderAPI_Copy copier(a.Shape());
+	TopoDS_Shape newShape = copier.Shape();
+	
+	shp = newShape;
 	m_ashp = new AIS_Shape(shp.Shape());
 	Quantity_Color shpcolor (color.r, color.g, color.b,  Quantity_TOC_RGB);
 	m_ashp->SetColor(shpcolor);
@@ -25,12 +29,18 @@ servoce::shape_view::shape_view(const servoce::shape& a, servoce::color color)
 servoce::shape_view::shape_view(const servoce::shape_view& a)
 {
 	m_ashp = new AIS_Shape(*a.m_ashp);
+	shp = a.shp;
+	scn = a.scn;
+	m_color = a.m_color;
 }
 
 servoce::shape_view::shape_view(servoce::shape_view&& a)
 {
 	m_ashp = a.m_ashp;
 	a.m_ashp = nullptr;
+	shp = a.shp;
+	scn = a.scn;
+	m_color = a.m_color;
 }
 
 servoce::shape_view& servoce::shape_view::operator= (const servoce::shape_view& oth)
@@ -52,33 +62,32 @@ servoce::shape_view& servoce::shape_view::operator= (servoce::shape_view&& oth)
 	return *this;
 }
 
-#define uassert(e) if (!(e)) { printf("assert: %s", #e); exit(-1); }
+#define uassert(e) if (!(e)) { printf("assert: %s\n", #e); exit(-1); }
 
-void servoce::shape_view_controller::set_location(double x, double y, double z) 
+/*void servoce::shape_view_controller::set_location(double x, double y, double z) 
 {
-	printf("set_location\n");
-	fflush(stdout);
-
-	uassert(ctr);
-	uassert(ctr->m_ashp);
-	uassert(ctr->scn);
-	uassert(ctr->scn->vwer);
-	uassert(ctr->scn->vwer->occ);
-	uassert(ctr->scn->vwer->occ->m_context);
+	uassert((*ctr)[idx].m_ashp);
+	uassert((*ctr)[idx].scn);
+	uassert((*ctr)[idx].scn->vwer);
+	uassert((*ctr)[idx].scn->vwer->occ);
+	uassert((*ctr)[idx].scn->vwer->occ->m_context);
 
 	auto trf = gp_Trsf();
 	trf.SetTranslation(gp_Vec(x,y,z));
 
-	printf("set_location\n");
-	fflush(stdout);
+	(*ctr)[idx].scn->vwer->occ->m_context->SetLocation((*ctr)[idx].m_ashp, trf);
+	(*ctr)[idx].scn->vwer->occ->m_viewer->Redraw();
+}*/
 
-	ctr->scn->vwer->occ->m_context->SetLocation(ctr->m_ashp, trf);
 
-	printf("set_location\n");
-	fflush(stdout);
+void servoce::shape_view_controller::set_location(const servoce::transformation& trans) 
+{
+	uassert((*ctr)[idx].m_ashp);
+	uassert((*ctr)[idx].scn);
+	uassert((*ctr)[idx].scn->vwer);
+	uassert((*ctr)[idx].scn->vwer->occ);
+	uassert((*ctr)[idx].scn->vwer->occ->m_context);
 
-	ctr->scn->vwer->occ->m_viewer->Redraw();
-
-	printf("set_location\n");
-	fflush(stdout);
+	(*ctr)[idx].scn->vwer->occ->m_context->SetLocation((*ctr)[idx].m_ashp, *trans.trsf);
+	(*ctr)[idx].scn->vwer->occ->m_viewer->Redraw();
 }

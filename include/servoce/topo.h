@@ -20,7 +20,7 @@ namespace servoce
 {
 	struct shape
 	{
-		TopoDS_Shape* m_shp;
+		TopoDS_Shape* m_shp = nullptr;
 		shape() {};
 		shape(TopoDS_Shape* shp);
 		shape(const TopoDS_Shape& shp);
@@ -29,6 +29,7 @@ namespace servoce
 		~shape();
 
 		shape& operator= (const shape& oth);
+		shape& operator= (const TopoDS_Shape& shp);
 		shape& operator= (shape&& oth);
 
 		shape fillet(double r, const std::vector<int>& nums);
