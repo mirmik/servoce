@@ -25,6 +25,7 @@ namespace servoce
 
 	struct shape_view
 	{
+		servoce::shape shp;
 		scene* scn = nullptr;
 		AIS_Shape* m_ashp = nullptr;
 		servoce::color m_color;
