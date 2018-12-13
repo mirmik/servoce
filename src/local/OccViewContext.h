@@ -40,10 +40,10 @@
 
 #include <X11/Xlib.h>
 
-Handle(Aspect_DisplayConnection) g_displayConnection;
-Handle(Graphic3d_GraphicDriver) g_graphicDriver;
+extern Handle(Aspect_DisplayConnection) g_displayConnection;
+extern Handle(Graphic3d_GraphicDriver) g_graphicDriver;
 
-Handle(Aspect_DisplayConnection) GetDisplayConnection()
+inline Handle(Aspect_DisplayConnection) GetDisplayConnection()
 {
 	static bool inited = false;
 
@@ -55,7 +55,7 @@ Handle(Aspect_DisplayConnection) GetDisplayConnection()
 	return g_displayConnection;
 }
 
-Handle(Graphic3d_GraphicDriver) GetGraphicDriver()
+inline Handle(Graphic3d_GraphicDriver) GetGraphicDriver()
 {
 	static bool inited = false;
 

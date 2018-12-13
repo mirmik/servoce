@@ -1,6 +1,7 @@
 #include <servoce/servoce.h>
 
 #include <AIS_Shape.hxx>
+#include <local/OccViewContext.h>
 
 servoce::shape servoce::shape_view::shape() 
 {
@@ -48,4 +49,35 @@ servoce::shape_view& servoce::shape_view::operator= (servoce::shape_view&& oth)
 	m_ashp = oth.m_ashp;
 	m_ashp = nullptr;
 	return *this;
+}
+
+#define uassert(e) if (!(e)) { printf("assert: %s", #e); exit(-1); }
+
+void servoce::shape_view_controller::set_location(double x, double y, double z) 
+{
+	printf("set_location\n");
+	fflush(stdout);
+
+	uassert(ctr);
+	uassert(ctr->m_ashp);
+	uassert(ctr->scn);
+	uassert(ctr->scn->vwer);
+	uassert(ctr->scn->vwer->occ);
+	uassert(ctr->scn->vwer->occ->m_context);
+
+	auto trf = gp_Trsf();
+	trf.SetTranslation(gp_Vec(x,y,z));
+
+	printf("set_location\n");
+	fflush(stdout);
+
+	ctr->scn->vwer->occ->m_context->SetLocation(ctr->m_ashp, trf);
+
+	printf("set_location\n");
+	fflush(stdout);
+
+	ctr->scn->vwer->occ->m_viewer->Redraw();
+
+	printf("set_location\n");
+	fflush(stdout);
 }

@@ -11,7 +11,7 @@ namespace servoce
 {
 	class view
 	{
-		OccViewWindow* occ;
+		OccViewWindow* occ = nullptr;
 
 	public:
 		view(OccViewWindow* view) : occ(view) {}
@@ -52,11 +52,12 @@ namespace servoce
 
 	class viewer
 	{
-		OccViewerContext* occ;
+	public:
+		OccViewerContext* occ = nullptr;
 
 	public:
 		viewer();
-		viewer(const servoce::scene& scn);
+		viewer(servoce::scene& scn);
 
 		view create_view();
 
@@ -73,7 +74,7 @@ namespace servoce
 		void set_triedron_axes();
 	};
 
-	void see(const servoce::scene& scn);
+	void see(servoce::scene& scn);
 }
 
 #endif

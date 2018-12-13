@@ -1,17 +1,22 @@
 #include <servoce/view.h>
 #include <local/OccViewContext.h>
+#include <Aspect_DisplayConnection.hxx>
 //#include <Standart_Real.hxx>
 
 //#include <gxx/debug/dprint.h>
+
+Handle(Aspect_DisplayConnection) g_displayConnection;
+Handle(Graphic3d_GraphicDriver) g_graphicDriver;
 
 servoce::viewer::viewer()
 {
 	occ = new OccViewerContext();
 }
 
-servoce::viewer::viewer(const servoce::scene& scn) : viewer()
+servoce::viewer::viewer(servoce::scene& scn) : viewer()
 {
 	occ->set_scene(scn);
+	scn.vwer = this;
 }
 
 void servoce::viewer::set_triedron_axes()
@@ -221,7 +226,7 @@ void servoce::view::see(int width, int height)
 
 
 
-void servoce::see(const servoce::scene& scn)
+void servoce::see(servoce::scene& scn)
 {
 	auto v = viewer(scn);
 	auto vv = v.create_view();

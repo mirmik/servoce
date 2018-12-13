@@ -240,17 +240,21 @@ PYBIND11_MODULE(libservoce, m)
 	.def("color", &shape_view::color)
 	;
 
+	py::class_<shape_view_controller>(m, "ShapeViewController")
+	.def("set_location", &shape_view_controller::set_location)
+	;
+
 	py::class_<scene>(m, "Scene")
 	.def(py::init<>())
-	.def("add", (void(scene::*)(const shape&, color))&scene::add, py::arg("shape"), py::arg("color") = color{0.6, 0.6, 0.8})
+	.def("add", (shape_view_controller(scene::*)(const shape&, color))&scene::add, py::arg("shape"), py::arg("color") = color{0.6, 0.6, 0.8})
 	.def("add", (void(scene::*)(const point3&, color))&scene::add, py::arg("shape"), py::arg("color") = color{0.6, 0.6, 0.8})
 	.def("append", (void(scene::*)(const scene&))&scene::append, py::arg("scene"))
 	.def("__getitem__", [](const scene & s, size_t i) { return s[i]; })
 	;
 
 	py::class_<viewer>(m, "Viewer")
-	.def(py::init<>())
-	.def(py::init<const scene&>())
+	//.def(py::init<>())
+	.def(py::init<scene&>())
 	.def("create_view", &viewer::create_view)
 	.def("set_triedron_axes", &viewer::set_triedron_axes)
 	;

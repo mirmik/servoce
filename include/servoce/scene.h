@@ -20,9 +20,13 @@ namespace servoce
 	static constexpr color gray = 	color { 0.5, 0.5, 0.5 };
 	static constexpr color mech = 	color { 0.6, 0.6, 0.8 };
 
+	struct scene;
+	struct viewer;
+
 	struct shape_view
 	{
-		AIS_Shape* m_ashp;
+		scene* scn = nullptr;
+		AIS_Shape* m_ashp = nullptr;
 		servoce::color m_color;
 
 		shape_view() {}
@@ -37,16 +41,29 @@ namespace servoce
 		shape_view& operator=(shape_view&& oth);
 	};
 
+	struct shape_view_controller 
+	{
+		shape_view * ctr;
+
+		shape_view_controller(shape_view * ctr) : ctr(ctr) {}
+		shape_view_controller(const shape_view_controller& oth) : ctr(oth.ctr) {}
+
+		void set_location(double x, double y, double z);
+	};
+
 	struct scene
 	{
 		std::vector<shape_view> shapes;
+		struct viewer * vwer = nullptr;
 
 		scene() {};
 		scene(std::initializer_list<const servoce::shape_view> shps) : shapes(shps.begin(), shps.end()) {}
 
-		void add(const servoce::shape& shp, servoce::color color = mech)
+		shape_view_controller add(const servoce::shape& shp, servoce::color color = mech)
 		{
 			shapes.emplace_back(shp, color);
+			shapes[shapes.size() - 1].scn = this;
+			return shape_view_controller(&shapes[shapes.size() - 1]);
 		}
 
 		void add(const servoce::point3& pnt, servoce::color color = mech)
