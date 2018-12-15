@@ -89,5 +89,5 @@ void servoce::shape_view_controller::set_location(const servoce::transformation&
 	uassert((*ctr)[idx].scn->vwer->occ->m_context);
 
 	(*ctr)[idx].scn->vwer->occ->m_context->SetLocation((*ctr)[idx].m_ashp, *trans.trsf);
-	(*ctr)[idx].scn->vwer->occ->m_viewer->Redraw();
+	//(*ctr)[idx].scn->vwer->occ->m_viewer->Redraw();
 }

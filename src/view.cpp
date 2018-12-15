@@ -39,6 +39,12 @@ servoce::view servoce::viewer::create_view()
 	return servoce::view( occ->create_view_window() );
 }
 
+
+void servoce::viewer::redraw()
+{
+	return occ->m_viewer->Redraw();
+}
+
 void servoce::view::set_gradient()
 {
 	occ->m_view->SetBgGradientColors(
