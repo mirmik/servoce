@@ -77,16 +77,18 @@ namespace servoce
 
 		void add(const servoce::point3& pnt, servoce::color color = mech)
 		{
-			printf("scene.h\n");
+			printf("TODO: scene.h\n");
 			exit(-1);
 			//PANIC_TRACED("TODO");
 		}
 
 		void append(const servoce::scene& scn)
 		{
-			printf("scene.h\n");
-			exit(-1);
-			shapes.insert(shapes.end(), scn.shapes.begin(), scn.shapes.end());
+			//shapes.insert(shapes.end(), scn.shapes.begin(), scn.shapes.end());
+			for (const auto& shpview : scn.shapes) 
+			{
+				add(shpview.shp, shpview.m_color);
+			}
 		}
 
 		shape_view& operator[](size_t i) 
