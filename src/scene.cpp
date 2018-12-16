@@ -21,6 +21,7 @@ servoce::shape_view::shape_view(const servoce::shape& a, servoce::color color)
 	
 	shp = newShape;
 	m_ashp = new AIS_Shape(shp.Shape());
+	m_color = color;
 	Quantity_Color shpcolor (color.r, color.g, color.b,  Quantity_TOC_RGB);
 	m_ashp->SetColor(shpcolor);
 	m_ashp->SetMaterial(Graphic3d_NOM_STEEL);

@@ -70,6 +70,7 @@ namespace servoce
 		shape_view_controller add(const servoce::shape& shp, servoce::color color = mech)
 		{
 			//printf("add %p %d\n", this, shapes.size());
+			//printf("%f %f %f", color.r, color.g, color.b);
 			shapes.emplace_back(shp, color);
 			shapes[shapes.size() - 1].scn = this;
 			return shape_view_controller(&shapes, shapes.size() - 1);
