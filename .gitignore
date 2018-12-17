@@ -137,5 +137,6 @@ ENV/
 target
 pyservoce/libs
 
-build 
+build
+cxxbuild 
 dist
