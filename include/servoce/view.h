@@ -72,6 +72,7 @@ namespace servoce
 			view create_view();
 			void set_scene(servoce::scene* scn);*/
 		void set_triedron_axes();
+		void redraw();
 	};
 
 	void see(servoce::scene& scn);

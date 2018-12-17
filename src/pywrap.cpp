@@ -256,6 +256,7 @@ PYBIND11_MODULE(libservoce, m)
 	//.def(py::init<>())
 	.def(py::init<scene&>())
 	.def("create_view", &viewer::create_view)
+	.def("redraw", &viewer::redraw)
 	.def("set_triedron_axes", &viewer::set_triedron_axes)
 	;
 
