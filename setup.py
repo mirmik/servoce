@@ -22,23 +22,7 @@ class bdist_wheel(bdist_wheel_):
 		self.plat_name_supplied = True
 		self.plat_name = platform_name
 
-
-#class Found(Exception): pass
-#try:
-#	for root, dirs, files in os.walk("/usr/include"):
-#		for dr in dirs:
-#			if dr == "qt5":
-#				libqt_include_path = os.path.join(root, dr)
-#				raise Found()
-#	else:
-#		print("NeedInstall Qt5")
-#		exit(-1)
-#except (Found):
-#	pass
-
-
 liboce_include_path = "/usr/local/include/opencascade"
-
 pyservoce_lib = Extension("pyservoce.libservoce",
 	sources = [
 		"src/pywrap.cpp",
@@ -53,27 +37,14 @@ pyservoce_lib = Extension("pyservoce.libservoce",
 		"src/wire.cpp",
 		"src/boolops.cpp",
 		"src/geombase.cpp",
-		#"src/display.cpp",
 		
 		"src/convert.cpp",
 		"src/view.cpp",
 		"src/camera.cpp",
 
-#		"src/display/mainwidget.cpp",
-#		"src/display/dispwidget.cpp",
-#		"src/display/dispwidget_qt.cpp",
-#		"src/local/display_h_moc.cpp",
-#		"src/display/icons.cpp",
-
-#		"src/shower/mainwidget.cpp",
-#		"src/shower/dispwidget.cpp",
-#		"src/shower/dispwidget_qt.cpp",
-#		"src/local/shower_h_moc.cpp",
 	],
 	extra_compile_args=['-fPIC', '-std=c++14'],
-	#extra_link_args=['-Wl,-rpath,\'$ORIGIN/libs/\''],
 	extra_link_args=['-Wl,-rpath,$ORIGIN/libs'],
-	#extra_link_args=['-Wl,-rpath,./libs'],
 	include_dirs = [liboce_include_path, "src", "include"],
 	libraries = [
 		'TKernel',
@@ -97,19 +68,13 @@ pyservoce_lib = Extension("pyservoce.libservoce",
 		'TKShHealing',
 		'TKMesh',
 		'TKHLR',
-		
-		#'Qt5Core', 
-		#'Qt5Widgets', 
-		#'Qt5Test', 
-		#'Qt5Gui', 
-		#'Qt5OpenGL',
 	],
 )
 
 setup(
 	name = 'pyservoce',
 	packages = ['pyservoce'],
-	version = '1.4.1',
+	version = '1.5.0',
 	license='MIT',
 	description = 'CAD system for righteous zen programmers ',
 	author = 'Sorokin Nikolay',
