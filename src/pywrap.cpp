@@ -279,7 +279,7 @@ PYBIND11_MODULE(libservoce, m)
 	.def("rotation", &view::rotation)
 
 	.def("rawarray", &view::rawarray)
-	.def("screen", &view::screen)
+	//.def("screen", &view::screen)
 	.def("see", &view::see)
 
 	.def("intersect_point", &view::intersect_point)

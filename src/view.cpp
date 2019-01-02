@@ -89,8 +89,8 @@ void servoce::view::zoom(float a, float b, float aa, float ba)
 	occ->m_view->Zoom(a, b, aa, ba);
 }
 
-void servoce::view::screen(const std::string& path)
-{
+//void servoce::view::screen(const std::string& path)
+//{
 	//set_triedron();
 
 	/*set_virtual_window(800, 600);
@@ -132,25 +132,15 @@ void servoce::view::screen(const std::string& path)
 	//pixmap.Save("a.png");*/
 
 	//occ->m_view->Dump("a.png", Graphic3d_BT_BRG);
-}
+//}
 
 std::vector<unsigned char> servoce::view::rawarray()
 {
-//	set_virtual_window(800, 600);
-//	fit_all();
-//	redraw();
-	double Width; 
-	double Height;
-	
-	occ->m_view->Size(Width, Height); 
 
 	Image_PixMap pixmap;
-	occ->m_view->ToPixMap(
-		pixmap, 
-		Width, 
-		Height 
-		//Graphic3d_BT_RGB, 
-		//Standard_True, 
+	occ->m_view->ToPixMap( pixmap, w, h//, 
+		//Graphic3d_BT_RGB
+		//Standard_True
 		//V3d_SDO_MONO
 	);
 

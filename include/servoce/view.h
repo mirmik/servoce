@@ -40,7 +40,7 @@ namespace servoce
 		void set_gradient();
 
 		void see(int width = 800, int height = 600);
-		void screen(const std::string& path);
+	//	void screen(const std::string& path);
 
 		void reset_orientation();
 		void autoscale();
