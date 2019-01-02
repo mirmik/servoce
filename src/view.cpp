@@ -4,6 +4,10 @@
 //#include <Standart_Real.hxx>
 
 //#include <gxx/debug/dprint.h>
+//#include <nos/print.h>
+
+#include <IntCurvesFace_ShapeIntersector.hxx>
+
 
 Handle(Aspect_DisplayConnection) g_displayConnection;
 Handle(Graphic3d_GraphicDriver) g_graphicDriver;
@@ -253,4 +257,47 @@ void servoce::view::start_rotation(int x, int y, float treshold) {
 
 void servoce::view::rotation(int x, int y) {
 	occ->m_view->Rotation(x, y);
+}
+
+std::pair<servoce::point3, bool> servoce::view::intersect_point( double x, double y ) 
+{
+	auto m_view = occ->m_view;
+	auto m_context = occ->parent->m_context;
+
+	auto selector = m_context->MainSelector();
+    selector->Pick(x, y, m_view);
+
+    const Standard_Integer aDetectedNb = selector->NbPicked();
+
+    auto viewLine = occ->viewline(x, y, m_view);
+
+    for (Standard_Integer aDetIter = 1; aDetIter <= aDetectedNb; ++aDetIter)
+    {
+        Handle(SelectMgr_EntityOwner) anOwner = selector->Picked(aDetIter);
+
+        Handle(AIS_InteractiveObject) anObj
+            = Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable());
+
+        if (anObj->Type() != AIS_KOI_Shape)
+            continue;
+        
+        Handle_AIS_Shape hShape = Handle_AIS_Shape::DownCast(anObj);
+        const TopoDS_Shape &shape = hShape->Shape();
+        
+        gp_Pnt ip;
+
+        IntCurvesFace_ShapeIntersector shapeIntersector;
+        shapeIntersector.Load(shape, Precision::Confusion());
+        shapeIntersector.Perform(viewLine, -RealLast(), RealLast());
+
+        if (shapeIntersector.NbPnt() >= 1) {    
+            ip = shapeIntersector.Pnt(shapeIntersector.NbPnt());
+        } else
+            continue;
+
+        //std::cout << ip.X() << ' ' << ip.Y() << ' ' << ip.Z() << std::endl;
+
+        return std::make_pair(servoce::point3(ip), true);
+    }
+    return std::make_pair(servoce::point3(), false);
 }

@@ -69,6 +69,10 @@ namespace servoce
 			virtual void onRButtonUp(const int theFlags, const QPoint thePoint);
 			virtual void onMouseMove(const int theFlags, const QPoint thePoint);
 
+			gp_Pnt getMousePositionWithObjects(const QPoint point);
+			gp_Pnt getTrueMousePosition(const QPoint point);
+
+
 		public:
 			DisplayWidget(QWidget* parent = nullptr) : QWidget(parent)
 			{

@@ -6,6 +6,7 @@ import licant.libs
 from licant.cxx_modules import application
 
 licant.libs.include("servoce")
+licant.libs.include("nos")
 
 import os
 
@@ -27,7 +28,7 @@ application("target",
 		"main.cpp"
 	],
 	include_paths = [libqt_include_path, "."],
-	include_modules = ["servoce_sources"]
+	mdepends = ["servoce_sources", "nos"]
 )
 
 licant.ex(default = "target")

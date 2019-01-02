@@ -281,6 +281,8 @@ PYBIND11_MODULE(libservoce, m)
 	.def("rawarray", &view::rawarray)
 	.def("screen", &view::screen)
 	.def("see", &view::see)
+
+	.def("intersect_point", &view::intersect_point)
 	;
 
 //CONVERT

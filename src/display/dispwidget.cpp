@@ -42,10 +42,14 @@
 // gxx header files
 //#include <gxx/print.h>
 
+#include <IntCurvesFace_ShapeIntersector.hxx>
+
 #include <servoce/display.h>
 #include <local/display.h>
 #include <local/util.h>
 
+#include <nos/print.h>
+#include <nos/trace.h>
 
 static Handle(Graphic3d_GraphicDriver)& GetGraphicDriver()
 {
@@ -144,6 +148,7 @@ void servoce::disp::DisplayWidget::resizeEvent(QResizeEvent* e)
 
 void servoce::disp::DisplayWidget::init()
 {
+    setMouseTracking(true);
     // Create Aspect_DisplayConnection
     Handle(Aspect_DisplayConnection) aDisplayConnection = new Aspect_DisplayConnection();
 
@@ -257,6 +262,9 @@ void servoce::disp::DisplayWidget::onRButtonUp( const int theFlags, const QPoint
 
 void servoce::disp::DisplayWidget::onMouseMove( const int theFlags, const QPoint thePoint )
 {
+
+    getMousePositionWithObjects(thePoint);
+
     QPoint mv = thePoint - temporary1;
     temporary1 = thePoint;
 
@@ -293,7 +301,158 @@ void servoce::disp::DisplayWidget::onMouseMove( const int theFlags, const QPoint
             m_view->Pan(mv.x(), -mv.y());
         }
     }
-
-
     //gxx::println(Vx,Vy,Vz);
 }
+
+gp_Lin createLineFromViewEye(Standard_Real x, Standard_Real y, Handle(V3d_View) view)
+{
+    Standard_Real Xp = x, Yp = y;
+    Standard_Real Xv, Yv, Zv;
+    Standard_Real Vx, Vy, Vz;
+
+    view->Convert( Xp, Yp, Xv, Yv, Zv );
+    view->Proj( Vx, Vy, Vz );
+
+    return gp_Lin(gp_Pnt(Xv, Yv, Zv), gp_Dir(Vx, Vy, Vz));
+}
+
+//gp_Pnt intersectLineThroughShape(const TopoDS_Shape &shapeToIntersect, const gp_Lin &lineForIntersecting)
+//{
+  //  IntCurvesFace_ShapeIntersector shapeIntersector;
+  //  shapeIntersector.Load(shapeToIntersect, Precision::Confusion());
+  //  shapeIntersector.Perform(lineForIntersecting, -RealLast(), RealLast());
+
+//    return shapeIntersector.Pnt(1);
+//}
+
+gp_Pnt servoce::disp::DisplayWidget::getMousePositionWithObjects(const QPoint point)
+{
+    //TRACE();
+    //m_context->SetAutomaticHilight(false);
+    //m_context->MoveTo(point.x(), point.y(), m_view, true);
+    auto selector = m_context->MainSelector();
+    selector->Pick(point.x(), point.y(), m_view);
+
+    const Standard_Integer aDetectedNb = selector->NbPicked();
+    Standard_Integer aNewDetected = 0;
+
+    //PRINT(aDetectedNb);
+
+    auto viewLine = createLineFromViewEye(point.x(), point.y(), m_view);
+    //auto vldir = viewLine.Direction();
+    //auto vlloc = viewLine.Location();
+    //nos::fprintln("viewLine: ({},{},{}) ({},{},{})", vldir.X(), vldir.Y(), vldir.Z(), vlloc.X(), vlloc.Y(), vlloc.Z());
+
+    for (Standard_Integer aDetIter = 1; aDetIter <= aDetectedNb; ++aDetIter)
+    {
+        Handle(SelectMgr_EntityOwner) anOwner = selector->Picked(aDetIter);
+
+        //nos::print("downcast to intobj...");
+        Handle(AIS_InteractiveObject) anObj
+            = Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable());
+        //nos::println("ok");
+
+        if (anObj->Type() != AIS_KOI_Shape) {
+          //  nos::println("no shape ... interrupt");
+            continue;
+        }
+
+        //nos::print("downcast to shape...");
+        Handle_AIS_Shape hShape = Handle_AIS_Shape::DownCast(anObj);
+        const TopoDS_Shape &shape = hShape->Shape();
+        //nos::println("ok");
+
+        //nos::println("shapeType", shape.ShapeType());
+
+        gp_Pnt ip;
+
+        IntCurvesFace_ShapeIntersector shapeIntersector;
+        shapeIntersector.Load(shape, Precision::Confusion());
+        shapeIntersector.Perform(viewLine, -RealLast(), RealLast());
+
+        if (shapeIntersector.NbPnt() >= 1) {
+            ip = shapeIntersector.Pnt(1);
+        } else {
+            continue;
+        }
+
+        nos::fprintln("intPoint: ({},{},{})", ip.X(), ip.Y(), ip.Z());
+        break;
+    }
+
+    /*if (m_context->HasDetected())
+    {
+        nos::println("HasDetected");
+        m_context->InitDetected();
+        Handle_AIS_InteractiveObject hObj = m_context->DetectedInteractive();
+        if (!hObj.IsNull())
+        {
+            nos::println("!hObj.IsNull()");
+            Handle_AIS_Shape hShape = Handle_AIS_Shape::DownCast(hObj);
+            if (!hShape.IsNull())
+            {
+                nos::println("!hShape.IsNull()");
+                //const TopoDS_Shape &shape = hShape->Shape();
+                //gp_Lin line = viewCalc.createLineFromViewEye(point.x(), point.y(), aView);
+                ////return intersectPoint;
+            }
+            else
+            {
+                nos::println("false - Handle_AIS_Shape null");
+//Handle_AIS_Shape null
+            }
+        }
+        else
+        {
+            nos::println("false - Handle_AIS_InteractiveObject null");
+//Handle_AIS_InteractiveObject null
+        }
+    }
+    else
+    {
+        nos::println("false - HasDetected");
+        //servoce::point3 res = getTrueMousePosition(point);
+        //nos::println(res.x, res.y, res.z);
+    }*/
+}
+
+/*
+gp_Pnt OCCCalculations::intersectLineThroughShape(const TopoDS_Shape &shapeToIntersect, const gp_Lin &lineForIntersecting)
+{
+    IntCurvesFace_ShapeIntersector shapeIntersector;
+    shapeIntersector.Load(shapeToIntersect, Precision::Confusion());
+    shapeIntersector.Perform(lineForIntersecting, -RealLast(), RealLast());
+
+    return shapeIntersector.Pnt(1);
+}
+
+*//*gp_Pnt servoce::disp::DisplayWidget::getTrueMousePosition(const QPoint point)
+{
+    gp_Pnt point3d = viewCalc.convert2DPointTo3DPoint(point.x(), point.y(), aView); // convert2DPointTo3DPoint convert2DpointTo3DPointOnPlane
+    gp_Pnt pointTest(point3d.X(), point3d.Y(), point3d.Z());
+    return pointTest;
+}*//*
+
+gp_Pnt ViewCalculations::convert2DPointTo3DPoint(Standard_Real x, Standard_Real y, Handle(V3d_View) aView)
+{
+    V3d_Coordinate XEye, YEye, ZEye, XAt, YAt, ZAt;
+    aView->Eye(XEye, YEye, ZEye);
+    aView->At(XAt, YAt, ZAt);
+    gp_Pnt EyePoint(XEye, YEye, ZEye);
+    gp_Pnt AtPoint(XAt, YAt, ZAt);
+
+    gp_Vec EyeVector(EyePoint, AtPoint);
+    gp_Dir EyeDir(EyeVector);
+
+    gp_Pln PlaneOfTheView = gp_Pln(AtPoint, EyeDir);
+    Standard_Real X, Y, Z;
+    aView->Convert(int(x), int(y), X, Y, Z);
+    gp_Pnt ConvertedPoint(X, Y, Z);
+    gp_Pnt2d ConvertedPointOnPlane = ProjLib::Project(PlaneOfTheView, ConvertedPoint);
+
+    gp_Pnt ResultPoint = ElSLib::Value(ConvertedPointOnPlane.X(),
+                                       ConvertedPointOnPlane.Y(),
+                                       PlaneOfTheView);
+
+    return ResultPoint;
+}*/

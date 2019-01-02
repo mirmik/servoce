@@ -48,6 +48,8 @@ namespace servoce
 		void rotation(int x, int y);
 
 		std::vector<unsigned char> rawarray();
+
+		std::pair<servoce::point3, bool> intersect_point( double x, double y ); 
 	};
 
 	class viewer

@@ -162,9 +162,9 @@ module('servoce_sources',
 	
 	include_paths = [ "include", ".", "src" ],
 	
-	include_modules = [
-		submodule("liboce"), 
-		submodule("libqt"), 
+	mdepends = [
+		"liboce", 
+		"libqt", 
 #		submodule("gxx.include"),
 #		submodule("gxx", "posix"),
 #		submodule("gxx.print", "cout"),

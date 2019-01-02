@@ -67,14 +67,18 @@ inline Handle(Graphic3d_GraphicDriver) GetGraphicDriver()
 	return g_graphicDriver;
 }
 
+class OccViewerContext;
+
 struct OccViewWindow
 {
 	Handle(V3d_View) m_view;
 	Handle(Xw_Window) m_window;
+	OccViewerContext* parent;
 	int winddesc;
 
 public:
-	OccViewWindow(Handle(V3d_View) view) : m_view(view) {}
+	OccViewWindow(Handle(V3d_View) view, OccViewerContext* parent) 
+		: m_view(view), parent(parent) {}
 
 	void set_virtual_window(int w, int h)
 	{
@@ -119,6 +123,19 @@ public:
 	{
 		m_view->TriedronDisplay(Aspect_TOTP_LEFT_LOWER, Quantity_NOC_GOLD, 0.08, V3d_ZBUFFER);
 	}
+
+	gp_Lin viewline(double x, double y, Handle(V3d_View) view)
+	{
+		Standard_Real Xp = x, Yp = y;
+		Standard_Real Xv, Yv, Zv;
+		Standard_Real Vx, Vy, Vz;
+
+		view->Convert( Xp, Yp, Xv, Yv, Zv );
+		view->Proj( Vx, Vy, Vz );
+
+		return gp_Lin(gp_Pnt(Xv, Yv, Zv), gp_Dir(Vx, Vy, Vz));
+	}
+
 };
 
 
@@ -131,7 +148,7 @@ public:
 	OccViewerContext()
 	{
 		static Quantity_Color c1(0.5, 0.5, 0.5, Quantity_TOC_RGB);
-	    static Quantity_Color c2(0.3, 0.3, 0.3, Quantity_TOC_RGB);
+		static Quantity_Color c2(0.3, 0.3, 0.3, Quantity_TOC_RGB);
 
 		m_viewer = new V3d_Viewer(GetGraphicDriver());
 
@@ -146,9 +163,9 @@ public:
 		//m_viewer->SetDefaultBgGradientColors (c1, c2);
 
 		//m_viewer->SetLightOn(new V3d_DirectionalLight (m_viewer, V3d_Zneg , Quantity_NOC_WHITE, true));
-		
+
 		m_viewer->SetDefaultLights();
-	    m_viewer->SetLightOn();
+		m_viewer->SetLightOn();
 
 		m_context = new AIS_InteractiveContext (m_viewer);
 		m_context->SetDisplayMode(AIS_Shaded, false);
@@ -157,7 +174,7 @@ public:
 
 	OccViewWindow* create_view_window()
 	{
-		return new OccViewWindow( m_viewer->CreateView() );
+		return new OccViewWindow( m_viewer->CreateView(), this );
 	}
 
 	void set_scene(const servoce::scene& scn)
