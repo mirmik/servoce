@@ -241,6 +241,11 @@ void servoce::view::autoscale() {
 	occ->m_view->FitAll();
 }
 
+void servoce::view::centering() {
+	occ->m_view->Camera()->SetCenter(gp_Pnt(0,0,0));
+	occ->m_view->ResetViewOrientation();
+}
+
 void servoce::view::start_rotation(int x, int y, float treshold) {
 	occ->m_view->StartRotation(x, y, treshold);
 }

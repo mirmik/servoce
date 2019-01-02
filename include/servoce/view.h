@@ -44,6 +44,7 @@ namespace servoce
 
 		void reset_orientation();
 		void autoscale();
+		void centering();
 		void start_rotation(int x, int y, float tresh);
 		void rotation(int x, int y);
 
