@@ -276,8 +276,11 @@ std::pair<servoce::point3, bool> servoce::view::intersect_point( double x, doubl
         
         gp_Pnt ip;
 
+        TopLoc_Location loc = m_context->Location(hShape);
+        TopoDS_Shape loc_shape = shape.Located(loc);
+
         IntCurvesFace_ShapeIntersector shapeIntersector;
-        shapeIntersector.Load(shape, Precision::Confusion());
+        shapeIntersector.Load(loc_shape, Precision::Confusion());
         shapeIntersector.Perform(viewLine, -RealLast(), RealLast());
 
         if (shapeIntersector.NbPnt() >= 1) {    

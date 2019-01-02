@@ -89,6 +89,13 @@ void servoce::shape_view_controller::set_location(const servoce::transformation&
 	uassert((*ctr)[idx].scn->vwer->occ);
 	uassert((*ctr)[idx].scn->vwer->occ->m_context);
 
+	gp_XYZ xyz;
+	double angle;
+	
+	trans.trsf->GetRotation(xyz, angle);
+	std::cout << xyz.X() << " " << xyz.Y() << " " << xyz.Z() << " " << angle << std::endl; 
+
 	(*ctr)[idx].scn->vwer->occ->m_context->SetLocation((*ctr)[idx].m_ashp, *trans.trsf);
+//	(*ctr)[idx].m_ashp->Redisplay();
 	//(*ctr)[idx].scn->vwer->occ->m_viewer->Redraw();
 }
