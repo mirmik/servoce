@@ -280,7 +280,8 @@ PYBIND11_MODULE(libservoce, m)
 	.def("start_rotation", &view::start_rotation)
 	.def("rotation", &view::rotation)
 
-	.def("rawarray", &view::rawarray)
+	.def("rawarray", (std::vector<unsigned char>(view::*)())&view::rawarray)
+	.def("rawarray", (std::vector<unsigned char>(view::*)(int,int))&view::rawarray)
 	//.def("screen", &view::screen)
 	.def("see", &view::see)
 

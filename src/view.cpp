@@ -147,6 +147,12 @@ std::vector<unsigned char> servoce::view::rawarray()
 	return std::vector<unsigned char>(pixmap.Data(), pixmap.Data() + 3 * w * h);
 }
 
+std::vector<unsigned char> servoce::view::rawarray(int w, int h)
+{
+	this->w = w;
+	this->h = h;
+	return rawarray();
+}
 
 void servoce::view::see(int width, int height)
 {
