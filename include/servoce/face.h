@@ -20,9 +20,9 @@ namespace servoce
 	
 	shape polygon(const servoce::point3* pnts, size_t size);
 	shape polygon(const std::vector<servoce::point3>& pnts);
-	shape ngon(double r, int n);
-	shape square(double a, bool center = false);
-	shape rectangle(double a, double b, bool center = false);
+	shape ngon(double r, int n, bool wire = false);
+	shape square(double a, bool center = false, bool wire = false);
+	shape rectangle(double a, double b, bool center = false, bool wire = false);
 
 	shape textshape(const std::string& text, const std::string fontpath, size_t size);
 

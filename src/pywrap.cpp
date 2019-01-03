@@ -148,10 +148,11 @@ PYBIND11_MODULE(libservoce, m)
 	m.def("make_linear_extrude", [](const shape & shp, const py::list & lst, bool center) { return servoce::make_linear_extrude(shp, vector3(lst[0].cast<double>(), lst[1].cast<double>(), lst[2].cast<double>()), center); }, py::arg("shp"), py::arg("vec"), py::arg("center") = false);
 	m.def("make_pipe", 			make_pipe, py::arg("prof"), py::arg("path"));
 	m.def("make_pipe_shell", 	make_pipe_shell, py::arg("prof"), py::arg("path"), py::arg("isFrenet") = false);
+	m.def("loft", 				loft, py::arg("arr"));
 
 //PRIM2D
-	m.def("square", 	square, py::arg("a"), py::arg("center") = false);
-	m.def("rectangle", 	rectangle, py::arg("a"), py::arg("b"), py::arg("center") = false);
+	m.def("square", 	square, py::arg("a"), py::arg("center") = false, py::arg("wire")=false);
+	m.def("rectangle", 	rectangle, py::arg("a"), py::arg("b"), py::arg("center") = false, py::arg("wire")=false);
 	
 	m.def("circle", 	(shape(*)(double, bool)) &circle, py::arg("r"), py::arg("wire")=false);
 	m.def("circle", 	(shape(*)(double, double, bool)) &circle, py::arg("r"), py::arg("angle"), py::arg("wire")=false);
@@ -160,7 +161,7 @@ PYBIND11_MODULE(libservoce, m)
 	m.def("ellipse", 	(shape(*)(double, double, bool)) &ellipse, py::arg("r1"), py::arg("r2"), py::arg("wire")=false);
 	m.def("ellipse", 	(shape(*)(double, double, double, double, bool)) &ellipse, py::arg("r1"), py::arg("r2"), py::arg("a1"), py::arg("a2"), py::arg("wire")=false);
 	
-	m.def("ngon", 		ngon, py::arg("r"), py::arg("n"));
+	m.def("ngon", 		ngon, py::arg("r"), py::arg("n"), py::arg("wire")=false);
 	m.def("polygon", 	(shape(*)(const std::vector<point3>&))&polygon, py::arg("pnts"));
 	m.def("textshape", 	textshape, py::arg("text"), py::arg("fontpath"), py::arg("size"));
 

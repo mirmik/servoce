@@ -23,6 +23,7 @@
 
 #include <BRepLib_MakeFace.hxx>
 #include <BRepPrimAPI_MakeHalfSpace.hxx>
+#include <BRepOffsetAPI_ThruSections.hxx>
 
 #include <assert.h>
 
@@ -308,4 +309,13 @@ shape servoce::halfspace()
     TopoDS_Face F = BRepLib_MakeFace(P);
     BRepPrimAPI_MakeHalfSpace MHS(F, gp_Pnt(0,0,-1));
     return MHS.Solid();
+}
+
+
+shape servoce::loft(const std::vector<shape>& vec) {
+    BRepOffsetAPI_ThruSections builder(Standard_True, Standard_False);
+    for (auto& r : vec) {
+        builder.AddWire(r.Wire());
+    }
+    return builder.Shape();
 }

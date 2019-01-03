@@ -1,4 +1,5 @@
 #include <servoce/face.h>
+#include <servoce/wire.h>
 
 #include <gp_Circ.hxx>
 #include <gp_Elips.hxx>
@@ -106,7 +107,7 @@ servoce::shape servoce::polygon(const std::vector<servoce::point3>& pnts)
 	return polygon(pnts.data(), pnts.size());
 }
 
-servoce::shape servoce::ngon(double r, int n)
+servoce::shape servoce::ngon(double r, int n, bool wire)
 {
 	double angle;
 	servoce::point3* pnts = (servoce::point3*) alloca(sizeof(servoce::point3) * n);
@@ -115,26 +116,35 @@ servoce::shape servoce::ngon(double r, int n)
 		angle = 2 * M_PI / n * i;
 		pnts[i] = servoce::point3(r * cos(angle), r * sin(angle), 0);
 	}
+	if (wire) {
+		std::vector<servoce::point3> pntsvec;
+		for (int i = 0; i < n; ++i) pntsvec.push_back(pnts[i]);
+		return servoce::make_polysegment(pntsvec, true);
+	}
 	return polygon(pnts, n);
 }
 
-servoce::shape servoce::rectangle(double a, double b, bool center)
+servoce::shape servoce::rectangle(double a, double b, bool center, bool wire)
 {
 	if (center)
 	{
 		double x = a / 2;
 		double y = b / 2;
+		if (wire)
+			return make_polysegment({{ -x, -y}, {x, -y}, {x, y}, { -x, y}}, true);	
 		return polygon({{ -x, -y}, {x, -y}, {x, y}, { -x, y}});
 	}
 	else
 	{
+		if (wire)
+			return make_polysegment({{0, 0}, {0, b}, {a, b}, {a, 0}}, true);	
 		return polygon({{0, 0}, {0, b}, {a, b}, {a, 0}});
 	}
 }
 
-servoce::shape servoce::square(double a, bool center)
+servoce::shape servoce::square(double a, bool center, bool wire)
 {
-	return rectangle(a, a, center);
+	return rectangle(a, a, center, wire);
 }
 
 servoce::shape servoce::textshape(const std::string& text, const std::string fontpath, size_t size)

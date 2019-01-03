@@ -26,6 +26,8 @@ namespace servoce
 	shape make_pipe(const shape& profile, const shape& path);
 	shape make_pipe_shell(const shape& profile, const shape& path, bool isFrenet = false);
 
+	shape loft(const std::vector<shape>& vec);
+
 	shape halfspace();
 }
 
