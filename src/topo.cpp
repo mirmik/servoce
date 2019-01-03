@@ -284,9 +284,8 @@ servoce::shape servoce::shape::fillet(double r, const std::vector<servoce::point
 servoce::shape servoce::shape::fillet(double r, const std::vector<int>& nums, const std::vector<point3>& refs, double epsilon)
 {
 	if (nums.size() && refs.size()) throw std::runtime_error("Or nums or refs... Please...");
-	if (nums.size()) return fillet(r, nums);
 	if (refs.size()) return fillet(r, refs, epsilon);
-	return shape();
+	return fillet(r, nums);
 }
 
 servoce::point3 servoce::shape::center()
