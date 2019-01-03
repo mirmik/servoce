@@ -99,3 +99,11 @@ void servoce::shape_view_controller::set_location(const servoce::transformation&
 //	(*ctr)[idx].m_ashp->Redisplay();
 	//(*ctr)[idx].scn->vwer->occ->m_viewer->Redraw();
 }
+
+void servoce::shape_view_controller::hide(bool en) 
+{
+	if (en)
+		(*ctr)[idx].scn->vwer->occ->m_context->Erase((*ctr)[idx].m_ashp, true);
+	else
+		(*ctr)[idx].scn->vwer->occ->m_context->Display((*ctr)[idx].m_ashp, true);
+}

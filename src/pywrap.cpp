@@ -242,6 +242,7 @@ PYBIND11_MODULE(libservoce, m)
 
 	py::class_<shape_view_controller>(m, "ShapeViewController")
 	.def("set_location", &shape_view_controller::set_location)
+	.def("hide", &shape_view_controller::hide)
 	;
 
 	py::class_<scene>(m, "Scene")

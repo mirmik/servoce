@@ -53,6 +53,7 @@ namespace servoce
 
 		//void set_location(double x, double y, double z);
 		void set_location(const servoce::transformation& trans);
+		void hide(bool en);
 	};
 
 	struct scene

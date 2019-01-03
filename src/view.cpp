@@ -299,3 +299,8 @@ std::pair<servoce::point3, bool> servoce::view::intersect_point( double x, doubl
     }
     return std::make_pair(servoce::point3(), false);
 }
+
+servoce::shape_view_controller servoce::viewer::add(const servoce::shape& obj, servoce::color color) 
+{
+
+}

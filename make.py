@@ -9,6 +9,7 @@ import licant.libs
 import os
 
 licant.execute("servoce_inc.py")
+licant.include("nos")
 
 install_lib_dir = "/usr/lib/"
 install_inc_dir = "/usr/local/include/"
@@ -16,7 +17,8 @@ install_inc_dir = "/usr/local/include/"
 shared_library("cxxbuild/libservoce.so", 
 	builddir = 'cxxbuild',
 	mdepends = [
-		("servoce_sources")
+		"servoce_sources",
+		"nos"
 	],
 )
 

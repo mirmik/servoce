@@ -76,6 +76,7 @@ namespace servoce
 			void set_scene(servoce::scene* scn);*/
 		void set_triedron_axes();
 		void redraw();
+		shape_view_controller add(const shape& shp, color color);
 	};
 
 	void see(servoce::scene& scn);
