@@ -24,6 +24,8 @@ namespace servoce
 	shape square(double a, bool center = false);
 	shape rectangle(double a, double b, bool center = false);
 
+	shape textshape(const std::string& text, const std::string fontpath, size_t size);
+
 	//sweep2d
 	//shape make_sweep(const servoce::shape& profile, const servoce::shape& path); //Не нужна.
 }

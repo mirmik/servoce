@@ -162,6 +162,7 @@ PYBIND11_MODULE(libservoce, m)
 	
 	m.def("ngon", 		ngon, py::arg("r"), py::arg("n"));
 	m.def("polygon", 	(shape(*)(const std::vector<point3>&))&polygon, py::arg("pnts"));
+	m.def("textshape", 	textshape, py::arg("text"), py::arg("fontpath"), py::arg("size"));
 
 //PRIM1D
 	m.def("segment", make_segment);

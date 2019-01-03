@@ -19,8 +19,10 @@
 #include <BRepAdaptor_Curve.hxx>
 
 #include <BRepOffsetAPI_MakePipe.hxx>
+#include <Font_BRepTextBuilder.hxx>
 
-servoce::shape servoce::circle(double r, bool wire) { 
+servoce::shape servoce::circle(double r, bool wire)
+{
 	gp_Circ EL ( gp::XOY(), r );
 	Handle(Geom_Circle) anCircle = GC_MakeCircle(EL).Value();
 	TopoDS_Edge aEdge = BRepBuilderAPI_MakeEdge( anCircle );
@@ -30,32 +32,35 @@ servoce::shape servoce::circle(double r, bool wire) {
 	return BRepBuilderAPI_MakeFace(aCircle).Shape();
 }
 
-servoce::shape servoce::circle(double r, double angle, bool wire) { 
+servoce::shape servoce::circle(double r, double angle, bool wire)
+{
 	gp_Circ EL ( gp::XOY(), r );
 	Handle(Geom_Circle) anCircle = GC_MakeCircle(EL).Value();
 	TopoDS_Edge aEdge = BRepBuilderAPI_MakeEdge( anCircle, 0, angle );
 	if (wire)
 		return BRepBuilderAPI_MakeWire( aEdge ).Shape();
-	TopoDS_Edge aEdge1 = BRepBuilderAPI_MakeEdge( gp_Pnt(0,0,0), gp_Pnt(r,0,0) );
-	TopoDS_Edge aEdge2 = BRepBuilderAPI_MakeEdge( gp_Pnt(0,0,0), gp_Pnt(r*cos(angle),r*sin(angle),0)  );
+	TopoDS_Edge aEdge1 = BRepBuilderAPI_MakeEdge( gp_Pnt(0, 0, 0), gp_Pnt(r, 0, 0) );
+	TopoDS_Edge aEdge2 = BRepBuilderAPI_MakeEdge( gp_Pnt(0, 0, 0), gp_Pnt(r * cos(angle), r * sin(angle), 0)  );
 	TopoDS_Wire aCircle = BRepBuilderAPI_MakeWire( aEdge, aEdge1, aEdge2 );
 	return BRepBuilderAPI_MakeFace(aCircle).Shape();
 }
 
-servoce::shape servoce::circle(double r, double a1, double a2, bool wire) { 
+servoce::shape servoce::circle(double r, double a1, double a2, bool wire)
+{
 	gp_Circ EL ( gp::XOY(), r );
 	Handle(Geom_Circle) anCircle = GC_MakeCircle(EL).Value();
 	TopoDS_Edge aEdge = BRepBuilderAPI_MakeEdge( anCircle, a1, a2 );
 	if (wire)
 		return BRepBuilderAPI_MakeWire( aEdge ).Shape();
-	TopoDS_Edge aEdge1 = BRepBuilderAPI_MakeEdge( gp_Pnt(0,0,0), gp_Pnt(r*cos(a1),r*sin(a1),0) );
-	TopoDS_Edge aEdge2 = BRepBuilderAPI_MakeEdge( gp_Pnt(0,0,0), gp_Pnt(r*cos(a2),r*sin(a2),0)  );
+	TopoDS_Edge aEdge1 = BRepBuilderAPI_MakeEdge( gp_Pnt(0, 0, 0), gp_Pnt(r * cos(a1), r * sin(a1), 0) );
+	TopoDS_Edge aEdge2 = BRepBuilderAPI_MakeEdge( gp_Pnt(0, 0, 0), gp_Pnt(r * cos(a2), r * sin(a2), 0)  );
 	TopoDS_Wire aCircle = BRepBuilderAPI_MakeWire( aEdge, aEdge1, aEdge2 );
 	return BRepBuilderAPI_MakeFace(aCircle).Shape();
 }
 
 
-servoce::shape servoce::ellipse(double r1, double r2, bool wire) { 
+servoce::shape servoce::ellipse(double r1, double r2, bool wire)
+{
 	gp_Elips EL ( gp::XOY(), r1, r2 );
 	Handle(Geom_Ellipse) anCircle = GC_MakeEllipse(EL).Value();
 	TopoDS_Edge aEdge = BRepBuilderAPI_MakeEdge( anCircle );
@@ -65,7 +70,8 @@ servoce::shape servoce::ellipse(double r1, double r2, bool wire) {
 	return BRepBuilderAPI_MakeFace(w).Shape();
 }
 
-servoce::shape servoce::ellipse(double r1, double r2, double a1, double a2, bool wire) { 
+servoce::shape servoce::ellipse(double r1, double r2, double a1, double a2, bool wire)
+{
 	gp_Elips EL ( gp::XOY(), r1, r2 );
 	Handle(Geom_Ellipse) anCircle = GC_MakeEllipse(EL).Value();
 	TopoDS_Edge aEdge = BRepBuilderAPI_MakeEdge( anCircle, a1, a2 );
@@ -77,8 +83,8 @@ servoce::shape servoce::ellipse(double r1, double r2, double a1, double a2, bool
 	curve.D0(a1, p1);
 	curve.D0(a2, p2);
 
-	TopoDS_Edge aEdge1 = BRepBuilderAPI_MakeEdge( gp_Pnt(0,0,0), p1 );
-	TopoDS_Edge aEdge2 = BRepBuilderAPI_MakeEdge( gp_Pnt(0,0,0), p2 );
+	TopoDS_Edge aEdge1 = BRepBuilderAPI_MakeEdge( gp_Pnt(0, 0, 0), p1 );
+	TopoDS_Edge aEdge2 = BRepBuilderAPI_MakeEdge( gp_Pnt(0, 0, 0), p2 );
 	TopoDS_Wire aCircle = BRepBuilderAPI_MakeWire( aEdge, aEdge1, aEdge2 );
 	return BRepBuilderAPI_MakeFace(aCircle).Shape();
 }
@@ -87,42 +93,58 @@ servoce::shape servoce::ellipse(double r1, double r2, double a1, double a2, bool
 
 
 
-servoce::shape servoce::polygon(const servoce::point3* pnts, size_t size) {
+servoce::shape servoce::polygon(const servoce::point3* pnts, size_t size)
+{
 	BRepBuilderAPI_MakePolygon mk;
 	for (uint i = 0; i < size; ++i) mk.Add(pnts[i].Pnt());
 	mk.Close();
 	return BRepBuilderAPI_MakeFace(mk).Shape();
-} 
+}
 
-servoce::shape servoce::polygon(const std::vector<servoce::point3>& pnts) {
+servoce::shape servoce::polygon(const std::vector<servoce::point3>& pnts)
+{
 	return polygon(pnts.data(), pnts.size());
-} 
+}
 
-servoce::shape servoce::ngon(double r, int n) { 
+servoce::shape servoce::ngon(double r, int n)
+{
 	double angle;
 	servoce::point3* pnts = (servoce::point3*) alloca(sizeof(servoce::point3) * n);
-	for (int i = 0; i < n; ++i) {
+	for (int i = 0; i < n; ++i)
+	{
 		angle = 2 * M_PI / n * i;
-		pnts[i] = servoce::point3(r*cos(angle), r*sin(angle), 0);
+		pnts[i] = servoce::point3(r * cos(angle), r * sin(angle), 0);
 	}
 	return polygon(pnts, n);
 }
 
-servoce::shape servoce::rectangle(double a, double b, bool center) { 
-	if (center) {
-		double x = a/2;
-		double y = b/2;
-		return polygon({{-x,-y},{x,-y},{x,y},{-x,y}});
+servoce::shape servoce::rectangle(double a, double b, bool center)
+{
+	if (center)
+	{
+		double x = a / 2;
+		double y = b / 2;
+		return polygon({{ -x, -y}, {x, -y}, {x, y}, { -x, y}});
 	}
-	else {
-		return polygon({{0,0},{0,b},{a,b},{a,0}});
+	else
+	{
+		return polygon({{0, 0}, {0, b}, {a, b}, {a, 0}});
 	}
 }
 
-servoce::shape servoce::square(double a, bool center) { 
-	return rectangle(a,a,center);
+servoce::shape servoce::square(double a, bool center)
+{
+	return rectangle(a, a, center);
 }
 
+servoce::shape servoce::textshape(const std::string& text, const std::string fontpath, size_t size)
+{
+	Font_BRepTextBuilder builder;
+	Font_BRepFont font(fontpath.c_str(), size);
+	NCollection_String collection(text.c_str());
+	TopoDS_Shape textshp = builder.Perform (font, collection);
+	return textshp;
+}
 
 /*
 servoce::shape servoce::shape::fillet(double r, const std::vector<int>& nums) {
