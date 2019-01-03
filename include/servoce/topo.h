@@ -32,7 +32,9 @@ namespace servoce
 		shape& operator= (const TopoDS_Shape& shp);
 		shape& operator= (shape&& oth);
 
+		shape fillet(double r, const std::vector<int>& nums, const std::vector<point3>& refs, double epsilon);
 		shape fillet(double r, const std::vector<int>& nums);
+		shape fillet(double r, const std::vector<point3>& refs, double epsilon);
 		shape fill();
 
 		//solid to_solid();

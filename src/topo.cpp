@@ -18,6 +18,7 @@
 #include <BRepAlgoAPI_Cut.hxx>
 #include <BRepAlgoAPI_Fuse.hxx>
 #include <BRepAlgoAPI_Common.hxx>
+#include <BRepExtrema_DistShapeShape.hxx>
 #include <Geom_Plane.hxx>
 
 #include <TopAbs_ShapeEnum.hxx>
@@ -239,9 +240,53 @@ servoce::shape servoce::shape::fillet(double r, const std::vector<int>& nums)
 	}
 	else
 	{
-		std::cout << "fillet 3" << std::endl;
 		throw std::runtime_error("Fillet argument has unsuported type.");
 	}
+}
+
+servoce::shape servoce::shape::fillet(double r, const std::vector<servoce::point3>& refs, double epsilon)
+{
+	auto type = m_shp->ShapeType();
+
+	if (TopAbs_SOLID == type || TopAbs_COMPSOLID == type || type == TopAbs_COMPOUND)
+	{
+		try
+		{
+			BRepFilletAPI_MakeFillet mk(*m_shp);
+			for (TopExp_Explorer ex(*m_shp, TopAbs_EDGE); ex.More(); ex.Next())
+			{
+				TopoDS_Edge Edge = TopoDS::Edge(ex.Current());
+				for (unsigned int j = 0; j < refs.size(); ++j) 
+				{
+					BRepExtrema_DistShapeShape extrema(Edge, refs[j].Vtx());
+					if (extrema.Value() < epsilon) mk.Add(r,Edge);
+				}
+			}
+
+			return mk.Shape();
+		}
+		catch (std::exception ex)
+		{
+			std::cout << ex.what() << std::endl;
+			throw ex;
+		}
+	}
+	else if (TopAbs_FACE == type)
+	{
+		throw std::runtime_error("Face fillet. TODO.");
+	}
+	else
+	{
+		throw std::runtime_error("Fillet argument has unsuported type.");
+	}
+}
+
+servoce::shape servoce::shape::fillet(double r, const std::vector<int>& nums, const std::vector<point3>& refs, double epsilon)
+{
+	if (nums.size() && refs.size()) throw std::runtime_error("Or nums or refs... Please...");
+	if (nums.size()) return fillet(r, nums);
+	if (refs.size()) return fillet(r, refs, epsilon);
+	return shape();
 }
 
 servoce::point3 servoce::shape::center()

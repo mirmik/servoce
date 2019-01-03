@@ -114,7 +114,7 @@ PYBIND11_MODULE(libservoce, m)
 	.def(py::pickle(
 	[](const shape & self) { return b64::base64_encode(self.string_dump()); },
 	[](const std::string & in) { return shape::restore_string_dump(b64::base64_decode(in)); }))
-	.def("fillet", &shape::fillet, py::arg("r"), py::arg("nums") = py::tuple())
+	.def("fillet", (shape(shape::*)(double, const std::vector<int>&, const std::vector<point3>&, double))&shape::fillet, py::arg("r"), py::arg("nums") = py::tuple(), py::arg("refs") = py::tuple(), py::arg("epsilon") = 0.1)
 	.def("fill", &shape::fill)
 	.def("vertices", &shape::vertices)
 	.def("center", &shape::center)
