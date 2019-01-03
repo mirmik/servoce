@@ -150,7 +150,13 @@ servoce::shape servoce::square(double a, bool center, bool wire)
 servoce::shape servoce::textshape(const std::string& text, const std::string fontpath, size_t size)
 {
 	Font_BRepTextBuilder builder;
-	Font_BRepFont font(fontpath.c_str(), size);
+	Font_BRepFont font;
+
+	bool okfont = font.Init(fontpath.c_str(), size);
+	if (!okfont) {
+		throw std::runtime_error("Wrong font path.");
+	}
+
 	NCollection_String collection(text.c_str());
 	TopoDS_Shape textshp = builder.Perform (font, collection);
 	return textshp;
