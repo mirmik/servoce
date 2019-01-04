@@ -9,7 +9,7 @@ class AIS_Shape;
 
 namespace servoce
 {
-	struct color { float r, g, b; };
+	struct color { float r, g, b, a; };
 
 	static constexpr color white = 	color { 1, 1, 1 };
 	static constexpr color black = 	color { 0, 0, 0 };

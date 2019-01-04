@@ -306,7 +306,21 @@ std::pair<servoce::point3, bool> servoce::view::intersect_point( double x, doubl
     return std::make_pair(servoce::point3(), false);
 }
 
-servoce::shape_view_controller servoce::viewer::add(const servoce::shape& obj, servoce::color color) 
+void servoce::viewer::clean_context() 
 {
-
+	occ->m_context->EraseAll(false);
 }
+
+void servoce::viewer::add_scene(const servoce::scene& scn) 
+{
+	for (int i = 0; i < scn.shapes.size(); ++i) 
+	{
+		occ->m_context->Display(scn.shapes[i].m_ashp, false);
+	}
+}
+
+
+//servoce::shape_view_controller servoce::viewer::add(const servoce::shape& obj, servoce::color color) 
+//{
+
+//}

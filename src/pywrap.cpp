@@ -13,9 +13,9 @@
 namespace py = pybind11;
 using namespace servoce;
 
-#define DEF_TRANSFORM_OPERATIONS(TYPE) 				\
+#define DEF_TRANSFORM_OPERATIONS(TYPE) 			\
 .def("transform", &TYPE::transform)				\
-.def("translate", &TYPE::translate)							\
+.def("translate", &TYPE::translate)				\
 .def("up", &TYPE::up)							\
 .def("down", &TYPE::down)						\
 .def("right", &TYPE::right)						\
@@ -235,7 +235,8 @@ PYBIND11_MODULE(libservoce, m)
 
 //GRAPHIC
 	py::class_<color>(m, "Color")
-	.def(py::init<float, float, float>());
+	.def(py::init<float, float, float>())
+	.def(py::init<float, float, float,float>());
 
 	py::class_<shape_view>(m, "ShapeView")
 	.def("shape", &shape_view::shape)
@@ -260,6 +261,8 @@ PYBIND11_MODULE(libservoce, m)
 	.def(py::init<scene&>())
 	.def("create_view", &viewer::create_view)
 	.def("redraw", &viewer::redraw)
+	.def("add_scene", &viewer::add_scene)
+	.def("clean_context", &viewer::clean_context)
 	.def("set_triedron_axes", &viewer::set_triedron_axes)
 	;
 

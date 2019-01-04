@@ -24,6 +24,7 @@ servoce::shape_view::shape_view(const servoce::shape& a, servoce::color color)
 	m_color = color;
 	Quantity_Color shpcolor (color.r, color.g, color.b,  Quantity_TOC_RGB);
 	m_ashp->SetColor(shpcolor);
+	if (color.a != 0.0) m_ashp->SetTransparency(color.a);
 	m_ashp->SetMaterial(Graphic3d_NOM_STEEL);
 }
 
