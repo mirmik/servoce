@@ -149,6 +149,7 @@ PYBIND11_MODULE(libservoce, m)
 	m.def("make_pipe", 			make_pipe, py::arg("prof"), py::arg("path"));
 	m.def("make_pipe_shell", 	make_pipe_shell, py::arg("prof"), py::arg("path"), py::arg("isFrenet") = false);
 	m.def("loft", 				loft, py::arg("arr"));
+	m.def("revol", 				revol);
 
 //PRIM2D
 	m.def("square", 	square, py::arg("a"), py::arg("center") = false, py::arg("wire")=false);
