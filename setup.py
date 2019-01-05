@@ -74,7 +74,7 @@ pyservoce_lib = Extension("pyservoce.libservoce",
 setup(
 	name = 'pyservoce',
 	packages = ['pyservoce'],
-	version = '1.8.0',
+	version = '1.8.2',
 	license='MIT',
 	description = 'CAD system for righteous zen programmers ',
 	author = 'Sorokin Nikolay',
@@ -85,6 +85,7 @@ setup(
 	keywords = ['testing', 'cad'],
 	classifiers = [],
 
+	package_data={"pyservoce": "libs/*"},
 	include_package_data=True,
 	ext_modules = [pyservoce_lib],
 	cmdclass = {"bdist_wheel" : bdist_wheel}
