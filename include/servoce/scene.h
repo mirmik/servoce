@@ -93,6 +93,9 @@ namespace servoce
 			}
 		}
 
+		std::vector<servoce::shape> shapes_array();
+		std::vector<servoce::color> color_array();
+
 		shape_view& operator[](size_t i) 
 		{
 			return shapes[i];

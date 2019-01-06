@@ -237,7 +237,21 @@ PYBIND11_MODULE(libservoce, m)
 //GRAPHIC
 	py::class_<color>(m, "Color")
 	.def(py::init<float, float, float>())
-	.def(py::init<float, float, float,float>());
+	.def(py::init<float, float, float,float>())
+	.def(py::pickle(
+	[](const color & self)
+	{
+		float arr[4] = {self.r, self.g, self.b, self.a};
+		return b64::base64_encode((uint8_t*)&arr, 4 * sizeof(float));
+	},
+	[](const std::string & in)
+	{
+		float arr[4];
+		std::string decoded = b64::base64_decode(in);
+		memcpy(&arr, decoded.data(), 4 * sizeof(float));
+		return color{arr[0],arr[1],arr[2],arr[3]};
+	}))
+	;
 
 	py::class_<shape_view>(m, "ShapeView")
 	.def("shape", &shape_view::shape)
@@ -254,6 +268,8 @@ PYBIND11_MODULE(libservoce, m)
 	.def("add", (shape_view_controller(scene::*)(const shape&, color))&scene::add, py::arg("shape"), py::arg("color") = color{0.6, 0.6, 0.8})
 	.def("add", (void(scene::*)(const point3&, color))&scene::add, py::arg("shape"), py::arg("color") = color{0.6, 0.6, 0.8})
 	.def("append", (void(scene::*)(const scene&))&scene::append, py::arg("scene"))
+	.def("shapes_array", (std::vector<shape>(scene::*)())&scene::shapes_array)
+	.def("color_array", (std::vector<color>(scene::*)())&scene::color_array)
 	.def("__getitem__", [](const scene & s, size_t i) { return s[i]; })
 	;
 

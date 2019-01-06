@@ -108,3 +108,17 @@ void servoce::shape_view_controller::hide(bool en)
 	else
 		(*ctr)[idx].scn->vwer->occ->m_context->Display((*ctr)[idx].m_ashp, true);
 }
+
+std::vector<servoce::shape> servoce::scene::shapes_array() 
+{
+	std::vector<servoce::shape> arr;
+	for (auto& v : shapes) arr.emplace_back(v.shape());
+	return arr;	
+}
+
+std::vector<servoce::color> servoce::scene::color_array() 
+{
+	std::vector<servoce::color> arr;
+	for (auto& v : shapes) arr.emplace_back(v.color());
+	return arr;	
+}
