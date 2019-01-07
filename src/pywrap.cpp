@@ -121,6 +121,8 @@ PYBIND11_MODULE(libservoce, m)
 	.def("extrude", (shape(shape::*)(const vector3&, bool)) &shape::extrude, py::arg("vec"), py::arg("center") = false)
 	.def("extrude", (shape(shape::*)(double, double, double, bool)) &shape::extrude, py::arg("x"), py::arg("y"), py::arg("z"), py::arg("center") = false)
 	.def("extrude", (shape(shape::*)(double, bool)) &shape::extrude, py::arg("z"), py::arg("center") = false)
+	.def("is_closed", &shape::is_closed)
+	.def("sfvertex", &shape::sfvertex)
 	;
 
 //PRIM3D
@@ -166,6 +168,8 @@ PYBIND11_MODULE(libservoce, m)
 	m.def("polygon", 	(shape(*)(const std::vector<point3>&))&polygon, py::arg("pnts"));
 	m.def("textshape", 	textshape, py::arg("text"), py::arg("fontpath"), py::arg("size"));
 
+	m.def("fill", &fill);
+
 //PRIM1D
 	m.def("segment", make_segment);
 	m.def("polysegment", (shape(*)(const std::vector<point3>&, const bool))&make_polysegment, py::arg("pnts"), py::arg("closed") = false);
@@ -176,6 +180,8 @@ PYBIND11_MODULE(libservoce, m)
 
 	m.def("make_circle_arc", (shape(*)(double))&make_circle_arc);
 	m.def("make_circle_arc", (shape(*)(double, double, double))&make_circle_arc);
+
+	m.def("sew", &sew);
 
 //BOOLEAN
 	m.def("union", (shape(*)(const std::vector<const shape*>&))&make_union);

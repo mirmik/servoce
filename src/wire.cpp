@@ -234,6 +234,7 @@ servoce::shape servoce::make_long_helix(double pitch, double height,
 
 servoce::shape servoce::make_interpolate(const std::vector<servoce::point3>& pnts, const std::vector<servoce::vector3>& tang, bool closed)
 {
+	std::cout << "make_interpolate" << std::endl;
 	Handle(TColgp_HArray1OfPnt) _pnts = new TColgp_HArray1OfPnt(1, pnts.size());
 
 	for (uint i = 0; i < pnts.size(); ++i) _pnts->SetValue(i + 1, pnts[i].Pnt());
@@ -256,11 +257,12 @@ servoce::shape servoce::make_interpolate(const std::vector<servoce::point3>& pnt
 	}
 
 	algo.Perform();
-	return BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(algo.Curve())).Wire();
+	return BRepBuilderAPI_MakeEdge(algo.Curve()).Edge();
 }
 
 servoce::shape servoce::make_interpolate(const std::vector<servoce::point3>& pnts, bool closed)
 {
+	std::cout << "make_interpolate" << std::endl;
 	Handle(TColgp_HArray1OfPnt) _pnts = new TColgp_HArray1OfPnt(1, pnts.size());
 
 	for (uint i = 0; i < pnts.size(); ++i) _pnts->SetValue(i + 1, pnts[i].Pnt());
@@ -268,7 +270,7 @@ servoce::shape servoce::make_interpolate(const std::vector<servoce::point3>& pnt
 	GeomAPI_Interpolate algo(_pnts, /*_params,*/ closed, 0.0000001);
 
 	algo.Perform();
-	return BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(algo.Curve())).Wire();
+	return BRepBuilderAPI_MakeEdge(algo.Curve()).Edge();
 }
 
 servoce::shape servoce::sew(const std::vector<const servoce::shape*>& arr)
@@ -277,10 +279,23 @@ servoce::shape servoce::sew(const std::vector<const servoce::shape*>& arr)
 
 	for (auto* ptr : arr)
 	{
-		mk.Add(ptr->Wire());
+		if (ptr->Shape().ShapeType() == TopAbs_WIRE)
+			mk.Add(ptr->Wire());
+		else if (ptr->Shape().ShapeType() == TopAbs_EDGE)
+			mk.Add(ptr->Edge());
 	}
 
+	/*try {*/
 	return mk.Wire();
+	/*}
+	catch 
+	{
+		std::cout << "fail. maybe unsorted" << std::endl;
+
+		std::vector<const servoce::shape*> sorted;
+		sorted.push_back(arr[0]); 
+
+	}*/
 }
 
 servoce::shape servoce::make_circle_arc(double r, double a, double b)
@@ -299,4 +314,23 @@ servoce::shape servoce::make_circle_arc(double r)
 	TopoDS_Edge aEdge = BRepBuilderAPI_MakeEdge( anCircle);
 	TopoDS_Wire aCircle = BRepBuilderAPI_MakeWire( aEdge );
 	return aCircle;
+}
+
+#include <TopExp.hxx>
+std::pair<servoce::point3, servoce::point3> servoce::shape::sfvertex() 
+{
+	if (Shape().ShapeType() == TopAbs_WIRE){
+		TopoDS_Vertex a, b;
+		TopExp::Vertices(Wire(), a, b);
+		return std::pair<servoce::point3, servoce::point3>(a,b);
+	}
+	else if (Shape().ShapeType() == TopAbs_EDGE)
+		return std::pair<servoce::point3, servoce::point3>(TopExp::FirstVertex(Edge()), TopExp::LastVertex(Edge()));
+}
+
+bool servoce::shape::is_closed() 
+{
+	std::cout << "is_closed" << std::endl;
+	auto pair = sfvertex();
+	return servoce::point3::early(pair.first, pair.second, 0.0001);
 }

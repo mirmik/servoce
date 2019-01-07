@@ -12,12 +12,24 @@
 
 class TopoDS_Shape;
 class TopoDS_Solid;
+class TopoDS_Vertex;
+class TopoDS_Edge;
 class TopoDS_Wire;
 class TopoDS_Face;
 class TopoDS_Compound;
 
 namespace servoce
 {
+	enum topoenum 
+	{
+		vertex,
+		edge,
+		wire,
+		solid,
+		face,
+		compound
+	};
+
 	struct shape
 	{
 		TopoDS_Shape* m_shp = nullptr;
@@ -53,8 +65,12 @@ namespace servoce
 		TopoDS_Face& Face();
 		const TopoDS_Face& Face() const;
 
+		TopoDS_Edge& Edge();
+		const TopoDS_Edge& Edge() const;
+
 		TopoDS_Wire& Wire();
 		const TopoDS_Wire& Wire() const;
+		TopoDS_Wire Wire_orEdgeToWire() const;
 
 		TopoDS_Solid& Solid();
 		const TopoDS_Solid& Solid() const;
@@ -99,6 +115,11 @@ namespace servoce
 		servoce::shape extrude(double x, double y, double z, bool center = false);
 
 		std::vector<servoce::point3> vertices();
+
+		std::pair<servoce::point3, servoce::point3> sfvertex();
+		bool is_closed(); // for wire
+
+		topoenum type();
 	};
 
 	shape make_section(const shape& shp);

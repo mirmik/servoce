@@ -55,7 +55,7 @@ namespace servoce
 		point3(const pybind11::tuple&);
 
 		static bool lexless_xyz(const point3& a, const point3& b);
-		static bool early(const point3& a, const point3& b);
+		static bool early(const point3& a, const point3& b, double eps = 0.0000001);
 
 		bool operator < (const servoce::point3& b) { 
 			return lexless_xyz(*this, b);

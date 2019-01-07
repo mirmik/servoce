@@ -43,13 +43,11 @@ bool servoce::point3::lexless_xyz(const point3& a, const point3& b)
 	//return std::lexicographical_compare(&a.x, &a.z, &b.x, &b.z);
 }
 
-bool servoce::point3::early(const point3& a, const point3& b) 
+bool servoce::point3::early(const point3& a, const point3& b, double eps) 
 {
 	double xdiff = a.x - b.x;
 	double ydiff = a.y - b.y;
 	double zdiff = a.z - b.z;
-
-	double eps = 0.0000001;
 
 	return early_zero(xdiff, eps) && early_zero(ydiff, eps) && early_zero(zdiff, eps);
 }
