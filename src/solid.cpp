@@ -218,7 +218,7 @@ shape servoce::make_pipe(const shape& profile, const shape& path)
 	if (profile.Shape().IsNull())
 		Standard_Failure::Raise("Cannot sweep empty profile");
 
-	return BRepOffsetAPI_MakePipe(path.Wire(), profile.Shape()).Shape();
+	return BRepOffsetAPI_MakePipe(path.Wire_orEdgeToWire(), profile.Shape()).Shape();
 }
 
 
@@ -266,7 +266,7 @@ shape servoce::make_pipe_shell(
 {
 	try
 	{
-		BRepOffsetAPI_MakePipeShell mkPipeShell(path.Wire());
+		BRepOffsetAPI_MakePipeShell mkPipeShell(path.Wire_orEdgeToWire());
 		mkPipeShell.SetMode(isFrenet);
 
 		/*BRepBuilderAPI_TransitionMode transMode;
@@ -316,7 +316,7 @@ shape servoce::halfspace()
 shape servoce::loft(const std::vector<shape>& vec) {
 	BRepOffsetAPI_ThruSections builder(Standard_True, Standard_False);
 	for (auto& r : vec) {
-		builder.AddWire(r.Wire());
+		builder.AddWire(r.Wire_orEdgeToWire());
 	}
 	return builder.Shape();
 }
