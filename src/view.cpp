@@ -61,6 +61,8 @@ void servoce::view::set_gradient()
 	//	occ->m_window->Map();
 }
 
+
+
 void servoce::view::redraw() { occ->redraw(); }
 void servoce::view::must_be_resized() { occ->must_be_resized(); }
 void servoce::view::set_triedron() { occ->set_triedron(); }
@@ -79,6 +81,13 @@ void servoce::view::set_projection(float a, float b, float c)
 	occ->m_view->SetProj(a, b, c);
 }
 
+std::tuple<double, double, double> servoce::view::proj()
+{
+	double x, y, z;
+	occ->m_view->Proj(x, y, z);
+	return std::make_tuple(x, y, z);
+}
+
 void servoce::view::pan(float a, float b)
 {
 	occ->m_view->Pan(a, b);
@@ -87,6 +96,38 @@ void servoce::view::pan(float a, float b)
 void servoce::view::zoom(float a, float b, float aa, float ba)
 {
 	occ->m_view->Zoom(a, b, aa, ba);
+}
+
+void servoce::view::set_eye(servoce::point3 pnt)
+{
+	occ->m_view->Camera()->SetEye(pnt.Pnt());
+	//occ->m_view->SetEye(p.X(), p.Y(), p.Z());
+}
+
+servoce::point3 servoce::view::eye()
+{
+	//double x, y, z;
+	//occ->m_view->Eye(x, y, z);
+	//return servoce::point3( x, y, z );
+	return occ->m_view->Camera()->Eye();
+}
+
+void servoce::view::set_center(servoce::point3 pnt)
+{
+	occ->m_view->Camera()->SetCenter(pnt.Pnt());
+}
+
+servoce::point3 servoce::view::center()
+{
+	return occ->m_view->Camera()->Center();
+}
+
+void servoce::view::set_orthogonal()
+{
+	occ->m_view->SetUp(0,0,1);
+	//occ->m_view->Camera()->OrthogonalizedUp();
+	//occ->m_view->Camera()->SetProjectionType(Graphic3d_Camera::Projection::Projection_Orthographic);
+	//return occ->m_view->Camera()->Center();
 }
 
 //void servoce::view::screen(const std::string& path)

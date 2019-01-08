@@ -21,6 +21,7 @@ namespace servoce
 		transformation(transformation&& oth) : trsf(oth.trsf) { oth.trsf = nullptr; }
 		//virtual void init_native(gp_Trsf*) const;
 		shape operator()(const servoce::shape& sld) const;
+		point3 operator()(const servoce::point3& sld) const;
 		//solid operator()(const servoce::solid& sld) const;
 		//face operator()(const servoce::face& sld) const;
 		//wire operator()(const servoce::wire& sld) const;

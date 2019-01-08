@@ -72,6 +72,11 @@ servoce::shape servoce::transformation::operator()(const servoce::shape& shp) co
 	return BRepBuilderAPI_Transform(shp.Shape(), *trsf, true).Shape();
 }
 
+servoce::point3 servoce::transformation::operator()(const servoce::point3& pnt) const
+{
+	return pnt.Pnt().Transformed(*trsf);
+}
+
 servoce::shape servoce::general_transformation::operator()(const servoce::shape& shp) const
 {
 	return BRepBuilderAPI_GTransform(shp.Shape(), *gtrsf, true).Shape();

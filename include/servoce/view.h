@@ -24,6 +24,7 @@ namespace servoce
 
 		void fit_all();
 		void set_projection(float a, float b, float c);
+		std::tuple<double, double, double> proj();
 		void pan(float a, float b);
 		void zoom(float a, float b, float aa, float ba);
 
@@ -38,6 +39,14 @@ namespace servoce
 		void must_be_resized();
 
 		void set_gradient();
+
+		servoce::point3 eye();
+		void set_eye(servoce::point3 pnt);
+
+		servoce::point3 center();
+		void set_center(servoce::point3 pnt);
+
+		void set_orthogonal();
 
 		void see(int width = 800, int height = 600);
 	//	void screen(const std::string& path);
