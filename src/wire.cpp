@@ -234,7 +234,6 @@ servoce::shape servoce::make_long_helix(double pitch, double height,
 
 servoce::shape servoce::make_interpolate(const std::vector<servoce::point3>& pnts, const std::vector<servoce::vector3>& tang, bool closed)
 {
-	std::cout << "make_interpolate" << std::endl;
 	Handle(TColgp_HArray1OfPnt) _pnts = new TColgp_HArray1OfPnt(1, pnts.size());
 
 	for (uint i = 0; i < pnts.size(); ++i) _pnts->SetValue(i + 1, pnts[i].Pnt());
@@ -262,7 +261,6 @@ servoce::shape servoce::make_interpolate(const std::vector<servoce::point3>& pnt
 
 servoce::shape servoce::make_interpolate(const std::vector<servoce::point3>& pnts, bool closed)
 {
-	std::cout << "make_interpolate" << std::endl;
 	Handle(TColgp_HArray1OfPnt) _pnts = new TColgp_HArray1OfPnt(1, pnts.size());
 
 	for (uint i = 0; i < pnts.size(); ++i) _pnts->SetValue(i + 1, pnts[i].Pnt());
@@ -330,7 +328,6 @@ std::pair<servoce::point3, servoce::point3> servoce::shape::sfvertex()
 
 bool servoce::shape::is_closed() 
 {
-	std::cout << "is_closed" << std::endl;
 	auto pair = sfvertex();
 	return servoce::point3::early(pair.first, pair.second, 0.0001);
 }
