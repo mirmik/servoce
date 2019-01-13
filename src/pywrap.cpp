@@ -10,6 +10,8 @@
 
 #include <Standard_Failure.hxx>
 
+#include <nos/trace.h>
+
 namespace py = pybind11;
 using namespace servoce;
 
@@ -147,8 +149,8 @@ PYBIND11_MODULE(libservoce, m)
 	.def("__sub__", &shape::operator-, ungil())
 	.def("__xor__", &shape::operator^, ungil())
 	.def(py::pickle(
-	[](const shape & self) { return b64::base64_encode(self.string_dump()); },
-	[](const std::string & in) { return shape::restore_string_dump(b64::base64_decode(in)); }), ungil())
+	[](const shape & self) { return b64::base64_encode(string_dump(self)); },
+	[](const std::string & in) { return restore_string_dump<shape>(b64::base64_decode(in)); }), ungil())
 	.def("fillet", (shape(shape::*)(double, const std::vector<int>&, const std::vector<point3>&, double))&shape::fillet, ungil(), py::arg("r"), py::arg("nums") = py::tuple(), py::arg("refs") = py::tuple(), py::arg("epsilon") = 0.1)
 	.def("fill", &shape::fill)
 	.def("vertices", &shape::vertices, ungil())
@@ -227,8 +229,12 @@ PYBIND11_MODULE(libservoce, m)
 //CURVE2
 	py::class_<curve2::curve2>(m, "curve2")
 		.def("value", &curve2::curve2::value)
+		.def(py::pickle(
+		[](const curve2::curve2 & self) { return b64::base64_encode(string_dump(self)); },
+		[](const std::string & in) { return restore_string_dump<curve2::curve2>(b64::base64_decode(in)); }), ungil())
+		.def("rotate", &curve2::curve2::rotate)
 	;
-	py::class_<curve2::trimmed_curve2>(m, "trimmed_curve2")
+	py::class_<curve2::trimmed_curve2, curve2::curve2>(m, "trimmed_curve2")
 		.def(py::init<const curve2::curve2&, double, double>(), ungil())
 	;
 	m.def("curve2_ellipse", curve2::ellipse, ungil());

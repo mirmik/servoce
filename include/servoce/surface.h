@@ -16,7 +16,7 @@ namespace servoce
 		{
 			Geom_Surface* surf;
 			surface(Geom_Surface* surf) : surf(surf) {}
-			servoce::shape map(servoce::curve2::trimmed_curve2& tcrv);
+			servoce::shape map(servoce::curve2::curve2& tcrv);
 		};
 
 		surface cylinder(double r);

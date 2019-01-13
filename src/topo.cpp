@@ -140,6 +140,7 @@ void servoce::shape::load(std::istream& in)
 	BinTools::GetInteger(in, orient);
 	TopAbs_Orientation anOrient = static_cast<TopAbs_Orientation>(orient);
 
+	m_shp = new TopoDS_Shape();
 	*m_shp = theShapeSet.Shape(shapeId);
 	m_shp->Location(theShapeSet.Locations().Location (locId));
 	m_shp->Orientation (anOrient);
