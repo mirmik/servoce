@@ -145,26 +145,6 @@ void servoce::shape::load(std::istream& in)
 	m_shp->Orientation (anOrient);
 }
 
-
-std::string servoce::shape::string_dump() const
-{
-	std::stringstream sstrm;
-	dump(sstrm);
-	return sstrm.str();
-}
-
-servoce::shape servoce::shape::restore_string_dump(const std::string& in)
-{
-	std::stringstream sstrm(in);
-	servoce::shape shp;
-	shp.m_shp = new TopoDS_Solid;
-	shp.load(sstrm);
-	return shp;
-}
-
-
-
-
 servoce::shape servoce::shape::fillet(double r, const std::vector<int>& nums)
 {
 	auto type = m_shp->ShapeType();

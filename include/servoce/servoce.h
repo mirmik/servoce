@@ -10,5 +10,6 @@
 
 #include <servoce/surface.h>
 #include <servoce/curve2.h>
+#include <servoce/util.h>
 
 #endif

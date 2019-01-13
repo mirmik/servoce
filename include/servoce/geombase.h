@@ -7,6 +7,7 @@ class TopoDS_Vertex;
 
 class gp_Vec;
 class gp_Pnt;
+class gp_Pnt2d;
 class gp_Vtx;
 class TopoDS_Vertex;
 
@@ -59,6 +60,26 @@ namespace servoce
 
 		bool operator < (const servoce::point3& b) { 
 			return lexless_xyz(*this, b);
+		}
+	} __attribute__((packed));
+
+	struct point2 : public linalg::vec<double, 2>
+	{
+		using vec = linalg::vec<double, 2>;
+		point2() : vec{0,0} {}
+		point2(const gp_Pnt2d& pnt);
+		point2(double x, double y) : vec{ x,y } {}
+		point2(double* arr) : vec { arr } {}
+		gp_Pnt2d Pnt() const;
+		
+		point2(const pybind11::list&);
+		point2(const pybind11::tuple&);
+
+		static bool lexless_xy(const point2& a, const point2& b);
+		static bool early(const point2& a, const point2& b, double eps = 0.0000001);
+
+		bool operator < (const servoce::point2& b) { 
+			return lexless_xy(*this, b);
 		}
 	} __attribute__((packed));
 }

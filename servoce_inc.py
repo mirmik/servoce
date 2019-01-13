@@ -129,7 +129,6 @@ module('servoce_sources',
 	srcdir = "src",
 	
 	sources = [
-		"math3.cpp",
 		"topo.cpp",
 		"trans.cpp",
 		"solid.cpp",

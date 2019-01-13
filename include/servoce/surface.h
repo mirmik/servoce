@@ -2,6 +2,8 @@
 #define ZENCAD_SURFACE_H
 
 #include <servoce/math3.h>
+#include <servoce/curve2.h>
+#include <servoce/topo.h>
 
 struct Geom_CylindricalSurface;
 struct Geom_Surface;
@@ -14,9 +16,10 @@ namespace servoce
 		{
 			Geom_Surface* surf;
 			surface(Geom_Surface* surf) : surf(surf) {}
+			servoce::shape map(servoce::curve2::trimmed_curve2& tcrv);
 		};
 
-		static inline surface cylinder(double r);
+		surface cylinder(double r);
 	}
 }
 

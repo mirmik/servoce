@@ -1,11 +1,9 @@
 #include <servoce/geombase.h>
-
 #include <gp_Vec.hxx>
 #include <gp_Pnt.hxx>
 #include <TopoDS_Vertex.hxx>
-
+#include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRep_Tool.hxx>
-
 #include <servoce/util/math.h>
 
 servoce::vector3::vector3(const gp_Vec& pnt) 
@@ -15,6 +13,15 @@ servoce::point3::point3(const gp_Pnt& pnt)
 	: vec(pnt.X(), pnt.Y(), pnt.Z()) {}
 
 servoce::point3::point3(const TopoDS_Vertex& pnt) : point3(BRep_Tool::Pnt(pnt)) {}
+
+servoce::point2::point2(const gp_Pnt2d& pnt) 
+	: vec(pnt.X(), pnt.Y()) {}
+
+
+gp_Vec servoce::vector3::Vec() const { return gp_Vec(x,y,z); }
+gp_Pnt servoce::point3::Pnt() const { return gp_Pnt(x,y,z); }
+gp_Pnt2d servoce::point2::Pnt() const { return gp_Pnt2d(x,y); }
+TopoDS_Vertex servoce::point3::Vtx() const { return BRepBuilderAPI_MakeVertex(Pnt()); }
 
 
 bool servoce::point3::lexless_xyz(const point3& a, const point3& b) 
@@ -50,4 +57,31 @@ bool servoce::point3::early(const point3& a, const point3& b, double eps)
 	double zdiff = a.z - b.z;
 
 	return early_zero(xdiff, eps) && early_zero(ydiff, eps) && early_zero(zdiff, eps);
+}
+
+
+bool servoce::point2::early(const point2& a, const point2& b, double eps) 
+{
+	double xdiff = a.x - b.x;
+	double ydiff = a.y - b.y;
+
+	return early_zero(xdiff, eps) && early_zero(ydiff, eps);
+}
+
+bool servoce::point2::lexless_xy(const point2& a, const point2& b) 
+{
+	double xdiff = a.x - b.x;
+	double ydiff = a.y - b.y;
+
+	if (!early_zero(xdiff, 0.0000001)) 
+	{
+		return xdiff < 0;
+	}
+
+	if (!early_zero(ydiff, 0.0000001)) 
+	{
+		return ydiff < 0;	
+	}
+
+	return false;
 }

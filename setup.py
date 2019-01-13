@@ -26,9 +26,10 @@ liboce_include_path = "/usr/local/include/opencascade"
 pyservoce_lib = Extension("pyservoce.libservoce",
 	sources = [
 		"src/pywrap.cpp",
+		"src/surface.cpp",
+		"src/curve2.cpp",
 		"src/b64.cpp",
 
-		"src/math3.cpp",
 		"src/topo.cpp",
 		"src/trans.cpp",
 		"src/solid.cpp",

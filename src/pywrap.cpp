@@ -91,6 +91,39 @@ PYBIND11_MODULE(libservoce, m)
 	}))
 	;
 
+	py::class_<point2>(m, "point2")
+	//DEF_TRANSFORM_OPERATIONS(point3)
+	.def(py::init<double, double>())
+	.def(py::init<const servoce::point2&>())
+	.def(py::init<py::list>())
+	.def(py::init<py::tuple>())
+	.def_readwrite("x", &point2::x)
+	.def_readwrite("y", &point2::y)
+	.def("__eq__", [](const point2 & a, const point2 & b)
+	{
+		return point2::early(a, b);
+	})
+	.def("__repr__", [](const point3 & pnt)
+	{
+		char buf[128];
+		sprintf(buf, "point2(%f,%f)", pnt.x, pnt.y);
+		return std::string(buf);
+	})
+	.def(py::pickle(
+	         [](const point2 & self)
+	{
+		double arr[2] = {self.x, self.y};
+		return b64::base64_encode((uint8_t*)&arr, 2 * sizeof(double));
+	},
+	[](const std::string & in)
+	{
+		double arr[2];
+		std::string decoded = b64::base64_decode(in);
+		memcpy(&arr, decoded.data(), 2 * sizeof(double));
+		return point2(arr);
+	}))
+	;
+
 	py::class_<vector3>(m, "vector3")
 	//DEF_TRANSFORM_OPERATIONS(vector3)
 	.def(py::init<double, double, double>())
@@ -187,15 +220,19 @@ PYBIND11_MODULE(libservoce, m)
 	m.def("sew", &sew, ungil());
 
 //SURFACE
-	py::class_<surface::surface>(m, "surface");
+	py::class_<surface::surface>(m, "surface")
+		.def("map", &surface::surface::map, ungil());
 	m.def("surface_cylinder", surface::cylinder, ungil());
 	
 //CURVE2
-	py::class_<curve2::curve2>(m, "curve2");
+	py::class_<curve2::curve2>(m, "curve2")
+		.def("value", &curve2::curve2::value)
+	;
 	py::class_<curve2::trimmed_curve2>(m, "trimmed_curve2")
-		.def(py::init<const curve2::curve2&, double, double>(ungil())
+		.def(py::init<const curve2::curve2&, double, double>(), ungil())
 	;
 	m.def("curve2_ellipse", curve2::ellipse, ungil());
+	m.def("curve2_segment", curve2::segment, ungil());
 
 //BOOLEAN
 	m.def("union", (shape(*)(const std::vector<const shape*>&))&make_union, ungil());
@@ -378,4 +415,19 @@ servoce::vector3::vector3(const py::tuple& lst)
 	if (lst.size() >= 2) y = lst[1].cast<double>();
 
 	if (lst.size() >= 3) z = lst[2].cast<double>();
+}
+
+
+servoce::point2::point2(const py::list& lst)
+{
+	if (lst.size() >= 1) x = lst[0].cast<double>();
+
+	if (lst.size() >= 2) y = lst[1].cast<double>();
+}
+
+servoce::point2::point2(const py::tuple& lst)
+{
+	if (lst.size() >= 1) x = lst[0].cast<double>();
+
+	if (lst.size() >= 2) y = lst[1].cast<double>();
 }

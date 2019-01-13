@@ -56,9 +56,6 @@ namespace servoce
 		void dump(std::ostream& out) const;
 		void load(std::istream& in);
 
-		std::string string_dump() const;
-		static shape restore_string_dump(const std::string& in);
-
 		TopoDS_Shape& Shape();
 		const TopoDS_Shape& Shape() const;
 
