@@ -355,6 +355,7 @@ std::pair<servoce::point3, bool> servoce::view::intersect_point( double x, doubl
 void servoce::viewer::clean_context() 
 {
 	occ->m_context->EraseAll(false);
+	//occ->m_context->RemoveAll(true);
 }
 
 void servoce::viewer::add_scene(const servoce::scene& scn) 
