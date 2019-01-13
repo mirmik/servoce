@@ -3,7 +3,7 @@
 
 using namespace servoce::surface;
 
-cylinder::cylinder(double r) 
+surface cylinder(double r) 
 {
-	surf = new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0,0,0), gp_Dir(0,0,1)), r);
+	return new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0,0,0), gp_Dir(0,0,1)), r);
 }

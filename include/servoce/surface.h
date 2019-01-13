@@ -13,13 +13,10 @@ namespace servoce
 		struct surface 
 		{
 			Geom_Surface* surf;
+			surface(Geom_Surface* surf) : surf(surf) {}
 		};
 
-		struct cylinder : public surface
-		{
-			Geom_CylindricalSurface* RestoreType() { return (Geom_CylindricalSurface*)surf; };
-			cylinder(double r);
-		};
+		static inline surface cylinder(double r);
 	}
 }
 

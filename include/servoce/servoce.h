@@ -9,5 +9,6 @@
 #include <servoce/view.h>
 
 #include <servoce/surface.h>
+#include <servoce/curve2.h>
 
 #endif

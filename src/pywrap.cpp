@@ -185,10 +185,17 @@ PYBIND11_MODULE(libservoce, m)
 	m.def("circle_arc", &circle_arc, ungil());
 
 	m.def("sew", &sew, ungil());
+
 //SURFACE
-	m.class_<surface::surface>("surface");
-	m.class_<surface::cylinder, surface::surface>("surface_cylinder");
+	py::class_<surface::surface>(m, "surface");
+	m.def("surface_cylinder", surface::cylinder, ungil());
 	
+//CURVE2
+	py::class_<curve2::curve2>(m, "curve2");
+	py::class_<curve2::trimmed_curve2>(m, "trimmed_curve2")
+		.def(py::init<const curve2::curve2&, double, double>(ungil())
+	;
+	m.def("curve2_ellipse", curve2::ellipse, ungil());
 
 //BOOLEAN
 	m.def("union", (shape(*)(const std::vector<const shape*>&))&make_union, ungil());
