@@ -73,6 +73,7 @@ namespace servoce
 		viewer(servoce::scene& scn);
 
 		view create_view();
+		void close();
 
 		/*AIS_InteractiveContext* m_context;
 		V3d_Viewer* m_viewer;

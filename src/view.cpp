@@ -49,6 +49,11 @@ void servoce::viewer::redraw()
 	return occ->m_viewer->Redraw();
 }
 
+void servoce::viewer::close()
+{
+	return occ->m_viewer->Remove();
+}
+
 void servoce::view::set_gradient()
 {
 	occ->m_view->SetBgGradientColors(
