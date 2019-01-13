@@ -13,6 +13,7 @@
 
 #include <gp_Circ.hxx>
 #include <GC_MakeCircle.hxx>
+#include <GC_MakeArcOfCircle.hxx>
 
 #include <gp_Lin2d.hxx>
 #include <GCE2d_MakeSegment.hxx>
@@ -296,22 +297,10 @@ servoce::shape servoce::sew(const std::vector<const servoce::shape*>& arr)
 	}*/
 }
 
-servoce::shape servoce::make_circle_arc(double r, double a, double b)
+servoce::shape servoce::circle_arc(const point3& p1, const point3& p2, const point3& p3)
 {
-	gp_Circ EL ( gp::XOY(), r );
-	Handle(Geom_Circle) anCircle = GC_MakeCircle(EL).Value();
-	TopoDS_Edge aEdge = BRepBuilderAPI_MakeEdge( anCircle, a, b );
-	TopoDS_Wire aCircle = BRepBuilderAPI_MakeWire( aEdge );
-	return aCircle;
-}
-
-servoce::shape servoce::make_circle_arc(double r)
-{
-	gp_Circ EL ( gp::XOY(), r );
-	Handle(Geom_Circle) anCircle = GC_MakeCircle(EL).Value();
-	TopoDS_Edge aEdge = BRepBuilderAPI_MakeEdge( anCircle);
-	TopoDS_Wire aCircle = BRepBuilderAPI_MakeWire( aEdge );
-	return aCircle;
+	Handle(Geom_TrimmedCurve) aArcOfCircle = GC_MakeArcOfCircle(p1.Pnt(), p2.Pnt(), p3.Pnt());
+	return BRepBuilderAPI_MakeEdge(aArcOfCircle).Shape();
 }
 
 #include <TopExp.hxx>

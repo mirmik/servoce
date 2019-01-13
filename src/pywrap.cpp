@@ -146,6 +146,8 @@ PYBIND11_MODULE(libservoce, m)
 	m.def("torus", 		(shape(*)(double, double, double, double, double)) &torus, ungil(), py::arg("r1"), py::arg("r2"), py::arg("va1"), py::arg("va2"), py::arg("ua"));
 	m.def("halfspace", &halfspace, ungil());
 
+	m.def("thicksolid", &thicksolid, ungil());
+
 //OPS3D
 	m.def("make_linear_extrude", (shape(*)(const shape&, const vector3&, bool)) &make_linear_extrude, ungil(), py::arg("shp"), py::arg("vec"), py::arg("center") = false);
 	m.def("make_linear_extrude", (shape(*)(const shape&, double, bool)) &make_linear_extrude, ungil(), py::arg("shp"), py::arg("z"), py::arg("center") = false);
@@ -180,10 +182,13 @@ PYBIND11_MODULE(libservoce, m)
 	m.def("helix", make_helix, ungil(), py::arg("step"), py::arg("height"), py::arg("radius"), py::arg("angle") = 0, py::arg("leftHanded") = false, py::arg("newStyle") = true);
 	m.def("long_helix", make_long_helix, ungil(), py::arg("step"), py::arg("height"), py::arg("radius"), py::arg("angle") = 0, py::arg("leftHanded") = false);
 
-	m.def("make_circle_arc", (shape(*)(double))&make_circle_arc, ungil());
-	m.def("make_circle_arc", (shape(*)(double, double, double))&make_circle_arc, ungil());
+	m.def("circle_arc", &circle_arc, ungil());
 
 	m.def("sew", &sew, ungil());
+//SURFACE
+	m.class_<surface::surface>("surface");
+	m.class_<surface::cylinder, surface::surface>("surface_cylinder");
+	
 
 //BOOLEAN
 	m.def("union", (shape(*)(const std::vector<const shape*>&))&make_union, ungil());
@@ -330,15 +335,6 @@ PYBIND11_MODULE(libservoce, m)
 	m.def("make_stl", &make_stl, ungil());
 	m.def("brep_write", &brep_write, ungil());
 	m.def("brep_read", &brep_read, ungil());
-
-//TEST
-	m.def("test", [](py::object o)
-	{
-		std::cout << "test" << std::endl;
-		auto write_attr = o.attr("write");
-		write_attr("hello");
-	}, ungil());
-
 }
 
 servoce::point3::point3(const py::list& lst)

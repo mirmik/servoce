@@ -30,6 +30,7 @@ namespace servoce
 	shape revol(const shape& proto, double angle = 0.0);
 
 	shape halfspace();
+	shape thicksolid(const shape& proto, const point3& pnt, double thickness);
 }
 
 #endif

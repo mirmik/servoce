@@ -17,9 +17,8 @@ namespace servoce
 
 	shape make_arc_by_points(const point3& a, const point3& b, const point3& c);
 
-	shape make_circle_arc(double r, double a, double b);
-	shape make_circle_arc(double r);
-
+	shape circle_arc(const point3& p1, const point3& p2, const point3& p3);
+	
 	shape make_helix(double pitch, double height, double radius, double angle = 0, bool leftHanded = false, bool newStyle = true);
 	shape make_long_helix(double pitch, double height, double radius, double angle = 0, bool leftHanded = false);
 

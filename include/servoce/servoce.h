@@ -8,4 +8,6 @@
 #include <servoce/convert.h>
 #include <servoce/view.h>
 
+#include <servoce/surface.h>
+
 #endif

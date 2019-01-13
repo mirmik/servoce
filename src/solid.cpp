@@ -14,6 +14,7 @@
 #include <BRepPrimAPI_MakeTorus.hxx>
 #include <BRepPrimAPI_MakePrism.hxx>
 #include <BRepPrimAPI_MakeRevol.hxx>
+#include <BRepExtrema_DistShapeShape.hxx>
 //#include <BRepPrimAPI_MakeWedge.hxx>
 //#include <BRepOffsetAPI_ThruSections.hxx>
 #include <BRepFilletAPI_MakeFillet.hxx>
@@ -21,10 +22,14 @@
 
 #include <BRepOffsetAPI_MakePipe.hxx>
 #include <BRepOffsetAPI_MakePipeShell.hxx>
+#include <BRepOffsetAPI_MakeThickSolid.hxx>
 
 #include <BRepLib_MakeFace.hxx>
 #include <BRepPrimAPI_MakeHalfSpace.hxx>
 #include <BRepOffsetAPI_ThruSections.hxx>
+
+#include <Geom_Surface.hxx>
+#include <Geom_Plane.hxx>
 
 #include <assert.h>
 
@@ -76,7 +81,7 @@ shape servoce::cylinder(double r, double h, double a1, double a2, bool center)
 	assert(a2 > a1);
 	double diff = a2 - a1;
 
-	assert(diff > M_PI*2);
+	assert(diff > M_PI * 2);
 
 	if (!center)
 	{
@@ -106,6 +111,7 @@ shape servoce::cone(double r1, double r2, double h, bool center)
 shape servoce::cone(double r1, double r2, double h, double angle, bool center)
 {
 	printf("shape servoce::cone(double r1, double r2, double h, double angle, bool center) is deprecated");
+
 	if (!center)
 	{
 		return BRepPrimAPI_MakeCone(r1, r2, h, angle).Solid();
@@ -122,7 +128,7 @@ shape servoce::cone(double r1, double r2, double h, double a1, double a2, bool c
 	assert(a2 > a1);
 	double diff = a2 - a1;
 
-	assert(diff > M_PI*2);
+	assert(diff > M_PI * 2);
 
 	if (!center)
 	{
@@ -304,28 +310,81 @@ shape servoce::make_pipe_shell(
 	return BRepOffsetAPI_MakePipe(path.Wire(), profile.Shape());*/
 }
 
-shape servoce::halfspace() 
+shape servoce::halfspace()
 {
 	gp_Pln P;
 	TopoDS_Face F = BRepLib_MakeFace(P);
-	BRepPrimAPI_MakeHalfSpace MHS(F, gp_Pnt(0,0,-1));
+	BRepPrimAPI_MakeHalfSpace MHS(F, gp_Pnt(0, 0, -1));
 	return MHS.Solid();
 }
 
 
-shape servoce::loft(const std::vector<shape>& vec) {
+shape servoce::loft(const std::vector<shape>& vec)
+{
 	BRepOffsetAPI_ThruSections builder(Standard_True, Standard_False);
-	for (auto& r : vec) {
+
+	for (auto& r : vec)
+	{
 		builder.AddWire(r.Wire_orEdgeToWire());
 	}
+
 	return builder.Shape();
 }
 
-shape servoce::revol(const shape& proto, double angle) 
+shape servoce::revol(const shape& proto, double angle)
 {
-	auto ax = gp_Ax1(gp_Pnt(0,0,0),gp_Dir(0,0,1));	
-	if (angle == 0) 
+	auto ax = gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+
+	if (angle == 0)
 		return BRepPrimAPI_MakeRevol(proto.Shape(), ax).Shape();
 	else
-		return BRepPrimAPI_MakeRevol(proto.Shape(), ax, angle).Shape();    
+		return BRepPrimAPI_MakeRevol(proto.Shape(), ax, angle).Shape();
+}
+
+shape servoce::thicksolid(const shape& proto, const point3& pnt, double thickness)
+{
+	// Initialisation
+	TopoDS_Face   faceToRemove;
+	double min = std::numeric_limits<double>::max();
+
+	TopoDS_Face minFace;
+
+	auto vtx = pnt.Vtx();
+
+// Finding the to face
+	for (TopExp_Explorer aFaceExplorer(proto.Shape(), TopAbs_FACE); aFaceExplorer.More(); aFaceExplorer.Next())
+	{
+		TopoDS_Face aFace = TopoDS::Face(aFaceExplorer.Current());
+//		Handle(Geom_Surface) aSurface = BRep_Tool::Surface(aFace);
+
+		BRepExtrema_DistShapeShape extrema(aFace, vtx);
+		extrema.Perform();
+		auto value = extrema.Value();
+
+		if (min > value) 
+		{
+			min = value;
+			minFace = aFace;
+		}
+
+		/*if (aSurface->DynamicType() == STANDARD_TYPE(Geom_Plane))
+		{
+			Handle(Geom_Plane) aPlane = Handle(Geom_Plane)::DownCast(aSurface);
+			gp_Pnt aPnt = aPlane->Location();
+			Standard_Real aZ   = aPnt.Z();
+
+			if (aZ > zMax)
+			{
+				zMax = aZ;
+				faceToRemove = aFace;
+			}
+		}*/
+	}
+
+// Define face to remove, thickening operation
+	TopTools_ListOfShape facesToRemove;
+	facesToRemove.Append(minFace);
+	auto algo = BRepOffsetAPI_MakeThickSolid();
+	algo.MakeThickSolidByJoin(proto.Shape(), facesToRemove, thickness, 1.e-3);
+	return algo.Shape();
 }
