@@ -52,7 +52,7 @@ pyservoce_lib = Extension("pyservoce.libservoce",
 		"src/view.cpp",
 		"src/camera.cpp",
 	] + nosopts["sources"],
-	extra_compile_args=['-fPIC', '-std=c++14', '-DNOTRACE=0'],
+	extra_compile_args=['-fPIC', '-std=c++14', '-DNOTRACE=1'],
 	extra_link_args=['-Wl,-rpath,$ORIGIN/libs'],
 	include_dirs = [liboce_include_path, "src", "include"] + nosopts["include_paths"],
 	libraries = [
