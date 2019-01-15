@@ -6,7 +6,11 @@
 //#include <gxx/debug/dprint.h>
 //#include <nos/print.h>
 
+#include <mutex>
+
 #include <IntCurvesFace_ShapeIntersector.hxx>
+
+std::mutex viewmutex;
 
 
 Handle(Aspect_DisplayConnection) g_displayConnection;
@@ -25,6 +29,7 @@ servoce::viewer::viewer(servoce::scene& scn) : viewer()
 
 void servoce::viewer::set_triedron_axes()
 {
+	std::lock_guard<std::mutex> lock(viewmutex);
 	Handle(AIS_Axis) axX = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0, 0, 0), gp_Vec(1, 0, 0)));
 	Handle(AIS_Axis) axY = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0, 0, 0), gp_Vec(0, 1, 0)));
 	Handle(AIS_Axis) axZ = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0, 0, 0), gp_Vec(0, 0, 1)));
@@ -40,54 +45,82 @@ void servoce::viewer::set_triedron_axes()
 
 servoce::view servoce::viewer::create_view()
 {
+	std::lock_guard<std::mutex> lock(viewmutex);
 	return servoce::view( occ->create_view_window() );
 }
 
 
 void servoce::viewer::redraw()
 {
+	std::lock_guard<std::mutex> lock(viewmutex);
 	return occ->m_viewer->Redraw();
 }
 
 void servoce::viewer::close()
 {
+	std::lock_guard<std::mutex> lock(viewmutex);
 	return occ->m_viewer->Remove();
 }
 
 void servoce::view::set_gradient()
 {
+	std::lock_guard<std::mutex> lock(viewmutex);
 	occ->m_view->SetBgGradientColors(
 	    Quantity_Color(0.5, 0.5, 0.5, Quantity_TOC_RGB),
 	    Quantity_Color(0.3, 0.3, 0.3, Quantity_TOC_RGB),
 	    Aspect_GFM_VER,
 	    Standard_True
 	);
-	//if (!occ->m_window->IsMapped()) 
+	//if (!occ->m_window->IsMapped())
 	//	occ->m_window->Map();
 }
 
 
 
-void servoce::view::redraw() { occ->redraw(); }
-void servoce::view::must_be_resized() { occ->must_be_resized(); }
-void servoce::view::set_triedron() { occ->set_triedron(); }
-void servoce::view::dump(const std::string& path) { occ->dump(path); }
-void servoce::view::fit_all() { occ->fit_all(); }
-void servoce::view::set_virtual_window(int w, int h) 
-{ 
+void servoce::view::redraw()
+{
+	std::lock_guard<std::mutex> lock(viewmutex);
+	occ->redraw();
+}
+void servoce::view::must_be_resized()
+{
+
+	std::lock_guard<std::mutex> lock(viewmutex); 
+	occ->must_be_resized();
+}
+void servoce::view::set_triedron()
+{
+	std::lock_guard<std::mutex> lock(viewmutex); 
+	occ->set_triedron();
+}
+void servoce::view::dump(const std::string& path)
+{
+	std::lock_guard<std::mutex> lock(viewmutex); 
+	occ->dump(path);
+}
+void servoce::view::fit_all()
+{
+	std::lock_guard<std::mutex> lock(viewmutex); 
+	occ->fit_all();
+}
+void servoce::view::set_virtual_window(int w, int h)
+{
+	std::lock_guard<std::mutex> lock(viewmutex);
 	this->w = w;
 	this->h = h;
-	occ->set_virtual_window(w, h); 
+	occ->set_virtual_window(w, h);
 }
 void servoce::view::set_window(int n) { occ->set_window(n); }
 
 void servoce::view::set_projection(float a, float b, float c)
 {
+	std::lock_guard<std::mutex> lock(viewmutex);
 	occ->m_view->SetProj(a, b, c);
 }
 
 std::tuple<double, double, double> servoce::view::proj()
 {
+	std::lock_guard<std::mutex> lock(viewmutex);
 	double x, y, z;
 	occ->m_view->Proj(x, y, z);
 	return std::make_tuple(x, y, z);
@@ -95,22 +128,26 @@ std::tuple<double, double, double> servoce::view::proj()
 
 void servoce::view::pan(float a, float b)
 {
+	std::lock_guard<std::mutex> lock(viewmutex);
 	occ->m_view->Pan(a, b);
 }
 
 void servoce::view::zoom(float a, float b, float aa, float ba)
 {
+	std::lock_guard<std::mutex> lock(viewmutex);
 	occ->m_view->Zoom(a, b, aa, ba);
 }
 
 void servoce::view::set_eye(servoce::point3 pnt)
 {
+	std::lock_guard<std::mutex> lock(viewmutex);
 	occ->m_view->Camera()->SetEye(pnt.Pnt());
 	//occ->m_view->SetEye(p.X(), p.Y(), p.Z());
 }
 
 servoce::point3 servoce::view::eye()
 {
+	std::lock_guard<std::mutex> lock(viewmutex);
 	//double x, y, z;
 	//occ->m_view->Eye(x, y, z);
 	//return servoce::point3( x, y, z );
@@ -119,17 +156,20 @@ servoce::point3 servoce::view::eye()
 
 void servoce::view::set_center(servoce::point3 pnt)
 {
+	std::lock_guard<std::mutex> lock(viewmutex);
 	occ->m_view->Camera()->SetCenter(pnt.Pnt());
 }
 
 servoce::point3 servoce::view::center()
 {
+	std::lock_guard<std::mutex> lock(viewmutex);
 	return occ->m_view->Camera()->Center();
 }
 
 void servoce::view::set_orthogonal()
 {
-	occ->m_view->SetUp(0,0,1);
+	std::lock_guard<std::mutex> lock(viewmutex);
+	occ->m_view->SetUp(0, 0, 1);
 	//occ->m_view->Camera()->OrthogonalizedUp();
 	//occ->m_view->Camera()->SetProjectionType(Graphic3d_Camera::Projection::Projection_Orthographic);
 	//return occ->m_view->Camera()->Center();
@@ -137,64 +177,66 @@ void servoce::view::set_orthogonal()
 
 //void servoce::view::screen(const std::string& path)
 //{
-	//set_triedron();
+//set_triedron();
 
-	/*set_virtual_window(800, 600);
-	fit_all();
-	redraw();
-	//dump(path);
+/*set_virtual_window(800, 600);
+fit_all();
+redraw();
+//dump(path);
 */
-	/*auto display = XOpenDisplay(NULL);
+/*auto display = XOpenDisplay(NULL);
 
-   XWindowAttributes gwa;
-   XGetWindowAttributes(display, occ->winddesc, &gwa);
-   int width = gwa.width;
-   int height = gwa.height;
+XWindowAttributes gwa;
+XGetWindowAttributes(display, occ->winddesc, &gwa);
+int width = gwa.width;
+int height = gwa.height;
 
-	XImage *ximage = XGetImage(display, occ->winddesc, 
-                   0, 0, width, height, AllPlanes, ZPixmap); */
-	
-	/*Image_PixMap pixmap;
-	occ->m_view->ToPixMap(
-		pixmap, 
-		800, 
-		600, 
-		Graphic3d_BT_RGB, 
-		Standard_True, 
-		V3d_SDO_MONO
-	);
+XImage *ximage = XGetImage(display, occ->winddesc,
+               0, 0, width, height, AllPlanes, ZPixmap); */
 
-
-	const unsigned char * data = pixmap.Data();
-
-	uint w = 800;
-	uint h = 600;
-	uint c = 3;*/
-
-	//for(int c = 0; c < 3 * 800 * 600; ++c)
-	//	dprhexln(*(data + c));
+/*Image_PixMap pixmap;
+occ->m_view->ToPixMap(
+	pixmap,
+	800,
+	600,
+	Graphic3d_BT_RGB,
+	Standard_True,
+	V3d_SDO_MONO
+);
 
 
-	//pixmap.Save("a.png");*/
+const unsigned char * data = pixmap.Data();
 
-	//occ->m_view->Dump("a.png", Graphic3d_BT_BRG);
+uint w = 800;
+uint h = 600;
+uint c = 3;*/
+
+//for(int c = 0; c < 3 * 800 * 600; ++c)
+//	dprhexln(*(data + c));
+
+
+//pixmap.Save("a.png");*/
+
+//occ->m_view->Dump("a.png", Graphic3d_BT_BRG);
 //}
 
 std::vector<unsigned char> servoce::view::rawarray()
 {
 
+	std::lock_guard<std::mutex> lock(viewmutex);
 	Image_PixMap pixmap;
-	occ->m_view->ToPixMap( pixmap, w, h//, 
-		//Graphic3d_BT_RGB
-		//Standard_True
-		//V3d_SDO_MONO
-	);
+	occ->m_view->ToPixMap( pixmap, w, h//,
+	                       //Graphic3d_BT_RGB
+	                       //Standard_True
+	                       //V3d_SDO_MONO
+	                     );
 
 	return std::vector<unsigned char>(pixmap.Data(), pixmap.Data() + 3 * w * h);
 }
 
 std::vector<unsigned char> servoce::view::rawarray(int w, int h)
 {
+	std::lock_guard<std::mutex> lock(viewmutex);
 	this->w = w;
 	this->h = h;
 	return rawarray();
@@ -202,6 +244,7 @@ std::vector<unsigned char> servoce::view::rawarray(int w, int h)
 
 void servoce::view::see(int width, int height)
 {
+	std::lock_guard<std::mutex> lock(viewmutex);
 	int s;
 	Display *d;
 	Window w;
@@ -235,38 +278,38 @@ void servoce::view::see(int width, int height)
 
 		switch (e.type)
 		{
-		case ConfigureNotify:
-		{
-			//XConfigureEvent xce = e.xconfigure;
-			static bool inited = false;
-
-			if (!inited)
+			case ConfigureNotify:
 			{
-				set_window(w);
-				set_triedron();
-				fit_all();
+				//XConfigureEvent xce = e.xconfigure;
+				static bool inited = false;
 
-				/*auto m_cam = m_view->Camera();
-				m_cam->SetDirection(cam->native_dir());
-				m_cam->SetUp(cam->native_up());
-				m_cam->SetEye(cam->native_eye());*/
-				//m_cam->SetScale(cam->native_scale());
+				if (!inited)
+				{
+					set_window(w);
+					set_triedron();
+					fit_all();
 
-				inited = true;
+					/*auto m_cam = m_view->Camera();
+					m_cam->SetDirection(cam->native_dir());
+					m_cam->SetUp(cam->native_up());
+					m_cam->SetEye(cam->native_eye());*/
+					//m_cam->SetScale(cam->native_scale());
+
+					inited = true;
+				}
+
+				redraw();
 			}
-
-			redraw();
-		}
-		break;
-
-		case ClientMessage:
-			if (e.xclient.data.l[0] == (signed)wmDeleteMessage)
-				running = false;
-
 			break;
 
-		default:
-			break;
+			case ClientMessage:
+				if (e.xclient.data.l[0] == (signed)wmDeleteMessage)
+					running = false;
+
+				break;
+
+			default:
+				break;
 		}
 	}
 
@@ -280,94 +323,110 @@ void servoce::view::see(int width, int height)
 
 void servoce::see(servoce::scene& scn)
 {
+	std::lock_guard<std::mutex> lock(viewmutex);
 	auto v = viewer(scn);
 	auto vv = v.create_view();
 	vv.see();
 }
 
-void servoce::view::reset_orientation() {
+void servoce::view::reset_orientation()
+{
+	std::lock_guard<std::mutex> lock(viewmutex);
 	occ->m_view->ResetViewOrientation();
 }
 
-void servoce::view::autoscale() {
+void servoce::view::autoscale()
+{
+	std::lock_guard<std::mutex> lock(viewmutex);
 	occ->m_view->FitAll();
 }
 
-void servoce::view::centering() {
-	occ->m_view->Camera()->SetCenter(gp_Pnt(0,0,0));
+void servoce::view::centering()
+{
+	std::lock_guard<std::mutex> lock(viewmutex);
+	occ->m_view->Camera()->SetCenter(gp_Pnt(0, 0, 0));
 	occ->m_view->ResetViewOrientation();
 }
 
-void servoce::view::start_rotation(int x, int y, float treshold) {
+void servoce::view::start_rotation(int x, int y, float treshold)
+{
+	std::lock_guard<std::mutex> lock(viewmutex);
 	occ->m_view->StartRotation(x, y, treshold);
 }
 
-void servoce::view::rotation(int x, int y) {
+void servoce::view::rotation(int x, int y)
+{
+	std::lock_guard<std::mutex> lock(viewmutex);
 	occ->m_view->Rotation(x, y);
 }
 
-std::pair<servoce::point3, bool> servoce::view::intersect_point( double x, double y ) 
+std::pair<servoce::point3, bool> servoce::view::intersect_point( double x, double y )
 {
+	std::lock_guard<std::mutex> lock(viewmutex);
 	auto m_view = occ->m_view;
 	auto m_context = occ->parent->m_context;
 
 	auto selector = m_context->MainSelector();
-    selector->Pick(x, y, m_view);
+	selector->Pick(x, y, m_view);
 
-    const Standard_Integer aDetectedNb = selector->NbPicked();
+	const Standard_Integer aDetectedNb = selector->NbPicked();
 
-    auto viewLine = occ->viewline(x, y, m_view);
+	auto viewLine = occ->viewline(x, y, m_view);
 
-    for (Standard_Integer aDetIter = 1; aDetIter <= aDetectedNb; ++aDetIter)
-    {
-        Handle(SelectMgr_EntityOwner) anOwner = selector->Picked(aDetIter);
+	for (Standard_Integer aDetIter = 1; aDetIter <= aDetectedNb; ++aDetIter)
+	{
+		Handle(SelectMgr_EntityOwner) anOwner = selector->Picked(aDetIter);
 
-        Handle(AIS_InteractiveObject) anObj
-            = Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable());
+		Handle(AIS_InteractiveObject) anObj
+		    = Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable());
 
-        if (anObj->Type() != AIS_KOI_Shape)
-            continue;
-        
-        Handle_AIS_Shape hShape = Handle_AIS_Shape::DownCast(anObj);
-        const TopoDS_Shape &shape = hShape->Shape();
-        
-        gp_Pnt ip;
+		if (anObj->Type() != AIS_KOI_Shape)
+			continue;
 
-        TopLoc_Location loc = m_context->Location(hShape);
-        TopoDS_Shape loc_shape = shape.Located(loc);
+		Handle_AIS_Shape hShape = Handle_AIS_Shape::DownCast(anObj);
+		const TopoDS_Shape &shape = hShape->Shape();
 
-        IntCurvesFace_ShapeIntersector shapeIntersector;
-        shapeIntersector.Load(loc_shape, Precision::Confusion());
-        shapeIntersector.Perform(viewLine, -RealLast(), RealLast());
+		gp_Pnt ip;
 
-        if (shapeIntersector.NbPnt() >= 1) {    
-            ip = shapeIntersector.Pnt(shapeIntersector.NbPnt());
-        } else
-            continue;
+		TopLoc_Location loc = m_context->Location(hShape);
+		TopoDS_Shape loc_shape = shape.Located(loc);
 
-        //std::cout << ip.X() << ' ' << ip.Y() << ' ' << ip.Z() << std::endl;
+		IntCurvesFace_ShapeIntersector shapeIntersector;
+		shapeIntersector.Load(loc_shape, Precision::Confusion());
+		shapeIntersector.Perform(viewLine, -RealLast(), RealLast());
 
-        return std::make_pair(servoce::point3(ip), true);
-    }
-    return std::make_pair(servoce::point3(), false);
+		if (shapeIntersector.NbPnt() >= 1)
+		{
+			ip = shapeIntersector.Pnt(shapeIntersector.NbPnt());
+		}
+		else
+			continue;
+
+		//std::cout << ip.X() << ' ' << ip.Y() << ' ' << ip.Z() << std::endl;
+
+		return std::make_pair(servoce::point3(ip), true);
+	}
+	return std::make_pair(servoce::point3(), false);
 }
 
-void servoce::viewer::clean_context() 
+void servoce::viewer::clean_context()
 {
+	std::lock_guard<std::mutex> lock(viewmutex);
 	occ->m_context->EraseAll(false);
 	//occ->m_context->RemoveAll(true);
 }
 
-void servoce::viewer::add_scene(const servoce::scene& scn) 
+void servoce::viewer::add_scene(const servoce::scene& scn)
 {
-	for (int i = 0; i < scn.shapes.size(); ++i) 
+	std::lock_guard<std::mutex> lock(viewmutex);
+	for (int i = 0; i < scn.shapes.size(); ++i)
 	{
 		occ->m_context->Display(scn.shapes[i].m_ashp, false);
 	}
 }
 
 
-//servoce::shape_view_controller servoce::viewer::add(const servoce::shape& obj, servoce::color color) 
+//servoce::shape_view_controller servoce::viewer::add(const servoce::shape& obj, servoce::color color)
 //{
 
 //}
