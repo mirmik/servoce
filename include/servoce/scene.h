@@ -5,6 +5,8 @@
 #include <vector>
 #include <cassert>
 
+#include <TopoDS_Vertex.hxx>
+
 class AIS_Shape;
 
 namespace servoce
@@ -79,9 +81,9 @@ namespace servoce
 
 		void add(const servoce::point3& pnt, servoce::color color = mech)
 		{
-			printf("TODO: scene.h\n");
-			exit(-1);
-			//PANIC_TRACED("TODO");
+			TopoDS_Vertex vtx = pnt.Vtx();
+			shapes.emplace_back(servoce::shape(vtx));
+			shapes[shapes.size() - 1].scn = this;	
 		}
 
 		void append(const servoce::scene& scn)

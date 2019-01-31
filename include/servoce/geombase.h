@@ -48,6 +48,7 @@ namespace servoce
 		point3(const TopoDS_Vertex& vtx);
 		point3(double x, double y) : vec{ x,y,0 } {}
 		point3(double x, double y, double z) : vec { x,y,z } {}
+		point3(linalg::vec<double, 3> v) : vec { v } {}
 		point3(double* arr) : vec { arr } {}
 		gp_Pnt Pnt() const;
 		TopoDS_Vertex Vtx() const;
@@ -57,6 +58,19 @@ namespace servoce
 
 		static bool lexless_xyz(const point3& a, const point3& b);
 		static bool early(const point3& a, const point3& b, double eps = 0.0000001);
+
+		double distance(const point3& o) 
+		{
+			double xd = x-o.x;
+			double yd = y-o.y;
+			double zd = z-o.z;
+			return sqrt(xd*xd + yd*yd + zd*zd);
+		}
+
+		point3 lerp(const point3& o, double koeff) 
+		{
+			return point3(linalg::lerp(*this, o, koeff));
+		}
 
 		bool operator < (const servoce::point3& b) { 
 			return lexless_xyz(*this, b);
