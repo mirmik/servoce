@@ -2,13 +2,13 @@
 #define ZENCAD_UTIL_H
 
 #include <sstream>
-#include <nos/trace.h>
+//#include <nos/trace.h>
 #include <servoce/util/b64.h>
 
 template<class T>
 std::string string_dump(const T& obj)
 {
-	TRACE();
+//	TRACE();
 	std::stringstream sstrm;
 	obj.dump(sstrm);
 	return sstrm.str();
@@ -17,7 +17,7 @@ std::string string_dump(const T& obj)
 template<class T>
 T restore_string_dump(const std::string& in)
 {
-	TRACE();
+//	TRACE();
 	std::stringstream sstrm(in);
 	T obj;
 	obj.load(sstrm);
