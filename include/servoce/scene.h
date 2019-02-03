@@ -107,6 +107,8 @@ namespace servoce
 		{
 			return shapes[i];
 		}
+
+		void set_viewer(struct viewer * v) { vwer = v; }
 	};
 }
 

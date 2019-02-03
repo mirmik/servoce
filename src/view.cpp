@@ -416,8 +416,9 @@ void servoce::viewer::clean_context()
 	//occ->m_context->RemoveAll(true);
 }
 
-void servoce::viewer::add_scene(const servoce::scene& scn)
+void servoce::viewer::add_scene(servoce::scene& scn)
 {
+	scn.set_viewer(this);
 	std::lock_guard<std::mutex> lock(viewmutex);
 	for (int i = 0; i < scn.shapes.size(); ++i)
 	{
