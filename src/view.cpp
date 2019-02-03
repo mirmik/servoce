@@ -98,10 +98,10 @@ void servoce::view::dump(const std::string& path)
 	std::lock_guard<std::mutex> lock(viewmutex); 
 	occ->dump(path);
 }
-void servoce::view::fit_all()
+void servoce::view::fit_all(double koeff)
 {
 	std::lock_guard<std::mutex> lock(viewmutex); 
-	occ->fit_all();
+	occ->m_view->FitAll(koeff);
 }
 void servoce::view::set_virtual_window(int w, int h)
 {
@@ -112,18 +112,17 @@ void servoce::view::set_virtual_window(int w, int h)
 }
 void servoce::view::set_window(int n) { occ->set_window(n); }
 
-void servoce::view::set_projection(float a, float b, float c)
+void servoce::view::set_direction(float a, float b, float c)
 {
 	std::lock_guard<std::mutex> lock(viewmutex);
-	occ->m_view->SetProj(a, b, c);
+	occ->m_view->Camera()->SetDirection(gp_Dir(a, b, c));
 }
 
-std::tuple<double, double, double> servoce::view::proj()
+std::tuple<double, double, double> servoce::view::direction()
 {
 	std::lock_guard<std::mutex> lock(viewmutex);
-	double x, y, z;
-	occ->m_view->Proj(x, y, z);
-	return std::make_tuple(x, y, z);
+	auto dir = occ->m_view->Camera()->Direction();
+	return std::make_tuple(dir.X(), dir.Y(), dir.Z());
 }
 
 void servoce::view::pan(float a, float b)
@@ -169,7 +168,7 @@ servoce::point3 servoce::view::center()
 void servoce::view::set_orthogonal()
 {
 	std::lock_guard<std::mutex> lock(viewmutex);
-	occ->m_view->SetUp(0, 0, 1);
+	occ->m_view->Camera()->SetUp(gp_Dir(0, 0, 1));//m_view->SetUp(0, 0, 1);
 	//occ->m_view->Camera()->OrthogonalizedUp();
 	//occ->m_view->Camera()->SetProjectionType(Graphic3d_Camera::Projection::Projection_Orthographic);
 	//return occ->m_view->Camera()->Center();
@@ -287,7 +286,7 @@ void servoce::view::see(int width, int height)
 				{
 					set_window(w);
 					set_triedron();
-					fit_all();
+					fit_all(0.01);
 
 					/*auto m_cam = m_view->Camera();
 					m_cam->SetDirection(cam->native_dir());
@@ -338,7 +337,7 @@ void servoce::view::reset_orientation()
 void servoce::view::autoscale()
 {
 	std::lock_guard<std::mutex> lock(viewmutex);
-	occ->m_view->FitAll();
+	occ->m_view->FitAll(0.7);
 }
 
 void servoce::view::centering()

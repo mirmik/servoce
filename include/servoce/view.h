@@ -22,9 +22,9 @@ namespace servoce
 		void set_virtual_window(int w, int h);
 		void set_window(int wind);
 
-		void fit_all();
-		void set_projection(float a, float b, float c);
-		std::tuple<double, double, double> proj();
+		void fit_all(double margin);
+		void set_direction(float a, float b, float c);
+		std::tuple<double, double, double> direction();
 		void pan(float a, float b);
 		void zoom(float a, float b, float aa, float ba);
 
