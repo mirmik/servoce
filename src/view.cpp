@@ -53,7 +53,7 @@ servoce::view servoce::viewer::create_view()
 void servoce::viewer::redraw()
 {
 	std::lock_guard<std::mutex> lock(viewmutex);
-	return occ->m_viewer->Redraw();
+	occ->m_viewer->Redraw();
 }
 
 void servoce::viewer::close()
@@ -80,13 +80,13 @@ void servoce::view::set_gradient()
 void servoce::view::redraw()
 {
 	std::lock_guard<std::mutex> lock(viewmutex);
-	occ->redraw();
+	occ->m_view->Redraw();
 }
 void servoce::view::must_be_resized()
 {
 
 	std::lock_guard<std::mutex> lock(viewmutex); 
-	occ->must_be_resized();
+	occ->m_view->MustBeResized();
 }
 void servoce::view::set_triedron()
 {
