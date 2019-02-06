@@ -12,6 +12,7 @@
 
 #include <BRepTools_WireExplorer.hxx>
 #include <BRepFilletAPI_MakeFillet.hxx>
+#include <BRepFilletAPI_MakeChamfer.hxx>
 #include <BRepFilletAPI_MakeFillet2d.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
@@ -22,11 +23,14 @@
 #include <BRepExtrema_DistShapeShape.hxx>
 #include <Geom_Plane.hxx>
 
+#include <TopOpeBRepBuild_Tools.hxx>
+
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp_Explorer.hxx>
 #include <GProp_GProps.hxx>
 #include <BRepGProp.hxx>
 
+#include <TopExp.hxx>
 
 #include <algorithm>
 #include <cassert>
@@ -80,6 +84,9 @@ const TopoDS_Shape& servoce::shape::Shape() const { return *m_shp; }
 
 TopoDS_Edge& servoce::shape::Edge() { return TopoDS::Edge(*m_shp); }
 const TopoDS_Edge& servoce::shape::Edge() const { return TopoDS::Edge(*m_shp); }
+
+TopoDS_Vertex& servoce::shape::Vertex() { return TopoDS::Vertex(*m_shp); }
+const TopoDS_Vertex& servoce::shape::Vertex() const { return TopoDS::Vertex(*m_shp); }
 
 TopoDS_Wire& servoce::shape::Wire() { return TopoDS::Wire(*m_shp); }
 const TopoDS_Wire& servoce::shape::Wire() const { return TopoDS::Wire(*m_shp); }
@@ -146,87 +153,68 @@ void servoce::shape::load(std::istream& in)
 	m_shp->Orientation (anOrient);
 }
 
-servoce::shape servoce::shape::fillet(double r, const std::vector<int>& nums)
+servoce::shape servoce::fillet(const servoce::shape& shp, double r, const std::vector<servoce::point3>& refs)
 {
-	auto type = m_shp->ShapeType();
+	auto type = shp.Shape().ShapeType();
 
 	if (TopAbs_SOLID == type || TopAbs_COMPSOLID == type || type == TopAbs_COMPOUND)
 	{
-		try
+		BRepFilletAPI_MakeFillet mk(shp.Shape());
+
+		for (auto& p : refs)
 		{
-			std::set<int>snums(nums.begin(), nums.end());
-			BRepFilletAPI_MakeFillet mk(*m_shp);//
-			int idx = 0;
-
-			for (TopExp_Explorer ex(*m_shp, TopAbs_EDGE); ex.More(); ex.Next())
-			{
-				TopoDS_Edge Edge = TopoDS::Edge(ex.Current());
-
-				if (snums.count(idx) || nums.size() == 0) mk.Add(r, Edge);
-
-				++idx;
-			}
-
-			return mk.Shape();
+			mk.Add(r, near_edge(shp, p).Edge());
 		}
-		catch (std::exception ex)
-		{
-			std::cout << ex.what() << std::endl;
-			throw ex;
-		}
+
+		return mk.Shape();
 	}
 	else if (TopAbs_FACE == type)
 	{
-		std::set<int>snums(nums.begin(), nums.end());
-		BRepFilletAPI_MakeFillet2d mk(Face());
+		BRepFilletAPI_MakeFillet2d mk(shp.Face());
 
-		std::vector<servoce::point3> pnts;
-		std::vector<servoce::point3> pnts_filtered;
-
-		if (nums.size() == 0)
+		for (auto& p : refs)
 		{
-			for (TopExp_Explorer expWire(Shape(), TopAbs_WIRE); expWire.More(); expWire.Next())
-			{
-				BRepTools_WireExplorer explorer(TopoDS::Wire(expWire.Current()));
-
-				while (explorer.More())
-				{
-					const TopoDS_Vertex& vtx = explorer.CurrentVertex();
-					mk.AddFillet(vtx, r);
-
-					explorer.Next();
-				}
-			}
+			mk.AddFillet(near_vertex(shp, p).Vertex(), r);
 		}
 
-		else
+		return mk.Shape();
+	}
+	else
+	{
+		throw std::runtime_error("Fillet argument has unsuported type.");
+	}
+}
+
+
+servoce::shape servoce::fillet(const servoce::shape& shp, double r)
+{
+	auto type = shp.Shape().ShapeType();
+
+	if (TopAbs_SOLID == type || TopAbs_COMPSOLID == type || type == TopAbs_COMPOUND)
+	{
+		BRepFilletAPI_MakeFillet mk(shp.Shape());
+
+		for (TopExp_Explorer ex(shp.Shape(), TopAbs_EDGE); ex.More(); ex.Next())
 		{
-			pnts = vertices();
+			mk.Add(r, TopoDS::Edge(ex.Current()));
+		}
 
-			for (unsigned int i = 0; i < pnts.size(); ++i)
+		return mk.Shape();
+	}
+	else if (TopAbs_FACE == type)
+	{
+		BRepFilletAPI_MakeFillet2d mk(shp.Face());
+
+		for (TopExp_Explorer expWire(shp.Shape(), TopAbs_WIRE); expWire.More(); expWire.Next())
+		{
+			BRepTools_WireExplorer explorer(TopoDS::Wire(expWire.Current()));
+
+			while (explorer.More())
 			{
-				if (snums.count(i))
-				{
-					pnts_filtered.emplace_back(pnts[i]);
-				}
-			}
+				const TopoDS_Vertex& vtx = explorer.CurrentVertex();
+				mk.AddFillet(vtx, r);
 
-			for (TopExp_Explorer expWire(Shape(), TopAbs_WIRE); expWire.More(); expWire.Next())
-			{
-				BRepTools_WireExplorer explorer(TopoDS::Wire(expWire.Current()));
-
-				while (explorer.More())
-				{
-					const TopoDS_Vertex& vtx = explorer.CurrentVertex();
-
-					for (unsigned int i = 0; i < pnts_filtered.size(); ++i)
-					{
-						if (servoce::point3::early(servoce::point3(vtx), pnts_filtered[i]))
-							mk.AddFillet(vtx, r);
-					}
-
-					explorer.Next();
-				}
+				explorer.Next();
 			}
 		}
 
@@ -238,16 +226,40 @@ servoce::shape servoce::shape::fillet(double r, const std::vector<int>& nums)
 	}
 }
 
-servoce::shape servoce::shape::fillet(double r, const std::vector<servoce::point3>& refs, double epsilon)
+servoce::shape servoce::chamfer(const servoce::shape& shp, double r, const std::vector<servoce::point3>& refs)
 {
-	auto type = m_shp->ShapeType();
+	auto type = shp.Shape().ShapeType();
 
 	if (TopAbs_SOLID == type || TopAbs_COMPSOLID == type || type == TopAbs_COMPOUND)
 	{
 		try
 		{
-			BRepFilletAPI_MakeFillet mk(*m_shp);
-			for (TopExp_Explorer ex(*m_shp, TopAbs_EDGE); ex.More(); ex.Next())
+			BRepFilletAPI_MakeChamfer mk(shp.Shape());
+
+
+			TopTools_IndexedDataMapOfShapeListOfShape edgeFaceMap;
+			TopExp::MapShapesAndAncestors(shp.Shape(), TopAbs_EDGE, TopAbs_FACE, edgeFaceMap);
+
+			for (auto& p : refs)
+			{
+				//TopoDS_Edge edg = near_edge_native(shp, p);
+				double min = std::numeric_limits<double>::max();
+				TopoDS_Edge ret;
+				TopoDS_Vertex vtx = p.Vtx();
+
+				for (TopExp_Explorer ex(shp.Shape(), TopAbs_EDGE); ex.More(); ex.Next())
+				{
+					TopoDS_Edge obj = TopoDS::Edge(ex.Current());
+					BRepExtrema_DistShapeShape extrema(obj, vtx);
+
+					if (min > extrema.Value()) { ret = obj; min = extrema.Value(); }
+				}
+
+				TopTools_ListOfShape list = edgeFaceMap.FindFromKey(ret);
+				mk.Add(r, ret, TopoDS::Face(list.First()));
+			}
+
+			/*for (TopExp_Explorer ex(*m_shp, TopAbs_EDGE); ex.More(); ex.Next())
 			{
 				TopoDS_Edge Edge = TopoDS::Edge(ex.Current());
 				for (unsigned int j = 0; j < refs.size(); ++j)
@@ -255,7 +267,7 @@ servoce::shape servoce::shape::fillet(double r, const std::vector<servoce::point
 					BRepExtrema_DistShapeShape extrema(Edge, refs[j].Vtx());
 					if (extrema.Value() < epsilon) mk.Add(r, Edge);
 				}
-			}
+			}*/
 
 			return mk.Shape();
 		}
@@ -267,7 +279,7 @@ servoce::shape servoce::shape::fillet(double r, const std::vector<servoce::point
 	}
 	else if (TopAbs_FACE == type)
 	{
-		throw std::runtime_error("Face fillet. TODO.");
+		throw std::runtime_error("Face chamfer. TODO.");
 	}
 	else
 	{
@@ -275,12 +287,38 @@ servoce::shape servoce::shape::fillet(double r, const std::vector<servoce::point
 	}
 }
 
-servoce::shape servoce::shape::fillet(double r, const std::vector<int>& nums, const std::vector<point3>& refs, double epsilon)
+
+servoce::shape servoce::chamfer(const servoce::shape& shp, double r)
 {
-	if (nums.size() && refs.size()) throw std::runtime_error("Or nums or refs... Please...");
-	if (refs.size()) return fillet(r, refs, epsilon);
-	return fillet(r, nums);
+	auto type = shp.Shape().ShapeType();
+
+	if (TopAbs_SOLID == type || TopAbs_COMPSOLID == type || type == TopAbs_COMPOUND)
+	{
+		BRepFilletAPI_MakeChamfer mk(shp.Shape());
+
+		TopTools_IndexedDataMapOfShapeListOfShape edgeFaceMap;
+		TopExp::MapShapesAndAncestors(shp.Shape(), TopAbs_EDGE, TopAbs_FACE, edgeFaceMap);
+
+		for (TopExp_Explorer ex(shp.Shape(), TopAbs_EDGE); ex.More(); ex.Next())
+		{
+			TopTools_ListOfShape list = edgeFaceMap.FindFromKey(ex.Current());
+
+			// Find adjacent face
+			mk.Add(r, TopoDS::Edge(ex.Current()), TopoDS::Face(list.First()));
+		}
+
+		return mk.Shape();
+	}
+	else if (TopAbs_FACE == type)
+	{
+		throw std::runtime_error("Face chamfer. TODO.");
+	}
+	else
+	{
+		throw std::runtime_error("Fillet argument has unsuported type.");
+	}
 }
+
 
 servoce::point3 servoce::shape::center()
 {
@@ -302,10 +340,12 @@ servoce::shape servoce::shape::fill()
 	{
 		return	BRepBuilderAPI_MakeFace(BRepBuilderAPI_MakeWire(Edge()).Wire()).Shape();
 	}
+
 	if (Shape().ShapeType() == TopAbs_WIRE)
 	{
 		return BRepBuilderAPI_MakeFace(Wire()).Shape();
 	}
+
 	throw "unsuported type";
 }
 
@@ -345,3 +385,72 @@ servoce::topoenum servoce::shape::type()
 {
 	throw "TODO";
 }
+
+
+servoce::shape servoce::near_face(const servoce::shape& shp, const servoce::point3& pnt)
+{
+	double min = std::numeric_limits<double>::max();
+	TopoDS_Face ret;
+
+	TopoDS_Vertex vtx = pnt.Vtx();
+
+	for (TopExp_Explorer ex(shp.Shape(), TopAbs_FACE); ex.More(); ex.Next())
+	{
+		TopoDS_Face obj = TopoDS::Face(ex.Current());
+		BRepExtrema_DistShapeShape extrema(obj, vtx);
+
+		if (min > extrema.Value()) { ret = obj; min = extrema.Value(); }
+	}
+
+	return ret;
+}
+
+servoce::shape servoce::near_edge(const servoce::shape& shp, const servoce::point3& pnt)
+{
+	double min = std::numeric_limits<double>::max();
+	TopoDS_Edge ret;
+
+	TopoDS_Vertex vtx = pnt.Vtx();
+
+	for (TopExp_Explorer ex(shp.Shape(), TopAbs_EDGE); ex.More(); ex.Next())
+	{
+		TopoDS_Edge obj = TopoDS::Edge(ex.Current());
+		BRepExtrema_DistShapeShape extrema(obj, vtx);
+
+		if (min > extrema.Value()) { ret = obj; min = extrema.Value(); }
+	}
+
+	return ret;
+}
+
+servoce::shape servoce::near_vertex(const servoce::shape& shp, const servoce::point3& pnt)
+{
+	double min = std::numeric_limits<double>::max();
+	TopoDS_Vertex ret;
+
+	TopoDS_Vertex vtx = pnt.Vtx();
+
+	for (TopExp_Explorer ex(shp.Shape(), TopAbs_VERTEX); ex.More(); ex.Next())
+	{
+		TopoDS_Vertex obj = TopoDS::Vertex(ex.Current());
+		BRepExtrema_DistShapeShape extrema(obj, vtx);
+
+		if (min > extrema.Value()) { ret = obj; min = extrema.Value(); }
+	}
+
+	return ret;
+}
+
+
+//servoce::shape	servoce::near_face(const servoce::shape& shp, const servoce::point3& pnt) {
+//
+//}
+//
+//servoce::shape	servoce::near_edge(const servoce::shape& shp, const servoce::point3& pnt)
+//{
+//	return near_edge_native(shp, pnt);
+//}
+//
+//servoce::shape 	servoce::near_vertex(const servoce::shape& shp, const servoce::point3& pnt) {
+//
+//}

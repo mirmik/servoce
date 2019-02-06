@@ -10,7 +10,7 @@
 
 #include <IntCurvesFace_ShapeIntersector.hxx>
 
-std::mutex viewmutex;
+std::recursive_mutex viewrecursive_mutex;
 
 
 Handle(Aspect_DisplayConnection) g_displayConnection;
@@ -29,7 +29,7 @@ servoce::viewer::viewer(servoce::scene& scn) : viewer()
 
 void servoce::viewer::set_triedron_axes()
 {
-	std::lock_guard<std::mutex> lock(viewmutex);
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	Handle(AIS_Axis) axX = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0, 0, 0), gp_Vec(1, 0, 0)));
 	Handle(AIS_Axis) axY = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0, 0, 0), gp_Vec(0, 1, 0)));
 	Handle(AIS_Axis) axZ = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0, 0, 0), gp_Vec(0, 0, 1)));
@@ -45,26 +45,26 @@ void servoce::viewer::set_triedron_axes()
 
 servoce::view servoce::viewer::create_view()
 {
-	std::lock_guard<std::mutex> lock(viewmutex);
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	return servoce::view( occ->create_view_window() );
 }
 
 
 void servoce::viewer::redraw()
 {
-	std::lock_guard<std::mutex> lock(viewmutex);
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	occ->m_viewer->Redraw();
 }
 
 void servoce::viewer::close()
 {
-	std::lock_guard<std::mutex> lock(viewmutex);
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	return occ->m_viewer->Remove();
 }
 
 void servoce::view::set_gradient()
 {
-	std::lock_guard<std::mutex> lock(viewmutex);
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	occ->m_view->SetBgGradientColors(
 	    Quantity_Color(0.5, 0.5, 0.5, Quantity_TOC_RGB),
 	    Quantity_Color(0.3, 0.3, 0.3, Quantity_TOC_RGB),
@@ -79,33 +79,33 @@ void servoce::view::set_gradient()
 
 void servoce::view::redraw()
 {
-	std::lock_guard<std::mutex> lock(viewmutex);
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	occ->m_view->Redraw();
 }
 void servoce::view::must_be_resized()
 {
 
-	std::lock_guard<std::mutex> lock(viewmutex); 
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex); 
 	occ->m_view->MustBeResized();
 }
 void servoce::view::set_triedron()
 {
-	std::lock_guard<std::mutex> lock(viewmutex); 
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex); 
 	occ->set_triedron();
 }
 void servoce::view::dump(const std::string& path)
 {
-	std::lock_guard<std::mutex> lock(viewmutex); 
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex); 
 	occ->dump(path);
 }
 void servoce::view::fit_all(double koeff)
 {
-	std::lock_guard<std::mutex> lock(viewmutex); 
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex); 
 	occ->m_view->FitAll(koeff);
 }
 void servoce::view::set_virtual_window(int w, int h)
 {
-	std::lock_guard<std::mutex> lock(viewmutex);
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	this->w = w;
 	this->h = h;
 	occ->set_virtual_window(w, h);
@@ -114,39 +114,39 @@ void servoce::view::set_window(int n) { occ->set_window(n); }
 
 void servoce::view::set_direction(float a, float b, float c)
 {
-	std::lock_guard<std::mutex> lock(viewmutex);
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	occ->m_view->Camera()->SetDirection(gp_Dir(a, b, c));
 }
 
 std::tuple<double, double, double> servoce::view::direction()
 {
-	std::lock_guard<std::mutex> lock(viewmutex);
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	auto dir = occ->m_view->Camera()->Direction();
 	return std::make_tuple(dir.X(), dir.Y(), dir.Z());
 }
 
 void servoce::view::pan(float a, float b)
 {
-	std::lock_guard<std::mutex> lock(viewmutex);
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	occ->m_view->Pan(a, b);
 }
 
 void servoce::view::zoom(float a, float b, float aa, float ba)
 {
-	std::lock_guard<std::mutex> lock(viewmutex);
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	occ->m_view->Zoom(a, b, aa, ba);
 }
 
 void servoce::view::set_eye(servoce::point3 pnt)
 {
-	std::lock_guard<std::mutex> lock(viewmutex);
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	occ->m_view->Camera()->SetEye(pnt.Pnt());
 	//occ->m_view->SetEye(p.X(), p.Y(), p.Z());
 }
 
 servoce::point3 servoce::view::eye()
 {
-	std::lock_guard<std::mutex> lock(viewmutex);
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	//double x, y, z;
 	//occ->m_view->Eye(x, y, z);
 	//return servoce::point3( x, y, z );
@@ -155,19 +155,19 @@ servoce::point3 servoce::view::eye()
 
 void servoce::view::set_center(servoce::point3 pnt)
 {
-	std::lock_guard<std::mutex> lock(viewmutex);
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	occ->m_view->Camera()->SetCenter(pnt.Pnt());
 }
 
 servoce::point3 servoce::view::center()
 {
-	std::lock_guard<std::mutex> lock(viewmutex);
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	return occ->m_view->Camera()->Center();
 }
 
 void servoce::view::set_orthogonal()
 {
-	std::lock_guard<std::mutex> lock(viewmutex);
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	occ->m_view->Camera()->SetUp(gp_Dir(0, 0, 1));//m_view->SetUp(0, 0, 1);
 	//occ->m_view->Camera()->OrthogonalizedUp();
 	//occ->m_view->Camera()->SetProjectionType(Graphic3d_Camera::Projection::Projection_Orthographic);
@@ -221,8 +221,7 @@ uint c = 3;*/
 
 std::vector<unsigned char> servoce::view::rawarray()
 {
-
-	std::lock_guard<std::mutex> lock(viewmutex);
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	Image_PixMap pixmap;
 	occ->m_view->ToPixMap( pixmap, w, h//,
 	                       //Graphic3d_BT_RGB
@@ -235,7 +234,7 @@ std::vector<unsigned char> servoce::view::rawarray()
 
 std::vector<unsigned char> servoce::view::rawarray(int w, int h)
 {
-	std::lock_guard<std::mutex> lock(viewmutex);
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	this->w = w;
 	this->h = h;
 	return rawarray();
@@ -243,7 +242,7 @@ std::vector<unsigned char> servoce::view::rawarray(int w, int h)
 
 void servoce::view::see(int width, int height)
 {
-	std::lock_guard<std::mutex> lock(viewmutex);
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	int s;
 	Display *d;
 	Window w;
@@ -322,7 +321,7 @@ void servoce::view::see(int width, int height)
 
 void servoce::see(servoce::scene& scn)
 {
-	std::lock_guard<std::mutex> lock(viewmutex);
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	auto v = viewer(scn);
 	auto vv = v.create_view();
 	vv.see();
@@ -330,38 +329,38 @@ void servoce::see(servoce::scene& scn)
 
 void servoce::view::reset_orientation()
 {
-	std::lock_guard<std::mutex> lock(viewmutex);
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	occ->m_view->ResetViewOrientation();
 }
 
 void servoce::view::autoscale()
 {
-	std::lock_guard<std::mutex> lock(viewmutex);
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	occ->m_view->FitAll(0.7);
 }
 
 void servoce::view::centering()
 {
-	std::lock_guard<std::mutex> lock(viewmutex);
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	occ->m_view->Camera()->SetCenter(gp_Pnt(0, 0, 0));
 	occ->m_view->ResetViewOrientation();
 }
 
 void servoce::view::start_rotation(int x, int y, float treshold)
 {
-	std::lock_guard<std::mutex> lock(viewmutex);
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	occ->m_view->StartRotation(x, y, treshold);
 }
 
 void servoce::view::rotation(int x, int y)
 {
-	std::lock_guard<std::mutex> lock(viewmutex);
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	occ->m_view->Rotation(x, y);
 }
 
 std::pair<servoce::point3, bool> servoce::view::intersect_point( double x, double y )
 {
-	std::lock_guard<std::mutex> lock(viewmutex);
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	auto m_view = occ->m_view;
 	auto m_context = occ->parent->m_context;
 
@@ -410,7 +409,7 @@ std::pair<servoce::point3, bool> servoce::view::intersect_point( double x, doubl
 
 void servoce::viewer::clean_context()
 {
-	std::lock_guard<std::mutex> lock(viewmutex);
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	occ->m_context->EraseAll(false);
 	//occ->m_context->RemoveAll(true);
 }
@@ -418,8 +417,8 @@ void servoce::viewer::clean_context()
 void servoce::viewer::add_scene(servoce::scene& scn)
 {
 	scn.set_viewer(this);
-	std::lock_guard<std::mutex> lock(viewmutex);
-	for (int i = 0; i < scn.shapes.size(); ++i)
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
+	for (unsigned int i = 0; i < scn.shapes.size(); ++i)
 	{
 		occ->m_context->Display(scn.shapes[i].m_ashp, false);
 	}

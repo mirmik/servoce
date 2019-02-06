@@ -153,7 +153,6 @@ PYBIND11_MODULE(libservoce, m)
 	.def(py::pickle(
 	[](const shape & self) { return b64::base64_encode(string_dump(self)); },
 	[](const std::string & in) { return restore_string_dump<shape>(b64::base64_decode(in)); }), ungil())
-	.def("fillet", (shape(shape::*)(double, const std::vector<int>&, const std::vector<point3>&, double))&shape::fillet, ungil(), py::arg("r"), py::arg("nums") = py::tuple(), py::arg("refs") = py::tuple(), py::arg("epsilon") = 0.1)
 	.def("fill", &shape::fill)
 	.def("vertices", &shape::vertices, ungil())
 	.def("center", &shape::center, ungil())
@@ -163,6 +162,12 @@ PYBIND11_MODULE(libservoce, m)
 	.def("is_closed", &shape::is_closed, ungil())
 	.def("sfvertex", &shape::sfvertex, ungil())
 	;
+
+	m.def("fillet", (shape(*)(const shape&, double, const std::vector<point3>&))&servoce::fillet, ungil(), py::arg("shp"), py::arg("r"), py::arg("refs"));
+	m.def("fillet", (shape(*)(const shape&, double))&servoce::fillet, ungil(), py::arg("shp"), py::arg("r"));
+	m.def("chamfer", (shape(*)(const shape&, double, const std::vector<point3>&))&servoce::chamfer, ungil(), py::arg("shp"), py::arg("r"), py::arg("refs"));
+	m.def("chamfer", (shape(*)(const shape&, double))&servoce::chamfer, ungil(), py::arg("shp"), py::arg("r"));
+	
 
 //PRIM3D
 	m.def("box", 		box, ungil(), py::arg("x"), py::arg("y"), py::arg("z"), py::arg("center") = false);
@@ -387,6 +392,11 @@ PYBIND11_MODULE(libservoce, m)
 	m.def("make_stl", &make_stl, ungil());
 	m.def("brep_write", &brep_write, ungil());
 	m.def("brep_read", &brep_read, ungil());
+
+//REFLECTION
+	m.def("near_edge", &near_edge, ungil());	
+	m.def("near_face", &near_edge, ungil());
+	m.def("near_vertex", &near_edge, ungil());
 }
 
 servoce::point3::point3(const py::list& lst)

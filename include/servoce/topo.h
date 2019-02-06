@@ -44,9 +44,6 @@ namespace servoce
 		shape& operator= (const TopoDS_Shape& shp);
 		shape& operator= (shape&& oth);
 
-		shape fillet(double r, const std::vector<int>& nums, const std::vector<point3>& refs, double epsilon);
-		shape fillet(double r, const std::vector<int>& nums);
-		shape fillet(double r, const std::vector<point3>& refs, double epsilon);
 		shape fill();
 
 		//solid to_solid();
@@ -64,6 +61,9 @@ namespace servoce
 
 		TopoDS_Edge& Edge();
 		const TopoDS_Edge& Edge() const;
+
+		TopoDS_Vertex& Vertex();
+		const TopoDS_Vertex& Vertex() const;
 
 		TopoDS_Wire& Wire();
 		const TopoDS_Wire& Wire() const;
@@ -121,69 +121,20 @@ namespace servoce
 
 	shape make_section(const shape& shp);
 
-	/*template<typename Self>
-	struct can_trans {
-		Self transform(const transformation& trans) {
-			Self& self = static_cast<Self&>(*this);
-			return trans(self);
-		}
-		Self translate(double x, double y, double z) {
-			return transform(translate(x,y,z));
-		}
-		//Self translate(double x, double y) {
-		//	return transform(translate{x,y,0}); }
-		Self rotate(double ax, double ay, double az, double angle) { return transform(axrotation(ax,ay,az,angle)); }
-		Self up(double z) { return translate(0,0,z); }
-		Self down(double z) { return translate(0,0,-z); }
-		Self forw(double y) { return translate(0,y,0); }
-		Self back(double y) { return translate(0,-y,0); }
-		Self right(double x) { return translate(x,0,0); }
-		Self left(double x) { return translate(-x,0,0); }
+	//const TopoDS_Face& 		near_face_native		(const shape& shp, const point3& pnt);
+	//const TopoDS_Edge& 		near_edge_native		(const shape& shp, const point3& pnt);
+	//const TopoDS_Vertex& 	near_vertex_native		(const shape& shp, const point3& pnt);
 
-		Self rotateX(double a) {
-			return transform(rotateX(a));
-		}
-		Self rotateY(double a) { return transform(rotateY(a)); }
-		Self rotateZ(double a) { return transform(rotateZ(a)); }
+	shape	near_face		(const shape& shp, const point3& pnt);
+	shape	near_edge		(const shape& shp, const point3& pnt);
+	shape 	near_vertex		(const shape& shp, const point3& pnt);
 
-		Self mirrorX() { return transform(mirrorX()); }
-		Self mirrorY() { return transform(mirrorY()); }
-		Self mirrorZ() { return transform(mirrorZ()); }
-
-		Self mirrorXY() { return transform(mirrorXY()); }
-		Self mirrorYZ() { return transform(mirrorYZ()); }
-		Self mirrorXZ() { return transform(mirrorXZ()); }
-	};
-
-	template<typename Self>
-	struct can_boolops {
-	};
-
-	struct solid : public shape, public can_trans<solid>, public can_boolops<solid> {
-		solid();
-		solid(const TopoDS_Shape& shp);
-		const TopoDS_Solid& Solid() const;
-		solid fillet(double r, const std::vector<int>& nums);
-		TopoDS_Solid& Solid();
-	};
-
-	struct face : public shape, public can_trans<face>, public can_boolops<face> {
-		face();
-		face(const TopoDS_Shape& shp);
-		const TopoDS_Face& Face() const;
-		TopoDS_Face& Face();
-		face fillet(double r, const std::vector<int>& nums);
-		std::vector<servoce::wire> wires();
-	};
-
-	struct wire : public shape, public can_trans<wire>, public can_boolops<wire> {
-		wire();
-		wire(const TopoDS_Shape& shp);
-		const TopoDS_Wire& Wire() const;
-		TopoDS_Wire& Wire();
-		face to_face();
-	};*/
-
+	shape fillet(const shape& shp, double r, const std::vector<point3>& refs);
+	shape fillet(const shape& shp, double r);
+		
+	shape chamfer(const shape& shp, double r, const std::vector<point3>& refs);
+	shape chamfer(const shape& shp, double r);
+		
 }
 
 #endif

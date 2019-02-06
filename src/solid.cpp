@@ -341,49 +341,13 @@ shape servoce::revol(const shape& proto, double angle)
 		return BRepPrimAPI_MakeRevol(proto.Shape(), ax, angle).Shape();
 }
 
-shape servoce::thicksolid(const shape& proto, const point3& pnt, double thickness)
+shape servoce::thicksolid(const shape& proto, const std::vector<point3>& pnts, double thickness)
 {
-	// Initialisation
-	TopoDS_Face   faceToRemove;
-	double min = std::numeric_limits<double>::max();
-
-	TopoDS_Face minFace;
-
-	auto vtx = pnt.Vtx();
-
-// Finding the to face
-	for (TopExp_Explorer aFaceExplorer(proto.Shape(), TopAbs_FACE); aFaceExplorer.More(); aFaceExplorer.Next())
-	{
-		TopoDS_Face aFace = TopoDS::Face(aFaceExplorer.Current());
-//		Handle(Geom_Surface) aSurface = BRep_Tool::Surface(aFace);
-
-		BRepExtrema_DistShapeShape extrema(aFace, vtx);
-		extrema.Perform();
-		auto value = extrema.Value();
-
-		if (min > value) 
-		{
-			min = value;
-			minFace = aFace;
-		}
-
-		/*if (aSurface->DynamicType() == STANDARD_TYPE(Geom_Plane))
-		{
-			Handle(Geom_Plane) aPlane = Handle(Geom_Plane)::DownCast(aSurface);
-			gp_Pnt aPnt = aPlane->Location();
-			Standard_Real aZ   = aPnt.Z();
-
-			if (aZ > zMax)
-			{
-				zMax = aZ;
-				faceToRemove = aFace;
-			}
-		}*/
-	}
-
-// Define face to remove, thickening operation
 	TopTools_ListOfShape facesToRemove;
-	facesToRemove.Append(minFace);
+	
+	for (auto p : pnts)
+		facesToRemove.Append(near_face(proto,p).Face());
+	
 	auto algo = BRepOffsetAPI_MakeThickSolid();
 	algo.MakeThickSolidByJoin(proto.Shape(), facesToRemove, thickness, 1.e-3);
 	return algo.Shape();

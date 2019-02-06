@@ -150,7 +150,7 @@ servoce::shape servoce::make_long_helix(double pitch, double height,
 	Handle(Geom_Surface) surf;
 	Standard_Boolean isCylinder;
 
-	if (angle < Precision::Confusion())     // Cylindrical helix
+	if (abs(angle) < Precision::Confusion())     // Cylindrical helix
 	{
 		if (radius < Precision::Confusion())
 			Standard_Failure::Raise("Radius of helix too small");
@@ -161,7 +161,7 @@ servoce::shape servoce::make_long_helix(double pitch, double height,
 	else                                    // Conical helix
 	{
 		//angle = to_radian(angle);
-		if (angle < Precision::Confusion())
+		if (abs(angle) < Precision::Confusion())
 			Standard_Failure::Raise("Angle of helix too small");
 
 		surf = new Geom_ConicalSurface(gp_Ax3(cylAx2), angle, radius);
@@ -306,13 +306,22 @@ servoce::shape servoce::circle_arc(const point3& p1, const point3& p2, const poi
 #include <TopExp.hxx>
 std::pair<servoce::point3, servoce::point3> servoce::shape::sfvertex() 
 {
-	if (Shape().ShapeType() == TopAbs_WIRE){
+	if (Shape().ShapeType() == TopAbs_WIRE)
+	{
 		TopoDS_Vertex a, b;
 		TopExp::Vertices(Wire(), a, b);
 		return std::pair<servoce::point3, servoce::point3>(a,b);
 	}
-	else if (Shape().ShapeType() == TopAbs_EDGE)
+	
+	else if (Shape().ShapeType() == TopAbs_EDGE) 
+	{
 		return std::pair<servoce::point3, servoce::point3>(TopExp::FirstVertex(Edge()), TopExp::LastVertex(Edge()));
+	}
+	
+	else 
+	{
+		throw "TODO Error";
+	}
 }
 
 bool servoce::shape::is_closed() 

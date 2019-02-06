@@ -166,7 +166,7 @@ servoce::shape servoce::fill(const std::vector<servoce::shape*>& arr)
 {
 	BRepBuilderAPI_MakeFace mk(arr[0]->Wire_orEdgeToWire());
 
-	for (int i = 1; i < arr.size(); i++) {
+	for (unsigned int i = 1; i < arr.size(); i++) {
 		mk.Add(arr[i]->Wire_orEdgeToWire());
 	}
 	return mk.Face();
