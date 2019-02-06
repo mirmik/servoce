@@ -142,10 +142,10 @@ shape servoce::cone(double r1, double r2, double h, double a1, double a2, bool c
 	}
 }
 
-shape servoce::sphere(double r)
-{
-	return BRepPrimAPI_MakeSphere(r).Solid();
-}
+shape servoce::sphere(double r) { return BRepPrimAPI_MakeSphere(r).Solid(); }
+shape servoce::sphere(double r, double an1) { return BRepPrimAPI_MakeSphere(r, an1).Solid(); }
+shape servoce::sphere(double r, double an1, double an2) { return BRepPrimAPI_MakeSphere(r, an1, an2).Solid(); }
+shape servoce::sphere(double r, double an1, double an2, double an3) { return BRepPrimAPI_MakeSphere(r, an1, an2, an3).Solid(); }
 
 shape servoce::torus(double r1, double r2)
 {

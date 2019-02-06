@@ -8,6 +8,9 @@ namespace servoce
 {
 	shape box(double x, double y, double z, bool center = false);
 	shape sphere(double r);
+	shape sphere(double r, double an1);
+	shape sphere(double r, double an1, double an2);
+	shape sphere(double r, double an1, double an2, double an3);
 	shape cylinder(double r, double h, bool center = false);
 	shape cylinder(double r, double h, double angle, bool center = false);
 	shape cylinder(double r, double h, double a1, double a2, bool center = false);

@@ -172,7 +172,10 @@ PYBIND11_MODULE(libservoce, m)
 //PRIM3D
 	m.def("box", 		box, ungil(), py::arg("x"), py::arg("y"), py::arg("z"), py::arg("center") = false);
 
-	m.def("sphere", 	sphere, ungil(), py::arg("r"));
+	m.def("sphere", 	(shape(*)(double))&sphere, ungil(), py::arg("r"));
+	m.def("sphere", 	(shape(*)(double,double))&sphere, ungil(), py::arg("r"), py::arg("an1"));
+	m.def("sphere", 	(shape(*)(double,double,double))&sphere, ungil(), py::arg("r"), py::arg("an1"), py::arg("an2"));
+	m.def("sphere", 	(shape(*)(double,double,double,double))&sphere, ungil(), py::arg("r"), py::arg("an1"), py::arg("an2"), py::arg("an3"));
 
 	m.def("cylinder", 	(shape(*)(double, double, bool)) &cylinder, ungil(), py::arg("r"), py::arg("h"), py::arg("center") = false);
 	m.def("cylinder", 	(shape(*)(double, double, double, bool)) &cylinder, ungil(), py::arg("r"), py::arg("h"), py::arg("angle"), py::arg("center") = false);
