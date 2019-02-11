@@ -20,7 +20,7 @@ class TopoDS_Compound;
 
 namespace servoce
 {
-	enum topoenum 
+	enum topoenum
 	{
 		vertex,
 		edge,
@@ -131,10 +131,15 @@ namespace servoce
 
 	shape fillet(const shape& shp, double r, const std::vector<point3>& refs);
 	shape fillet(const shape& shp, double r);
-		
+
 	shape chamfer(const shape& shp, double r, const std::vector<point3>& refs);
 	shape chamfer(const shape& shp, double r);
-		
+
 }
+
+//servoce::shape operator+(const servoce::point3& pnt, const servoce::shape& th);
+//servoce::shape operator+(const servoce::shape& th, const servoce::point3& pnt);
+
+
 
 #endif

@@ -82,7 +82,7 @@ namespace servoce
 		void add(const servoce::point3& pnt, servoce::color color = mech)
 		{
 			TopoDS_Vertex vtx = pnt.Vtx();
-			shapes.emplace_back(servoce::shape(vtx));
+			shapes.emplace_back(servoce::shape(vtx), color);
 			shapes[shapes.size() - 1].scn = this;	
 		}
 
