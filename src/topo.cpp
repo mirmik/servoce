@@ -454,3 +454,14 @@ servoce::shape servoce::near_vertex(const servoce::shape& shp, const servoce::po
 //servoce::shape 	servoce::near_vertex(const servoce::shape& shp, const servoce::point3& pnt) {
 //
 //}
+
+
+/*servoce::shape operator+(const servoce::point3& pnt, const servoce::shape& th)
+{
+	return servoce::make_union(th, pnt.Vtx());
+}
+
+servoce::shape operator+(const servoce::shape& th, const servoce::point3& pnt)
+{
+	return servoce::make_union(th, pnt.Vtx());
+}*/
