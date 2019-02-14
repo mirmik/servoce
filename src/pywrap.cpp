@@ -199,7 +199,7 @@ PYBIND11_MODULE(libservoce, m)
 	m.def("make_linear_extrude", [](const shape & shp, const py::list & lst, bool center) { return servoce::make_linear_extrude(shp, vector3(lst[0].cast<double>(), lst[1].cast<double>(), lst[2].cast<double>()), center); }, ungil(), py::arg("shp"), py::arg("vec"), py::arg("center") = false);
 	m.def("make_pipe", 			make_pipe, ungil(), py::arg("prof"), py::arg("path"));
 	m.def("make_pipe_shell", 	make_pipe_shell, ungil(), py::arg("prof"), py::arg("path"), py::arg("isFrenet") = false);
-	m.def("loft", 				loft, ungil(), py::arg("arr"));
+	m.def("loft", 				loft, ungil(), py::arg("arr"), py::arg("smooth")=false);
 	m.def("revol", 				revol, ungil());
 
 //PRIM2D

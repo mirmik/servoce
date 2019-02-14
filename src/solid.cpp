@@ -319,9 +319,10 @@ shape servoce::halfspace()
 }
 
 
-shape servoce::loft(const std::vector<shape>& vec)
+shape servoce::loft(const std::vector<shape>& vec, bool smooth)
 {
-	BRepOffsetAPI_ThruSections builder(Standard_True, Standard_False);
+	BRepOffsetAPI_ThruSections builder(Standard_True, !smooth);
+	//builder.SetSmoothing(smooth);
 
 	for (auto& r : vec)
 	{
