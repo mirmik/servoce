@@ -111,7 +111,11 @@ namespace servoce
 		servoce::shape extrude(const vector3& vec, bool center = false);
 		servoce::shape extrude(double x, double y, double z, bool center = false);
 
-		std::vector<servoce::point3> vertices();
+		std::vector<servoce::point3> vertices() const;
+		std::vector<servoce::shape> solids() const;
+		std::vector<servoce::shape> faces() const;
+		std::vector<servoce::shape> wires() const;
+		std::vector<servoce::shape> edges() const;
 
 		std::pair<servoce::point3, servoce::point3> sfvertex();
 		bool is_closed(); // for wire

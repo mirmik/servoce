@@ -349,7 +349,7 @@ servoce::shape servoce::shape::fill()
 	throw "unsuported type";
 }
 
-std::vector<servoce::point3> servoce::shape::vertices()
+std::vector<servoce::point3> servoce::shape::vertices() const
 {
 	std::vector<servoce::point3> pnts;
 
@@ -386,6 +386,49 @@ servoce::topoenum servoce::shape::type()
 	throw "TODO";
 }
 
+std::vector<servoce::shape> servoce::shape::solids() const
+{
+	std::vector<servoce::shape> ret;
+	for (TopExp_Explorer ex(Shape(), TopAbs_SOLID); ex.More(); ex.Next())
+	{
+		TopoDS_Face obj = TopoDS::Face(ex.Current());
+		ret.emplace_back(obj);
+	}
+	return ret;
+}
+
+std::vector<servoce::shape> servoce::shape::faces() const
+{
+	std::vector<servoce::shape> ret;
+	for (TopExp_Explorer ex(Shape(), TopAbs_FACE); ex.More(); ex.Next())
+	{
+		TopoDS_Face obj = TopoDS::Face(ex.Current());
+		ret.emplace_back(obj);
+	}
+	return ret;
+}
+
+std::vector<servoce::shape> servoce::shape::wires() const
+{
+	std::vector<servoce::shape> ret;
+	for (TopExp_Explorer ex(Shape(), TopAbs_WIRE); ex.More(); ex.Next())
+	{
+		TopoDS_Face obj = TopoDS::Face(ex.Current());
+		ret.emplace_back(obj);
+	}
+	return ret;
+}
+
+std::vector<servoce::shape> servoce::shape::edges() const
+{
+	std::vector<servoce::shape> ret;
+	for (TopExp_Explorer ex(Shape(), TopAbs_EDGE); ex.More(); ex.Next())
+	{
+		TopoDS_Face obj = TopoDS::Face(ex.Current());
+		ret.emplace_back(obj);
+	}
+	return ret;
+}
 
 servoce::shape servoce::near_face(const servoce::shape& shp, const servoce::point3& pnt)
 {

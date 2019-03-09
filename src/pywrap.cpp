@@ -154,13 +154,19 @@ PYBIND11_MODULE(libservoce, m)
 	[](const shape & self) { return b64::base64_encode(string_dump(self)); },
 	[](const std::string & in) { return restore_string_dump<shape>(b64::base64_decode(in)); }), ungil())
 	.def("fill", &shape::fill)
-	.def("vertices", &shape::vertices, ungil())
 	.def("center", &shape::center, ungil())
 	.def("extrude", (shape(shape::*)(const vector3&, bool)) &shape::extrude, ungil(), py::arg("vec"), py::arg("center") = false)
 	.def("extrude", (shape(shape::*)(double, double, double, bool)) &shape::extrude, ungil(), py::arg("x"), py::arg("y"), py::arg("z"), py::arg("center") = false)
 	.def("extrude", (shape(shape::*)(double, bool)) &shape::extrude, ungil(), py::arg("z"), py::arg("center") = false)
 	.def("is_closed", &shape::is_closed, ungil())
 	.def("sfvertex", &shape::sfvertex, ungil())
+	.def("endpoints", &shape::sfvertex, ungil())
+
+	.def("vertices", &shape::vertices, ungil())
+	.def("solids", &shape::faces, ungil())
+	.def("faces", &shape::faces, ungil())
+	.def("edges", &shape::edges, ungil())
+	.def("wires", &shape::wires, ungil())
 	;
 
 	m.def("fillet", (shape(*)(const shape&, double, const std::vector<point3>&))&servoce::fillet, ungil(), py::arg("shp"), py::arg("r"), py::arg("refs"));
@@ -398,8 +404,8 @@ PYBIND11_MODULE(libservoce, m)
 
 //REFLECTION
 	m.def("near_edge", &near_edge, ungil());	
-	m.def("near_face", &near_edge, ungil());
-	m.def("near_vertex", &near_edge, ungil());
+	m.def("near_face", &near_face, ungil());
+	m.def("near_vertex", &near_vertex, ungil());
 }
 
 servoce::point3::point3(const py::list& lst)
