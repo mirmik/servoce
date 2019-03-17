@@ -90,8 +90,66 @@ class vector3(xyz):
 	def __setstate__(self, obj): self.arr=obj 
 
 
+class Scene:
+	def __init__(self):
+		self.scene = pyservoce.libservoce.Scene()
+
+	def add(self, shp, color=pyservoce.libservoce.Color(0.6, 0.6, 0.8)):	
+		if isinstance(shp, pyservoce.point3):
+			shp = shp.native()
+
+		return self.scene.add(shp, color)
+
+	def native(self):
+		return self.scene
+
+class Viewer:
+	def __init__(self, scn=None):
+		if scn is None:
+			self.viewer = pyservoce.libservoce.Viewer()
+		else:
+			self.viewer = pyservoce.libservoce.Viewer(scn.native())
+
+	def create_view(self):
+		return self.viewer.create_view()
+
+	def clean_context(self):
+		return self.viewer.clean_context()
+
+	def add_scene(self, scn):
+		return self.viewer.add_scene(scn.native())
+
+	def set_triedron_axes(self):
+		self.viewer.set_triedron_axes()
+
+
 def interpolate(pnts, tang, closed):
 	return pyservoce.libservoce.interpolate([p.native() for p in pnts], [t.native() for t in tang], closed)
 
-def polygon(pnts, closed):
-	return pyservoce.libservoce.polygon([p.native() for p in pnts], closed)
+def polygon(pnts):
+	return pyservoce.libservoce.polygon([p.native() for p in pnts])
+
+def polysegment(pnts, closed=False):
+	return pyservoce.libservoce.polysegment([p.native() for p in pnts], closed)
+
+def segment(a, b):
+	return pyservoce.libservoce.segment(a.native(), b.native())
+
+def circle_arc(a, b, c):
+	return pyservoce.libservoce.circle_arc(a.native(), b.native(), c.native())
+
+def make_linear_extrude(shp, vec, center):
+	return pyservoce.libservoce.make_linear_extrude(shp, vec.native(), center)
+
+def fillet(shp, r, refs=None):
+	if refs is None:
+		return pyservoce.libservoce.fillet(shp, r)
+	return pyservoce.libservoce.fillet(shp, r, [p.native() for p in refs])
+
+def chamfer(shp, r, refs=None):
+	if refs is None:
+		return pyservoce.libservoce.chamfer(shp, r)
+	return pyservoce.libservoce.chamfer(shp, r, [p.native() for p in refs])
+
+def thicksolid(shp, refs, t):
+	return pyservoce.libservoce.thicksolid(shp, [p.native() for p in refs], t)
