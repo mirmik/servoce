@@ -20,8 +20,11 @@ namespace servoce
 		transformation(transformation&& oth) : trsf(oth.trsf) { oth.trsf = nullptr; }
 		shape operator()(const servoce::shape& sld) const;
 		point3 operator()(const servoce::point3& sld) const;
+		vector3 operator()(const servoce::vector3& sld) const;
 		transformation operator()(const servoce::transformation& sld) const;
 		transformation operator*(const servoce::transformation& oth) const;
+
+		transformation invert();
 
 		transformation() : trsf(nullptr) {}
 		~transformation();

@@ -72,9 +72,20 @@ servoce::transformation servoce::mirrorXZ()
 	return servoce::plane_mirror(0, 1, 0);
 }
 
+servoce::transformation servoce::transformation::invert() 
+{
+	gp_Trsf pr = trsf->Inverted();
+	return transformation(new gp_Trsf(pr));	
+}
+
 servoce::shape servoce::transformation::operator()(const servoce::shape& shp) const
 {
 	return BRepBuilderAPI_Transform(shp.Shape(), *trsf, true).Shape();
+}
+
+servoce::vector3 servoce::transformation::operator()(const servoce::vector3& vec) const
+{
+	return vec.Vec().Transformed(*trsf);
 }
 
 servoce::point3 servoce::transformation::operator()(const servoce::point3& pnt) const
