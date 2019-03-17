@@ -24,6 +24,7 @@ using namespace servoce;
 .def("left", &TYPE::left, ungil())						\
 .def("forw", &TYPE::forw, ungil())						\
 .def("back", &TYPE::back, ungil())						\
+.def("rotate", &TYPE::rotate, ungil())					\
 .def("rotateX", &TYPE::rotateX, ungil())				\
 .def("rotateY", &TYPE::rotateY, ungil())				\
 .def("rotateZ", &TYPE::rotateZ, ungil())				\
@@ -288,6 +289,7 @@ PYBIND11_MODULE(libservoce, m)
 	m.def("axis_mirror", axis_mirror, ungil());
 	m.def("plane_mirror", plane_mirror, ungil());
 
+	m.def("rotate", rotate, ungil());
 	m.def("rotateX", rotateX, ungil());
 	m.def("rotateY", rotateY, ungil());
 	m.def("rotateZ", rotateZ, ungil());

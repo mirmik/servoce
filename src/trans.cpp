@@ -22,6 +22,11 @@ servoce::transformation::transformation(const transformation& oth)
 servoce::general_transformation::general_transformation(const general_transformation& oth)
 	: gtrsf(new gp_GTrsf(*oth.gtrsf)) {}
 
+servoce::transformation servoce::rotate(const servoce::vector3& vec, double a)
+{
+	return servoce::axrotation(vec.x, vec.y, vec.z, a);
+}
+
 servoce::transformation servoce::rotateX(double a)
 {
 	return servoce::axrotation(1, 0, 0, a);
