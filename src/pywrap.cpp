@@ -106,6 +106,8 @@ PYBIND11_MODULE(libservoce, m)
 	.def(py::init<py::tuple>())
 	.def_readwrite("x", &point2::x)
 	.def_readwrite("y", &point2::y)
+	.def("__setitem__", [](point2 & self, int key, double value) { self[key] = value; })
+	.def("__getitem__", [](const point2 & self, int key) { return self[key]; })
 	.def("__eq__", [](const point2 & a, const point2 & b)
 	{
 		return point2::early(a, b);
