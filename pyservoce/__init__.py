@@ -92,3 +92,6 @@ class vector3(xyz):
 
 def interpolate(pnts, tang, closed):
 	return pyservoce.libservoce.interpolate([p.native() for p in pnts], [t.native() for t in tang], closed)
+
+def polygon(pnts, closed):
+	return pyservoce.libservoce.polygon([p.native() for p in pnts], closed)
