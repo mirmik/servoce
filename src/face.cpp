@@ -162,13 +162,9 @@ servoce::shape servoce::textshape(const std::string& text, const std::string fon
 	return textshp;
 }
 
-servoce::shape servoce::fill(const std::vector<servoce::shape*>& arr) 
+servoce::shape servoce::fill(const servoce::shape& obj) 
 {
-	BRepBuilderAPI_MakeFace mk(arr[0]->Wire_orEdgeToWire());
-
-	for (unsigned int i = 1; i < arr.size(); i++) {
-		mk.Add(arr[i]->Wire_orEdgeToWire());
-	}
+	BRepBuilderAPI_MakeFace mk(obj.Wire_orEdgeToWire());
 	return mk.Face();
 }
 

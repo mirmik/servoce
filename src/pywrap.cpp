@@ -159,7 +159,7 @@ PYBIND11_MODULE(libservoce, m)
 	})
 	;
 
-	py::class_<shape>(m, "Shape")
+	py::class_<shape>(m, "shape_native")
 	DEF_TRANSFORM_OPERATIONS(shape)
 	.def("__add__", (shape(shape::*)(const shape&))&shape::operator+, ungil())
 	.def("__sub__", &shape::operator-, ungil())
