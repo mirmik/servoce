@@ -71,6 +71,8 @@ PYBIND11_MODULE(libservoce, m)
 	.def_readwrite("x", &point3::x)
 	.def_readwrite("y", &point3::y)
 	.def_readwrite("z", &point3::z)
+	.def("__setitem__", [](point3 & self, int key, double value) { self[key] = value; })
+	.def("__getitem__", [](const point3 & self, int key) { return self[key]; })
 	.def("__eq__", [](const point3 & a, const point3 & b)
 	{
 		return point3::early(a, b);
@@ -138,6 +140,8 @@ PYBIND11_MODULE(libservoce, m)
 	.def_readwrite("x", &vector3::x)
 	.def_readwrite("y", &vector3::y)
 	.def_readwrite("z", &vector3::z)
+	.def("__setitem__", [](vector3 & self, int key, double value) { self[key] = value; })
+	.def("__getitem__", [](const vector3 & self, int key) { return self[key]; })
 	.def("__repr__", [](const vector3 & pnt)
 	{
 		char buf[128];
