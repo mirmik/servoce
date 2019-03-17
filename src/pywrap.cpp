@@ -59,7 +59,7 @@ PYBIND11_MODULE(libservoce, m)
 	});
 
 //OBJECTS
-	py::class_<point3>(m, "point3")
+	py::class_<point3>(m, "point3_native")
 	//DEF_TRANSFORM_OPERATIONS(point3)
 	.def(py::init<double, double, double>())
 	.def(py::init<double, double>())
@@ -101,7 +101,7 @@ PYBIND11_MODULE(libservoce, m)
 	}))
 	;
 
-	py::class_<point2>(m, "point2")
+	py::class_<point2>(m, "point2_native")
 	//DEF_TRANSFORM_OPERATIONS(point3)
 	.def(py::init<double, double>())
 	.def(py::init<const servoce::point2&>())
@@ -136,7 +136,7 @@ PYBIND11_MODULE(libservoce, m)
 	}))
 	;
 
-	py::class_<vector3>(m, "vector3")
+	py::class_<vector3>(m, "vector3_native")
 	//DEF_TRANSFORM_OPERATIONS(vector3)
 	.def(py::init<double, double, double>())
 	.def(py::init<double, double>())
