@@ -25,7 +25,7 @@ namespace servoce
 
 	shape textshape(const std::string& text, const std::string fontpath, size_t size);
 
-	shape fill(const std::vector<servoce::shape*>& arr);
+	shape fill(const servoce::shape& arr);
 
 	//sweep2d
 	//shape make_sweep(const servoce::shape& profile, const servoce::shape& path); //Не нужна.
