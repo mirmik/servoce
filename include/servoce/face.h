@@ -3,7 +3,6 @@
 
 #include <vector>
 #include <servoce/topo.h>
-#include <servoce/math3.h>
 
 class BRepPrimAPI_MakeSweep;
 

@@ -2,7 +2,6 @@
 #define SERVOCE_WIRE_H
 
 #include <servoce/topo.h>
-#include <servoce/math3.h>
 #include <vector>
 
 namespace servoce
