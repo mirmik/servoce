@@ -76,9 +76,8 @@ namespace servoce
 		const TopoDS_Compound& Compound() const;
 
 		shape transform(const transformation& trans) { return trans(*this); }
+		
 		shape translate(double x, double y, double z) { return transform(servoce::translate(x, y, z)); }
-		shape rotate(double ax, double ay, double az, double angle) { return transform(servoce::axrotation(ax, ay, az, angle)); }
-
 		shape up(double z) { return translate(0, 0, z); }
 		shape down(double z) { return translate(0, 0, -z); }
 		shape forw(double y) { return translate(0, y, 0); }
@@ -86,6 +85,7 @@ namespace servoce
 		shape right(double x) { return translate(x, 0, 0); }
 		shape left(double x) { return translate(-x, 0, 0); }
 
+		shape rotate(vector3 vec, double a) { return transform(servoce::rotate(vec, a)); }
 		shape rotateX(double a) { return transform(servoce::rotateX(a)); }
 		shape rotateY(double a) { return transform(servoce::rotateY(a)); }
 		shape rotateZ(double a) { return transform(servoce::rotateZ(a)); }
@@ -111,7 +111,11 @@ namespace servoce
 		servoce::shape extrude(const vector3& vec, bool center = false);
 		servoce::shape extrude(double x, double y, double z, bool center = false);
 
-		std::vector<servoce::point3> vertices();
+		std::vector<servoce::point3> vertices() const;
+		std::vector<servoce::shape> solids() const;
+		std::vector<servoce::shape> faces() const;
+		std::vector<servoce::shape> wires() const;
+		std::vector<servoce::shape> edges() const;
 
 		std::pair<servoce::point3, servoce::point3> sfvertex();
 		bool is_closed(); // for wire

@@ -1,7 +1,6 @@
 #ifndef ZENCAD_SURFACE_H
 #define ZENCAD_SURFACE_H
 
-#include <servoce/math3.h>
 #include <servoce/curve2.h>
 #include <servoce/topo.h>
 

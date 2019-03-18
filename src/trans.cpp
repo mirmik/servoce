@@ -22,6 +22,11 @@ servoce::transformation::transformation(const transformation& oth)
 servoce::general_transformation::general_transformation(const general_transformation& oth)
 	: gtrsf(new gp_GTrsf(*oth.gtrsf)) {}
 
+servoce::transformation servoce::rotate(const servoce::vector3& vec, double a)
+{
+	return servoce::axrotation(vec.x, vec.y, vec.z, a);
+}
+
 servoce::transformation servoce::rotateX(double a)
 {
 	return servoce::axrotation(1, 0, 0, a);
@@ -67,9 +72,20 @@ servoce::transformation servoce::mirrorXZ()
 	return servoce::plane_mirror(0, 1, 0);
 }
 
+servoce::transformation servoce::transformation::invert() 
+{
+	gp_Trsf pr = trsf->Inverted();
+	return transformation(new gp_Trsf(pr));	
+}
+
 servoce::shape servoce::transformation::operator()(const servoce::shape& shp) const
 {
 	return BRepBuilderAPI_Transform(shp.Shape(), *trsf, true).Shape();
+}
+
+servoce::vector3 servoce::transformation::operator()(const servoce::vector3& vec) const
+{
+	return vec.Vec().Transformed(*trsf);
 }
 
 servoce::point3 servoce::transformation::operator()(const servoce::point3& pnt) const

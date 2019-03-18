@@ -24,6 +24,7 @@ using namespace servoce;
 .def("left", &TYPE::left, ungil())						\
 .def("forw", &TYPE::forw, ungil())						\
 .def("back", &TYPE::back, ungil())						\
+.def("rotate", &TYPE::rotate, ungil())					\
 .def("rotateX", &TYPE::rotateX, ungil())				\
 .def("rotateY", &TYPE::rotateY, ungil())				\
 .def("rotateZ", &TYPE::rotateZ, ungil())				\
@@ -70,6 +71,11 @@ PYBIND11_MODULE(libservoce, m)
 	.def_readwrite("x", &point3::x)
 	.def_readwrite("y", &point3::y)
 	.def_readwrite("z", &point3::z)
+	.def("__sub__", (vector3(*)(const point3&, const point3&)) &servoce::operator- )
+	.def("__add__", (point3(*)(const point3&, const vector3&)) &servoce::operator+ )
+	.def("__sub__", (point3(*)(const point3&, const vector3&)) &servoce::operator- )
+	.def("__setitem__", [](point3 & self, int key, double value) { self[key] = value; })
+	.def("__getitem__", [](const point3 & self, int key) { return self[key]; })
 	.def("__eq__", [](const point3 & a, const point3 & b)
 	{
 		return point3::early(a, b);
@@ -103,6 +109,8 @@ PYBIND11_MODULE(libservoce, m)
 	.def(py::init<py::tuple>())
 	.def_readwrite("x", &point2::x)
 	.def_readwrite("y", &point2::y)
+	.def("__setitem__", [](point2 & self, int key, double value) { self[key] = value; })
+	.def("__getitem__", [](const point2 & self, int key) { return self[key]; })
 	.def("__eq__", [](const point2 & a, const point2 & b)
 	{
 		return point2::early(a, b);
@@ -137,6 +145,12 @@ PYBIND11_MODULE(libservoce, m)
 	.def_readwrite("x", &vector3::x)
 	.def_readwrite("y", &vector3::y)
 	.def_readwrite("z", &vector3::z)
+	.def("__mul__", (vector3(*)(const vector3&, double)) &servoce::operator* )
+	.def("__truediv__", (vector3(*)(const vector3&, double)) &servoce::operator/ )
+	.def("__add__", (vector3(*)(const vector3&, const vector3&)) &servoce::operator+ )
+	.def("__sub__", (vector3(*)(const vector3&, const vector3&)) &servoce::operator- )
+	.def("__setitem__", [](vector3 & self, int key, double value) { self[key] = value; })
+	.def("__getitem__", [](const vector3 & self, int key) { return self[key]; })
 	.def("__repr__", [](const vector3 & pnt)
 	{
 		char buf[128];
@@ -154,13 +168,19 @@ PYBIND11_MODULE(libservoce, m)
 	[](const shape & self) { return b64::base64_encode(string_dump(self)); },
 	[](const std::string & in) { return restore_string_dump<shape>(b64::base64_decode(in)); }), ungil())
 	.def("fill", &shape::fill)
-	.def("vertices", &shape::vertices, ungil())
 	.def("center", &shape::center, ungil())
 	.def("extrude", (shape(shape::*)(const vector3&, bool)) &shape::extrude, ungil(), py::arg("vec"), py::arg("center") = false)
 	.def("extrude", (shape(shape::*)(double, double, double, bool)) &shape::extrude, ungil(), py::arg("x"), py::arg("y"), py::arg("z"), py::arg("center") = false)
 	.def("extrude", (shape(shape::*)(double, bool)) &shape::extrude, ungil(), py::arg("z"), py::arg("center") = false)
 	.def("is_closed", &shape::is_closed, ungil())
 	.def("sfvertex", &shape::sfvertex, ungil())
+	.def("endpoints", &shape::sfvertex, ungil())
+
+	.def("vertices", &shape::vertices, ungil())
+	.def("solids", &shape::faces, ungil())
+	.def("faces", &shape::faces, ungil())
+	.def("edges", &shape::edges, ungil())
+	.def("wires", &shape::wires, ungil())
 	;
 
 	m.def("fillet", (shape(*)(const shape&, double, const std::vector<point3>&))&servoce::fillet, ungil(), py::arg("shp"), py::arg("r"), py::arg("refs"));
@@ -259,8 +279,10 @@ PYBIND11_MODULE(libservoce, m)
 	py::class_<transformation>(m, "transformation")
 	.def("__call__", (shape(transformation::*)(const shape&)const)&transformation::operator(), ungil())
 	.def("__call__", (point3(transformation::*)(const point3&)const)&transformation::operator(), ungil())
+	.def("__call__", (vector3(transformation::*)(const vector3&)const)&transformation::operator(), ungil())
 	.def("__call__", (transformation(transformation::*)(const transformation&)const)&transformation::operator(), ungil())
 	.def("__mul__", &transformation::operator*, ungil())
+	.def("invert", &transformation::invert)
 	.def(py::pickle(
 	[](const transformation & self) { return b64::base64_encode(self.string_dump()); },
 	[](const std::string & in) { return transformation::restore_string_dump(b64::base64_decode(in)); }), ungil())
@@ -282,6 +304,7 @@ PYBIND11_MODULE(libservoce, m)
 	m.def("axis_mirror", axis_mirror, ungil());
 	m.def("plane_mirror", plane_mirror, ungil());
 
+	m.def("rotate", rotate, ungil());
 	m.def("rotateX", rotateX, ungil());
 	m.def("rotateY", rotateY, ungil());
 	m.def("rotateZ", rotateZ, ungil());
@@ -398,8 +421,8 @@ PYBIND11_MODULE(libservoce, m)
 
 //REFLECTION
 	m.def("near_edge", &near_edge, ungil());	
-	m.def("near_face", &near_edge, ungil());
-	m.def("near_vertex", &near_edge, ungil());
+	m.def("near_face", &near_face, ungil());
+	m.def("near_vertex", &near_vertex, ungil());
 }
 
 servoce::point3::point3(const py::list& lst)

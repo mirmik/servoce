@@ -31,6 +31,7 @@
 #include <Geom_Surface.hxx>
 #include <Geom_Plane.hxx>
 
+#include <exception>
 #include <assert.h>
 
 using namespace servoce;
@@ -178,6 +179,21 @@ shape servoce::make_linear_extrude(const shape& base, const vector3& vec, bool c
 		//auto sld = make_linear_extrude(base, vec);
 		//return trs(sld);
 
+	}
+
+	//Этот хак необходим из-за тенденции некоторых алгоритмов opencascade создавать SOLID тогда,
+	//Когда можно было бы ожидать FACE
+	if (base.Shape().ShapeType() == TopAbs_SOLID)  
+	{
+		auto fcs = base.faces();
+		if (fcs.size() == 1)
+		{
+			return BRepPrimAPI_MakePrism(fcs[0].Face(), vec.Vec()).Shape();
+		}
+		else 
+		{
+			throw std::logic_error("linear_extrude doesn't work with solids");
+		}
 	}
 
 	return BRepPrimAPI_MakePrism(base.Shape(), vec.Vec()).Shape();

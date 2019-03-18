@@ -35,7 +35,6 @@ namespace servoce
 		bool operator==(const vector3& oth) const { return oth.x == x && oth.y == y && oth.z == z; }
 		bool operator!=(const vector3& oth) const { return oth.x != x || oth.y != y || oth.z != z; }
 		vector3 operator-() const { return vector3(-x, -y, -z); }
-		vector3 operator/(double a) const { return vector3(x / a, y / a, z / a); }
 
 	} __attribute__((packed));
 
@@ -76,6 +75,30 @@ namespace servoce
 			return lexless_xyz(*this, b);
 		}
 	} __attribute__((packed));
+
+
+	static inline vector3 operator/(const vector3& v, double a) 
+	{ return vector3(v.x / a, v.y / a, v.z / a); }
+	
+	static inline vector3 operator*(const vector3& v, double a) 
+	{ return vector3(v.x * a, v.y * a, v.z * a); }
+
+	static inline vector3 operator+(const vector3& a,const vector3& b) 
+	{ return vector3(a.x + b.x, a.y + b.y, a.z + b.z); }
+	
+	static inline vector3 operator-(const vector3& a,const vector3& b) 
+	{ return vector3(a.x - b.x, a.y - b.y, a.z - b.z); }
+
+	static inline vector3 operator-(const point3& a,const point3& b) 
+	{ return vector3(a.x - b.x, a.y - b.y, a.z - b.z); }
+
+	static inline point3 operator+(const point3& a,const vector3& b) 
+	{ return point3(a.x + b.x, a.y + b.y, a.z + b.z); }
+
+	static inline point3 operator-(const point3& a,const vector3& b) 
+	{ return point3(a.x - b.x, a.y - b.y, a.z - b.z); }
+
+
 
 	struct point2 : public linalg::vec<double, 2>
 	{
