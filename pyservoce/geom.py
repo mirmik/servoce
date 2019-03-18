@@ -1,4 +1,5 @@
 import pyservoce.libservoce
+import pyservoce.trans
 from pyservoce.pntvec import point3
 
 class Shape:
@@ -8,25 +9,28 @@ class Shape:
 	def native(self):
 		return self.shape
 
-	def rotate(self, ax, angle): return Shape(self.shape.rotate(ax, angle))
-	def rotateX(self, angle): return Shape(self.shape.rotateX(angle))
-	def rotateY(self, angle): return Shape(self.shape.rotateY(angle))
-	def rotateZ(self, angle): return Shape(self.shape.rotateZ(angle))
+	def transform(self, trans):
+		return Shape(trans.native()(self.native())) 
 
-	def translate(self, x, y, z): return Shape(self.shape.translate(x, y, z))
-	def up(self, z): return Shape(self.shape.up(z))
-	def down(self, z): return Shape(self.shape.down(z))
-	def left(self, z): return Shape(self.shape.left(z))
-	def right(self, z): return Shape(self.shape.right(z))
-	def forw(self, z): return Shape(self.shape.forw(z))
-	def back(self, z): return Shape(self.shape.back(z))
+	def rotate(self, ax, angle): return pyservoce.trans.rotate(ax, angle)(self)
+	def rotateX(self, angle): return pyservoce.trans.rotateX(angle)(self)
+	def rotateY(self, angle): return pyservoce.trans.rotateY(angle)(self)
+	def rotateZ(self, angle): return pyservoce.trans.rotateZ(angle)(self)
 
-	def mirrorX(self): return Shape(self.shape.mirrorX())
-	def mirrorY(self): return Shape(self.shape.mirrorY())
-	def mirrorZ(self): return Shape(self.shape.mirrorZ())
-	def mirrorXY(self): return Shape(self.shape.mirrorXY())
-	def mirrorYZ(self): return Shape(self.shape.mirrorYZ())
-	def mirrorXZ(self): return Shape(self.shape.mirrorXZ())
+	def translate(self, x, y, z): return pyservoce.trans.translate(x, y, z)(self)
+	def up(self, z): 	return pyservoce.trans.up(z)(self)
+	def down(self, z): 	return pyservoce.trans.down(z)(self)
+	def left(self, x): 	return pyservoce.trans.left(x)(self)
+	def right(self, x): return pyservoce.trans.right(x)(self)
+	def forw(self, y): 	return pyservoce.trans.forw(y)(self)
+	def back(self, y): 	return pyservoce.trans.back(y)(self)
+
+	def mirrorX(self): return pyservoce.trans.mirrorX()(self)
+	def mirrorY(self): return pyservoce.trans.mirrorY()(self)
+	def mirrorZ(self): return pyservoce.trans.mirrorZ()(self)
+	def mirrorXY(self): return pyservoce.trans.mirrorXY()(self)
+	def mirrorYZ(self): return pyservoce.trans.mirrorYZ()(self)
+	def mirrorXZ(self): return pyservoce.trans.mirrorXZ()(self)
 
 	def center(self): return point3(self.shape.center())
 	
