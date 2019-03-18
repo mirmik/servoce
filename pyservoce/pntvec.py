@@ -45,6 +45,8 @@ class point2(xy):
 		if len(args) == 2:
 			self.arr = (args[0], args[1], 0)
 
+		raise Exception("Too many arguments")
+
 	def native(self): return pyservoce.libservoce.point2_native(self.x, self.y)
 	def __repr__(self): return "point2({},{})".format(self.arr[0], self.arr[1])
 	def __getstate__(self): return self.arr
@@ -63,6 +65,8 @@ class point3(xyz):
 
 		if len(args) == 3:
 			self.arr = (args[0], args[1], args[2])
+		
+		raise Exception("Too many arguments")
 
 	def native(self): return pyservoce.libservoce.point3_native(self.arr[0], self.arr[1], self.arr[2])
 	def __repr__(self): return "point3({},{},{})".format(self.arr[0], self.arr[1], self.arr[2])
@@ -82,6 +86,8 @@ class vector3(xyz):
 
 		if len(args) == 3:
 			self.arr = (args[0], args[1], args[2])
+		
+		raise Exception("Too many arguments")
 
 	def native(self): return pyservoce.libservoce.vector3_native(self.arr[0], self.arr[1], self.arr[2])
 	def __repr__(self): return "vector3({},{},{})".format(self.arr[0], self.arr[1], self.arr[2])
