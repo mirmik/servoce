@@ -17,24 +17,24 @@ using namespace servoce;
 
 #define DEF_TRANSFORM_OPERATIONS(TYPE) 					\
 .def("transform", &TYPE::transform, ungil())			\
-.def("translate", &TYPE::translate, ungil())			\
-.def("up", &TYPE::up, ungil())							\
-.def("down", &TYPE::down, ungil())						\
-.def("right", &TYPE::right, ungil())					\
-.def("left", &TYPE::left, ungil())						\
-.def("forw", &TYPE::forw, ungil())						\
-.def("back", &TYPE::back, ungil())						\
-.def("rotate", &TYPE::rotate, ungil())					\
-.def("rotateX", &TYPE::rotateX, ungil())				\
-.def("rotateY", &TYPE::rotateY, ungil())				\
-.def("rotateZ", &TYPE::rotateZ, ungil())				\
-.def("mirrorX", &TYPE::mirrorX, ungil())				\
-.def("mirrorY", &TYPE::mirrorY, ungil())				\
-.def("mirrorZ", &TYPE::mirrorZ, ungil())				\
-.def("mirrorXY", &TYPE::mirrorXY, ungil())				\
-.def("mirrorYZ", &TYPE::mirrorYZ, ungil())				\
-.def("mirrorXZ", &TYPE::mirrorXZ, ungil())				\
 .def("scale", (shape(TYPE::*)(double,point3))&TYPE::scale, ungil(), py::arg("factor"), py::arg("center") = point3())
+//.def("translate", &TYPE::translate, ungil())			\
+//.def("up", &TYPE::up, ungil())							\
+//.def("down", &TYPE::down, ungil())						\
+//.def("right", &TYPE::right, ungil())					\
+//.def("left", &TYPE::left, ungil())						\
+//.def("forw", &TYPE::forw, ungil())						\
+//.def("back", &TYPE::back, ungil())						\
+//.def("rotate", &TYPE::rotate, ungil())					\
+//.def("rotateX", &TYPE::rotateX, ungil())				\
+//.def("rotateY", &TYPE::rotateY, ungil())				\
+//.def("rotateZ", &TYPE::rotateZ, ungil())				\
+//.def("mirrorX", &TYPE::mirrorX, ungil())				\
+//.def("mirrorY", &TYPE::mirrorY, ungil())				\
+//.def("mirrorZ", &TYPE::mirrorZ, ungil())				\
+//.def("mirrorXY", &TYPE::mirrorXY, ungil())				\
+//.def("mirrorYZ", &TYPE::mirrorYZ, ungil())				\
+//.def("mirrorXZ", &TYPE::mirrorXZ, ungil())				\
 
 using ungil = py::call_guard<py::gil_scoped_release>;
 

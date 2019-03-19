@@ -1,6 +1,16 @@
 import pyservoce.libservoce
 from pyservoce.libservoce import Color
 
+class ShapeController:
+	def __init__(self, sctrl):
+		self.sctrl = sctrl
+
+	def set_location(self, trans):
+		self.sctrl.set_location(trans.native())
+
+	def hide(self, en):
+		self.sctrl.hide(en)
+
 class Scene:
 	def __init__(self):
 		self.scene = pyservoce.libservoce.Scene()
@@ -12,7 +22,7 @@ class Scene:
 		if isinstance(shp, pyservoce.Shape):
 			shp = shp.native()
 
-		return self.scene.add(shp, color)
+		return ShapeController(self.scene.add(shp, color))
 
 	def native(self):
 		return self.scene
@@ -65,4 +75,14 @@ class View:
 	def fit_all(self, arg):
 		self.view.fit_all(arg)
 
+	def zoom(self, a, b, c, d):
+		self.view.zoom(a, b, c, d)
 
+	def pan(self, a, b):
+		self.view.pan(a, b)
+
+	def intersect_point(self, a, b):
+		return self.view.intersect_point(a, b)
+
+	def direction(self):
+		return self.view.direction()

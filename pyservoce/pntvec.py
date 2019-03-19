@@ -1,4 +1,5 @@
 import pyservoce.libservoce
+import pyservoce.trans
 
 class xy:
 	def get_x(self):
@@ -39,55 +40,58 @@ class point2(xy):
 		if len(args) == 0:
 			self.arr = (0, 0, 0)
 
-		if len(args) == 1:
+		elif len(args) == 1:
 			self.arr = (args[0][0], args[0][1], args[0][2])
 
-		if len(args) == 2:
+		elif len(args) == 2:
 			self.arr = (args[0], args[1], 0)
 
-		raise Exception("Too many arguments")
+		else:
+			raise Exception("point2: Too many arguments: {}".format(args))
 
 	def native(self): return pyservoce.libservoce.point2_native(self.x, self.y)
 	def __repr__(self): return "point2({},{})".format(self.arr[0], self.arr[1])
 	def __getstate__(self): return self.arr
 	def __setstate__(self, obj): self.arr=obj 
 
-class point3(xyz):
+class point3(xyz, pyservoce.trans.Transformable):
 	def __init__(self, *args):
 		if len(args) == 0:
 			self.arr = (0, 0, 0)
 
-		if len(args) == 1:
+		elif len(args) == 1:
 			self.arr = (args[0][0], args[0][1], args[0][2])
 
-		if len(args) == 2:
+		elif len(args) == 2:
 			self.arr = (args[0], args[1], 0)
 
-		if len(args) == 3:
+		elif len(args) == 3:
 			self.arr = (args[0], args[1], args[2])
 		
-		raise Exception("Too many arguments")
+		else:
+			raise Exception("point3: Too many arguments: {}".format(args))
 
 	def native(self): return pyservoce.libservoce.point3_native(self.arr[0], self.arr[1], self.arr[2])
 	def __repr__(self): return "point3({},{},{})".format(self.arr[0], self.arr[1], self.arr[2])
 	def __getstate__(self): return self.arr
 	def __setstate__(self, obj): self.arr=obj 
 
-class vector3(xyz):
+class vector3(xyz, pyservoce.trans.Transformable):
 	def __init__(self, *args):
 		if len(args) == 0:
 			self.arr = (0, 0, 0)
 
-		if len(args) == 1:
+		elif len(args) == 1:
 			self.arr = (args[0][0], args[0][1], args[0][2])
 
-		if len(args) == 2:
+		elif len(args) == 2:
 			self.arr = (args[0], args[1], 0)
 
-		if len(args) == 3:
+		elif len(args) == 3:
 			self.arr = (args[0], args[1], args[2])
 		
-		raise Exception("Too many arguments")
+		else:
+			raise Exception("vector3: Too many arguments: {}".format(args))
 
 	def native(self): return pyservoce.libservoce.vector3_native(self.arr[0], self.arr[1], self.arr[2])
 	def __repr__(self): return "vector3({},{},{})".format(self.arr[0], self.arr[1], self.arr[2])
