@@ -48,6 +48,8 @@ namespace servoce
 
 		void set_orthogonal();
 
+		void export2d();
+
 		void see(int width = 800, int height = 600);
 	//	void screen(const std::string& path);
 
