@@ -32,6 +32,9 @@ namespace servoce
 		void dump(std::ostream& out) const;
 		void load(std::istream& in);
 
+		std::vector<double> translation_part() const;
+		std::vector<double> rotation_part() const;
+
 		std::string string_dump() const;
 		static transformation restore_string_dump(const std::string& in);
 	};
@@ -53,6 +56,8 @@ namespace servoce
 		std::string string_dump() const;
 		static general_transformation restore_string_dump(const std::string& in);
 	};
+
+	transformation nulltrans();
 
 	//Aphine Transforms
 	transformation translate(double x, double y);

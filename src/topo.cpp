@@ -508,3 +508,15 @@ servoce::shape operator+(const servoce::shape& th, const servoce::point3& pnt)
 {
 	return servoce::make_union(th, pnt.Vtx());
 }*/
+
+std::string servoce::shape::shapetype_as_string() 
+{
+	switch (Shape().ShapeType()) 
+	{
+		case TopAbs_WIRE: return "wire";
+		case TopAbs_EDGE: return "edge";
+		case TopAbs_COMPOUND: return "compound";
+		case TopAbs_FACE: return "face";
+		case TopAbs_SOLID: return "solid";
+	}
+}

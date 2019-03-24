@@ -121,6 +121,7 @@ namespace servoce
 		bool is_closed(); // for wire
 
 		topoenum type();
+		std::string shapetype_as_string();
 	};
 
 	shape make_section(const shape& shp);

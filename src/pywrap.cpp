@@ -181,6 +181,8 @@ PYBIND11_MODULE(libservoce, m)
 	.def("faces", &shape::faces, ungil())
 	.def("edges", &shape::edges, ungil())
 	.def("wires", &shape::wires, ungil())
+
+	.def("shapetype", &shape::shapetype_as_string, ungil())
 	;
 
 	m.def("fillet", (shape(*)(const shape&, double, const std::vector<point3>&))&servoce::fillet, ungil(), py::arg("shp"), py::arg("r"), py::arg("refs"));
@@ -262,7 +264,7 @@ PYBIND11_MODULE(libservoce, m)
 		.def(py::pickle(
 		[](const curve2::curve2 & self) { return b64::base64_encode(string_dump(self)); },
 		[](const std::string & in) { return restore_string_dump<curve2::curve2>(b64::base64_decode(in)); }), ungil())
-		.def("rotate", &curve2::curve2::rotate)
+		.def("rotate", &curve2::curve2::rotate, ungil())
 	;
 	py::class_<curve2::trimmed_curve2, curve2::curve2>(m, "trimmed_curve2")
 		.def(py::init<const curve2::curve2&, double, double>(), ungil())
@@ -286,6 +288,8 @@ PYBIND11_MODULE(libservoce, m)
 	.def(py::pickle(
 	[](const transformation & self) { return b64::base64_encode(self.string_dump()); },
 	[](const std::string & in) { return transformation::restore_string_dump(b64::base64_decode(in)); }), ungil())
+	.def("translation_part", &transformation::translation_part)
+	.def("rotation_part", &transformation::rotation_part)
 	;
 
 	py::class_<general_transformation>(m, "general_transformation")
@@ -324,6 +328,7 @@ PYBIND11_MODULE(libservoce, m)
 	m.def("scaleX", scaleX, ungil(), py::arg("factor"));
 	m.def("scaleY", scaleY, ungil(), py::arg("factor"));
 	m.def("scaleZ", scaleZ, ungil(), py::arg("factor"));
+	m.def("nulltrans", nulltrans, ungil());
 
 	//m.def("scaleX", scale, py::arg("factor"), py::arg("center") = servoce::point3());
 	//m.def("scaleY", scale, py::arg("factor"), py::arg("center") = servoce::point3());
@@ -335,6 +340,10 @@ PYBIND11_MODULE(libservoce, m)
 	py::class_<color>(m, "Color")
 	.def(py::init<float, float, float>(), ungil())
 	.def(py::init<float, float, float,float>(), ungil())
+	.def_readwrite("r", &color::r)
+	.def_readwrite("g", &color::g)
+	.def_readwrite("b", &color::b)
+	.def_readwrite("a", &color::a)
 	.def(py::pickle(
 	[](const color & self)
 	{
@@ -355,7 +364,7 @@ PYBIND11_MODULE(libservoce, m)
 	.def("color", &shape_view::color, ungil())
 	;
 
-	py::class_<shape_view_controller>(m, "ShapeViewController")
+	py::class_<shape_view_controller>(m, "shape_view_controller")
 	.def("set_location", &shape_view_controller::set_location, ungil())
 	.def("hide", &shape_view_controller::hide, ungil())
 	;
@@ -363,11 +372,11 @@ PYBIND11_MODULE(libservoce, m)
 	py::class_<scene>(m, "Scene")
 	.def(py::init<>(), ungil())
 	.def("add", (shape_view_controller(scene::*)(const shape&, color))&scene::add, py::arg("shape"), py::arg("color") = color{0.6, 0.6, 0.8}, ungil())
-	.def("add", (void(scene::*)(const point3&, color))&scene::add, py::arg("shape"), py::arg("color") = color{0.6, 0.6, 0.8}, ungil())
+	.def("add", (shape_view_controller(scene::*)(const point3&, color))&scene::add, py::arg("shape"), py::arg("color") = color{0.6, 0.6, 0.8}, ungil())
 	.def("append", (void(scene::*)(const scene&))&scene::append, py::arg("scene"), ungil())
 	.def("shapes_array", (std::vector<shape>(scene::*)())&scene::shapes_array, ungil())
 	.def("color_array", (std::vector<color>(scene::*)())&scene::color_array, ungil())
-	.def("__getitem__", [](const scene & s, size_t i) { return s[i]; }, ungil())
+	//.def("__getitem__", [](const scene & s, size_t i) { return s[i]; }, ungil())
 	;
 
 	py::class_<viewer>(m, "Viewer")
@@ -378,6 +387,7 @@ PYBIND11_MODULE(libservoce, m)
 	.def("close", &viewer::close, ungil())
 	.def("add_scene", &viewer::add_scene, ungil())
 	.def("clean_context", &viewer::clean_context, ungil())
+	.def("display", &viewer::display, ungil())
 	.def("set_triedron_axes", &viewer::set_triedron_axes, ungil())
 	;
 

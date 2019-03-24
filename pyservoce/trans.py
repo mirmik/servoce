@@ -19,6 +19,9 @@ class Transform:
 		else:
 			raise Exception("Unresolved transform combination type")
 
+	def __str__(self):
+		return "transform({}, {})".format(str(self.trans.translation_part()), str(self.trans.rotation_part()))
+
 class Transformable:
 	def rotate(self, ax, angle): return pyservoce.trans.rotate(ax, angle)(self)
 	def rotateX(self, angle): return pyservoce.trans.rotateX(angle)(self)
@@ -64,3 +67,5 @@ def mirrorZ(): return Transform(pyservoce.libservoce.mirrorZ())
 def mirrorXY(): return Transform(pyservoce.libservoce.mirrorXY())
 def mirrorYZ(): return Transform(pyservoce.libservoce.mirrorYZ())
 def mirrorXZ(): return Transform(pyservoce.libservoce.mirrorXZ())
+
+def nulltrans(): return Transform(pyservoce.libservoce.nulltrans())

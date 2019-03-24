@@ -13,6 +13,8 @@ class Shape(pyservoce.trans.Transformable):
 		return Shape(trans.native()(self.native())) 
 
 	def center(self): return point3(self.shape.center())
+
+	def vertices(self) : return [point3(p) for p in self.shape.vertices()]
 	
 	def fill(self): fill(self)
 
@@ -20,9 +22,12 @@ class Shape(pyservoce.trans.Transformable):
 	def __sub__(self, oth): return Shape(self.native() - oth.native())
 	def __xor__(self, oth): return Shape(self.native() ^ oth.native())
 
+	def shapetype(self):
+		return self.shape.shapetype()
+
 #prim3d
-def box(*args): return Shape(pyservoce.libservoce.box(*args))
-def sphere(*args): return Shape(pyservoce.libservoce.sphere(*args))
+def box(*args, **kwargs): return Shape(pyservoce.libservoce.box(*args, **kwargs))
+def sphere(*args, **kwargs): return Shape(pyservoce.libservoce.sphere(*args, **kwargs))
 def cylinder(*args): return Shape(pyservoce.libservoce.cylinder(*args))
 def cone(r1, r2, h, center = False, yaw=None): 
 	if yaw is None:
@@ -34,9 +39,9 @@ def halfspace(*args): return Shape(pyservoce.libservoce.halfspace(*args))
 
 #prim2d
 def rectangle(a, b, center=False, wire=False): return Shape(pyservoce.libservoce.rectangle(a, b, center=center, wire=wire))
-def square(a, wire=False): return Shape(pyservoce.libservoce.square(a, wire=wire))
+def square(a, center=False, wire=False): return Shape(pyservoce.libservoce.square(a, center=center, wire=wire))
 def circle(r, wire=False): return Shape(pyservoce.libservoce.circle(r=r, wire=wire))
-def textshape(*args): return Shape(pyservoce.libservoce.textshape(*args))
+def textshape(*args, **kwargs): return Shape(pyservoce.libservoce.textshape(*args, **kwargs))
 def polygon(pnts): return Shape(pyservoce.libservoce.polygon([p.native() for p in pnts]))
 def ngon(r, n, wire=False): return Shape(pyservoce.libservoce.ngon(r=r, n=n, wire=wire))
 
@@ -63,13 +68,13 @@ def linear_extrude(shp, vec, center):
 
 def fillet(shp, r, refs=None):
 	if refs is None:
-		return Shape(pyservoce.libservoce.fillet(shp, r))
-	return Shape(pyservoce.libservoce.fillet(shp, r, [p.native() for p in refs]))
+		return Shape(pyservoce.libservoce.fillet(shp.native(), r))
+	return Shape(pyservoce.libservoce.fillet(shp.native(), r, [p.native() for p in refs]))
 
 def chamfer(shp, r, refs=None):
 	if refs is None:
 		return Shape(pyservoce.libservoce.chamfer(shp, r))
-	return Shape(pyservoce.libservoce.chamfer(shp, r, [p.native() for p in refs]))
+	return Shape(pyservoce.libservoce.chamfer(shp.native(), r, [p.native() for p in refs]))
 
 def thicksolid(shp, refs, t):
-	return Shape(pyservoce.libservoce.thicksolid(shp, [p.native() for p in refs], t))
+	return Shape(pyservoce.libservoce.thicksolid(shp.native(), [p.native() for p in refs], t))

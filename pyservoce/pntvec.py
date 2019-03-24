@@ -71,6 +71,20 @@ class point3(xyz, pyservoce.trans.Transformable):
 		else:
 			raise Exception("point3: Too many arguments: {}".format(args))
 
+	def vertex(self):
+		import pyservoce.geom
+		return pyservoce.geom.Shape(self.native())
+
+	def __sub__(self, oth): 
+		if isinstance(oth, vector3):
+			return point3(self.native() - oth.native())
+		elif isinstance(oth, point3):
+			return vector3(self.native() - oth.native())
+		raise NotImplementedError
+
+	def __add__(self, oth): 
+		return vector3(self.native() + oth.native())
+
 	def native(self): return pyservoce.libservoce.point3_native(self.arr[0], self.arr[1], self.arr[2])
 	def __repr__(self): return "point3({},{},{})".format(self.arr[0], self.arr[1], self.arr[2])
 	def __getstate__(self): return self.arr
@@ -92,6 +106,13 @@ class vector3(xyz, pyservoce.trans.Transformable):
 		
 		else:
 			raise Exception("vector3: Too many arguments: {}".format(args))
+
+	def __mul__(self, oth): return vector3(self.native() * oth)
+	def __truediv__(self, oth): return vector3(self.native() / oth)
+	def __sub__(self, oth): 
+		print(oth)
+		return vector3(self.native() - oth.native())
+	def __add__(self, oth): return vector3(self.native() + oth.native())
 
 	def native(self): return pyservoce.libservoce.vector3_native(self.arr[0], self.arr[1], self.arr[2])
 	def __repr__(self): return "vector3({},{},{})".format(self.arr[0], self.arr[1], self.arr[2])

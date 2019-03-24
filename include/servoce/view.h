@@ -92,7 +92,7 @@ namespace servoce
 
 		void add_scene(scene& scn);
 		void clean_context();
-		shape_view_controller add(const shape& shp, color color);
+		void display(shape_view_controller& controller);
 	};
 
 	void see(servoce::scene& scn);
