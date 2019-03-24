@@ -39,9 +39,12 @@
 #include <BRepPrimAPI_MakeCylinder.hxx>
 
 #include <X11/Xlib.h>
+#include <mutex>
 
 extern Handle(Aspect_DisplayConnection) g_displayConnection;
 extern Handle(Graphic3d_GraphicDriver) g_graphicDriver;
+
+extern std::recursive_mutex viewrecursive_mutex;
 
 inline Handle(Aspect_DisplayConnection) GetDisplayConnection()
 {
@@ -77,11 +80,12 @@ struct OccViewWindow
 	int winddesc;
 
 public:
-	OccViewWindow(Handle(V3d_View) view, OccViewerContext* parent) 
+	OccViewWindow(Handle(V3d_View) view, OccViewerContext* parent)
 		: m_view(view), parent(parent) {}
 
 	void set_virtual_window(int w, int h)
 	{
+		std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 		static int i = 0;
 		m_window = new Xw_Window (GetDisplayConnection(), (std::string("virtual") + std::to_string(i++)).c_str(), 0, 0, w, h);
 		m_window->SetVirtual  (Standard_True);
@@ -91,6 +95,7 @@ public:
 
 	void set_window(int wind)
 	{
+		std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 		winddesc = wind;
 		m_window = new Xw_Window(GetDisplayConnection(), wind);
 		m_view->SetWindow(m_window);
@@ -101,31 +106,37 @@ public:
 
 	void fit_all()
 	{
+		std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 		m_view->FitAll();
 	}
 
 	void dump(const std::string& path)
 	{
+		std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 		m_view->Dump(path.c_str());
 	}
 
 	void redraw()
 	{
+		std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 		m_view->Redraw();
 	}
 
 	void must_be_resized()
 	{
+		std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 		m_view->MustBeResized();
 	}
 
 	void set_triedron()
 	{
+		std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 		m_view->TriedronDisplay(Aspect_TOTP_LEFT_LOWER, Quantity_NOC_GOLD, 0.08, V3d_ZBUFFER);
 	}
 
 	gp_Lin viewline(double x, double y, Handle(V3d_View) view)
 	{
+		std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 		Standard_Real Xp = x, Yp = y;
 		Standard_Real Xv, Yv, Zv;
 		Standard_Real Vx, Vy, Vz;
@@ -147,6 +158,7 @@ struct OccViewerContext
 public:
 	OccViewerContext()
 	{
+		std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 		static Quantity_Color c1(0.5, 0.5, 0.5, Quantity_TOC_RGB);
 		static Quantity_Color c2(0.3, 0.3, 0.3, Quantity_TOC_RGB);
 
@@ -174,11 +186,14 @@ public:
 
 	OccViewWindow* create_view_window()
 	{
+		std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 		return new OccViewWindow( m_viewer->CreateView(), this );
 	}
 
 	void set_scene(const servoce::scene& scn)
 	{
+		std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
+
 		for (auto& shp : scn.shapes)
 		{
 			m_context->Display (shp.m_ashp, false);
@@ -187,6 +202,7 @@ public:
 
 	void set_triedron_axes()
 	{
+		std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 		Handle(AIS_Axis) axX = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0, 0, 0), gp_Vec(1, 0, 0)));
 		Handle(AIS_Axis) axY = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0, 0, 0), gp_Vec(0, 1, 0)));
 		Handle(AIS_Axis) axZ = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0, 0, 0), gp_Vec(0, 0, 1)));
