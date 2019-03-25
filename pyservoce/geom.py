@@ -16,7 +16,7 @@ class Shape(pyservoce.trans.Transformable):
 
 	def vertices(self) : return [point3(p) for p in self.shape.vertices()]
 	
-	def fill(self): fill(self)
+	def fill(self): return fill(self)
 
 	def __add__(self, oth): return Shape(self.native() + oth.native())
 	def __sub__(self, oth): return Shape(self.native() - oth.native())
@@ -28,19 +28,31 @@ class Shape(pyservoce.trans.Transformable):
 #prim3d
 def box(*args, **kwargs): return Shape(pyservoce.libservoce.box(*args, **kwargs))
 def sphere(*args, **kwargs): return Shape(pyservoce.libservoce.sphere(*args, **kwargs))
-def cylinder(*args): return Shape(pyservoce.libservoce.cylinder(*args))
+def cylinder(*args, **kwargs): return Shape(pyservoce.libservoce.cylinder(*args, **kwargs))
 def cone(r1, r2, h, center = False, yaw=None): 
 	if yaw is None:
 		return Shape(pyservoce.libservoce.cone(r1,r2,h,center=center))
 	else:
 		return Shape(pyservoce.libservoce.cone(r1,r2,h,0,yaw,center=center))
-def torus(*args): return Shape(pyservoce.libservoce.torus(*args))
-def halfspace(*args): return Shape(pyservoce.libservoce.halfspace(*args))
+def torus(*args, **kwargs): return Shape(pyservoce.libservoce.torus(*args, **kwargs))
+def revol(shp, yaw): return Shape(pyservoce.libservoce.revol(shp.native(), yaw))
+def halfspace(*args, **kwargs): return Shape(pyservoce.libservoce.halfspace(*args, **kwargs))
 
 #prim2d
 def rectangle(a, b, center=False, wire=False): return Shape(pyservoce.libservoce.rectangle(a, b, center=center, wire=wire))
 def square(a, center=False, wire=False): return Shape(pyservoce.libservoce.square(a, center=center, wire=wire))
-def circle(r, wire=False): return Shape(pyservoce.libservoce.circle(r=r, wire=wire))
+def circle(r, yaw=None, wire=False): 
+	if yaw is None:
+		return Shape(pyservoce.libservoce.circle(r=r, wire=wire))
+	else:
+		return Shape(pyservoce.libservoce.circle(r, yaw[0], yaw[1], wire=wire))
+
+def ellipse(r1, r2, yaw=None, wire=False): 
+	if yaw is None:
+		return Shape(pyservoce.libservoce.ellipse(r1, r2, wire=wire))
+	else:
+		return Shape(pyservoce.libservoce.ellipse(r1, r2, yaw[0], yaw[1], wire=wire))
+
 def textshape(*args, **kwargs): return Shape(pyservoce.libservoce.textshape(*args, **kwargs))
 def polygon(pnts): return Shape(pyservoce.libservoce.polygon([p.native() for p in pnts]))
 def ngon(r, n, wire=False): return Shape(pyservoce.libservoce.ngon(r=r, n=n, wire=wire))
@@ -54,7 +66,7 @@ def long_helix(radius, height, step, angle, leftHanded): return Shape(pyservoce.
 
 #ops1d2d
 def sew(wires): return Shape(pyservoce.libservoce.sew([w.native() for w in wires]))
-def fill(shp): return Shape(pyservoce.libservoce.fill(shp))
+def fill(shp): return Shape(pyservoce.libservoce.fill(shp.native()))
 
 #ops3d
 def loft(arr, smooth):
@@ -73,7 +85,7 @@ def fillet(shp, r, refs=None):
 
 def chamfer(shp, r, refs=None):
 	if refs is None:
-		return Shape(pyservoce.libservoce.chamfer(shp, r))
+		return Shape(pyservoce.libservoce.chamfer(shp.native(), r))
 	return Shape(pyservoce.libservoce.chamfer(shp.native(), r, [p.native() for p in refs]))
 
 def thicksolid(shp, refs, t):
