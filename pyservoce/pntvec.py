@@ -1,6 +1,16 @@
 import pyservoce.libservoce
 import pyservoce.trans
 
+def float_equal(a, b):
+	if len(a) != len(b): 
+		return False
+	
+	for i in range(0, len(a)):
+		if abs(a[i] - b[i]) > 0.000000001: 
+			return False
+	
+	return True
+
 class xy:
 	def get_x(self):
 		return self.arr[0]
@@ -13,6 +23,12 @@ class xy:
 
 	def set_y(self, y): 
 		self.arr[1] = y
+
+	def __hash__(self):
+ 	   return hash(self.arr)
+
+	def __eq__(self, oth):
+		return float_equal(self.arr, oth.arr)
 
 	def __iter__(self):
 		return iter(self.arr)
