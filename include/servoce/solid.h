@@ -33,6 +33,11 @@ namespace servoce
 
 	shape halfspace();
 	shape thicksolid(const shape& proto, const std::vector<point3>& pnt, double thickness);
+
+	shape fillet(const shape& shp, double r, const std::vector<point3>& refs);
+	shape fillet(const shape& shp, double r);
+	shape chamfer(const shape& shp, double r, const std::vector<point3>& refs);
+	shape chamfer(const shape& shp, double r);
 }
 
 #endif

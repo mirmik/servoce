@@ -190,6 +190,10 @@ PYBIND11_MODULE(libservoce, m)
 	m.def("chamfer", (shape(*)(const shape&, double, const std::vector<point3>&))&servoce::chamfer, ungil(), py::arg("shp"), py::arg("r"), py::arg("refs"));
 	m.def("chamfer", (shape(*)(const shape&, double))&servoce::chamfer, ungil(), py::arg("shp"), py::arg("r"));
 	
+	m.def("fillet2d", (shape(*)(const shape&, double, const std::vector<point3>&))&servoce::fillet2d, ungil(), py::arg("shp"), py::arg("r"), py::arg("refs"));
+	m.def("fillet2d", (shape(*)(const shape&, double))&servoce::fillet2d, ungil(), py::arg("shp"), py::arg("r"));
+	m.def("chamfer2d", (shape(*)(const shape&, double, const std::vector<point3>&))&servoce::chamfer2d, ungil(), py::arg("shp"), py::arg("r"), py::arg("refs"));
+	m.def("chamfer2d", (shape(*)(const shape&, double))&servoce::chamfer2d, ungil(), py::arg("shp"), py::arg("r"));
 
 //PRIM3D
 	m.def("box", 		box, ungil(), py::arg("x"), py::arg("y"), py::arg("z"), py::arg("center") = false);

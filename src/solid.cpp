@@ -17,8 +17,12 @@
 #include <BRepExtrema_DistShapeShape.hxx>
 //#include <BRepPrimAPI_MakeWedge.hxx>
 //#include <BRepOffsetAPI_ThruSections.hxx>
-#include <BRepFilletAPI_MakeFillet.hxx>
 #include <TopExp_Explorer.hxx>
+
+#include <BRepFilletAPI_MakeFillet.hxx>
+#include <BRepFilletAPI_MakeChamfer.hxx>
+#include <BRepFilletAPI_MakeFillet2d.hxx>
+#include <BRepTools_WireExplorer.hxx>
 
 #include <BRepOffsetAPI_MakePipe.hxx>
 #include <BRepOffsetAPI_MakePipeShell.hxx>
@@ -368,4 +372,174 @@ shape servoce::thicksolid(const shape& proto, const std::vector<point3>& pnts, d
 	auto algo = BRepOffsetAPI_MakeThickSolid();
 	algo.MakeThickSolidByJoin(proto.Shape(), facesToRemove, thickness, 1.e-3);
 	return algo.Shape();
+}
+
+
+servoce::shape servoce::fillet(const servoce::shape& shp, double r, const std::vector<servoce::point3>& refs)
+{
+	auto type = shp.Shape().ShapeType();
+
+	if (TopAbs_SOLID == type || TopAbs_COMPSOLID == type || type == TopAbs_COMPOUND)
+	{
+		BRepFilletAPI_MakeFillet mk(shp.Shape());
+
+		for (auto& p : refs)
+		{
+			mk.Add(r, near_edge(shp, p).Edge());
+		}
+
+		return mk.Shape();
+	}
+	else if (TopAbs_FACE == type)
+	{
+		std::cout << "This method deprecated for 2d faces. Use fillet2d." << std::endl;
+		BRepFilletAPI_MakeFillet2d mk(shp.Face());
+
+		for (auto& p : refs)
+		{
+			mk.AddFillet(near_vertex(shp, p).Vertex(), r);
+		}
+
+		return mk.Shape();
+	}
+	else
+	{
+		throw std::runtime_error("Fillet argument has unsuported type.");
+	}
+}
+
+
+servoce::shape servoce::fillet(const servoce::shape& shp, double r)
+{
+	auto type = shp.Shape().ShapeType();
+
+	if (TopAbs_SOLID == type || TopAbs_COMPSOLID == type || type == TopAbs_COMPOUND)
+	{
+		BRepFilletAPI_MakeFillet mk(shp.Shape());
+
+		for (TopExp_Explorer ex(shp.Shape(), TopAbs_EDGE); ex.More(); ex.Next())
+		{
+			mk.Add(r, TopoDS::Edge(ex.Current()));
+		}
+
+		return mk.Shape();
+	}
+	else if (TopAbs_FACE == type)
+	{
+		std::cout << "This method deprecated for 2d faces. Use fillet2d." << std::endl;
+
+		BRepFilletAPI_MakeFillet2d mk(shp.Face());
+
+		for (TopExp_Explorer expWire(shp.Shape(), TopAbs_WIRE); expWire.More(); expWire.Next())
+		{
+			BRepTools_WireExplorer explorer(TopoDS::Wire(expWire.Current()));
+
+			while (explorer.More())
+			{
+				const TopoDS_Vertex& vtx = explorer.CurrentVertex();
+				mk.AddFillet(vtx, r);
+
+				explorer.Next();
+			}
+		}
+
+		return mk.Shape();
+	}
+	else
+	{
+		throw std::runtime_error("Fillet argument has unsuported type.");
+	}
+}
+
+servoce::shape servoce::chamfer(const servoce::shape& shp, double r, const std::vector<servoce::point3>& refs)
+{
+	auto type = shp.Shape().ShapeType();
+
+	if (TopAbs_SOLID == type || TopAbs_COMPSOLID == type || type == TopAbs_COMPOUND)
+	{
+		try
+		{
+			BRepFilletAPI_MakeChamfer mk(shp.Shape());
+
+
+			TopTools_IndexedDataMapOfShapeListOfShape edgeFaceMap;
+			TopExp::MapShapesAndAncestors(shp.Shape(), TopAbs_EDGE, TopAbs_FACE, edgeFaceMap);
+
+			for (auto& p : refs)
+			{
+				//TopoDS_Edge edg = near_edge_native(shp, p);
+				double min = std::numeric_limits<double>::max();
+				TopoDS_Edge ret;
+				TopoDS_Vertex vtx = p.Vtx();
+
+				for (TopExp_Explorer ex(shp.Shape(), TopAbs_EDGE); ex.More(); ex.Next())
+				{
+					TopoDS_Edge obj = TopoDS::Edge(ex.Current());
+					BRepExtrema_DistShapeShape extrema(obj, vtx);
+
+					if (min > extrema.Value()) { ret = obj; min = extrema.Value(); }
+				}
+
+				TopTools_ListOfShape list = edgeFaceMap.FindFromKey(ret);
+				mk.Add(r, ret, TopoDS::Face(list.First()));
+			}
+
+			/*for (TopExp_Explorer ex(*m_shp, TopAbs_EDGE); ex.More(); ex.Next())
+			{
+				TopoDS_Edge Edge = TopoDS::Edge(ex.Current());
+				for (unsigned int j = 0; j < refs.size(); ++j)
+				{
+					BRepExtrema_DistShapeShape extrema(Edge, refs[j].Vtx());
+					if (extrema.Value() < epsilon) mk.Add(r, Edge);
+				}
+			}*/
+
+			return mk.Shape();
+		}
+		catch (std::exception ex)
+		{
+			std::cout << ex.what() << std::endl;
+			throw ex;
+		}
+	}
+	else if (TopAbs_FACE == type)
+	{
+		throw std::runtime_error("Face chamfer. TODO.");
+	}
+	else
+	{
+		throw std::runtime_error("Fillet argument has unsuported type.");
+	}
+}
+
+
+servoce::shape servoce::chamfer(const servoce::shape& shp, double r)
+{
+	auto type = shp.Shape().ShapeType();
+
+	if (TopAbs_SOLID == type || TopAbs_COMPSOLID == type || type == TopAbs_COMPOUND)
+	{
+		BRepFilletAPI_MakeChamfer mk(shp.Shape());
+
+		TopTools_IndexedDataMapOfShapeListOfShape edgeFaceMap;
+		TopExp::MapShapesAndAncestors(shp.Shape(), TopAbs_EDGE, TopAbs_FACE, edgeFaceMap);
+
+		for (TopExp_Explorer ex(shp.Shape(), TopAbs_EDGE); ex.More(); ex.Next())
+		{
+			TopTools_ListOfShape list = edgeFaceMap.FindFromKey(ex.Current());
+
+			// Find adjacent face
+			mk.Add(r, TopoDS::Edge(ex.Current()), TopoDS::Face(list.First()));
+		}
+
+		return mk.Shape();
+	}
+	else if (TopAbs_FACE == type)
+	{
+		throw std::runtime_error("Face chamfer. TODO.");
+	}
+	else
+	{
+		throw std::runtime_error("Fillet argument has unsuported type.");
+	}
 }

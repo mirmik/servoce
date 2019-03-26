@@ -29,6 +29,11 @@ namespace servoce
 
 	//sweep2d
 	//shape make_sweep(const servoce::shape& profile, const servoce::shape& path); //Не нужна.
+
+	shape fillet2d(const shape& shp, double r, const std::vector<point3>& refs);
+	shape fillet2d(const shape& shp, double r);
+	shape chamfer2d(const shape& shp, double r, const std::vector<point3>& refs);
+	shape chamfer2d(const shape& shp, double r);
 }
 
 #endif
