@@ -72,6 +72,9 @@ def fill(shp): return Shape(pyservoce.libservoce.fill(shp.native()))
 def loft(arr, smooth):
 	return Shape(pyservoce.libservoce.loft([a.native() for a in arr], smooth))
 
+def pipe(prof, traj):
+	return Shape(pyservoce.libservoce.make_pipe(prof.native(), traj.native()))
+
 def pipe_shell(prof, traj, freenet):
 	return Shape(pyservoce.libservoce.make_pipe_shell(prof.native(), traj.native(), freenet))
 
