@@ -116,7 +116,8 @@ servoce::shape servoce::ngon(double r, int n, bool wire)
 		angle = 2 * M_PI / n * i;
 		pnts[i] = servoce::point3(r * cos(angle), r * sin(angle), 0);
 	}
-	if (wire) {
+	if (wire)
+	{
 		std::vector<servoce::point3> pntsvec;
 		for (int i = 0; i < n; ++i) pntsvec.push_back(pnts[i]);
 		return servoce::make_polysegment(pntsvec, true);
@@ -131,13 +132,13 @@ servoce::shape servoce::rectangle(double a, double b, bool center, bool wire)
 		double x = a / 2;
 		double y = b / 2;
 		if (wire)
-			return make_polysegment({{ -x, -y}, {x, -y}, {x, y}, { -x, y}}, true);	
+			return make_polysegment({{ -x, -y}, {x, -y}, {x, y}, { -x, y}}, true);
 		return polygon({{ -x, -y}, {x, -y}, {x, y}, { -x, y}});
 	}
 	else
 	{
 		if (wire)
-			return make_polysegment({{0, 0}, {0, b}, {a, b}, {a, 0}}, true);	
+			return make_polysegment({{0, 0}, {0, b}, {a, b}, {a, 0}}, true);
 		return polygon({{0, 0}, {0, b}, {a, b}, {a, 0}});
 	}
 }
@@ -153,7 +154,8 @@ servoce::shape servoce::textshape(const std::string& text, const std::string fon
 	Font_BRepFont font;
 
 	bool okfont = font.Init(fontpath.c_str(), size);
-	if (!okfont) {
+	if (!okfont)
+	{
 		throw std::runtime_error("Wrong font path.");
 	}
 
@@ -162,58 +164,57 @@ servoce::shape servoce::textshape(const std::string& text, const std::string fon
 	return textshp;
 }
 
-servoce::shape servoce::fill(const std::vector<servoce::shape*>& arr) 
+servoce::shape servoce::fill(const std::vector<servoce::shape*>& arr)
 {
 	BRepBuilderAPI_MakeFace mk(arr[0]->Wire_orEdgeToWire());
 
-	for (unsigned int i = 1; i < arr.size(); i++) {
+	for (unsigned int i = 1; i < arr.size(); i++)
+	{
 		mk.Add(arr[i]->Wire_orEdgeToWire());
 	}
 	return mk.Face();
 }
 
-/*
-servoce::shape servoce::shape::fillet(double r, const std::vector<int>& nums) {
-	std::set<int>snums(nums.begin(), nums.end());
-	BRepFilletAPI_MakeFillet2d mk(shape());
+servoce::shape servoce::fillet2d(const servoce::shape& shp, double r, const std::vector<servoce::point3>& refs)
+{
+	BRepFilletAPI_MakeFillet2d mk(shp.Face());
 
-	int idx = 0;
+	for (auto& p : refs)
+	{
+		mk.AddFillet(near_vertex(shp, p).Vertex(), r);
+	}
 
-	for(TopExp_Explorer expWire(TopoDS::shape(shape()), TopAbs_WIRE); expWire.More(); expWire.Next()) {
+	return mk.Shape();
+}
+
+
+servoce::shape servoce::fillet2d(const servoce::shape& shp, double r)
+{
+	BRepFilletAPI_MakeFillet2d mk(shp.Face());
+
+	for (TopExp_Explorer expWire(shp.Shape(), TopAbs_WIRE); expWire.More(); expWire.Next())
+	{
 		BRepTools_WireExplorer explorer(TopoDS::Wire(expWire.Current()));
-    	while (explorer.More()) {
-			if (nums.size() == 0 || snums.count(idx))mk.AddFillet(explorer.CurrentVertex(), r);
+
+		while (explorer.More())
+		{
+			const TopoDS_Vertex& vtx = explorer.CurrentVertex();
+			mk.AddFillet(vtx, r);
+
 			explorer.Next();
-			++idx;
 		}
 	}
+
 	return mk.Shape();
-}*/
-
-
-/*servoce::sweep_shape::~sweep_shape() {}
-
-servoce::sweep_shape::sweep_shape(BRepPrimAPI_MakeSweep&& builder) : shape(builder.Shape()) {
-	m_first = new TopoDS_Shape(builder.FirstShape());
-	m_last = new TopoDS_Shape(builder.LastShape());
 }
 
-servoce::sweep_shape servoce::sweep2d::make_sweep(const servoce::shape& profile, const servoce::wire& path) {
-    if (path.Shape().IsNull())
-        Standard_Failure::Raise("Cannot sweep along empty spine");
-    if (profile.Shape().IsNull())
-        Standard_Failure::Raise("Cannot sweep empty profile");
-    return BRepOffsetAPI_MakePipe(path.Wire(), profile.Shape());
+servoce::shape servoce::chamfer2d(const servoce::shape& shp, double r, const std::vector<servoce::point3>& refs)
+{
+	throw std::runtime_error("chamfer2d. TODO.");
 }
 
-std::vector<servoce::wire> servoce::shape::wires() {
-	TopExp_Explorer explorer(Shape(), TopAbs_WIRE);
-	std::vector<servoce::wire> ret;
 
-	while(explorer.More()) {
-		ret.emplace_back(explorer.Current());
-		explorer.Next();
-	}
-
-	return ret;
-}*/
+servoce::shape servoce::chamfer2d(const servoce::shape& shp, double r)
+{
+	throw std::runtime_error("chamfer2d. TODO.");
+}
