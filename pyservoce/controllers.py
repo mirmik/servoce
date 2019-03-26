@@ -150,9 +150,6 @@ class ShapeController(Unit):
 		if not isinstance(color, pyservoce.libservoce.Color):
 			color = pyservoce.libservoce.Color(*color)
 
-
-		print(color.r, color.g, color.b)
-
 		shape_view = ShapeView(scene.native().add(self.shape.native(), color))
 		scene.viewer.display(shape_view.sctrl)		
 		self.views.append(shape_view)

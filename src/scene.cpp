@@ -71,22 +71,6 @@ servoce::shape_view& servoce::shape_view::operator= (servoce::shape_view&& oth)
 
 #define uassert(e) if (!(e)) { printf("assert: %s\n", #e); exit(-1); }
 
-/*void servoce::shape_view_controller::set_location(double x, double y, double z) 
-{
-	uassert((*ctr)[idx].m_ashp);
-	uassert((*ctr)[idx].scn);
-	uassert((*ctr)[idx].scn->vwer);
-	uassert((*ctr)[idx].scn->vwer->occ);
-	uassert((*ctr)[idx].scn->vwer->occ->m_context);
-
-	auto trf = gp_Trsf();
-	trf.SetTranslation(gp_Vec(x,y,z));
-
-	(*ctr)[idx].scn->vwer->occ->m_context->SetLocation((*ctr)[idx].m_ashp, trf);
-	(*ctr)[idx].scn->vwer->occ->m_viewer->Redraw();
-}*/
-
-
 void servoce::shape_view_controller::set_location(const servoce::transformation& trans) 
 {
 	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
