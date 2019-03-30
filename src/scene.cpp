@@ -1,8 +1,11 @@
 #include <servoce/servoce.h>
+#include <mutex>
 
 #include <AIS_Shape.hxx>
 #include <local/OccViewContext.h>
 #include <BRepBuilderAPI_Copy.hxx>
+
+extern std::recursive_mutex viewrecursive_mutex;
 
 servoce::shape servoce::shape_view::shape() 
 {
@@ -14,8 +17,10 @@ servoce::color servoce::shape_view::color()
 	return m_color;
 }
 
+
 servoce::shape_view::shape_view(const servoce::shape& a, servoce::color color)
 {
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	BRepBuilderAPI_Copy copier(a.Shape());
 	TopoDS_Shape newShape = copier.Shape();
 	
@@ -66,47 +71,25 @@ servoce::shape_view& servoce::shape_view::operator= (servoce::shape_view&& oth)
 
 #define uassert(e) if (!(e)) { printf("assert: %s\n", #e); exit(-1); }
 
-/*void servoce::shape_view_controller::set_location(double x, double y, double z) 
-{
-	uassert((*ctr)[idx].m_ashp);
-	uassert((*ctr)[idx].scn);
-	uassert((*ctr)[idx].scn->vwer);
-	uassert((*ctr)[idx].scn->vwer->occ);
-	uassert((*ctr)[idx].scn->vwer->occ->m_context);
-
-	auto trf = gp_Trsf();
-	trf.SetTranslation(gp_Vec(x,y,z));
-
-	(*ctr)[idx].scn->vwer->occ->m_context->SetLocation((*ctr)[idx].m_ashp, trf);
-	(*ctr)[idx].scn->vwer->occ->m_viewer->Redraw();
-}*/
-
-
 void servoce::shape_view_controller::set_location(const servoce::transformation& trans) 
 {
-	uassert((*ctr)[idx].m_ashp);
-	uassert((*ctr)[idx].scn);
-	uassert((*ctr)[idx].scn->vwer);
-	uassert((*ctr)[idx].scn->vwer->occ);
-	uassert((*ctr)[idx].scn->vwer->occ->m_context);
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
+	uassert(ctr->m_ashp);
+	uassert(ctr->scn);
+	uassert(ctr->scn->vwer);
+	uassert(ctr->scn->vwer->occ);
+	uassert(ctr->scn->vwer->occ->m_context);
 
-	gp_XYZ xyz;
-	double angle;
-
-	trans.trsf->GetRotation(xyz, angle);
-	//std::cout << xyz.X() << " " << xyz.Y() << " " << xyz.Z() << " " << angle << std::endl; 
-
-	(*ctr)[idx].scn->vwer->occ->m_context->SetLocation((*ctr)[idx].m_ashp, *trans.trsf);
-//	(*ctr)[idx].m_ashp->Redisplay();
-	//(*ctr)[idx].scn->vwer->occ->m_viewer->Redraw();
+	ctr->scn->vwer->occ->m_context->SetLocation(ctr->m_ashp, *trans.trsf);
 }
 
 void servoce::shape_view_controller::hide(bool en) 
 {
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	if (en)
-		(*ctr)[idx].scn->vwer->occ->m_context->Erase((*ctr)[idx].m_ashp, true);
+		ctr->scn->vwer->occ->m_context->Erase(ctr->m_ashp, true);
 	else
-		(*ctr)[idx].scn->vwer->occ->m_context->Display((*ctr)[idx].m_ashp, true);
+		ctr->scn->vwer->occ->m_context->Display(ctr->m_ashp, true);
 }
 
 std::vector<servoce::shape> servoce::scene::shapes_array() 

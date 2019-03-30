@@ -11,6 +11,7 @@
 #include <gp_Ax1.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Trsf.hxx>
+#include <gp_Quaternion.hxx>
 #include <gp_GTrsf.hxx>
 
 #include <BRepBuilderAPI_Transform.hxx>
@@ -265,4 +266,23 @@ servoce::general_transformation servoce::general_transformation::restore_string_
 	tr.gtrsf = new gp_GTrsf;
 	tr.load(sstrm);
 	return tr;
+}
+
+servoce::transformation servoce::nulltrans() 
+{
+	return servoce::transformation(new gp_Trsf());
+}
+
+
+
+std::vector<double>  servoce::transformation::translation_part() const
+{
+	auto tr = trsf->TranslationPart();
+	return {tr.X(), tr.Y(), tr.Z()};
+}
+
+std::vector<double> servoce::transformation::rotation_part() const
+{
+	auto tr = trsf->GetRotation();
+	return {tr.X(), tr.Y(), tr.Z(), tr.W()};
 }

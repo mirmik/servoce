@@ -3,6 +3,7 @@
 
 #include <servoce/topo.h>
 #include <vector>
+#include <list>
 #include <cassert>
 
 #include <TopoDS_Vertex.hxx>
@@ -46,12 +47,12 @@ namespace servoce
 
 	struct shape_view_controller 
 	{
-		std::vector<shape_view> * ctr;
+		shape_view* ctr;
 		int idx;
 
-		shape_view_controller(std::vector<shape_view> * ctr, int idx) : ctr(ctr), idx(idx) {}
-		shape_view_controller(const shape_view_controller& oth) : ctr(oth.ctr), idx(oth.idx) {}
-		shape_view_controller(shape_view_controller&& oth) : ctr(oth.ctr), idx(oth.idx) {}
+		shape_view_controller(shape_view * ctr) : ctr(ctr) {}
+		shape_view_controller(const shape_view_controller& oth) : ctr(oth.ctr) {}
+		shape_view_controller(shape_view_controller&& oth) : ctr(oth.ctr) {}
 
 		//void set_location(double x, double y, double z);
 		void set_location(const servoce::transformation& trans);
@@ -60,7 +61,7 @@ namespace servoce
 
 	struct scene
 	{
-		std::vector<shape_view> shapes;
+		std::list<shape_view> shapes;
 		struct viewer * vwer = nullptr;
 
 		scene() {};
@@ -75,15 +76,16 @@ namespace servoce
 			//printf("add %p %d\n", this, shapes.size());
 			//printf("%f %f %f", color.r, color.g, color.b);
 			shapes.emplace_back(shp, color);
-			shapes[shapes.size() - 1].scn = this;
-			return shape_view_controller(&shapes, shapes.size() - 1);
+			shapes.back().scn = this;
+			return shape_view_controller(&shapes.back());
 		}
 
-		void add(const servoce::point3& pnt, servoce::color color = mech)
+		shape_view_controller add(const servoce::point3& pnt, servoce::color color = mech)
 		{
 			TopoDS_Vertex vtx = pnt.Vtx();
 			shapes.emplace_back(servoce::shape(vtx), color);
-			shapes[shapes.size() - 1].scn = this;	
+			shapes.back().scn = this;	
+			return shape_view_controller(&shapes.back());
 		}
 
 		void append(const servoce::scene& scn)
@@ -98,7 +100,7 @@ namespace servoce
 		std::vector<servoce::shape> shapes_array();
 		std::vector<servoce::color> color_array();
 
-		shape_view& operator[](size_t i) 
+		/*shape_view& operator[](size_t i) 
 		{
 			return shapes[i];
 		}
@@ -106,7 +108,7 @@ namespace servoce
 		const shape_view& operator[](size_t i) const
 		{
 			return shapes[i];
-		}
+		}*/
 
 		void set_viewer(struct viewer * v) { vwer = v; }
 	};

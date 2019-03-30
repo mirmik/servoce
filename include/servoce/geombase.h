@@ -15,6 +15,7 @@ namespace pybind11
 {
 	class list;
 	class tuple;
+	class object;
 }
 
 namespace servoce

@@ -418,10 +418,16 @@ void servoce::viewer::add_scene(servoce::scene& scn)
 {
 	scn.set_viewer(this);
 	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
-	for (unsigned int i = 0; i < scn.shapes.size(); ++i)
+	for (auto& s : scn.shapes)
 	{
-		occ->m_context->Display(scn.shapes[i].m_ashp, false);
+		occ->m_context->Display(s.m_ashp, false);
 	}
+}
+
+void servoce::viewer::display(shape_view_controller& controller) 
+{
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
+	occ->m_context->Display(controller.ctr->m_ashp, false);
 }
 
 

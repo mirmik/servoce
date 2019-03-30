@@ -48,6 +48,8 @@ namespace servoce
 
 		void set_orthogonal();
 
+		void export2d();
+
 		void see(int width = 800, int height = 600);
 	//	void screen(const std::string& path);
 
@@ -90,7 +92,7 @@ namespace servoce
 
 		void add_scene(scene& scn);
 		void clean_context();
-		shape_view_controller add(const shape& shp, color color);
+		void display(shape_view_controller& controller);
 	};
 
 	void see(servoce::scene& scn);
