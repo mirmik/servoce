@@ -23,6 +23,8 @@
 #include <BRepExtrema_DistShapeShape.hxx>
 #include <Geom_Plane.hxx>
 
+#include <BRepBndLib.hxx>
+
 #include <TopOpeBRepBuild_Tools.hxx>
 
 #include <TopAbs_ShapeEnum.hxx>
@@ -226,7 +228,7 @@ std::vector<servoce::shape> servoce::shape::solids() const
 	std::vector<servoce::shape> ret;
 	for (TopExp_Explorer ex(Shape(), TopAbs_SOLID); ex.More(); ex.Next())
 	{
-		TopoDS_Face obj = TopoDS::Face(ex.Current());
+		TopoDS_Solid obj = TopoDS::Solid(ex.Current());
 		ret.emplace_back(obj);
 	}
 	return ret;
@@ -248,7 +250,7 @@ std::vector<servoce::shape> servoce::shape::wires() const
 	std::vector<servoce::shape> ret;
 	for (TopExp_Explorer ex(Shape(), TopAbs_WIRE); ex.More(); ex.Next())
 	{
-		TopoDS_Face obj = TopoDS::Face(ex.Current());
+		TopoDS_Wire obj = TopoDS::Wire(ex.Current());
 		ret.emplace_back(obj);
 	}
 	return ret;
@@ -259,7 +261,7 @@ std::vector<servoce::shape> servoce::shape::edges() const
 	std::vector<servoce::shape> ret;
 	for (TopExp_Explorer ex(Shape(), TopAbs_EDGE); ex.More(); ex.Next())
 	{
-		TopoDS_Face obj = TopoDS::Face(ex.Current());
+		TopoDS_Edge obj = TopoDS::Edge(ex.Current());
 		ret.emplace_back(obj);
 	}
 	return ret;
@@ -354,4 +356,14 @@ std::string servoce::shape::shapetype_as_string()
 		case TopAbs_FACE: return "face";
 		case TopAbs_SOLID: return "solid";
 	}
+}
+
+servoce::BoundBox::BoundBox(const servoce::shape& shp) 
+{
+	Bnd_Box B;
+	BRepBndLib::Add(shp.Shape(), B);
+	B.Get(xmin, ymin, zmin, xmax, ymax, zmax);
+	xdim = xmax - xmin;
+	ydim = ymax - ymin;
+	zdim = zmax - zmin;
 }

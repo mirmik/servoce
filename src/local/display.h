@@ -113,7 +113,7 @@ namespace servoce
 
 		private slots:
 			void about(void);
-			void export_stl();
+			//void export_stl();
 			void screenshot();
 			void orient1();
 			void orient2();

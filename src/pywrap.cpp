@@ -433,6 +433,8 @@ PYBIND11_MODULE(libservoce, m)
 	m.def("brep_write", &brep_write, ungil());
 	m.def("brep_read", &brep_read, ungil());
 
+	m.def("getSVG", &getSVG, ungil());
+
 //REFLECTION
 	m.def("near_edge", &near_edge, ungil());	
 	m.def("near_face", &near_face, ungil());
