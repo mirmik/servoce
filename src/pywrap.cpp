@@ -212,6 +212,7 @@ PYBIND11_MODULE(libservoce, m)
 	m.def("halfspace", &halfspace, ungil());
 
 	m.def("thicksolid", &thicksolid, ungil());
+	m.def("unify", &unify, ungil());
 
 //OPS3D
 	m.def("make_linear_extrude", (shape(*)(const shape&, const vector3&, bool)) &make_linear_extrude, ungil(), py::arg("shp"), py::arg("vec"), py::arg("center") = false);

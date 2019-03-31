@@ -33,6 +33,7 @@ namespace servoce
 
 	shape halfspace();
 	shape thicksolid(const shape& proto, const std::vector<point3>& pnt, double thickness);
+	shape unify(const shape& proto);
 }
 
 #endif

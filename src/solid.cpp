@@ -28,6 +28,8 @@
 #include <BRepPrimAPI_MakeHalfSpace.hxx>
 #include <BRepOffsetAPI_ThruSections.hxx>
 
+#include <ShapeUpgrade_UnifySameDomain.hxx>
+
 #include <Geom_Surface.hxx>
 #include <Geom_Plane.hxx>
 
@@ -368,4 +370,11 @@ shape servoce::thicksolid(const shape& proto, const std::vector<point3>& pnts, d
 	auto algo = BRepOffsetAPI_MakeThickSolid();
 	algo.MakeThickSolidByJoin(proto.Shape(), facesToRemove, thickness, 1.e-3);
 	return algo.Shape();
+}
+
+shape servoce::unify(const shape& proto)
+{
+	ShapeUpgrade_UnifySameDomain USD(proto.Shape(), true, true, true); // UnifyFaces mode on, UnifyEdges mode on, ConcatBSplines mode on.
+	USD.Build();
+	return USD.Shape();
 }
