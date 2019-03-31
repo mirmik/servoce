@@ -137,8 +137,8 @@ servoce::shape servoce::rectangle(double a, double b, bool center, bool wire)
 	else
 	{
 		if (wire)
-			return make_polysegment({{0, 0}, {0, b}, {a, b}, {a, 0}}, true);	
-		return polygon({{0, 0}, {0, b}, {a, b}, {a, 0}});
+			return make_polysegment({{0, 0}, {a, 0}, {a, b}, {0, b}}, true);	
+		return polygon({{0, 0}, {a, 0}, {a, b}, {0, b}});
 	}
 }
 
