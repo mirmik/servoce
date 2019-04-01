@@ -32,6 +32,8 @@
 #include <BRepPrimAPI_MakeHalfSpace.hxx>
 #include <BRepOffsetAPI_ThruSections.hxx>
 
+#include <ShapeUpgrade_UnifySameDomain.hxx>
+
 #include <Geom_Surface.hxx>
 #include <Geom_Plane.hxx>
 
@@ -374,7 +376,6 @@ shape servoce::thicksolid(const shape& proto, const std::vector<point3>& pnts, d
 	return algo.Shape();
 }
 
-
 servoce::shape servoce::fillet(const servoce::shape& shp, double r, const std::vector<servoce::point3>& refs)
 {
 	auto type = shp.Shape().ShapeType();
@@ -542,4 +543,11 @@ servoce::shape servoce::chamfer(const servoce::shape& shp, double r)
 	{
 		throw std::runtime_error("Fillet argument has unsuported type.");
 	}
+}
+
+shape servoce::unify(const shape& proto)
+{
+	ShapeUpgrade_UnifySameDomain USD(proto.Shape(), true, true, true); // UnifyFaces mode on, UnifyEdges mode on, ConcatBSplines mode on.
+	USD.Build();
+	return USD.Shape();
 }

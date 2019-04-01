@@ -38,6 +38,8 @@ namespace servoce
 	shape fillet(const shape& shp, double r);
 	shape chamfer(const shape& shp, double r, const std::vector<point3>& refs);
 	shape chamfer(const shape& shp, double r);
+
+	shape unify(const shape& proto);
 }
 
 #endif

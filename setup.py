@@ -5,14 +5,16 @@ from setuptools import setup, Extension, Command
 from distutils.util import get_platform
 import os
 
-#import licant
-#licant.include("nos", local_tunel="build/nos")
-#licant.cxx_objects("nos-objects", 
-#	mdepends = [
-#		"nos",
-#	] 
-#)
-#nosopts = licant.core.core.get("nos-objects").finalopts
+import licant
+licant.include("nos", "nos/nos.g.py")
+licant.include("igris", "igris/nos.g.py")
+licant.cxx_objects("nos-objects", 
+	mdepends = [
+		"nos",
+		"igris.include",
+	] 
+)
+nosopts = licant.core.core.get("nos-objects").finalopts
 
 class bdist_wheel(bdist_wheel_):
 	def finalize_options(self):
@@ -51,10 +53,10 @@ pyservoce_lib = Extension("pyservoce.libservoce",
 		"src/convert.cpp",
 		"src/view.cpp",
 		"src/camera.cpp",
-	], #+ nosopts["sources"],
+	] + nosopts["sources"],
 	extra_compile_args=['-fPIC', '-std=c++14', '-DNOTRACE=1'],
 	extra_link_args=['-Wl,-rpath,$ORIGIN/libs'],
-	include_dirs = [liboce_include_path, "src", "include"], #+ nosopts["include_paths"],
+	include_dirs = [liboce_include_path, "src", "include"] + nosopts["include_paths"],
 	libraries = [
 		'TKernel',
 		'TKMath',

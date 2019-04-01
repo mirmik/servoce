@@ -17,6 +17,10 @@ class Shape(pyservoce.trans.Transformable):
 	def vertices(self) : return [point3(p) for p in self.shape.vertices()]
 	
 	def fill(self): return fill(self)
+	def fillet(self, r, refs=None): return fillet(self, r, refs)
+	def fillet2d(self, r, refs=None): return fillet2d(self, r, refs)
+	def chamfer(self, r, refs=None): return chamfer(self, r, refs)
+	def chamfer2d(self, r, refs=None): return chamfer2d(self, r, refs)
 
 	def __add__(self, oth): return Shape(self.native() + oth.native())
 	def __sub__(self, oth): return Shape(self.native() - oth.native())
@@ -86,10 +90,24 @@ def fillet(shp, r, refs=None):
 		return Shape(pyservoce.libservoce.fillet(shp.native(), r))
 	return Shape(pyservoce.libservoce.fillet(shp.native(), r, [p.native() for p in refs]))
 
+def fillet2d(shp, r, refs=None):
+	if refs is None:
+		return Shape(pyservoce.libservoce.fillet2d(shp.native(), r))
+	return Shape(pyservoce.libservoce.fillet2d(shp.native(), r, [p.native() for p in refs]))
+
 def chamfer(shp, r, refs=None):
 	if refs is None:
 		return Shape(pyservoce.libservoce.chamfer(shp.native(), r))
 	return Shape(pyservoce.libservoce.chamfer(shp.native(), r, [p.native() for p in refs]))
 
+def chamfer2d(shp, r, refs=None):
+	if refs is None:
+		return Shape(pyservoce.libservoce.chamfer2d(shp.native(), r))
+	return Shape(pyservoce.libservoce.chamfer2d(shp.native(), r, [p.native() for p in refs]))
+
 def thicksolid(shp, refs, t):
 	return Shape(pyservoce.libservoce.thicksolid(shp.native(), [p.native() for p in refs], t))
+
+#ops
+def unify(shp):
+	return Shape(pyservoce.libservoce.unify(shp.native()))
