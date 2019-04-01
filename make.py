@@ -9,7 +9,7 @@ import licant.libs
 import os
 
 licant.execute("servoce_inc.py")
-licant.include("nos")
+licant.include("nos", "nos/nos.g.py")
 
 install_lib_dir = "/usr/lib/"
 install_inc_dir = "/usr/local/include/"

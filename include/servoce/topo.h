@@ -124,20 +124,20 @@ namespace servoce
 		std::string shapetype_as_string();
 	};
 
-	shape make_section(const shape& shp);
+	class BoundBox 
+	{
+		double xmin, xmax, xdim;
+		double ymin, ymax, ydim;
+		double zmin, zmax, zdim;
 
-	//const TopoDS_Face& 		near_face_native		(const shape& shp, const point3& pnt);
-	//const TopoDS_Edge& 		near_edge_native		(const shape& shp, const point3& pnt);
-	//const TopoDS_Vertex& 	near_vertex_native		(const shape& shp, const point3& pnt);
+		BoundBox(const servoce::shape& shp);
+	};
+
+	shape make_section(const shape& shp);
 
 	shape	near_face		(const shape& shp, const point3& pnt);
 	shape	near_edge		(const shape& shp, const point3& pnt);
 	shape 	near_vertex		(const shape& shp, const point3& pnt);
 }
-
-//servoce::shape operator+(const servoce::point3& pnt, const servoce::shape& th);
-//servoce::shape operator+(const servoce::shape& th, const servoce::point3& pnt);
-
-
 
 #endif

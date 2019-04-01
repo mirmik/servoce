@@ -96,46 +96,6 @@ void servoce::disp::MainWidget::about() {
 }
 
 
-void servoce::disp::MainWidget::export_stl() {
-	//gxx::println("export_stl");
-	bool ok;
-	
-	QFileDialog fileDialog(this, "Choose file to export");
-	fileDialog.setNameFilter("STL-Mesh (*.stl)");
-	fileDialog.setDefaultSuffix(".stl");
-	ok = fileDialog.exec();
-
-	if (!ok) return;
-	QString path = fileDialog.selectedFiles().first();
-
-	QInputDialog *inputDialog = new QInputDialog();
-	inputDialog->setTextValue("Test"); // has no effect
-	
-	double deflection = QInputDialog::getDouble(this, tr("QInputDialog::getDouble()"),
-									   tr("Amount:"), 0.01, 0, 10, 5, &ok);
-
-	if (display->scn->shapes.size() != 1) {
-		exit(1);
-		//gxx::panic("TODO");
-	} 
-
-	const TopoDS_Shape& shape = display->scn->shapes[0].m_ashp->Shape();
-	BRepMesh_IncrementalMesh mesh(shape, deflection);
-
-	if (mesh.IsDone() == false) {
-		//gxx::panic("Is not done TODO");
-		throw Standard_Failure("Is not done TODO");
-	}
-
-	StlAPI_Writer stl_writer;
-	//stl_writer.SetDeflection(d);
-	//stl_writer.RelativeMode() = false;
-	stl_writer.Write(shape, path.toStdString().c_str());
-	//QMessageBox msgBox;
-	//msgBox.setText(QString::number((int)err));
-	//int ret = msgBox.exec();
-}
-
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>

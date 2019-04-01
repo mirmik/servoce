@@ -68,7 +68,7 @@ full_list = [
 	'TKXSDRAW',
 ]
 
-licant.libs.include("gxx")
+#licant.include("nos", local_tunel="build/nos")
 
 class Found(Exception): pass
 try:
@@ -150,10 +150,6 @@ module('servoce_sources',
 		"display/dispwidget_qt.cpp",
 		"display/icons.cpp",
 
-#		"shower/mainwidget.cpp",
-#		"shower/dispwidget.cpp",
-#		"shower/dispwidget_qt.cpp",
-
 #		"occversion.cpp",
 
 		#"widgets/gtk_widget.cpp"
@@ -170,6 +166,7 @@ module('servoce_sources',
 #		submodule("gxx", "posix"),
 #		submodule("gxx.print", "cout"),
 #		submodule("gxx.dprint", "cout"),
+		"nos"
 	],
 
 	libs = ['X11'],

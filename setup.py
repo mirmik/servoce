@@ -4,8 +4,8 @@ from wheel.bdist_wheel import bdist_wheel as bdist_wheel_
 from setuptools import setup, Extension, Command
 from distutils.util import get_platform
 import os
-
 import licant
+
 licant.include("nos", "nos/nos.g.py")
 licant.include("igris", "igris/nos.g.py")
 licant.cxx_objects("nos-objects", 
