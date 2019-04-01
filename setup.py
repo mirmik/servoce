@@ -7,7 +7,7 @@ import os
 import licant
 
 licant.include("nos", "nos/nos.g.py")
-licant.include("igris", "igris/nos.g.py")
+licant.include("igris", "igris/igris.g.py")
 licant.cxx_objects("nos-objects", 
 	mdepends = [
 		"nos",
