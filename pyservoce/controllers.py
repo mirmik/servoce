@@ -1,9 +1,13 @@
-import pyservoce.trans
-from pyservoce.defs import *
-from pyservoce.geom import *
+import pyservoce.libservoce
+
+#import pyservoce.trans
+#from pyservoce.defs import *
+#from pyservoce.geom import *
 
 import evalcache
 from evalcache import LazyObject
+
+from pyservoce.trace import trace
 
 class WrongUnitType(Exception): pass
 
@@ -20,8 +24,8 @@ def to_unit(obj):
 	if not isinstance(obj, Unit):
 		raise WrongUnitType
 
-class Unit(pyservoce.trans.Transformable):
-	def __init__(self, parent=None, location=pyservoce.trans.nulltrans()):
+class Unit:
+	def __init__(self, parent=None, location=pyservoce.libservoce.nulltrans()):
 		self.parent = parent
 
 		if parent is not None:
@@ -34,7 +38,7 @@ class Unit(pyservoce.trans.Transformable):
 	def update_global_location(self):
 		if self.local_location is None:
 			if self.parent is None:
-				self.global_location = pyservoce.nulltrans()
+				self.global_location = pyservoce.libservoce.nulltrans()
 			else:
 				self.global_location = self.parent.global_location
 			return
@@ -50,6 +54,7 @@ class Unit(pyservoce.trans.Transformable):
 		#print("g3", self.local_location)
 
 	def eval_location(self, location):
+		trace("eval_location")
 		if location is None:
 			self.local_location = None
 		else:
@@ -57,6 +62,7 @@ class Unit(pyservoce.trans.Transformable):
 		self.update_global_location()
 
 	def set_location(self, location):
+		trace("set_location")
 		self.eval_location(location)
 		self.apply_location()
 
@@ -68,7 +74,7 @@ class Unit(pyservoce.trans.Transformable):
 
 	
 class Assemble(Unit):
-	def __init__(self, parts=None, parent=None, location=pyservoce.trans.nulltrans()):
+	def __init__(self, parts=None, parent=None, location=pyservoce.libservoce.nulltrans()):
 		Unit.__init__(self, parent, location)
 		self.parts = []
 		
@@ -79,10 +85,10 @@ class Assemble(Unit):
 		self.apply_location()
 
 
-	def add_part(self, unit, location=pyservoce.trans.nulltrans()):
+	def add_part(self, unit, location=pyservoce.libservoce.nulltrans()):
 		unit = unlazy_if_need(unit)
 
-		if isinstance(unit, pyservoce.geom.Shape):
+		if isinstance(unit, pyservoce.libservoce.Shape):
 			unit = ShapeController(unit)
 
 		if isinstance(unit, Unit):
@@ -112,7 +118,8 @@ class ShapeView:
 		self.sctrl = sctrl
 
 	def set_location(self, trans):
-		self.sctrl.set_location(trans.native())
+		trace("ShapeView::set_location")
+		self.sctrl.set_location(trans)
 
 	def hide(self, en):
 		self.sctrl.hide(en)
@@ -150,7 +157,7 @@ class ShapeController(Unit):
 		if not isinstance(color, pyservoce.libservoce.Color):
 			color = pyservoce.libservoce.Color(*color)
 
-		shape_view = ShapeView(scene.native().add(self.shape.native(), color))
+		shape_view = ShapeView(scene.add(self.shape, color))
 		scene.viewer.display(shape_view.sctrl)		
 		self.views.append(shape_view)
 
@@ -158,7 +165,7 @@ class ShapeController(Unit):
 
 
 class RotateConnector(Assemble):
-	def __init__(self, child=None, parent=None, location=pyservoce.trans.nulltrans()):
+	def __init__(self, child=None, parent=None, location=pyservoce.libservoce.nulltrans()):
 		Assemble.__init__(self, parts=[child], parent=parent, location=location)
 		self.child = self.parts[0]
 

@@ -1,1 +1,1 @@
-./tools/clean.sh && ./setup.py install --user
+./setup.py install --user

@@ -6,7 +6,11 @@
 #include <servoce/wire.h>
 #include <servoce/trans.h>
 #include <servoce/convert.h>
+
 #include <servoce/view.h>
+#include <servoce/viewer.h>
+#include <servoce/scene.h>
+#include <servoce/shape_view.h>
 
 #include <servoce/surface.h>
 #include <servoce/curve2.h>

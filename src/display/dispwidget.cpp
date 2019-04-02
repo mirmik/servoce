@@ -94,10 +94,10 @@ void servoce::disp::DisplayWidget::paintEvent(QPaintEvent* e)
         //thePlane->SetUseObjectShader(true);
         //thePlane->SetUseObjectTexture(true);
         */
-        for (auto& shp : scn->shapes)
+        for (auto& shp : scn->shape_views)
         {
             //          shp.m_ashp->AddClipPlane(thePlane);
-            m_context->Display (shp.m_ashp, false);
+            m_context->Display (shp->native(), false);
         }
 
         auto axX = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0, 0, 0), gp_Vec(1, 0, 0)));

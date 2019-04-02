@@ -1,24 +1,22 @@
 #ifndef SERVOCE_VIEW_H
 #define SERVOCE_VIEW_H
 
-//#include <servoce/camera.h>
-#include <servoce/scene.h>
+#include <servoce/geombase.h>
+#include <vector>
+#include <memory>
+
+#include <nos/trace.h>
 
 class OccViewWindow;
-class OccViewerContext;
 
 namespace servoce
 {
+	class scene;
+	class shape_view_controller;
+
 	class view
 	{
-		OccViewWindow* occ = nullptr;
-
 	public:
-		view(OccViewWindow* view) : occ(view) {}
-
-		int w;
-		int h;
-
 		void set_virtual_window(int w, int h);
 		void set_window(int wind);
 
@@ -73,36 +71,16 @@ namespace servoce
 		std::vector<unsigned char> rawarray(int w, int h);
 
 		std::pair<servoce::point3, bool> intersect_point( double x, double y ); 
-	};
 
-	class viewer
-	{
-	public:
-		OccViewerContext* occ = nullptr;
-
-	public:
-		viewer();
-		viewer(servoce::scene& scn);
-
-		view create_view();
-		void close();
-
-		/*AIS_InteractiveContext* m_context;
-		V3d_Viewer* m_viewer;
-		//std::vector<servoce::shape_view> sviews;
-
-		public:
-			viewer();
-			viewer(const servoce::scene& scn);
-
-			view create_view();
-			void set_scene(servoce::scene* scn);*/
-		void set_triedron_axes();
-		void redraw();
-
-		void add_scene(scene& scn);
-		void clean_context();
-		void display(shape_view_controller& controller);
+		view(OccViewWindow* occ) : occ(occ) { TRACE();}
+		view(const view&) = delete;
+		view(view&& other) { TRACE(); occ = other.occ; other.occ = nullptr; }
+		~view();
+	
+	private:
+		int w = 0;
+		int h = 0;
+		OccViewWindow* occ = nullptr;
 	};
 
 	void see(servoce::scene& scn);

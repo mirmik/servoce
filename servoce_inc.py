@@ -140,9 +140,12 @@ module('servoce_sources',
 		"display.cpp",
 		#"test.cpp",
 		"convert.cpp",
-		"scene.cpp",
 		"geombase.cpp",
+		
 		"view.cpp",
+		"shape_view.cpp",
+		"scene.cpp",
+		"viewer.cpp",
 		"camera.cpp",
 
 		"display/mainwidget.cpp",

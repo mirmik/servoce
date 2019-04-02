@@ -33,10 +33,8 @@
 #include <AIS_Axis.hxx>
 #include <Geom_Axis1Placement.hxx>
 
-
 //debug
-#include <BRepPrimAPI_MakeBox.hxx>
-#include <BRepPrimAPI_MakeCylinder.hxx>
+#include <nos/trace.h>
 
 #include <X11/Xlib.h>
 #include <mutex>
@@ -81,10 +79,14 @@ struct OccViewWindow
 
 public:
 	OccViewWindow(Handle(V3d_View) view, OccViewerContext* parent)
-		: m_view(view), parent(parent) {}
+		: m_view(view), parent(parent) 
+	{
+		TRACE();
+	}
 
 	void set_virtual_window(int w, int h)
 	{
+		TRACE();
 		std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 		static int i = 0;
 		m_window = new Xw_Window (GetDisplayConnection(), (std::string("virtual") + std::to_string(i++)).c_str(), 0, 0, w, h);
@@ -95,6 +97,7 @@ public:
 
 	void set_window(int wind)
 	{
+		TRACE();
 		std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 		winddesc = wind;
 		m_window = new Xw_Window(GetDisplayConnection(), wind);
@@ -106,36 +109,42 @@ public:
 
 	void fit_all()
 	{
+		TRACE();
 		std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 		m_view->FitAll();
 	}
 
 	void dump(const std::string& path)
 	{
+		TRACE();
 		std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 		m_view->Dump(path.c_str());
 	}
 
 	void redraw()
 	{
+		TRACE();
 		std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 		m_view->Redraw();
 	}
 
 	void must_be_resized()
 	{
+		TRACE();
 		std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 		m_view->MustBeResized();
 	}
 
 	void set_triedron()
 	{
+		TRACE();
 		std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 		m_view->TriedronDisplay(Aspect_TOTP_LEFT_LOWER, Quantity_NOC_GOLD, 0.08, V3d_ZBUFFER);
 	}
 
 	gp_Lin viewline(double x, double y, Handle(V3d_View) view)
 	{
+		TRACE();
 		std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 		Standard_Real Xp = x, Yp = y;
 		Standard_Real Xv, Yv, Zv;
@@ -164,18 +173,6 @@ public:
 
 		m_viewer = new V3d_Viewer(GetGraphicDriver());
 
-		//m_viewer->setDefaultBackgroundColor(0.5,0.3,0.3);
-		//m_viewer->SetZBufferManagment(Standard_False);
-//		m_viewer->SetDefaultTypeOfView(V3d_ORTHOGRAPHIC); //V3d_PERSPECTIVE also possible
-//		m_viewer->SetDefaultViewProj(V3d_Zpos); // Top view
-		//m_viewer->SetUpdateMode(V3d_WAIT);
-//		m_viewer->SetComputedMode(false);
-//		m_viewer->RedrawImmediate();
-
-		//m_viewer->SetDefaultBgGradientColors (c1, c2);
-
-		//m_viewer->SetLightOn(new V3d_DirectionalLight (m_viewer, V3d_Zneg , Quantity_NOC_WHITE, true));
-
 		m_viewer->SetDefaultLights();
 		m_viewer->SetLightOn();
 
@@ -190,15 +187,14 @@ public:
 		return new OccViewWindow( m_viewer->CreateView(), this );
 	}
 
-	void set_scene(const servoce::scene& scn)
-	{
-		std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
-
-		for (auto& shp : scn.shapes)
-		{
-			m_context->Display (shp.m_ashp, false);
-		}
-	}
+//	void set_scene(const servoce::scene& scn)
+//	{
+//		std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
+//		for (auto& shp : scn.shapes)
+//		{
+//			m_context->Display (shp.m_ashp, false);
+//		}
+//	}
 
 	void set_triedron_axes()
 	{
