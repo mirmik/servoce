@@ -180,7 +180,7 @@ PYBIND11_MODULE(libservoce, m)
 	.def("endpoints", &shape::sfvertex, ungil())
 
 	.def("vertices", &shape::vertices, ungil())
-	.def("solids", &shape::faces, ungil())
+	.def("solids", &shape::solids, ungil())
 	.def("faces", &shape::faces, ungil())
 	.def("edges", &shape::edges, ungil())
 	.def("wires", &shape::wires, ungil())
