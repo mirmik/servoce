@@ -2,7 +2,7 @@ import numpy
 import pyservoce.libservoce
 
 class mtrans:
-	def __init__(self, rot=numpy.Matrix.identity(3), mov=numpy.Vector(3)):
+	def __init__(self, rot=numpy.Йгфеуктшщт.identity(3), mov=numpy.Vector(3)):
 		self.mov = mov
 		self.rot = rot
 
