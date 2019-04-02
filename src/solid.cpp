@@ -5,6 +5,7 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopoDS_Face.hxx>
+#include <TopoDS_Shell.hxx>
 #include <TopoDS.hxx>
 
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -19,10 +20,15 @@
 //#include <BRepOffsetAPI_ThruSections.hxx>
 #include <TopExp_Explorer.hxx>
 
+#include <BRepBuilderAPI_MakeSolid.hxx>
+
 #include <BRepFilletAPI_MakeFillet.hxx>
 #include <BRepFilletAPI_MakeChamfer.hxx>
 #include <BRepFilletAPI_MakeFillet2d.hxx>
 #include <BRepTools_WireExplorer.hxx>
+
+#include <BRepBuilderAPI_MakeShell.hxx>
+#include <BRepOffsetAPI_Sewing.hxx>
 
 #include <BRepOffsetAPI_MakePipe.hxx>
 #include <BRepOffsetAPI_MakePipeShell.hxx>
@@ -37,8 +43,13 @@
 #include <Geom_Surface.hxx>
 #include <Geom_Plane.hxx>
 
+#include <map>
+
 #include <exception>
 #include <assert.h>
+
+#define NOTRACE 0
+#include <nos/trace.h>
 
 using namespace servoce;
 
@@ -189,14 +200,15 @@ shape servoce::make_linear_extrude(const shape& base, const vector3& vec, bool c
 
 	//Этот хак необходим из-за тенденции некоторых алгоритмов opencascade создавать SOLID тогда,
 	//Когда можно было бы ожидать FACE
-	if (base.Shape().ShapeType() == TopAbs_SOLID)  
+	if (base.Shape().ShapeType() == TopAbs_SOLID)
 	{
 		auto fcs = base.faces();
+
 		if (fcs.size() == 1)
 		{
 			return BRepPrimAPI_MakePrism(fcs[0].Face(), vec.Vec()).Shape();
 		}
-		else 
+		else
 		{
 			throw std::logic_error("linear_extrude doesn't work with solids");
 		}
@@ -287,9 +299,9 @@ shape servoce::make_pipe(const shape& profile, const shape& path)
 }*/
 
 shape servoce::make_pipe_shell(
-	const shape& profile,
-	const shape& path,
-	bool isFrenet
+    const shape& profile,
+    const shape& path,
+    bool isFrenet
 )
 {
 	try
@@ -367,10 +379,10 @@ shape servoce::revol(const shape& proto, double angle)
 shape servoce::thicksolid(const shape& proto, const std::vector<point3>& pnts, double thickness)
 {
 	TopTools_ListOfShape facesToRemove;
-	
+
 	for (auto p : pnts)
-		facesToRemove.Append(near_face(proto,p).Face());
-	
+		facesToRemove.Append(near_face(proto, p).Face());
+
 	auto algo = BRepOffsetAPI_MakeThickSolid();
 	algo.MakeThickSolidByJoin(proto.Shape(), facesToRemove, thickness, 1.e-3);
 	return algo.Shape();
@@ -545,9 +557,269 @@ servoce::shape servoce::chamfer(const servoce::shape& shp, double r)
 	}
 }
 
-shape servoce::unify(const shape& proto)
+/*shape servoce::unify(const servoce::shape& proto)
+{
+	ShapeUpgrade_UnifySameDomain USD(proto.Shape(), false, true, false); // UnifyFaces mode on, UnifyEdges mode on, ConcatBSplines mode on.
+	USD.Build();
+	return USD.Shape();
+}*/
+
+shape _unify_face(const servoce::shape& proto)
 {
 	ShapeUpgrade_UnifySameDomain USD(proto.Shape(), true, true, true); // UnifyFaces mode on, UnifyEdges mode on, ConcatBSplines mode on.
 	USD.Build();
 	return USD.Shape();
 }
+
+#include <BOPTools_AlgoTools.hxx>
+#include <GeomAPI_IntSS.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <servoce/boolops.h>
+
+std::vector<servoce::shape> _unify_faces_array(const std::vector<servoce::shape>& input) 
+{
+	std::vector<servoce::shape> ret;
+	ret.reserve(input.size());
+	std::map<Handle(Geom_Plane), std::vector<const servoce::shape*>> fset;
+
+	for(const servoce::shape& i: input) 
+	{
+		Handle(Geom_Surface) surface = BRep_Tool::Surface(i.Face());
+		
+		nos::println("HERE");
+
+		BRepAdaptor_Surface adaptor_surface(i.Face());
+		GeomAbs_SurfaceType surface_type = adaptor_surface.GetType();
+
+		if (surface_type == GeomAbs_Plane)
+		{
+			nos::println("Plane");
+
+			Handle(Geom_Plane) pln = Handle(Geom_Plane)::DownCast(surface);
+			gp_Pln pln0 = pln->Pln(); 
+
+			bool found = false;
+			for (auto& pr : fset) 
+			{
+				Handle(Geom_Plane) key = pr.first;
+				std::vector<const servoce::shape*>& arr = pr.second;
+
+				gp_Pnt pnt; 
+				//GeomAPI_IntSS inters(key, pln, 0.000001);
+				key->D0(0,0,pnt);
+				gp_Pln pln1 = key->Pln(); 
+
+				auto dir0 = pln0.Axis().Direction();
+				auto dir1 = pln1.Axis().Direction();
+
+				PRINT(dir0.IsEqual(dir1, 0.00001));
+				PRINT(pln0.Distance(pln1.Axis().Location()));
+				PRINT(pln1.Distance(pln0.Axis().Location()));
+
+				if (
+					dir0.IsEqual(dir1, 0.00001) &&
+					abs(pln0.Distance(pln1.Axis().Location())) < 0.0000001 &&
+					abs(pln1.Distance(pln0.Axis().Location())) < 0.0000001) 
+				{
+					found = true;
+					arr.emplace_back(&i);
+					break;
+				}
+			}
+
+			if (found == false)
+				fset.emplace(std::make_pair(pln, std::vector<const servoce::shape*>{&i}));
+		}
+		
+		else { 
+			nos::println("NoPlane");
+			ret.emplace_back(i); 
+			continue; 
+		}
+	}	
+
+	for (auto pr : fset) {
+		auto farr = servoce::make_union(pr.second);
+		ret.emplace_back(_unify_face(farr));
+	}
+
+	return ret;
+}
+
+shape _unify_shell(const servoce::shape& proto)
+{
+	TRACE();
+
+	std::vector<servoce::shape> faces;
+
+	BRepOffsetAPI_Sewing mkShell;
+
+	auto newfaces = _unify_faces_array(proto.faces());
+	PRINT(newfaces.size());
+
+	for (servoce::shape& n : newfaces)
+		mkShell.Add(n.Shape());
+
+	mkShell.Perform();
+	return mkShell.SewedShape();
+}
+
+shape _unify_solid(const servoce::shape& proto)
+{
+	TRACE();
+
+	BRepBuilderAPI_MakeSolid mkSolid;
+	TopExp_Explorer explorer;
+
+	for (explorer.Init(proto.Shape(), TopAbs_SHELL); explorer.More(); explorer.Next())
+	{
+		mkSolid.Add(_unify_shell(explorer.Current()).Shell());
+	}
+
+	mkSolid.Build();
+	return mkSolid.Shape();
+}
+
+shape _unify_compound(const servoce::shape& proto)
+{
+	TRACE();
+
+	BRep_Builder builder;
+    TopoDS_Compound comp;
+    builder.MakeCompound(comp);
+	
+	TopExp_Explorer explorer;
+
+	for (explorer.Init(proto.Shape(), TopAbs_SOLID); explorer.More(); explorer.Next())
+	{
+		builder.Add(comp, _unify_solid(explorer.Current()).Solid());
+	}
+
+	for (explorer.Init(proto.Shape(), TopAbs_SHELL, TopAbs_SOLID); explorer.More(); explorer.Next())
+	{
+		builder.Add(comp, _unify_shell(explorer.Current()).Shell());
+	}
+
+	std::vector<servoce::shape> faces;
+	for (explorer.Init(proto.Shape(), TopAbs_FACE, TopAbs_SHELL); explorer.More(); explorer.Next())
+	{
+		//builder.Add(comp, _unify_face(explorer.Current()).Face());
+		faces.emplace_back(explorer.Current());
+	}
+	auto faces_new = _unify_faces_array(faces);
+
+	for (auto& f : faces_new) 
+	{
+		builder.Add(comp, f.Shape());
+	}
+	
+
+	return comp;
+}
+
+shape servoce::unify(const shape& proto)
+{
+	const TopoDS_Shape& _Shape = proto.Shape();
+
+	if (_Shape.IsNull()) Standard_Failure::Raise("Cannot remove splitter from empty shape");
+	else if (_Shape.ShapeType() == TopAbs_SOLID) return _unify_solid(proto);
+	//else if (_Shape.ShapeType() == TopAbs_SHELL) return _unify_shell(proto);
+	//else if (_Shape.ShapeType() == TopAbs_FACE)	return _unify_face(proto);	
+	else if (_Shape.ShapeType() == TopAbs_COMPOUND) return _unify_compound(proto);
+	else Standard_Failure::Raise("TODO");
+}
+
+/*
+shape servoce::unify(const shape& proto)
+{
+    if (_Shape.IsNull())
+        Standard_Failure::Raise("Cannot remove splitter from empty shape");
+
+    if (_Shape.ShapeType() == TopAbs_SOLID) {
+        const TopoDS_Solid &solid = TopoDS::Solid(_Shape);
+        BRepBuilderAPI_MakeSolid mkSolid;
+        TopExp_Explorer it;
+        for (it.Init(solid, TopAbs_SHELL); it.More(); it.Next()) {
+            const TopoDS_Shell &currentShell = TopoDS::Shell(it.Current());
+            ShapeUpgrade_UnifySameDomain USD(currentShell, true, true, true);
+            USD.build;
+            if (uniter.process()) {
+                if (uniter.isModified()) {
+                    const TopoDS_Shell &newShell = uniter.getShell();
+                    mkSolid.Add(newShell);
+                }
+                else {
+                    mkSolid.Add(currentShell);
+                }
+            }
+            else {
+                Standard_Failure::Raise("Removing splitter failed");
+                return _Shape;
+            }
+        }
+        return mkSolid.Solid();
+    }
+    /*else if (_Shape.ShapeType() == TopAbs_SHELL) {
+        const TopoDS_Shell& shell = TopoDS::Shell(_Shape);
+        ModelRefine::FaceUniter uniter(shell);
+        if (uniter.process()) {
+            return uniter.getShell();
+        }
+        else {
+            Standard_Failure::Raise("Removing splitter failed");
+        }
+    }
+    else if (_Shape.ShapeType() == TopAbs_COMPOUND) {
+        BRep_Builder builder;
+        TopoDS_Compound comp;
+        builder.MakeCompound(comp);
+
+        TopExp_Explorer xp;
+        // solids
+        for (xp.Init(_Shape, TopAbs_SOLID); xp.More(); xp.Next()) {
+            const TopoDS_Solid &solid = TopoDS::Solid(xp.Current());
+            BRepTools_ReShape reshape;
+            TopExp_Explorer it;
+            for (it.Init(solid, TopAbs_SHELL); it.More(); it.Next()) {
+                const TopoDS_Shell &currentShell = TopoDS::Shell(it.Current());
+                ModelRefine::FaceUniter uniter(currentShell);
+                if (uniter.process()) {
+                    if (uniter.isModified()) {
+                        const TopoDS_Shell &newShell = uniter.getShell();
+                        reshape.Replace(currentShell, newShell);
+                    }
+                }
+            }
+            builder.Add(comp, reshape.Apply(solid));
+        }
+        // free shells
+        for (xp.Init(_Shape, TopAbs_SHELL, TopAbs_SOLID); xp.More(); xp.Next()) {
+            const TopoDS_Shell& shell = TopoDS::Shell(xp.Current());
+            ModelRefine::FaceUniter uniter(shell);
+            if (uniter.process()) {
+                builder.Add(comp, uniter.getShell());
+            }
+        }
+        // the rest
+        for (xp.Init(_Shape, TopAbs_FACE, TopAbs_SHELL); xp.More(); xp.Next()) {
+            if (!xp.Current().IsNull())
+                builder.Add(comp, xp.Current());
+        }
+        for (xp.Init(_Shape, TopAbs_WIRE, TopAbs_FACE); xp.More(); xp.Next()) {
+            if (!xp.Current().IsNull())
+                builder.Add(comp, xp.Current());
+        }
+        for (xp.Init(_Shape, TopAbs_EDGE, TopAbs_WIRE); xp.More(); xp.Next()) {
+            if (!xp.Current().IsNull())
+                builder.Add(comp, xp.Current());
+        }
+        for (xp.Init(_Shape, TopAbs_VERTEX, TopAbs_EDGE); xp.More(); xp.Next()) {
+            if (!xp.Current().IsNull())
+                builder.Add(comp, xp.Current());
+        }
+
+        return comp;
+    }
+
+    return _Shape;*/
+//}

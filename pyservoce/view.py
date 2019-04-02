@@ -60,6 +60,9 @@ class View:
 	def __init__(self, view):
 		self.view = view
 
+	def destroy(self):
+		self.view.destroy()
+
 	def set_triedron(self):
 		self.view.set_triedron()
 
@@ -84,6 +87,10 @@ class View:
 	def redraw(self):
 		self.view.redraw()
 
+	def redraw_immediate(self):
+		self.view.redraw_immediate()
+		
+
 	def must_be_resized(self):
 		self.view.must_be_resized()
 
@@ -101,3 +108,29 @@ class View:
 
 	def direction(self):
 		return self.view.direction()
+
+
+	def set_scale(self, scl):
+		self.view.set_scale(scl)
+
+	def scale(self):
+		return self.view.scale()
+
+	def set_eye(self, e):
+		self.view.set_eye(e)
+
+	def eye(self):
+		return self.view.eye()
+
+	def set_center(self, e):
+		self.view.set_center(e)
+
+	def center(self):
+		return self.view.center()
+
+	#def set_resize(self, e):
+	#	self.view.resize(e)
+
+	def size(self):
+		return self.view.size()
+

@@ -82,6 +82,13 @@ void servoce::view::redraw()
 	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	occ->m_view->Redraw();
 }
+
+void servoce::view::redraw_immediate()
+{
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
+	occ->m_view->RedrawImmediate();
+}
+
 void servoce::view::must_be_resized()
 {
 
@@ -435,3 +442,37 @@ void servoce::viewer::display(shape_view_controller& controller)
 //{
 
 //}
+
+double servoce::view::scale()
+{
+	return occ->m_view->Scale();
+}
+
+void servoce::view::set_scale(double arg)
+{
+	occ->m_view->SetScale(arg);
+}
+
+
+/*std::pair<uint16_t, uint16_t> servoce::view::size() 
+{
+
+}
+
+void servoce::view::resize(std::pair<uint16_t, uint16_t> sz) 
+{
+
+}*/
+
+
+std::pair<uint16_t, uint16_t> servoce::view::size() 
+{
+	double w, h;
+	occ->m_view->Size(w, h);
+	return {w, h};
+}
+
+void servoce::view::destroy() 
+{
+	occ->m_view->Remove();
+}

@@ -27,6 +27,9 @@ namespace servoce
 		std::tuple<double, double, double> direction();
 		void pan(float a, float b);
 		void zoom(float a, float b, float aa, float ba);
+		
+		double scale();
+		void set_scale(double arg);
 
 		void start_mouse_rotation();
 		void mouse_rotation();
@@ -35,7 +38,11 @@ namespace servoce
 
 		void set_triedron();
 
+		std::pair<uint16_t, uint16_t> size();
+
+		void destroy();
 		void redraw();
+		void redraw_immediate();
 		void must_be_resized();
 
 		void set_gradient();
@@ -45,6 +52,9 @@ namespace servoce
 
 		servoce::point3 center();
 		void set_center(servoce::point3 pnt);
+
+		//std::pair<uint16_t, uint16_t> size();
+		//void resize(std::pair<uint16_t, uint16_t> sz);
 
 		void set_orthogonal();
 

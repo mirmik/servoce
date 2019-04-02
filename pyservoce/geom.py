@@ -22,6 +22,8 @@ class Shape(pyservoce.trans.Transformable):
 	def chamfer(self, r, refs=None): return chamfer(self, r, refs)
 	def chamfer2d(self, r, refs=None): return chamfer2d(self, r, refs)
 
+	def solids(self): return [Shape(p) for p in self.shape.solids()]
+
 	def __add__(self, oth): return Shape(self.native() + oth.native())
 	def __sub__(self, oth): return Shape(self.native() - oth.native())
 	def __xor__(self, oth): return Shape(self.native() ^ oth.native())

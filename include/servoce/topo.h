@@ -11,6 +11,7 @@
 #include <servoce/geombase.h>
 
 class TopoDS_Shape;
+class TopoDS_Shell;
 class TopoDS_Solid;
 class TopoDS_Vertex;
 class TopoDS_Edge;
@@ -68,6 +69,9 @@ namespace servoce
 		TopoDS_Wire& Wire();
 		const TopoDS_Wire& Wire() const;
 		TopoDS_Wire Wire_orEdgeToWire() const;
+
+		TopoDS_Shell& Shell();
+		const TopoDS_Shell& Shell() const;
 
 		TopoDS_Solid& Solid();
 		const TopoDS_Solid& Solid() const;

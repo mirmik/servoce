@@ -39,6 +39,9 @@ class xy:
 	def __setitem__(self, key, value):
 		self.arr[key] = value
 
+	def __len__(self):
+		return 2
+
 	x = property(get_x, set_x)
 	y = property(get_y, set_y)
 
@@ -48,6 +51,9 @@ class xyz(xy):
 	
 	def set_z(self, z): 
 		self.arr[2] = z
+
+	def __len__(self):
+		return 3
 
 	z = property(get_z, set_z)
 
@@ -76,7 +82,12 @@ class point3(xyz, pyservoce.trans.Transformable):
 			self.arr = (0, 0, 0)
 
 		elif len(args) == 1:
-			self.arr = (args[0][0], args[0][1], args[0][2])
+			if len(args[0]) == 3:
+				self.arr = (args[0][0], args[0][1], args[0][2])
+			elif len(args[0]) == 2:
+				self.arr = (args[0][0], args[0][1], 0)
+			else:
+				raise Exception("Unresolved argument: {}".format(args))
 
 		elif len(args) == 2:
 			self.arr = (args[0], args[1], 0)
@@ -112,7 +123,12 @@ class vector3(xyz, pyservoce.trans.Transformable):
 			self.arr = (0, 0, 0)
 
 		elif len(args) == 1:
-			self.arr = (args[0][0], args[0][1], args[0][2])
+			if len(args[0]) == 3:
+				self.arr = (args[0][0], args[0][1], args[0][2])
+			elif len(args[0]) == 2:
+				self.arr = (args[0][0], args[0][1], 0)
+			else:
+				raise Exception("Unresolved argument: {}".format(args))
 
 		elif len(args) == 2:
 			self.arr = (args[0], args[1], 0)

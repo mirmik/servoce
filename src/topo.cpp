@@ -96,6 +96,9 @@ const TopoDS_Wire& servoce::shape::Wire() const { return TopoDS::Wire(*m_shp); }
 TopoDS_Face& servoce::shape::Face() { return TopoDS::Face(*m_shp); }
 const TopoDS_Face& servoce::shape::Face() const { return TopoDS::Face(*m_shp); }
 
+TopoDS_Shell& servoce::shape::Shell() { return TopoDS::Shell(*m_shp); }
+const TopoDS_Shell& servoce::shape::Shell() const { return TopoDS::Shell(*m_shp); }
+
 TopoDS_Solid& servoce::shape::Solid() { return TopoDS::Solid(*m_shp); }
 const TopoDS_Solid& servoce::shape::Solid() const { return TopoDS::Solid(*m_shp); }
 
