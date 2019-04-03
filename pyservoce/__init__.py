@@ -13,7 +13,7 @@ def Scene_add(scene, obj, color=(0.6,0.6,0.8)):
 		return obj.bind_to_scene(scene, color)
 pyservoce.libservoce.Scene.add = Scene_add 
 
-pyservoce.libservoce.Shape.fillet = lambda *args, **kwargs: pyservoce.fillet(*args, **kwargs)
-pyservoce.libservoce.Shape.fillet2d = lambda *args, **kwargs: pyservoce.fillet2d(*args, **kwargs)
-pyservoce.libservoce.Shape.chamfer = lambda *args, **kwargs: pyservoce.chamfer(*args, **kwargs)
-pyservoce.libservoce.Shape.chamfer2d = lambda *args, **kwargs: pyservoce.chamfer2d(*args, **kwargs)
+pyservoce.libservoce.Shape.fillet = lambda proto, r, refs: pyservoce.fillet(proto, r, [pyservoce.point3(p) for p in refs])
+pyservoce.libservoce.Shape.fillet2d = lambda proto, r, refs: pyservoce.fillet2d(proto, r, [pyservoce.point3(p) for p in refs])
+pyservoce.libservoce.Shape.chamfer = lambda proto, r, refs: pyservoce.chamfer(proto, r, [pyservoce.point3(p) for p in refs])
+pyservoce.libservoce.Shape.chamfer2d = lambda proto, r, refs: pyservoce.chamfer2d(proto, r, [pyservoce.point3(p) for p in refs])
