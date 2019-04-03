@@ -3,7 +3,7 @@ from pyservoce.controllers import *
 
 #Patch Scene object to suport display python objects.
 Raw_Scene_add = pyservoce.libservoce.Scene.add
-def Scene_add(scene, obj, color):
+def Scene_add(scene, obj, color=(0.6,0.6,0.8)):
 	if not isinstance(color, pyservoce.libservoce.Color):
 		color = pyservoce.libservoce.Color(*color)	
 
