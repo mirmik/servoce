@@ -81,8 +81,6 @@ shape servoce::cylinder(double r, double h, bool center)
 
 shape servoce::cylinder(double r, double h, double angle, bool center)
 {
-	printf("shape servoce::cylinder(double r, double h, double angle, bool center) is deprecated");
-
 	if (!center)
 	{
 		return BRepPrimAPI_MakeCylinder(r, h, angle).Solid();
@@ -91,25 +89,6 @@ shape servoce::cylinder(double r, double h, double angle, bool center)
 	{
 		gp_Ax2 ax2(gp_Pnt(0, 0, -h / 2), gp_Vec(0, 0, 1));
 		return BRepPrimAPI_MakeCylinder(ax2, r, h, angle).Solid();
-	}
-}
-
-shape servoce::cylinder(double r, double h, double a1, double a2, bool center)
-{
-	assert(a2 > a1);
-	double diff = a2 - a1;
-
-	assert(diff > M_PI * 2);
-
-	if (!center)
-	{
-		gp_Ax2 ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1), gp_Dir(cos(a1), sin(a1), 0));
-		return BRepPrimAPI_MakeCylinder(ax2, r, h, diff).Solid();
-	}
-	else
-	{
-		gp_Ax2 ax2(gp_Pnt(0, 0, -h / 2), gp_Dir(0, 0, 1), gp_Dir(cos(a1), sin(a1), 0));
-		return BRepPrimAPI_MakeCylinder(ax2, r, h, diff).Solid();
 	}
 }
 
@@ -126,37 +105,16 @@ shape servoce::cone(double r1, double r2, double h, bool center)
 	}
 }
 
-shape servoce::cone(double r1, double r2, double h, double angle, bool center)
+shape servoce::cone(double r1, double r2, double h, double yaw, bool center)
 {
-	printf("shape servoce::cone(double r1, double r2, double h, double angle, bool center) is deprecated");
-
 	if (!center)
 	{
-		return BRepPrimAPI_MakeCone(r1, r2, h, angle).Solid();
+		return BRepPrimAPI_MakeCone(r1, r2, h, yaw).Solid();
 	}
 	else
 	{
 		gp_Ax2 ax2(gp_Pnt(0, 0, -h / 2), gp_Vec(0, 0, 1));
-		return BRepPrimAPI_MakeCone(ax2, r1, r2, h, angle).Solid();
-	}
-}
-
-shape servoce::cone(double r1, double r2, double h, double a1, double a2, bool center)
-{
-	assert(a2 > a1);
-	double diff = a2 - a1;
-
-	assert(diff > M_PI * 2);
-
-	if (!center)
-	{
-		gp_Ax2 ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1), gp_Dir(cos(a1), sin(a1), 0));
-		return BRepPrimAPI_MakeCone(ax2, r1, r2, h, diff).Solid();
-	}
-	else
-	{
-		gp_Ax2 ax2(gp_Pnt(0, 0, -h / 2), gp_Dir(0, 0, 1), gp_Dir(cos(a1), sin(a1), 0));
-		return BRepPrimAPI_MakeCone(ax2, r1, r2, h, diff).Solid();
+		return BRepPrimAPI_MakeCone(ax2, r1, r2, h, yaw).Solid();
 	}
 }
 

@@ -125,9 +125,17 @@ class ShapeView:
 		self.sctrl.hide(en)
 
 
+#class KinematicLink(Assemble):
+#	def __init__(self, parent=None, location=None):
+#		super().__init__(parent, location)
+		
+#	def add_child(self, child):
+#		self.add_part(child)
+
+
 class ShapeController(Unit):
 	def __init__(self, shape, parent=None, location=None):
-		Unit.__init__(self, parent, location)		
+		super().__init__(parent, location)		
 		self.shape = shape.unlazy() if isinstance(shape, LazyObject) else shape
 		self.views = []
 		self.color = None
@@ -168,4 +176,3 @@ class RotateConnector(Assemble):
 	def __init__(self, child=None, parent=None, location=pyservoce.libservoce.nulltrans()):
 		Assemble.__init__(self, parts=[child], parent=parent, location=location)
 		self.child = self.parts[0]
-
