@@ -109,7 +109,7 @@ TopoDS_Wire servoce::shape::Wire_orEdgeToWire() const
 {
 	if (Shape().ShapeType() == TopAbs_WIRE)
 		return Wire();
-	else if (Shape().ShapeType() == TopAbs_EDGE)
+	else 
 		return BRepBuilderAPI_MakeWire(Edge()).Wire();
 }
 

@@ -316,6 +316,10 @@ shape servoce::loft(const std::vector<shape>& vec, bool smooth)
 	BRepOffsetAPI_ThruSections builder(Standard_True, !smooth);
 	//builder.SetSmoothing(smooth);
 
+	for (auto v : vec)
+		if (v.Shape().ShapeType() == TopAbs_FACE) 
+			Standard_Failure::Raise("Loft argument must be array of WIRES");
+	
 	for (auto& r : vec)
 	{
 		builder.AddWire(r.Wire_orEdgeToWire());
