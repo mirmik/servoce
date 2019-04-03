@@ -5,11 +5,8 @@
 #include <servoce/viewer.h>
 #include <servoce/topo.h>
 
-//#include <vector>
 #include <list>
-//#include <cassert>
 #include <memory>
-//#include <TopoDS_Vertex.hxx>
 
 class AIS_Shape;
 
@@ -24,7 +21,6 @@ namespace servoce
 		servoce::viewer vwer;
 
 		scene();
-		//~scene();
 
 		servoce::viewer& viewer() { return vwer; }
 		const servoce::viewer& viewer() const { return vwer; }
@@ -35,6 +31,13 @@ namespace servoce
 
 		std::vector<servoce::shape> shapes_array();
 		std::vector<servoce::color> color_array();
+
+		std::shared_ptr<servoce::shape_view> operator[](int idx) 
+		{ 
+			auto it = shape_views.begin();
+			std::advance(it, idx);
+			return *it; 
+		}
 	};
 }
 

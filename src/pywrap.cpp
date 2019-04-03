@@ -413,6 +413,7 @@ PYBIND11_MODULE(libservoce, m)
 	.def("append", (void(scene::*)(const scene&))&scene::append, py::arg("scene"), ungil())
 	.def("shapes_array", (std::vector<shape>(scene::*)())&scene::shapes_array, ungil())
 	.def("color_array", (std::vector<color>(scene::*)())&scene::color_array, ungil())
+	.def("__getitem__", &scene::operator[])
 	//.def("__getitem__", [](const scene & s, size_t i) { return s[i]; }, ungil())
 	;
 
