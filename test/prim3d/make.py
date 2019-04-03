@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#coding: utf-8
+# coding: utf-8
 
 import licant
 import licant.libs
@@ -10,25 +10,28 @@ licant.libs.include("nos")
 
 import os
 
-class Found(Exception): pass
-try:
-	for root, dirs, files in os.walk("/usr/include"):
-		for dr in dirs:
-			if dr == "qt5":
-				libqt_include_path = os.path.join(root, dr)
-				raise Found()
-	else:
-		print("NeedInstall Qt5")
-		exit(-1)
-except (Found):
-	pass
 
-application("target", 
-	sources = [
-		"main.cpp"
-	],
-	include_paths = [libqt_include_path, "."],
-	mdepends = ["servoce_sources", "nos"]
+class Found(Exception):
+    pass
+
+
+try:
+    for root, dirs, files in os.walk("/usr/include"):
+        for dr in dirs:
+            if dr == "qt5":
+                libqt_include_path = os.path.join(root, dr)
+                raise Found()
+    else:
+        print("NeedInstall Qt5")
+        exit(-1)
+except (Found):
+    pass
+
+application(
+    "target",
+    sources=["main.cpp"],
+    include_paths=[libqt_include_path, "."],
+    mdepends=["servoce_sources", "nos"],
 )
 
-licant.ex(default = "target")
+licant.ex(default="target")

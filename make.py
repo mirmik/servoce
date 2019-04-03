@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#coding: utf-8
+# coding: utf-8
 
 import licant
 from licant.cxx_modules import shared_library
@@ -14,18 +14,16 @@ licant.include("nos", "nos/nos.g.py")
 install_lib_dir = "/usr/lib/"
 install_inc_dir = "/usr/local/include/"
 
-shared_library("cxxbuild/libservoce.so", 
-	builddir = 'cxxbuild',
-	mdepends = [
-		"servoce_sources",
-		"nos"
-	],
+shared_library(
+    "cxxbuild/libservoce.so", builddir="cxxbuild", mdepends=["servoce_sources", "nos"]
 )
+
 
 @licant.routine
 def install():
-	os.system("cp cxxbuild/libservoce.so {}".format(install_lib_dir+"libservoce.so"))
-	os.system("cp -r include/servoce {}".format(install_inc_dir))
-	print("success install")
+    os.system("cp cxxbuild/libservoce.so {}".format(install_lib_dir + "libservoce.so"))
+    os.system("cp -r include/servoce {}".format(install_inc_dir))
+    print("success install")
 
-licant.ex(default = "cxxbuild/libservoce.so", colorwrap = True)
+
+licant.ex(default="cxxbuild/libservoce.so", colorwrap=True)
