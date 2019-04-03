@@ -1,4 +1,6 @@
 #include <servoce/topo.h>
+#include <servoce/face.h>
+#include <servoce/solid.h>
 
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Solid.hxx>
@@ -109,7 +111,7 @@ TopoDS_Wire servoce::shape::Wire_orEdgeToWire() const
 {
 	if (Shape().ShapeType() == TopAbs_WIRE)
 		return Wire();
-	else 
+	else
 		return BRepBuilderAPI_MakeWire(Edge()).Wire();
 }
 
@@ -229,44 +231,52 @@ servoce::topoenum servoce::shape::type()
 std::vector<servoce::shape> servoce::shape::solids() const
 {
 	std::vector<servoce::shape> ret;
+
 	for (TopExp_Explorer ex(Shape(), TopAbs_SOLID); ex.More(); ex.Next())
 	{
 		TopoDS_Solid obj = TopoDS::Solid(ex.Current());
 		ret.emplace_back(obj);
 	}
+
 	return ret;
 }
 
 std::vector<servoce::shape> servoce::shape::faces() const
 {
 	std::vector<servoce::shape> ret;
+
 	for (TopExp_Explorer ex(Shape(), TopAbs_FACE); ex.More(); ex.Next())
 	{
 		TopoDS_Face obj = TopoDS::Face(ex.Current());
 		ret.emplace_back(obj);
 	}
+
 	return ret;
 }
 
 std::vector<servoce::shape> servoce::shape::wires() const
 {
 	std::vector<servoce::shape> ret;
+
 	for (TopExp_Explorer ex(Shape(), TopAbs_WIRE); ex.More(); ex.Next())
 	{
 		TopoDS_Wire obj = TopoDS::Wire(ex.Current());
 		ret.emplace_back(obj);
 	}
+
 	return ret;
 }
 
 std::vector<servoce::shape> servoce::shape::edges() const
 {
 	std::vector<servoce::shape> ret;
+
 	for (TopExp_Explorer ex(Shape(), TopAbs_EDGE); ex.More(); ex.Next())
 	{
 		TopoDS_Edge obj = TopoDS::Edge(ex.Current());
 		ret.emplace_back(obj);
 	}
+
 	return ret;
 }
 
@@ -349,19 +359,23 @@ servoce::shape operator+(const servoce::shape& th, const servoce::point3& pnt)
 	return servoce::make_union(th, pnt.Vtx());
 }*/
 
-std::string servoce::shape::shapetype_as_string() 
+std::string servoce::shape::shapetype_as_string()
 {
-	switch (Shape().ShapeType()) 
+	switch (Shape().ShapeType())
 	{
 		case TopAbs_WIRE: return "wire";
+
 		case TopAbs_EDGE: return "edge";
+
 		case TopAbs_COMPOUND: return "compound";
+
 		case TopAbs_FACE: return "face";
+
 		case TopAbs_SOLID: return "solid";
 	}
 }
 
-servoce::BoundBox::BoundBox(const servoce::shape& shp) 
+servoce::BoundBox::BoundBox(const servoce::shape& shp)
 {
 	Bnd_Box B;
 	BRepBndLib::Add(shp.Shape(), B);
@@ -369,4 +383,47 @@ servoce::BoundBox::BoundBox(const servoce::shape& shp)
 	xdim = xmax - xmin;
 	ydim = ymax - ymin;
 	zdim = zmax - zmin;
+}
+
+
+
+
+servoce::shape servoce::shape::fillet(double r, const std::vector<servoce::point3>& refs)
+{
+	return servoce::fillet(*this, r, refs);
+}
+
+servoce::shape servoce::shape::fillet(double r)
+{
+	return servoce::fillet(*this, r);
+}
+
+servoce::shape servoce::shape::chamfer(double r, const std::vector<servoce::point3>& refs)
+{
+	return servoce::chamfer(*this, r, refs);
+}
+
+servoce::shape servoce::shape::chamfer(double r)
+{
+	return servoce::chamfer(*this, r);
+}
+
+servoce::shape servoce::shape::fillet2d(double r, const std::vector<servoce::point3>& refs)
+{
+	return servoce::fillet2d(*this, r, refs);
+}
+
+servoce::shape servoce::shape::fillet2d(double r)
+{
+	return servoce::fillet2d(*this, r);
+}
+
+servoce::shape servoce::shape::chamfer2d(double r, const std::vector<servoce::point3>& refs)
+{
+	return servoce::chamfer2d(*this, r, refs);
+}
+
+servoce::shape servoce::shape::chamfer2d(double r)
+{
+	return servoce::chamfer2d(*this, r);
 }

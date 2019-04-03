@@ -38,6 +38,21 @@ using namespace servoce;
 
 using ungil = py::call_guard<py::gil_scoped_release>;
 
+std::vector<servoce::point3> points(const py::list& lst) 
+{
+	std::vector<servoce::point3> ret;
+	ret.reserve(lst.size());
+	for (auto& l : lst) 
+	{
+		bool b = py::isinstance<py::list>(l);
+		if (b)
+			ret.emplace_back(servoce::point3(l.cast<py::list>()));
+		else 
+			ret.emplace_back(l.cast<servoce::point3>());
+	}
+	return ret;
+} 
+
 PYBIND11_MODULE(libservoce, m)
 {
 //EXCEPTONS
@@ -189,6 +204,21 @@ PYBIND11_MODULE(libservoce, m)
 	.def("wires", &shape::wires, ungil())
 
 	.def("shapetype", &shape::shapetype_as_string, ungil())
+
+	.def("fillet", (shape(shape::*)(double, const std::vector<point3>&))&shape::fillet, ungil(), py::arg("r"), py::arg("refs"))
+	.def("fillet", (shape(shape::*)(double))&shape::fillet, ungil(), py::arg("r"))
+	.def("chamfer", (shape(shape::*)(double, const std::vector<point3>&))&shape::chamfer, ungil(), py::arg("r"), py::arg("refs"))
+	.def("chamfer", (shape(shape::*)(double))&shape::chamfer, ungil(), py::arg("r"))
+	
+	.def("fillet2d", (shape(shape::*)(double, const std::vector<point3>&))&shape::fillet2d, ungil(), py::arg("r"), py::arg("refs"))
+	.def("fillet2d", (shape(shape::*)(double))&shape::fillet2d, ungil(), py::arg("r"))
+	.def("chamfer2d", (shape(shape::*)(double, const std::vector<point3>&))&shape::chamfer2d, ungil(), py::arg("r"), py::arg("refs"))
+	.def("chamfer2d", (shape(shape::*)(double))&shape::chamfer2d, ungil(), py::arg("r"))
+	
+	.def("fillet", [](const shape& shp, double r, const py::list& arr) { return fillet(shp,r,points(arr)); }, ungil(), py::arg("r"), py::arg("refs"))
+	.def("chamfer", [](const shape& shp, double r, const py::list& arr) { return fillet(shp,r,points(arr)); }, ungil(), py::arg("r"), py::arg("refs"))
+	.def("chamfer2d", [](const shape& shp, double r, const py::list& arr) { return fillet(shp,r,points(arr)); }, ungil(), py::arg("r"), py::arg("refs"))
+	.def("fillet2d", [](const shape& shp, double r, const py::list& arr) { return fillet(shp,r,points(arr)); }, ungil(), py::arg("r"), py::arg("refs"))
 	;
 
 	m.def("fillet", (shape(*)(const shape&, double, const std::vector<point3>&))&servoce::fillet, ungil(), py::arg("shp"), py::arg("r"), py::arg("refs"));

@@ -121,6 +121,15 @@ namespace servoce
 		std::vector<servoce::shape> wires() const;
 		std::vector<servoce::shape> edges() const;
 
+		shape fillet(double r, const std::vector<point3>& refs);
+		shape fillet(double r);
+		shape chamfer(double r, const std::vector<point3>& refs);
+		shape chamfer(double r);
+		shape fillet2d(double r, const std::vector<point3>& refs);
+		shape fillet2d(double r);
+		shape chamfer2d(double r, const std::vector<point3>& refs);
+		shape chamfer2d(double r);
+
 		std::pair<servoce::point3, servoce::point3> sfvertex();
 		bool is_closed(); // for wire
 
