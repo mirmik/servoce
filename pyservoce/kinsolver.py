@@ -67,9 +67,9 @@ class spdbivec3:
 		self.w = w
 		self.v = v
 
-	def transform(self, trans)
-		res_w = trans.rotate(w);
-		res_v = trans.rotate(cross(self.w, trans.mov) + self.v);
+	def transform(self, trans):
+		res_w = trans.rotate(w)
+		res_v = trans.rotate(cross(self.w, trans.mov) + self.v)
 		return spdbivec3(res_w, res_v)
 
 class abstract_link:
