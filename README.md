@@ -26,3 +26,9 @@ python3 -m pip install licant
 ```sh
 python3 setup.py install --user
 ```
+
+Depend repositories:
+--------------------
+[](https://github.com/mirmik/igris)
+[](https://github.com/mirmik/nos)
+[](https://github.com/mirmik/licant)
