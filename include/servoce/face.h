@@ -27,6 +27,8 @@ namespace servoce
 
 	shape fill(const servoce::shape& arr);
 
+	shape infplane();
+
 	//sweep2d
 	//shape make_sweep(const servoce::shape& profile, const servoce::shape& path); //Не нужна.
 

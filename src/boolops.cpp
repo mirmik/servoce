@@ -5,12 +5,15 @@
 
 #include <BRepAlgoAPI_Fuse.hxx>
 #include <BRepAlgoAPI_Common.hxx>
+#include <BRepAlgoAPI_Section.hxx>
 #include <BRepAlgoAPI_Cut.hxx>
 #include <TopExp_Explorer.hxx>
 
 #include <chrono>
 #include <iostream>
 #include <TopoDS.hxx>
+
+#include <servoce/face.h>
 
 static inline TopoDS_Shape __make_union(const TopoDS_Shape& a, const TopoDS_Shape& b)
 {
@@ -109,15 +112,6 @@ servoce::shape servoce::make_difference(const std::vector<const servoce::shape*>
 	return ret;
 }
 
-/*
-servoce::shape servoce::boolops::make_difference(const std::vector<const servoce::shape*>& vec) {
-	TopoDS_Shape ret = vec[0]->Shape();
-	for (int i = 1; i < vec.size(); ++i) {
-		ret = __make_difference(ret, vec[i]->Shape());
-	}
-	return ret;
-}*/
-
 servoce::shape servoce::make_intersect(const std::vector<const servoce::shape*>& vec)
 {
 	TopoDS_Shape ret = vec[0]->Shape();
@@ -129,11 +123,27 @@ servoce::shape servoce::make_intersect(const std::vector<const servoce::shape*>&
 
 	return ret;
 }
-/*
-servoce::shape servoce::boolops::make_intersect(const std::vector<const servoce::shape*>& vec) {
-	TopoDS_Shape ret = vec[0]->Shape();
-	for (int i = 1; i < vec.size(); ++i) {
-		ret = __make_intersect(ret, vec[i]->Shape());
+
+///////////////////////////SECTION ALGO///////////////////////////////////////
+static inline TopoDS_Shape __make_section(const TopoDS_Shape& a, 
+	const TopoDS_Shape& b)
+{
+	BRepAlgoAPI_Section algo(a, b);//.Shape();
+	algo.Build();
+	if ( ! algo.IsDone() ) {
+		printf("warn: section algotithm failed\n");
 	}
-	return ret;
-}*/
+	return algo.Shape();
+}
+
+servoce::shape servoce::make_section(const servoce::shape& a, 
+	const servoce::shape& b)
+{
+	return __make_section(a.Shape(), b.Shape());
+}
+
+servoce::shape servoce::make_section(const servoce::shape& a)
+{
+	return make_section(a, servoce::infplane());
+}
+/////////////////////////////////////////////////////////////////////////////

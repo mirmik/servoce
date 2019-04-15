@@ -146,8 +146,6 @@ namespace servoce
 		BoundBox(const servoce::shape& shp);
 	};
 
-	shape make_section(const shape& shp);
-
 	shape	near_face		(const shape& shp, const point3& pnt);
 	shape	near_edge		(const shape& shp, const point3& pnt);
 	shape 	near_vertex		(const shape& shp, const point3& pnt);

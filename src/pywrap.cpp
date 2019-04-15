@@ -278,6 +278,8 @@ PYBIND11_MODULE(libservoce, m)
 	m.def("polygon", 	(shape(*)(const std::vector<point3>&))&polygon, ungil(), py::arg("pnts"));
 	m.def("textshape", 	textshape, ungil(), py::arg("text"), py::arg("fontpath"), py::arg("size"));
 
+	m.def("infplane", 	infplane, ungil());
+
 	m.def("fill", &fill, ungil());
 
 //PRIM1D
@@ -315,6 +317,8 @@ PYBIND11_MODULE(libservoce, m)
 	m.def("union", (shape(*)(const std::vector<const shape*>&))&make_union, ungil());
 	m.def("difference", (shape(*)(const std::vector<const shape*>&))&make_difference, ungil());
 	m.def("intersect", (shape(*)(const std::vector<const shape*>&))&make_intersect, ungil());
+	m.def("section", (shape(*)(const shape&, const shape&))&make_section, ungil());
+	m.def("section", (shape(*)(const shape&))&make_section, ungil());
 
 //TRANS
 	py::class_<transformation>(m, "transformation")

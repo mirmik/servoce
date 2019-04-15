@@ -17,6 +17,8 @@
 #include <BRepTools_WireExplorer.hxx>
 #include <TopExp_Explorer.hxx>
 
+#include <gp_Pln.hxx>
+
 #include <BRepAdaptor_Curve.hxx>
 
 #include <BRepOffsetAPI_MakePipe.hxx>
@@ -211,4 +213,12 @@ servoce::shape servoce::chamfer2d(const servoce::shape& shp, double r, const std
 servoce::shape servoce::chamfer2d(const servoce::shape& shp, double r)
 {
 	throw std::runtime_error("chamfer2d. TODO.");
+}
+
+
+servoce::shape servoce::infplane()
+{
+	//Handle(Geom_Plane) plane = new Geom_Plane(gp_Pnt(0,0,0), gp_Vec(0,0,1));
+	TopoDS_Face aFace = BRepBuilderAPI_MakeFace(gp_Pln(gp_Pnt(0,0,0), gp_Vec(0,0,1)));
+	return aFace;
 }

@@ -170,11 +170,11 @@ servoce::point3 servoce::shape::center()
 	return point3(centerMass);
 }
 
-servoce::shape servoce::make_section(const servoce::shape& shp)
-{
-	TopoDS_Face face = BRepBuilderAPI_MakeFace(gp_Pln(gp_Pnt(0, 0, 0), gp_Vec(0, 0, 1)));
-	return BRepAlgoAPI_Common(shp.Shape(), face).Shape();
-}
+//servoce::shape servoce::make_section(const servoce::shape& shp)
+//{
+//	TopoDS_Face face = BRepBuilderAPI_MakeFace(gp_Pln(gp_Pnt(0, 0, 0), gp_Vec(0, 0, 1)));
+//	return BRepAlgoAPI_Common(shp.Shape(), face).Shape();
+//}
 
 servoce::shape servoce::shape::fill()
 {

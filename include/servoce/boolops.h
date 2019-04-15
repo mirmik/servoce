@@ -15,6 +15,9 @@ namespace servoce
 	shape make_union(const std::vector<const shape*>& vec);
 	shape make_difference(const std::vector<const shape*>& vec);
 	shape make_intersect(const std::vector<const shape*>& vec);
+
+	shape make_section(const shape& a, const shape& b);
+	shape make_section(const shape& shp);
 }
 
 #endif
