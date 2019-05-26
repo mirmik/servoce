@@ -48,7 +48,7 @@
 #include <exception>
 #include <assert.h>
 
-#define NOTRACE 0
+#define NOTRACE 1
 #include <nos/trace.h>
 
 using namespace servoce;

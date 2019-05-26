@@ -99,7 +99,7 @@ servoce::shape servoce::ellipse(double r1, double r2, double a1, double a2, bool
 servoce::shape servoce::polygon(const servoce::point3* pnts, size_t size)
 {
 	BRepBuilderAPI_MakePolygon mk;
-	for (uint i = 0; i < size; ++i) mk.Add(pnts[i].Pnt());
+	for (unsigned int i = 0; i < size; ++i) mk.Add(pnts[i].Pnt());
 	mk.Close();
 	return BRepBuilderAPI_MakeFace(mk).Shape();
 }

@@ -20,8 +20,9 @@ namespace pybind11
 
 namespace servoce
 {
-	struct vector3 : public linalg::vec<double, 3>
+	class vector3 : public linalg::vec<double, 3>
 	{
+	public:
 		using vec = linalg::vec<double, 3>;
 		vector3() : vec{0,0,0} {}
 		vector3(const gp_Vec& vec);
@@ -37,10 +38,11 @@ namespace servoce
 		bool operator!=(const vector3& oth) const { return oth.x != x || oth.y != y || oth.z != z; }
 		vector3 operator-() const { return vector3(-x, -y, -z); }
 
-	} __attribute__((packed));
+	};// __attribute__((packed));
 
-	struct point3 : public linalg::vec<double, 3>
+	class point3 : public linalg::vec<double, 3>
 	{
+	public:
 		using vec = linalg::vec<double, 3>;
 		point3() : vec{0,0,0} {}
 		point3(const gp_Pnt& pnt);
@@ -75,7 +77,7 @@ namespace servoce
 		bool operator < (const servoce::point3& b) { 
 			return lexless_xyz(*this, b);
 		}
-	} __attribute__((packed));
+	};// __attribute__((packed));
 
 
 	static inline vector3 operator/(const vector3& v, double a) 
@@ -101,8 +103,9 @@ namespace servoce
 
 
 
-	struct point2 : public linalg::vec<double, 2>
+	class point2 : public linalg::vec<double, 2>
 	{
+	public:
 		using vec = linalg::vec<double, 2>;
 		point2() : vec{0,0} {}
 		point2(const gp_Pnt2d& pnt);
@@ -119,7 +122,7 @@ namespace servoce
 		bool operator < (const servoce::point2& b) { 
 			return lexless_xy(*this, b);
 		}
-	} __attribute__((packed));
+	};// __attribute__((packed));
 }
 
 #endif

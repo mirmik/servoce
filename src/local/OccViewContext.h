@@ -4,6 +4,19 @@
 #include <string>
 
 #include <OpenGl_GraphicDriver.hxx>
+
+#include <V3d_View.hxx>
+#include <V3d_AmbientLight.hxx>
+#include <V3d_DirectionalLight.hxx>
+
+#include <Aspect_Handle.hxx>
+#include <Aspect_DisplayConnection.hxx>
+
+#if defined(WNT) || defined(_MSC_VER)
+#include <WNT_Window.hxx>
+#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+#include <Cocoa_Window.hxx>
+#else
 #undef Bool
 #undef CursorShape
 #undef None
@@ -13,21 +26,10 @@
 #undef FocusOut
 #undef FontChange
 #undef Expose
-
-#include <V3d_View.hxx>
-#include <V3d_AmbientLight.hxx>
-#include <V3d_DirectionalLight.hxx>
-
-#include <Aspect_Handle.hxx>
-#include <Aspect_DisplayConnection.hxx>
-
-#ifdef WNT
-#include <WNT_Window.hxx>
-#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
-#include <Cocoa_Window.hxx>
-#else
 #include <Xw_Window.hxx>
+#include <X11/Xlib.h>
 #endif
+
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_Shape.hxx>
 #include <AIS_Axis.hxx>
@@ -35,8 +37,8 @@
 
 //debug
 #include <nos/trace.h>
+#include <igris/util/bug.h>
 
-#include <X11/Xlib.h>
 #include <mutex>
 
 extern Handle(Aspect_DisplayConnection) g_displayConnection;
@@ -73,7 +75,15 @@ class OccViewerContext;
 struct OccViewWindow
 {
 	Handle(V3d_View) m_view;
+
+#if defined(WNT) || defined(_MSC_VER)
+	Handle(WNT_Window) m_window;
+#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+	Handle(Cocoa_Window) m_window;
+#else
 	Handle(Xw_Window) m_window;
+#endif
+
 	OccViewerContext* parent;
 	int winddesc;
 
@@ -89,18 +99,37 @@ public:
 		TRACE();
 		std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 		static int i = 0;
+		
+#if defined(WNT) || defined(_MSC_VER)
+		//m_window = new WNT_Window ((std::string("virtual") + std::to_string(i++)).c_str(), 0, 0, w, h);
+		BUG();
+#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+		m_window = new Cocoa_Window ((std::string("virtual") + std::to_string(i++)).c_str(), 0, 0, w, h);
+		m_window->SetVirtual  (Standard_True);
+		winddesc = m_window->NativeHandle();
+		m_view->SetWindow  (m_window);
+#else
 		m_window = new Xw_Window (GetDisplayConnection(), (std::string("virtual") + std::to_string(i++)).c_str(), 0, 0, w, h);
 		m_window->SetVirtual  (Standard_True);
 		winddesc = m_window->NativeHandle();
 		m_view->SetWindow  (m_window);
+#endif
 	}
 
-	void set_window(int wind)
+	void set_window(int window_handle)
 	{
 		TRACE();
 		std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
-		winddesc = wind;
-		m_window = new Xw_Window(GetDisplayConnection(), wind);
+		winddesc = window_handle;
+
+#if defined(WNT) || defined(_MSC_VER)
+        m_window = new WNT_Window((Aspect_Handle) window_handle);
+#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+        m_window = new Cocoa_Window((NSView *) window_handle);
+#else
+        m_window = new Xw_Window(GetDisplayConnection(), (Window) window_handle);
+#endif
+
 		m_view->SetWindow(m_window);
 		//if (!m_window->IsMapped()) m_window->Map();
 		//m_window->DoResize();

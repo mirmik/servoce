@@ -64,17 +64,17 @@ servoce::shape servoce::make_union(const std::vector<const servoce::shape*>& vec
 {
 	if (vec.size() == 1) return *vec[0];
 
-	uint nrsize;
-	uint rsize = vec.size() / 2 + vec.size() % 2;
+	unsigned int nrsize;
+	unsigned int rsize = vec.size() / 2 + vec.size() % 2;
 	//TopoDS_Shape narr[rsize];
 	TopoDS_Shape* narr = (TopoDS_Shape*) alloca(sizeof(TopoDS_Shape) * rsize);
 
-	for (uint i = 0; i < rsize; ++i)
+	for (unsigned int i = 0; i < rsize; ++i)
 	{
 		new (&narr[i]) TopoDS_Shape();
 	}
 
-	for (uint i = 0; i < vec.size() / 2; ++i)
+	for (unsigned int i = 0; i < vec.size() / 2; ++i)
 	{
 		narr[i] = __make_union(vec[i]->Shape(), vec[vec.size() - i - 1]->Shape());
 	}
@@ -88,7 +88,7 @@ servoce::shape servoce::make_union(const std::vector<const servoce::shape*>& vec
 	{
 		nrsize = rsize / 2 + rsize % 2;;
 
-		for (uint i = 0; i < rsize / 2; ++i)
+		for (unsigned int i = 0; i < rsize / 2; ++i)
 			narr[i] = __make_union(narr[i], narr[rsize - i - 1]);
 
 		if (rsize % 2)
@@ -104,7 +104,7 @@ servoce::shape servoce::make_difference(const std::vector<const servoce::shape*>
 {
 	TopoDS_Shape ret = vec[0]->Shape();
 
-	for (uint i = 1; i < vec.size(); ++i)
+	for (unsigned int i = 1; i < vec.size(); ++i)
 	{
 		ret = __make_difference(ret, vec[i]->Shape());
 	}
@@ -116,7 +116,7 @@ servoce::shape servoce::make_intersect(const std::vector<const servoce::shape*>&
 {
 	TopoDS_Shape ret = vec[0]->Shape();
 
-	for (uint i = 1; i < vec.size(); ++i)
+	for (unsigned int i = 1; i < vec.size(); ++i)
 	{
 		ret = __make_intersect(ret, vec[i]->Shape());
 	}

@@ -5,8 +5,8 @@
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 
-struct Geom2d_Curve;
-struct Geom2d_TrimmedCurve;
+class Geom2d_Curve;
+class Geom2d_TrimmedCurve;
 
 namespace servoce 
 {

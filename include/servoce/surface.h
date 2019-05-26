@@ -4,15 +4,16 @@
 #include <servoce/curve2.h>
 #include <servoce/topo.h>
 
-struct Geom_CylindricalSurface;
-struct Geom_Surface;
+class Geom_CylindricalSurface;
+class Geom_Surface;
 
 namespace servoce 
 {
 	namespace surface 
 	{
-		struct surface 
+		class surface 
 		{
+		public:
 			Geom_Surface* surf;
 			surface(Geom_Surface* surf) : surf(surf) {}
 			servoce::shape map(servoce::curve2::curve2& tcrv);

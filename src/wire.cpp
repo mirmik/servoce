@@ -50,7 +50,7 @@ servoce::shape servoce::make_polysegment(const std::vector<servoce::point3>& pnt
 
 	BRepBuilderAPI_MakeWire mkWire;
 
-	for (uint i = 0; i < pnts.size() - 1; ++i)
+	for (unsigned int i = 0; i < pnts.size() - 1; ++i)
 	{
 		mkWire.Add(BRepBuilderAPI_MakeEdge(pnts[i].Pnt(), pnts[i + 1].Pnt()));
 	}
@@ -237,7 +237,7 @@ servoce::shape servoce::make_interpolate(const std::vector<servoce::point3>& pnt
 {
 	Handle(TColgp_HArray1OfPnt) _pnts = new TColgp_HArray1OfPnt(1, pnts.size());
 
-	for (uint i = 0; i < pnts.size(); ++i) _pnts->SetValue(i + 1, pnts[i].Pnt());
+	for (unsigned int i = 0; i < pnts.size(); ++i) _pnts->SetValue(i + 1, pnts[i].Pnt());
 
 	/*Handle(TColStd_HArray1OfReal) _params = new TColStd_HArray1OfReal(1, pnts.size());
 	for (int i = 0; i < pnts.size(); ++i) _params->SetValue(i + 1, params[i]);*/
@@ -249,9 +249,9 @@ servoce::shape servoce::make_interpolate(const std::vector<servoce::point3>& pnt
 		TColgp_Array1OfVec _tang(1, tang.size());
 		Handle(TColStd_HArray1OfBoolean) _bools = new TColStd_HArray1OfBoolean(1, tang.size());
 
-		for (uint i = 0; i < pnts.size(); ++i) _tang.SetValue(i + 1, tang[i].Vec());
+		for (unsigned int i = 0; i < pnts.size(); ++i) _tang.SetValue(i + 1, tang[i].Vec());
 
-		for (uint i = 0; i < pnts.size(); ++i) _bools->SetValue(i + 1, tang[i] != servoce::vector3(0, 0, 0));
+		for (unsigned int i = 0; i < pnts.size(); ++i) _bools->SetValue(i + 1, tang[i] != servoce::vector3(0, 0, 0));
 
 		algo.Load(_tang, _bools);
 	}
@@ -264,7 +264,7 @@ servoce::shape servoce::make_interpolate(const std::vector<servoce::point3>& pnt
 {
 	Handle(TColgp_HArray1OfPnt) _pnts = new TColgp_HArray1OfPnt(1, pnts.size());
 
-	for (uint i = 0; i < pnts.size(); ++i) _pnts->SetValue(i + 1, pnts[i].Pnt());
+	for (unsigned int i = 0; i < pnts.size(); ++i) _pnts->SetValue(i + 1, pnts[i].Pnt());
 
 	GeomAPI_Interpolate algo(_pnts, /*_params,*/ closed, 0.0000001);
 

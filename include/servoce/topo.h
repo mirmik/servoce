@@ -31,8 +31,9 @@ namespace servoce
 		compound
 	};
 
-	struct shape
+	class shape
 	{
+	public:
 		TopoDS_Shape* m_shp = nullptr;
 		shape() {};
 		shape(TopoDS_Shape* shp);

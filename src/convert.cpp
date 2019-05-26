@@ -15,7 +15,10 @@
 #include <BRepAdaptor_Curve.hxx>
 
 #include <nos/print.h>
-#include <nos/util/string.h>
+#include <nos/fprint.h>
+#include <igris/util/string.h>
+
+using namespace nos::argument_literal;
 
 bool servoce::make_stl(const servoce::shape& shp, const std::string& path, double deflection)
 {

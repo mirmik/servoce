@@ -7,6 +7,7 @@
 
 #include <mutex>
 
+#include <assert.h>
 #include <nos/trace.h>
 
 //servoce::viewer::viewer(servoce::scene& scn) : viewer()
@@ -224,6 +225,12 @@ std::vector<unsigned char> servoce::view::rawarray(int w, int h)
 	return rawarray();
 }
 
+
+#if defined(WNT) || defined(_MSC_VER)
+void servoce::view::see(int width, int height) { BUG(); }
+#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+void servoce::view::see(int width, int height) { BUG(); }
+#else
 void servoce::view::see(int width, int height)
 {
 	TRACE();
@@ -300,6 +307,7 @@ void servoce::view::see(int width, int height)
 
 	return;
 }
+#endif
 
 
 

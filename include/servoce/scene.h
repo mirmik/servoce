@@ -12,11 +12,12 @@ class AIS_Shape;
 
 namespace servoce
 {
-	struct scene;
-	struct viewer;
+	class scene;
+	class viewer;
 
-	struct scene
+	class scene
 	{
+	public:
 		std::list<std::shared_ptr<shape_view>> shape_views;
 		servoce::viewer vwer;
 
