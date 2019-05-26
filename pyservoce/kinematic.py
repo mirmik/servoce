@@ -21,7 +21,7 @@ class ActiveLink(KinematicLink):
 
 
 class Actuator(ActiveLink):
-	ActiveLink.__init__(self, )
+	def __init__(self):
 		super().__init__(self)
 		self.vec = vector3(vec)
 		set_coord(value)

@@ -83,6 +83,14 @@ pyservoce_lib = Extension(
     ],
 )
 
+pyservoce_lib2 = Extension(
+    "pyservoce.libservoce",
+    sources= ["src/test.cpp"],
+    libraries=[
+        "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\TKernel",
+    ],
+)
+
 setup(
     name="pyservoce",
     packages=["pyservoce"],
@@ -98,6 +106,6 @@ setup(
     classifiers=[],
     package_data={"pyservoce": "libs\\*"},
     include_package_data=True,
-    ext_modules=[pyservoce_lib],
+    ext_modules=[pyservoce_lib2],
     cmdclass={"bdist_wheel": bdist_wheel},
 )

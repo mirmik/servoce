@@ -112,7 +112,9 @@ servoce::shape servoce::polygon(const std::vector<servoce::point3>& pnts)
 servoce::shape servoce::ngon(double r, int n, bool wire)
 {
 	double angle;
-	servoce::point3* pnts = (servoce::point3*) alloca(sizeof(servoce::point3) * n);
+	std::vector<servoce::point3> pnts;
+	pnts.resize(n);
+	//servoce::point3* pnts = (servoce::point3*) alloca(sizeof(servoce::point3) * n);
 	for (int i = 0; i < n; ++i)
 	{
 		angle = 2 * M_PI / n * i;
@@ -124,7 +126,7 @@ servoce::shape servoce::ngon(double r, int n, bool wire)
 		for (int i = 0; i < n; ++i) pntsvec.push_back(pnts[i]);
 		return servoce::make_polysegment(pntsvec, true);
 	}
-	return polygon(pnts, n);
+	return polygon(pnts.data(), n);
 }
 
 servoce::shape servoce::rectangle(double a, double b, bool center, bool wire)
