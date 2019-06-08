@@ -160,8 +160,6 @@ void servoce::shape::load(std::istream& in)
 	m_shp->Orientation (anOrient);
 }
 
-
-
 servoce::point3 servoce::shape::center()
 {
 	GProp_GProps props;
@@ -169,12 +167,6 @@ servoce::point3 servoce::shape::center()
 	gp_Pnt centerMass = props.CentreOfMass();
 	return point3(centerMass);
 }
-
-//servoce::shape servoce::make_section(const servoce::shape& shp)
-//{
-//	TopoDS_Face face = BRepBuilderAPI_MakeFace(gp_Pln(gp_Pnt(0, 0, 0), gp_Vec(0, 0, 1)));
-//	return BRepAlgoAPI_Common(shp.Shape(), face).Shape();
-//}
 
 servoce::shape servoce::shape::fill()
 {
@@ -334,45 +326,21 @@ servoce::shape servoce::near_vertex(const servoce::shape& shp, const servoce::po
 	return ret;
 }
 
-
-//servoce::shape	servoce::near_face(const servoce::shape& shp, const servoce::point3& pnt) {
-//
-//}
-//
-//servoce::shape	servoce::near_edge(const servoce::shape& shp, const servoce::point3& pnt)
-//{
-//	return near_edge_native(shp, pnt);
-//}
-//
-//servoce::shape 	servoce::near_vertex(const servoce::shape& shp, const servoce::point3& pnt) {
-//
-//}
-
-
-/*servoce::shape operator+(const servoce::point3& pnt, const servoce::shape& th)
-{
-	return servoce::make_union(th, pnt.Vtx());
-}
-
-servoce::shape operator+(const servoce::shape& th, const servoce::point3& pnt)
-{
-	return servoce::make_union(th, pnt.Vtx());
-}*/
-
 std::string servoce::shape::shapetype_as_string()
 {
 	switch (Shape().ShapeType())
 	{
 		case TopAbs_WIRE: return "wire";
-
 		case TopAbs_EDGE: return "edge";
-
 		case TopAbs_COMPOUND: return "compound";
-
+		case TopAbs_COMPSOLID: return "compsolid";
 		case TopAbs_FACE: return "face";
-
 		case TopAbs_SOLID: return "solid";
+		case TopAbs_SHELL: return "vertex";
+		case TopAbs_VERTEX: return "shell";
+		case TopAbs_SHAPE: return "shape";
 	}
+	return "undefined";
 }
 
 servoce::BoundBox::BoundBox(const servoce::shape& shp)
@@ -384,9 +352,6 @@ servoce::BoundBox::BoundBox(const servoce::shape& shp)
 	ydim = ymax - ymin;
 	zdim = zmax - zmin;
 }
-
-
-
 
 servoce::shape servoce::shape::fillet(double r, const std::vector<servoce::point3>& refs)
 {

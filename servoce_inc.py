@@ -68,53 +68,58 @@ full_list = [
     "TKXSDRAW",
 ]
 
-# licant.include("nos", local_tunel="build/nos")
+class Found(Exception):
+    pass
+
+add_sources = []
+add_modules = []
+add_moc = []
+
+if os.name == "posix":
+    try:
+        for root, dirs, files in os.walk("/usr/include"):
+           for dr in dirs:
+               if dr == "qt5":
+                   libqt_include_path = os.path.join(root, dr)
+                   raise Found()
+        else:
+            print("NeedInstall Qt5")
+            exit(-1)
+    except (Found):
+        pass
 
 
-#class Found(Exception):
-#    pass
-#
-#
-#try:
-#    for root, dirs, files in os.walk("/usr/include"):
-#        for dr in dirs:
-#            if dr == "qt5":
-#                libqt_include_path = os.path.join(root, dr)
-#                raise Found()
-#    else:
-#        print("NeedInstall Qt5")
-#        exit(-1)
-#except (Found):
-#    pass
+    liboce_include_path = "/usr/local/include/opencascade/"
+    lib_prefix = ""
 
-# liboce_include_path = "/usr/include/oce/"
-liboce_include_path = "../../OpenCASCADE-7.3.0-vc14-64/opencascade-7.3.0/inc"
-#python_include_prefix = "/usr/include/"
+elif os.name == "nt":
+    liboce_include_path = "../../OpenCASCADE-7.3.0-vc14-64/opencascade-7.3.0/inc"
+    lib_prefix = "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\"
 
 module(
     "liboce",
     libs=[
-        "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\TKernel",
-        "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\TKMath",
-        "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\TKG2d",
-        "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\TKG3d",
-        "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\TKBRep",
-        "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\TKGeomBase",
-        "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\TKGeomAlgo",
-        "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\TKTopAlgo",
-        "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\TKPrim",
-        "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\TKBO",
-        "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\TKBool",
-        "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\TKOffset",
-        "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\TKService",
-        "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\TKV3d",
-        "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\TKOpenGl",
-        "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\TKFillet",
-        "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\TKSTL",
-        "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\TKBin",
-        "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\TKShHealing",
-        "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\TKMesh",
-        "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\TKHLR",
+        lib_prefix + "TKernel",
+        lib_prefix + "TKMath",
+        lib_prefix + "TKG2d",
+        lib_prefix + "TKG3d",
+        lib_prefix + "TKBRep",
+        lib_prefix + "TKGeomBase",
+        lib_prefix + "TKGeomAlgo",
+        lib_prefix + "TKTopAlgo",
+        lib_prefix + "TKPrim",
+        lib_prefix + "TKBO",
+        lib_prefix + "TKBool",
+        lib_prefix + "TKOffset",
+        lib_prefix + "TKService",
+        lib_prefix + "TKV3d",
+        lib_prefix + "TKOpenGl",
+        lib_prefix + "TKFillet",
+        lib_prefix + "TKSTL",
+        lib_prefix + "TKBin",
+        lib_prefix + "TKShHealing",
+        lib_prefix + "TKMesh",
+        lib_prefix + "TKHLR",
     ],
     include_paths=[liboce_include_path],
 )
@@ -122,7 +127,7 @@ module(
 module(
     "libqt",
     libs=["Qt5Core", "Qt5Widgets", "Qt5Test", "Qt5Gui", "Qt5OpenGL"],
-    #include_paths=[libqt_include_path],
+    include_paths=[libqt_include_path],
 )
 
 module(
@@ -137,33 +142,20 @@ module(
         "face.cpp",
         "wire.cpp",
         "boolops.cpp",
-        "display.cpp",
-        # "test.cpp",
         "convert.cpp",
         "geombase.cpp",
         "view.cpp",
         "shape_view.cpp",
         "scene.cpp",
         "viewer.cpp",
-        "camera.cpp",
-#        "display/mainwidget.cpp",
-#        "display/dispwidget.cpp",
-#        "display/dispwidget_qt.cpp",
-#        "display/icons.cpp",
-        # 		"occversion.cpp",
-        # "widgets/gtk_widget.cpp"
-    ],
-   # moc=["local/display.h"],
+        "camera.cpp"
+    ] + add_sources,
+    moc=[] + add_moc,
     include_paths=["include", ".", "src"],
     mdepends=[
         "liboce",
-      #  "libqt",
-        # 		submodule("gxx.include"),
-        # 		submodule("gxx", "posix"),
-        # 		submodule("gxx.print", "cout"),
-        # 		submodule("gxx.dprint", "cout"),
         "nos",
-    ],
+    ] + add_modules,
     cxx_flags="-Wall -fPIC -DQT_NO_VERSION_TAGGING -ffunction-sections -fdata-sections",
     cc_flags="-Wall -fPIC -ffunction-sections -fdata-sections",
     ld_flags="-ffunction-sections -fdata-sections -Wl,--gc-sections -Wl,--as-needed",
