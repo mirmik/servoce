@@ -41,8 +41,6 @@ class bdist_wheel(bdist_wheel_):
         self.plat_name_supplied = True
         self.plat_name = platform_name
 
-
-liboce_include_path = "/usr/local/include/opencascade"
 pyservoce_lib = Extension(
     "pyservoce.libservoce",
     sources= nosopts["sources"] + [
