@@ -185,6 +185,38 @@ servoce::general_transformation servoce::scaleZ(double s)
 	return servoce::general_transformation(gtrsf);
 }
 
+servoce::general_transformation servoce::scaleXY(double x, double y)
+{
+	TRACE();
+	auto gtrsf = new gp_GTrsf();
+	gtrsf->SetVectorialPart(gp_Mat(x,0,0,0,y,0,0,0,1));
+	return servoce::general_transformation(gtrsf);
+}
+
+servoce::general_transformation servoce::scaleYZ(double y, double z)
+{
+	TRACE();
+	auto gtrsf = new gp_GTrsf();
+	gtrsf->SetVectorialPart(gp_Mat(1,0,0,0,y,0,0,0,z));
+	return servoce::general_transformation(gtrsf);
+}
+
+servoce::general_transformation servoce::scaleXZ(double x, double z)
+{
+	TRACE();
+	auto gtrsf = new gp_GTrsf();
+	gtrsf->SetVectorialPart(gp_Mat(x,0,0,0,1,0,0,0,z));
+	return servoce::general_transformation(gtrsf);
+}
+
+servoce::general_transformation servoce::scaleXYZ(double x, double y, double z)
+{
+	TRACE();
+	auto gtrsf = new gp_GTrsf();
+	gtrsf->SetVectorialPart(gp_Mat(x,0,0,0,y,0,0,0,z));
+	return servoce::general_transformation(gtrsf);
+}
+
 servoce::transformation servoce::translate(const vector3& vec)
 {
 	TRACE();

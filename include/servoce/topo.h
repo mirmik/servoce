@@ -81,6 +81,7 @@ namespace servoce
 		const TopoDS_Compound& Compound() const;
 
 		shape transform(const transformation& trans) { return trans(*this); }
+		shape transform(const general_transformation& trans) { return trans(*this); }
 		
 		shape translate(double x, double y, double z) { return transform(servoce::translate(x, y, z)); }
 		shape up(double z) { return translate(0, 0, z); }
@@ -104,6 +105,14 @@ namespace servoce
 		shape mirrorXZ() { return transform(servoce::mirrorXZ()); }
 
 		shape scale(double s, point3 center = point3()) { return transform(servoce::scale(s, center)); }
+		shape scaleX(double s) { return transform(servoce::scaleX(s)); }
+		shape scaleY(double s) { return transform(servoce::scaleY(s)); }
+		shape scaleZ(double s) { return transform(servoce::scaleZ(s)); }
+		shape scaleXY(double x, double y) { return transform(servoce::scaleXY(x,y)); }
+		shape scaleYZ(double y, double z) { return transform(servoce::scaleYZ(y,z)); }
+		shape scaleXZ(double x, double z) { return transform(servoce::scaleXZ(x,z)); }
+		shape scaleXYZ(double x, double y, double z) { return transform(servoce::scaleXYZ(x, y, z)); }
+
 		point3 center();
 
 		servoce::shape infill_face(); ///< Превращает замкнутый двумерный контур в 2d объект

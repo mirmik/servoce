@@ -91,6 +91,12 @@ namespace servoce
 	general_transformation scaleX(double);
 	general_transformation scaleY(double);
 	general_transformation scaleZ(double);
+
+	general_transformation scaleXY(double,double);
+	general_transformation scaleYZ(double,double);
+	general_transformation scaleXZ(double,double);
+
+	general_transformation scaleXYZ(double,double,double);
 }
 
 #endif

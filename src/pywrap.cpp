@@ -16,8 +16,8 @@ namespace py = pybind11;
 using namespace servoce;
 
 #define DEF_TRANSFORM_OPERATIONS(TYPE) 					\
-.def("transform", &TYPE::transform, ungil())			\
-.def("scale", (shape(TYPE::*)(double,point3))&TYPE::scale, ungil(), py::arg("factor"), py::arg("center") = point3()) \
+.def("transform", (TYPE(TYPE::*)(const transformation& trans)) &TYPE::transform, ungil())			\
+.def("transform", (TYPE(TYPE::*)(const general_transformation& trans)) &TYPE::transform, ungil())	\
 .def("translate", &TYPE::translate, ungil())			\
 .def("up", &TYPE::up, ungil())							\
 .def("down", &TYPE::down, ungil())						\
@@ -34,7 +34,15 @@ using namespace servoce;
 .def("mirrorZ", &TYPE::mirrorZ, ungil())				\
 .def("mirrorXY", &TYPE::mirrorXY, ungil())				\
 .def("mirrorYZ", &TYPE::mirrorYZ, ungil())				\
-.def("mirrorXZ", &TYPE::mirrorXZ, ungil())				
+.def("mirrorXZ", &TYPE::mirrorXZ, ungil())				\
+.def("scale", 	 &TYPE::scale,    ungil(), py::arg("factor"), py::arg("center") = point3()) \
+.def("scaleX",   &TYPE::scaleX,   ungil(), py::arg("factor")) \
+.def("scaleY",   &TYPE::scaleY,   ungil(), py::arg("factor")) \
+.def("scaleZ",   &TYPE::scaleZ,   ungil(), py::arg("factor")) \
+.def("scaleXY",  &TYPE::scaleXY,  ungil(), py::arg("x"), py::arg("y")) \
+.def("scaleYZ",  &TYPE::scaleYZ,  ungil(), py::arg("y"), py::arg("z")) \
+.def("scaleXZ",  &TYPE::scaleXZ,  ungil(), py::arg("x"), py::arg("z")) \
+.def("scaleXYZ", &TYPE::scaleXYZ, ungil(), py::arg("x"), py::arg("y"), py::arg("z")) 
 
 using ungil = py::call_guard<py::gil_scoped_release>;
 
@@ -55,11 +63,7 @@ std::vector<servoce::point3> points(const py::list& lst)
 
 PYBIND11_MODULE(libservoce, m)
 {
-//EXCEPTONS
-	//py::register_exception<std::exception>(m, "std::exception");
-	//py::register_exception<std::runtime_error>(m, "std::runtime_error");
-	//py::register_exception<Standard_Failure>(m, "Standard_Failure");
-
+// EXCEPTIONS
 	static py::exception<Standard_Failure> exc(m, "OpenCascade_Standard_Failure");
 	py::register_exception_translator([](std::exception_ptr p)
 	{
@@ -73,7 +77,7 @@ PYBIND11_MODULE(libservoce, m)
 		}
 	});
 
-//OBJECTS
+// OBJECTS
 	py::class_<point3>(m, "point3")
 	//DEF_TRANSFORM_OPERATIONS(point3)
 	.def(py::init<double, double, double>())
@@ -367,10 +371,14 @@ PYBIND11_MODULE(libservoce, m)
 	m.def("right", right, ungil());
 	m.def("forw", forw, ungil());
 	m.def("back", back, ungil());
-	m.def("scale", scale, ungil(), py::arg("factor"), py::arg("center") = servoce::point3());
+	m.def("scale", &scale, ungil(), py::arg("factor"), py::arg("center") = servoce::point3());
 	m.def("scaleX", scaleX, ungil(), py::arg("factor"));
 	m.def("scaleY", scaleY, ungil(), py::arg("factor"));
 	m.def("scaleZ", scaleZ, ungil(), py::arg("factor"));
+	m.def("scaleXY", scaleXY, ungil(), py::arg("x"), py::arg("y"));
+	m.def("scaleYZ", scaleYZ, ungil(), py::arg("y"), py::arg("z"));
+	m.def("scaleXZ", scaleXZ, ungil(), py::arg("x"), py::arg("z"));
+	m.def("scaleXYZ", &scaleXYZ, ungil(), py::arg("x"), py::arg("y"), py::arg("z"));
 	m.def("nulltrans", nulltrans, ungil());
 
 	//m.def("scaleX", scale, py::arg("factor"), py::arg("center") = servoce::point3());
