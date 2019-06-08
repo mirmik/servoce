@@ -11,7 +11,17 @@ licant.include("igris", "igris/igris.g.py")
 licant.cxx_objects("nos-objects", mdepends=["nos", "igris.include"])
 nosopts = licant.core.core.get("nos-objects").finalopts
 
-ext_include_paths = ["C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\inc"] + nosopts["include_paths"]
+add_sources = []
+add_modules = []
+add_moc = []
+
+if os.name == "posix":
+    liboce_include_path = "/usr/local/include/opencascade/"
+    lib_prefix = ""
+
+elif os.name == "nt":
+    liboce_include_path = "../../OpenCASCADE-7.3.0-vc14-64/opencascade-7.3.0/inc"
+    lib_prefix = "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\"
 
 class bdist_wheel(bdist_wheel_):
     def finalize_options(self):
@@ -54,40 +64,32 @@ pyservoce_lib = Extension(
         "src/shape_view.cpp",
         "src/camera.cpp",
     ],
-    extra_compile_args=["-fPIC", "-std=c++14", "-DNOTRACE=1"],
+    extra_compile_args=["-fPIC", "-std=c++14", "-DNODTRACE=1", "-DNOTRACE=1"],
     extra_link_args=["-Wl,-rpath,$ORIGIN/libs"],
-    include_dirs=[liboce_include_path, "src", "include"] + ext_include_paths,
+    include_dirs=[liboce_include_path, "src", "include"] + nosopts["include_paths"],
     #library_dir=["C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib"],
     libraries=[
-        "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\TKernel",
-        "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\TKMath",
-        "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\TKG2d",
-        "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\TKG3d",
-        "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\TKBRep",
-        "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\TKGeomBase",
-        "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\TKGeomAlgo",
-        "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\TKTopAlgo",
-        "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\TKPrim",
-        "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\TKBO",
-        "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\TKBool",
-        "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\TKOffset",
-        "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\TKService",
-        "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\TKV3d",
-        "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\TKOpenGl",
-        "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\TKFillet",
-        "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\TKSTL",
-        "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\TKBin",
-        "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\TKShHealing",
-        "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\TKMesh",
-        "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\TKHLR",
-    ],
-)
-
-pyservoce_lib2 = Extension(
-    "pyservoce.libservoce",
-    sources= ["src/test.cpp"],
-    libraries=[
-        "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\TKernel",
+        lib_prefix + "TKernel",
+        lib_prefix + "TKMath",
+        lib_prefix + "TKG2d",
+        lib_prefix + "TKG3d",
+        lib_prefix + "TKBRep",
+        lib_prefix + "TKGeomBase",
+        lib_prefix + "TKGeomAlgo",
+        lib_prefix + "TKTopAlgo",
+        lib_prefix + "TKPrim",
+        lib_prefix + "TKBO",
+        lib_prefix + "TKBool",
+        lib_prefix + "TKOffset",
+        lib_prefix + "TKService",
+        lib_prefix + "TKV3d",
+        lib_prefix + "TKOpenGl",
+        lib_prefix + "TKFillet",
+        lib_prefix + "TKSTL",
+        lib_prefix + "TKBin",
+        lib_prefix + "TKShHealing",
+        lib_prefix + "TKMesh",
+        lib_prefix + "TKHLR",
     ],
 )
 
