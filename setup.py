@@ -106,6 +106,6 @@ setup(
     classifiers=[],
     package_data={"pyservoce": "libs\\*"},
     include_package_data=True,
-    ext_modules=[pyservoce_lib2],
+    ext_modules=[pyservoce_lib],
     cmdclass={"bdist_wheel": bdist_wheel},
 )
