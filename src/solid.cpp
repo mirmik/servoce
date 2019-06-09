@@ -477,9 +477,9 @@ std::vector<servoce::shape> _unify_faces_array(const std::vector<servoce::shape>
 				auto dir0 = pln0.Axis().Direction();
 				auto dir1 = pln1.Axis().Direction();
 
-				PRINT(dir0.IsEqual(dir1, 0.00001));
-				PRINT(pln0.Distance(pln1.Axis().Location()));
-				PRINT(pln1.Distance(pln0.Axis().Location()));
+				//PRINT(dir0.IsEqual(dir1, 0.00001));
+				//PRINT(pln0.Distance(pln1.Axis().Location()));
+				//PRINT(pln1.Distance(pln0.Axis().Location()));
 
 				if (
 				    dir0.IsEqual(dir1, 0.00001) &&
@@ -519,7 +519,7 @@ shape _unify_shell(const servoce::shape& proto)
 	BRepOffsetAPI_Sewing mkShell;
 
 	auto newfaces = _unify_faces_array(proto.faces());
-	PRINT(newfaces.size());
+	//PRINT(newfaces.size());
 
 	for (servoce::shape& n : newfaces)
 		mkShell.Add(n.Shape());
