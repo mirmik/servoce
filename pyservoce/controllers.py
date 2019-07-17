@@ -30,7 +30,13 @@ def to_unit(obj):
 
 
 class Unit:
-    def __init__(self, parent=None, location=pyservoce.libservoce.nulltrans()):
+    """Базовый класс для использования в кинематических цепях и сборках
+
+    Вычисляет свою текущую позицию исходя из дерева построения.
+    Держит список наследников, позиция которых считается относительно него.    
+    """
+
+    def __init__(self, location=pyservoce.libservoce.nulltrans()):
         self.parent = parent
 
         if parent is not None:
@@ -51,11 +57,6 @@ class Unit:
             self.global_location = self.local_location
         else:
             self.global_location = self.parent.global_location * self.local_location
-
-        # if self.parent is not None:
-        # 	print("g1", self.parent.global_location)
-        # print("g2", self.global_location)
-        # print("g3", self.local_location)
 
     def eval_location(self, location):
         trace("eval_location")
