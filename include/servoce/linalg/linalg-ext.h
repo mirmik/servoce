@@ -51,10 +51,6 @@
 
 namespace linalg
 {
-    constexpr float deg(float angle) { return angle * M_PI / 180.0; }
-    template<class T, int M> T pseudolen1 (const vec<T,M> & a) { return sum(abs(a)); }
-    
-
     // A value type representing an abstract direction vector in 3D space, independent of any coordinate system
     enum class coord_axis { forward, back, left, right, up, down };
     template<class T> constexpr T dot(coord_axis a, coord_axis b) { return a == b ? T(1) : (static_cast<int>(a) ^ static_cast<int>(b)) == 1 ? T(-1) : T(0); }

@@ -364,3 +364,17 @@ std::vector<double> servoce::transformation::rotation_part() const
 	auto tr = trsf->GetRotation();
 	return {tr.X(), tr.Y(), tr.Z(), tr.W()};
 }
+
+servoce::vector3 servoce::transformation::translation() const
+{
+	TRACE();
+	auto tr = trsf->TranslationPart();
+	return gp_Vec(tr);
+}
+
+servoce::quaternion servoce::transformation::rotation() const
+{
+	TRACE();
+	auto tr = trsf->GetRotation();
+	return tr;
+}

@@ -34,6 +34,8 @@ namespace servoce
 
 		std::vector<double> translation_part() const;
 		std::vector<double> rotation_part() const;
+		servoce::vector3 translation() const;
+		servoce::quaternion rotation() const;
 
 		std::string string_dump() const;
 		static transformation restore_string_dump(const std::string& in);

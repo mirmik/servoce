@@ -2,12 +2,14 @@
 #define SERVOCE_GEOMBASE_H
 
 #include <servoce/linalg/linalg.h>
+#include <servoce/linalg/linalg-ext.h>
 
 class TopoDS_Vertex;
 
 class gp_Vec;
 class gp_Pnt;
 class gp_Pnt2d;
+class gp_Quaternion;
 class gp_Vtx;
 class TopoDS_Vertex;
 
@@ -28,8 +30,12 @@ namespace servoce
 		vector3(const gp_Vec& vec);
 		vector3(double x, double y) : vec{ x, y, 0 } {}
 		vector3(double x, double y, double z) : vec { x, y, z } {}
-		vector3(double* arr) : vec { arr } {}
+		vector3(double arr[3]) : vec(arr[0], arr[1], arr[2]) {}
 		gp_Vec Vec() const;
+
+		double& x = linalg::vec<double, 3>::x;
+		double& y = linalg::vec<double, 3>::y;
+		double& z = linalg::vec<double, 3>::z;
 
 		vector3(const pybind11::list&);
 		vector3(const pybind11::tuple&);
@@ -51,9 +57,13 @@ namespace servoce
 		point3(double x, double y) : vec{ x, y, 0 } {}
 		point3(double x, double y, double z) : vec { x, y, z } {}
 		point3(linalg::vec<double, 3> v) : vec { v } {}
-		point3(double* arr) : vec { arr } {}
+		point3(double arr[3]) : vec(arr[0], arr[1], arr[2]) {}
 		gp_Pnt Pnt() const;
 		TopoDS_Vertex Vtx() const;
+
+		double& x = linalg::vec<double, 3>::x;
+		double& y = linalg::vec<double, 3>::y;
+		double& z = linalg::vec<double, 3>::z;
 
 		point3(const pybind11::list&);
 		point3(const pybind11::tuple&);
@@ -71,7 +81,7 @@ namespace servoce
 
 		point3 lerp(const point3& o, double koeff)
 		{
-			return point3(linalg::lerp(*this, o, koeff));
+			return point3(linalg::lerp<vec,vec,double>(*this, o, koeff));
 		}
 
 		bool operator < (const servoce::point3& b)
@@ -111,8 +121,11 @@ namespace servoce
 		point2() : vec{0, 0} {}
 		point2(const gp_Pnt2d& pnt);
 		point2(double x, double y) : vec{ x, y } {}
-		point2(double* arr) : vec { arr } {}
+		point2(double arr[2]) : vec(arr[0], arr[1]) {}
 		gp_Pnt2d Pnt() const;
+
+		double& x = linalg::vec<double, 2>::x;
+		double& y = linalg::vec<double, 2>::y;
 
 		point2(const pybind11::list&);
 		point2(const pybind11::tuple&);
@@ -133,7 +146,7 @@ namespace servoce
 		quaternion() : quat{0, 0, 0, 1} {}
 		quaternion(const gp_Quaternion& vec);
 		quaternion(double x, double y, double z, double w) : quat{ x, y, z, w } {}
-		quaternion(double* arr) : quat { arr } {}
+		//quaternion(double* arr) : quat { arr } {}
 		gp_Quaternion Quaternion() const;
 
 		quaternion(const pybind11::list&);
