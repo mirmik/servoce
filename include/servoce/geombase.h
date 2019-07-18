@@ -2,7 +2,6 @@
 #define SERVOCE_GEOMBASE_H
 
 #include <servoce/linalg/linalg.h>
-#include <servoce/linalg/linalg-ext.h>
 
 class TopoDS_Vertex;
 
@@ -33,10 +32,6 @@ namespace servoce
 		vector3(double arr[3]) : vec(arr[0], arr[1], arr[2]) {}
 		gp_Vec Vec() const;
 
-		double& x = linalg::vec<double, 3>::x;
-		double& y = linalg::vec<double, 3>::y;
-		double& z = linalg::vec<double, 3>::z;
-
 		vector3(const pybind11::list&);
 		vector3(const pybind11::tuple&);
 
@@ -60,10 +55,6 @@ namespace servoce
 		point3(double arr[3]) : vec(arr[0], arr[1], arr[2]) {}
 		gp_Pnt Pnt() const;
 		TopoDS_Vertex Vtx() const;
-
-		double& x = linalg::vec<double, 3>::x;
-		double& y = linalg::vec<double, 3>::y;
-		double& z = linalg::vec<double, 3>::z;
 
 		point3(const pybind11::list&);
 		point3(const pybind11::tuple&);
@@ -124,9 +115,6 @@ namespace servoce
 		point2(double arr[2]) : vec(arr[0], arr[1]) {}
 		gp_Pnt2d Pnt() const;
 
-		double& x = linalg::vec<double, 2>::x;
-		double& y = linalg::vec<double, 2>::y;
-
 		point2(const pybind11::list&);
 		point2(const pybind11::tuple&);
 
@@ -139,11 +127,12 @@ namespace servoce
 		}
 	};// __attribute__((packed));
 
-	class quaternion : public linalg::quat<double>
+	class quaternion : public linalg::vec<double,4>
 	{
 	public:
-		using quat = linalg::quat<double>;
+		using quat = linalg::vec<double,4>;
 		quaternion() : quat{0, 0, 0, 1} {}
+		quaternion(const quat& q) : quat(q) {};
 		quaternion(const gp_Quaternion& vec);
 		quaternion(double x, double y, double z, double w) : quat{ x, y, z, w } {}
 		//quaternion(double* arr) : quat { arr } {}
@@ -156,6 +145,12 @@ namespace servoce
 	//	bool operator!=(const vector3& oth) const { return oth.x != x || oth.y != y || oth.z != z; }
 	//	vector3 operator-() const { return vector3(-x, -y, -z); }
 	};
+
+	static inline quaternion operator*(const quaternion& a, const quaternion& b)
+	{ 
+		return linalg::qmul((const linalg::vec<double,4> &)a, (const linalg::vec<double,4> &)b); 
+	}
+
 }
 
 #endif
