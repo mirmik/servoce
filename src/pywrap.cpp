@@ -184,6 +184,31 @@ PYBIND11_MODULE(libservoce, m)
 	})
 	;
 
+	py::class_<quaternion>(m, "quaternion")
+	//DEF_TRANSFORM_OPERATIONS(vector3)
+	.def(py::init<double, double, double,double>())
+	.def(py::init<py::list>())
+	.def(py::init<py::tuple>())
+	.def("__iter__", [](const quaternion& p){return py::make_iterator(&p.x, &p.x + 4);})
+	.def_readwrite("x", &quaternion::x)
+	.def_readwrite("y", &quaternion::y)
+	.def_readwrite("z", &quaternion::z)
+	.def_readwrite("w", &quaternion::w)
+	.def("__len__", [](const quaternion&){return 4;})
+	//.def("__mul__", (vector3(*)(const vector3&, double)) &servoce::operator* )
+	//.def("__truediv__", (vector3(*)(const vector3&, double)) &servoce::operator/ )
+	//.def("__add__", (vector3(*)(const vector3&, const vector3&)) &servoce::operator+ )
+	//.def("__sub__", (vector3(*)(const vector3&, const vector3&)) &servoce::operator- )
+	//.def("__setitem__", [](vector3 & self, int key, double value) { self[key] = value; })
+	//.def("__getitem__", [](const vector3 & self, int key) { return self[key]; })
+	/*.def("__repr__", [](const vector3 & pnt)
+	{
+		char buf[128];
+		sprintf(buf, "vector3(%f,%f,%f)", (double)pnt.x, (double)pnt.y, (double)pnt.z);
+		return std::string(buf);
+	})*/
+	;
+
 	py::class_<shape>(m, "Shape")
 	DEF_TRANSFORM_OPERATIONS(shape)
 	.def("__add__", (shape(shape::*)(const shape&))&shape::operator+, ungil())
@@ -337,6 +362,8 @@ PYBIND11_MODULE(libservoce, m)
 	[](const std::string & in) { return transformation::restore_string_dump(b64::base64_decode(in)); }), ungil())
 	.def("translation_part", &transformation::translation_part)
 	.def("rotation_part", &transformation::rotation_part)
+	.def("translation", &transformation::translation)
+	.def("rotation", &transformation::rotation)
 	;
 
 	py::class_<general_transformation>(m, "general_transformation")
