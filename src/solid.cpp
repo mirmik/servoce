@@ -44,6 +44,7 @@
 #include <Geom_Plane.hxx>
 
 #include <map>
+#include <limits>
 
 #include <exception>
 #include <assert.h>
