@@ -79,7 +79,7 @@ PYBIND11_MODULE(libservoce, m)
 
 // OBJECTS
 	py::class_<point3>(m, "point3")
-	//DEF_TRANSFORM_OPERATIONS(point3)
+	.def(py::init<>())
 	.def(py::init<double, double, double>())
 	.def(py::init<double, double>())
 	.def("distance", &point3::distance)
@@ -123,7 +123,7 @@ PYBIND11_MODULE(libservoce, m)
 	;
 
 	py::class_<point2>(m, "point2")
-	//DEF_TRANSFORM_OPERATIONS(point3)
+	.def(py::init<>())
 	.def(py::init<double, double>())
 	.def(py::init<const servoce::point2&>())
 	.def(py::init<py::list>())
@@ -160,7 +160,7 @@ PYBIND11_MODULE(libservoce, m)
 	;
 
 	py::class_<vector3>(m, "vector3")
-	//DEF_TRANSFORM_OPERATIONS(vector3)
+	.def(py::init<>())
 	.def(py::init<double, double, double>())
 	.def(py::init<double, double>())
 	.def(py::init<py::list>())
@@ -174,8 +174,11 @@ PYBIND11_MODULE(libservoce, m)
 	.def("__truediv__", (vector3(*)(const vector3&, double)) &servoce::operator/ )
 	.def("__add__", (vector3(*)(const vector3&, const vector3&)) &servoce::operator+ )
 	.def("__sub__", (vector3(*)(const vector3&, const vector3&)) &servoce::operator- )
+	.def("__neg__", (vector3(vector3::* const)()) &servoce::vector3::operator- )
 	.def("__setitem__", [](vector3 & self, int key, double value) { self[key] = value; })
 	.def("__getitem__", [](const vector3 & self, int key) { return self[key]; })
+	.def("normalize", &vector3::normalize)
+	.def("cross", &vector3::cross)
 	.def("__repr__", [](const vector3 & pnt)
 	{
 		char buf[128];
@@ -185,7 +188,7 @@ PYBIND11_MODULE(libservoce, m)
 	;
 
 	py::class_<quaternion>(m, "quaternion")
-	//DEF_TRANSFORM_OPERATIONS(vector3)
+	.def(py::init<>())
 	.def(py::init<double, double, double,double>())
 	.def(py::init<py::list>())
 	.def(py::init<py::tuple>())
@@ -194,6 +197,7 @@ PYBIND11_MODULE(libservoce, m)
 	.def_readwrite("y", &quaternion::y)
 	.def_readwrite("z", &quaternion::z)
 	.def_readwrite("w", &quaternion::w)
+	.def("normalize", &quaternion::normalize)
 	.def("__len__", [](const quaternion&){return 4;})
 	//.def("__mul__", (vector3(*)(const vector3&, double)) &servoce::operator* )
 	//.def("__truediv__", (vector3(*)(const vector3&, double)) &servoce::operator/ )
@@ -201,12 +205,12 @@ PYBIND11_MODULE(libservoce, m)
 	//.def("__sub__", (vector3(*)(const vector3&, const vector3&)) &servoce::operator- )
 	//.def("__setitem__", [](vector3 & self, int key, double value) { self[key] = value; })
 	//.def("__getitem__", [](const vector3 & self, int key) { return self[key]; })
-	/*.def("__repr__", [](const vector3 & pnt)
+	.def("__repr__", [](const quaternion & pnt)
 	{
 		char buf[128];
-		sprintf(buf, "vector3(%f,%f,%f)", (double)pnt.x, (double)pnt.y, (double)pnt.z);
+		sprintf(buf, "quaternion(%f,%f,%f,%f)", (double)pnt.x, (double)pnt.y, (double)pnt.z, (double)pnt.w);
 		return std::string(buf);
-	})*/
+	})
 	;
 
 	py::class_<shape>(m, "Shape")
@@ -357,6 +361,7 @@ PYBIND11_MODULE(libservoce, m)
 	.def("__call__", (transformation(transformation::*)(const transformation&)const)&transformation::operator(), ungil())
 	.def("__mul__", &transformation::operator*, ungil())
 	.def("invert", &transformation::invert)
+	.def("inverse", &transformation::invert)
 	.def(py::pickle(
 	[](const transformation & self) { return b64::base64_encode(self.string_dump()); },
 	[](const std::string & in) { return transformation::restore_string_dump(b64::base64_decode(in)); }), ungil())
@@ -364,6 +369,14 @@ PYBIND11_MODULE(libservoce, m)
 	.def("rotation_part", &transformation::rotation_part)
 	.def("translation", &transformation::translation)
 	.def("rotation", &transformation::rotation)
+	.def("__repr__", [](const transformation & trsf)
+	{
+		char buf[128];
+		auto rot = trsf.rotation();
+		auto mov = trsf.translation(); 
+		sprintf(buf, "trans((%f,%f,%f,%f),(%f,%f,%f))", rot.x, rot.y, rot.z, rot.w, mov.x, mov.y, mov.z);
+		return std::string(buf);
+	})
 	;
 
 	py::class_<general_transformation>(m, "general_transformation")
