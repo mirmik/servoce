@@ -2,6 +2,7 @@
 #define SERVOCE_GEOMBASE_H
 
 #include <servoce/linalg/linalg.h>
+#include <igris/dprint.h>
 
 class TopoDS_Vertex;
 
@@ -57,6 +58,7 @@ namespace servoce
 		vector3(double arr[3]) : vec(arr[0], arr[1], arr[2]) {}
 		
 		vector3(const vec& oth) : vec(oth) {}
+		vector3(const vector3& oth) : vec(oth) {}
 		vector3(const gp_Vec& vec);
 
 		gp_Vec Vec() const;
@@ -133,6 +135,14 @@ namespace servoce
 
 		quaternion(const pybind11::list&);
 		quaternion(const pybind11::tuple&);
+
+		vector3 rotation_vector() 
+		{
+			double angle = linalg::qangle(*this);
+			if (::fabs(angle) < 0.000001) 
+				return {0,0,0};
+			return vector3(linalg::qaxis(*this) * angle);
+		}
 
 	//	bool operator==(const vector3& oth) const { return oth.x == x && oth.y == y && oth.z == z; }
 	//	bool operator!=(const vector3& oth) const { return oth.x != x || oth.y != y || oth.z != z; }
