@@ -164,11 +164,15 @@ public:
 		m_view->MustBeResized();
 	}
 
-	void set_triedron()
+	void set_triedron(bool en = true)
 	{
 		TRACE();
 		std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
-		m_view->TriedronDisplay(Aspect_TOTP_LEFT_LOWER, Quantity_NOC_GOLD, 0.08, V3d_ZBUFFER);
+
+		if (en)
+			m_view->TriedronDisplay(Aspect_TOTP_LEFT_LOWER, Quantity_NOC_GOLD, 0.08, V3d_ZBUFFER);
+		else
+			m_view->TriedronErase();
 	}
 
 	gp_Lin viewline(double x, double y, Handle(V3d_View) view)
@@ -193,12 +197,24 @@ struct OccViewerContext
 	Handle(AIS_InteractiveContext) m_context;
 	Handle(V3d_Viewer) m_viewer;
 
+	Handle(AIS_Axis) axX;
+	Handle(AIS_Axis) axY;
+	Handle(AIS_Axis) axZ;
+
 public:
 	OccViewerContext()
 	{
 		std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 		static Quantity_Color c1(0.5, 0.5, 0.5, Quantity_TOC_RGB);
 		static Quantity_Color c2(0.3, 0.3, 0.3, Quantity_TOC_RGB);
+
+		axX = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0, 0, 0), gp_Vec(1, 0, 0)));
+		axY = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0, 0, 0), gp_Vec(0, 1, 0)));
+		axZ = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0, 0, 0), gp_Vec(0, 0, 1)));
+
+		axX->SetColor(Quantity_NOC_RED);
+		axY->SetColor(Quantity_NOC_GREEN);
+		axZ->SetColor(Quantity_NOC_BLUE1);
 
 		m_viewer = new V3d_Viewer(GetGraphicDriver());
 
@@ -207,7 +223,7 @@ public:
 
 		m_context = new AIS_InteractiveContext (m_viewer);
 		m_context->SetDisplayMode(AIS_Shaded, false);
-		m_context->DefaultDrawer ()->SetFaceBoundaryDraw(true);
+		m_context->DefaultDrawer()->SetFaceBoundaryDraw(true);
 	}
 
 	OccViewWindow* create_view_window()

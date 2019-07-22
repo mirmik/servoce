@@ -9,6 +9,7 @@
 #include <memory>
 
 class AIS_Shape;
+class AIS_InteractiveContext;
 
 namespace servoce
 {
@@ -32,6 +33,8 @@ namespace servoce
 
 		std::vector<servoce::shape> shapes_array();
 		std::vector<servoce::color> color_array();
+
+		AIS_InteractiveContext* InteractiveContext();
 
 		std::shared_ptr<servoce::shape_view> operator[](int idx) 
 		{ 

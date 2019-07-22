@@ -22,6 +22,8 @@ namespace pybind11
 
 namespace servoce
 {
+	class point3;
+
 	class point2 : public linalg::vec<double, 2>
 	{
 	public:
@@ -60,6 +62,8 @@ namespace servoce
 		vector3(const vec& oth) : vec(oth) {}
 		vector3(const vector3& oth) : vec(oth) {}
 		vector3(const gp_Vec& vec);
+
+		point3 to_point3() const;
 
 		gp_Vec Vec() const;
 
@@ -176,6 +180,8 @@ namespace servoce
 	{ 
 		return linalg::qmul((const linalg::vec<double,4> &)a, (const linalg::vec<double,4> &)b); 
 	}
+
+	inline point3 vector3::to_point3() const { return point3(x,y,z); }
 
 }
 

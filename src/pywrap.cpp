@@ -165,6 +165,7 @@ PYBIND11_MODULE(libservoce, m)
 	.def(py::init<double, double>())
 	.def(py::init<py::list>())
 	.def(py::init<py::tuple>())
+	.def("to_point3", &vector3::to_point3)
 	.def("__iter__", [](const vector3& p){return py::make_iterator(&p.x, &p.x + 3);})
 	.def_readwrite("x", &vector3::x)
 	.def_readwrite("y", &vector3::y)
@@ -185,6 +186,19 @@ PYBIND11_MODULE(libservoce, m)
 		sprintf(buf, "vector3(%f,%f,%f)", (double)pnt.x, (double)pnt.y, (double)pnt.z);
 		return std::string(buf);
 	})
+	.def(py::pickle(
+	         [](const vector3 & self)
+	{
+		double arr[3] = {self.x, self.y, self.z};
+		return b64::base64_encode((uint8_t*)&arr, 3 * sizeof(double));
+	},
+	[](const std::string & in)
+	{
+		double arr[3];
+		std::string decoded = b64::base64_decode(in);
+		memcpy(&arr, decoded.data(), 3 * sizeof(double));
+		return vector3(arr);
+	}))
 	;
 
 	py::class_<quaternion>(m, "quaternion")
@@ -430,6 +444,8 @@ PYBIND11_MODULE(libservoce, m)
 
 //GRAPHIC
 	py::class_<color>(m, "Color")
+	.def(py::init<>(), ungil())
+	.def(py::init<const color&>(), ungil())
 	.def(py::init<float, float, float>(), ungil())
 	.def(py::init<float, float, float,float>(), ungil())
 	.def_readwrite("r", &color::r)
@@ -449,6 +465,13 @@ PYBIND11_MODULE(libservoce, m)
 		memcpy(&arr, decoded.data(), 4 * sizeof(float));
 		return color{arr[0],arr[1],arr[2],arr[3]};
 	}), ungil())
+	;
+
+	py::class_<interactive_object, std::shared_ptr<interactive_object>>(m, "interactive_object")
+	.def("set_color", &interactive_object::set_color, ungil())
+	.def("color", &interactive_object::color, ungil())
+	.def("set_location", &interactive_object::set_location, ungil())
+	.def("hide", &interactive_object::hide, ungil())
 	;
 
 	py::class_<shape_view, std::shared_ptr<shape_view>>(m, "ShapeView")
@@ -476,14 +499,15 @@ PYBIND11_MODULE(libservoce, m)
 	.def("close", &viewer::close, ungil())
 	.def("add_scene", &viewer::add_scene, ungil())
 	.def("clean_context", &viewer::clean_context, ungil())
-	.def("display", &viewer::display, ungil())
-	.def("set_triedron_axes", &viewer::set_triedron_axes, ungil())
+	.def("display", (void(viewer::*)(shape_view&))&viewer::display, ungil())
+	.def("display", (void(viewer::*)(interactive_object&))&viewer::display, ungil())
+	.def("set_triedron_axes", &viewer::set_triedron_axes, py::arg("en")=true, ungil())
 	;
 
 	py::class_<view>(m, "View")
 	.def("set_window", &view::set_window, ungil())
 	.def("set_virtual_window", &view::set_virtual_window, ungil())
-	.def("set_triedron", &view::set_triedron, ungil())
+	.def("set_triedron", &view::set_triedron, py::arg("en")=true, ungil())
 	.def("see", &view::see, ungil())
 	.def("destroy", &view::destroy, ungil())
 	.def("redraw", &view::redraw, ungil())
@@ -505,6 +529,7 @@ PYBIND11_MODULE(libservoce, m)
 	.def("set_orthogonal", &view::set_orthogonal, ungil())
 
 	.def("set_gradient", &view::set_gradient, ungil())
+	.def("set_background", &view::set_background, ungil())
 	.def("reset_orientation", &view::reset_orientation, ungil())
 	.def("autoscale", &view::autoscale, ungil())
 	.def("centering", &view::centering, ungil())
@@ -519,15 +544,35 @@ PYBIND11_MODULE(libservoce, m)
 	.def("intersect_point", &view::intersect_point, ungil())
 	;
 
-//CONVERT
+// CONVERT
 	m.def("make_stl", &make_stl, ungil());
 	m.def("brep_write", &brep_write, ungil());
 	m.def("brep_read", &brep_read, ungil());
 
 	m.def("getSVG", &getSVG, ungil());
 
-//REFLECTION
+// REFLECTION
 	m.def("near_edge", &near_edge, ungil());	
 	m.def("near_face", &near_face, ungil());
 	m.def("near_vertex", &near_vertex, ungil());
+
+// PRESENTATION
+	m.attr("white") = white;
+	m.attr("black") = black;
+	m.attr("red") = red;
+	m.attr("green") = green;
+	m.attr("blue") = blue;
+	m.attr("yellow") = yellow;
+	m.attr("gray") = gray;
+	m.attr("mech") = mech;
+
+	py::enum_<line_style>(m, "line_style")
+    	.value("solid_line", line_style::solid_line)
+    	.value("dash_line", line_style::dash_line)
+    	.value("dot_line", line_style::dot_line)
+    	.value("dotdash_line", line_style::dotdash_line)
+    .export_values();
+
+	m.def("draw_arrow", &draw::arrow, py::arg("pnt"), py::arg("vec"), py::arg("clr")=yellow, py::arg("arrlen")=1, py::arg("width")=1);
+	m.def("draw_line", &draw::line, py::arg("a"), py::arg("b"), py::arg("clr")=black, py::arg("style")=line_style::solid_line, py::arg("width")=1);
 }

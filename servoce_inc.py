@@ -148,7 +148,9 @@ module(
         "shape_view.cpp",
         "scene.cpp",
         "viewer.cpp",
-        "camera.cpp"
+        "camera.cpp",
+        "prs3d.cpp",
+        "interactive_object.cpp"
     ] + add_sources,
     moc=[] + add_moc,
     include_paths=["include", ".", "src"],

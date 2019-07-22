@@ -5,11 +5,35 @@
 #include <servoce/color.h>
 #include <nos/trace.h>
 
+#include <AIS_InteractiveObject.hxx>
+#include <AIS_InteractiveContext.hxx>
+
+
 class AIS_Shape;
 
 namespace servoce
 {
 	class scene;
+
+	class interactive_object 
+	{
+		Handle(AIS_InteractiveObject) m_ais = nullptr;
+		Handle(AIS_InteractiveContext) m_context = nullptr;
+
+	public:
+		interactive_object(Handle(AIS_InteractiveObject) ais) : m_ais(ais) {}
+
+		servoce::color color() const;
+		void set_color(const servoce::color&);
+
+		Handle(AIS_InteractiveObject) native() { return m_ais; }
+		Handle(AIS_InteractiveObject) const native() const { return m_ais; }
+
+		void set_location(const servoce::transformation& trans);
+		void hide(bool en);
+
+		void set_context(Handle(AIS_InteractiveContext) cntxt) { m_context = cntxt; }
+	};
 
 	class shape_view
 	{

@@ -43,7 +43,7 @@ class bdist_wheel(bdist_wheel_):
 
 pyservoce_lib = Extension(
     "pyservoce.libservoce",
-    sources= nosopts["sources"] + [
+    sources= [
         "src/pywrap.cpp",
         "src/geombase_py.cpp",
         "src/surface.cpp",
@@ -62,7 +62,9 @@ pyservoce_lib = Extension(
         "src/viewer.cpp",
         "src/shape_view.cpp",
         "src/camera.cpp",
-    ],
+        "src/prs3d.cpp",
+        "src/interactive_object.cpp",
+    ] + nosopts["sources"],
     extra_compile_args=["-fPIC", "-std=c++14", "-DNODTRACE=1", "-DNOTRACE=1"],
     extra_link_args=["-Wl,-rpath,$ORIGIN/libs"],
     include_dirs=[liboce_include_path, "src", "include"] + nosopts["include_paths"],

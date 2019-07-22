@@ -59,3 +59,8 @@ void servoce::scene::append(const servoce::scene& scn)
 	for (const auto& shpview : scn.shape_views)
 		add(shpview->shape(), shpview->color());
 }
+
+AIS_InteractiveContext* servoce::scene::InteractiveContext() 
+{
+	return this->vwer.occ->m_context.get();
+}

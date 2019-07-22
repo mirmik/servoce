@@ -2,6 +2,7 @@
 #define SERVOCE_VIEW_H
 
 #include <servoce/geombase.h>
+#include <servoce/color.h>
 #include <vector>
 #include <memory>
 
@@ -34,7 +35,9 @@ namespace servoce
 
 		void dump(const std::string& path);
 
-		void set_triedron();
+		void set_triedron(bool en = true);
+		void set_background(const servoce::color& clr);
+		void set_gradient(const servoce::color& clr1, const servoce::color& clr2);
 
 		std::pair<uint16_t, uint16_t> size();
 
@@ -43,23 +46,17 @@ namespace servoce
 		void redraw_immediate();
 		void must_be_resized();
 
-		void set_gradient();
 
 		servoce::point3 eye();
 		void set_eye(servoce::point3 pnt);
-
 		servoce::point3 center();
 		void set_center(servoce::point3 pnt);
-
-		//std::pair<uint16_t, uint16_t> size();
-		//void resize(std::pair<uint16_t, uint16_t> sz);
 
 		void set_orthogonal();
 
 		void export2d();
 
 		void see(int width = 800, int height = 600);
-	//	void screen(const std::string& path);
 
 		void reset_orientation();
 		void autoscale();
@@ -72,7 +69,7 @@ namespace servoce
 
 		std::pair<servoce::point3, bool> intersect_point( double x, double y ); 
 
-		view(OccViewWindow* occ) : occ(occ) { TRACE();}
+		view(OccViewWindow* occ);
 		view(const view&) = delete;
 		view(view&& other) { TRACE(); occ = other.occ; other.occ = nullptr; }
 		~view();

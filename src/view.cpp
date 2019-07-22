@@ -10,25 +10,36 @@
 #include <assert.h>
 #include <nos/trace.h>
 
-//servoce::viewer::viewer(servoce::scene& scn) : viewer()
-//{
-//	occ->set_scene(scn);
-//	scn.vwer = this;
-//}
-
-servoce::view::~view() 
+servoce::view::view(OccViewWindow* occ) : occ(occ) 
 {
-	TRACE();
-	delete occ;
+	set_gradient(servoce::color(0.5,0.5,0.5), servoce::color(0.3,0.3,0.3));
+	set_triedron();
 }
 
-void servoce::view::set_gradient()
+void servoce::view::set_background(const servoce::color& clr)
+{
+	TRACE();
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
+
+	//occ->m_view->SetBackgroundColor(
+	//    Quantity_Color(clr.r, clr.g, clr.b, Quantity_TOC_RGB)
+	//);
+
+	occ->m_view->SetBgGradientColors(
+	    Quantity_Color(clr.r, clr.g, clr.b, Quantity_TOC_RGB),
+	    Quantity_Color(clr.r, clr.g, clr.b, Quantity_TOC_RGB),
+	    Aspect_GFM_VER,
+	    Standard_True
+	);
+}
+
+void servoce::view::set_gradient(const servoce::color& clr1, const servoce::color& clr2)
 {
 	TRACE();
 	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	occ->m_view->SetBgGradientColors(
-	    Quantity_Color(0.5, 0.5, 0.5, Quantity_TOC_RGB),
-	    Quantity_Color(0.3, 0.3, 0.3, Quantity_TOC_RGB),
+	    Quantity_Color(clr1.r, clr1.g, clr1.b, Quantity_TOC_RGB),
+	    Quantity_Color(clr2.r, clr2.g, clr2.b, Quantity_TOC_RGB),
 	    Aspect_GFM_VER,
 	    Standard_True
 	);
@@ -54,11 +65,11 @@ void servoce::view::must_be_resized()
 	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex); 
 	occ->m_view->MustBeResized();
 }
-void servoce::view::set_triedron()
+void servoce::view::set_triedron(bool en)
 {
 	TRACE();
 	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex); 
-	occ->set_triedron();
+	occ->set_triedron(en);
 }
 void servoce::view::dump(const std::string& path)
 {
@@ -120,16 +131,12 @@ void servoce::view::set_eye(servoce::point3 pnt)
 	TRACE();
 	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	occ->m_view->Camera()->SetEye(pnt.Pnt());
-	//occ->m_view->SetEye(p.X(), p.Y(), p.Z());
 }
 
 servoce::point3 servoce::view::eye()
 {
 	TRACE();
 	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
-	//double x, y, z;
-	//occ->m_view->Eye(x, y, z);
-	//return servoce::point3( x, y, z );
 	return occ->m_view->Camera()->Eye();
 }
 
@@ -151,67 +158,21 @@ void servoce::view::set_orthogonal()
 {
 	TRACE();
 	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
-	occ->m_view->Camera()->SetUp(gp_Dir(0, 0, 1));//m_view->SetUp(0, 0, 1);
-	//occ->m_view->Camera()->OrthogonalizedUp();
-	//occ->m_view->Camera()->SetProjectionType(Graphic3d_Camera::Projection::Projection_Orthographic);
-	//return occ->m_view->Camera()->Center();
+	occ->m_view->Camera()->SetUp(gp_Dir(0, 0, 1));
 }
 
-//void servoce::view::screen(const std::string& path)
-//{
-//set_triedron();
-
-/*set_virtual_window(800, 600);
-fit_all();
-redraw();
-//dump(path);
-*/
-/*auto display = XOpenDisplay(NULL);
-
-XWindowAttributes gwa;
-XGetWindowAttributes(display, occ->winddesc, &gwa);
-int width = gwa.width;
-int height = gwa.height;
-
-XImage *ximage = XGetImage(display, occ->winddesc,
-               0, 0, width, height, AllPlanes, ZPixmap); */
-
-/*Image_PixMap pixmap;
-occ->m_view->ToPixMap(
-	pixmap,
-	800,
-	600,
-	Graphic3d_BT_RGB,
-	Standard_True,
-	V3d_SDO_MONO
-);
-
-
-const unsigned char * data = pixmap.Data();
-
-uint w = 800;
-uint h = 600;
-uint c = 3;*/
-
-//for(int c = 0; c < 3 * 800 * 600; ++c)
-//	dprhexln(*(data + c));
-
-
-//pixmap.Save("a.png");*/
-
-//occ->m_view->Dump("a.png", Graphic3d_BT_BRG);
-//}
+servoce::view::~view() 
+{
+	TRACE();
+	delete occ;
+}
 
 std::vector<unsigned char> servoce::view::rawarray()
 {
 	TRACE();
 	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	Image_PixMap pixmap;
-	occ->m_view->ToPixMap( pixmap, w, h//,
-	                       //Graphic3d_BT_RGB
-	                       //Standard_True
-	                       //V3d_SDO_MONO
-	                     );
+	occ->m_view->ToPixMap( pixmap, w, h);
 
 	return std::vector<unsigned char>(pixmap.Data(), pixmap.Data() + 3 * w * h);
 }
@@ -251,12 +212,6 @@ void servoce::view::see(int width, int height)
 	XSelectInput(d, w, KeyPressMask | StructureNotifyMask);
 	XMapWindow(d, w);
 
-	/*OccViewerContext oc;
-	auto vw = oc.create_vw();
-
-	oc.set_scene(*scn);
-	oc.set_triedron_axes();
-	*/
 	Atom wmDeleteMessage = XInternAtom(d, "WM_DELETE_WINDOW", False);
 	XSetWMProtocols(d, w, &wmDeleteMessage, 1);
 
@@ -270,7 +225,6 @@ void servoce::view::see(int width, int height)
 		{
 			case ConfigureNotify:
 			{
-				//XConfigureEvent xce = e.xconfigure;
 				static bool inited = false;
 
 				if (!inited)
@@ -278,12 +232,6 @@ void servoce::view::see(int width, int height)
 					set_window(w);
 					set_triedron();
 					fit_all(0.01);
-
-					/*auto m_cam = m_view->Camera();
-					m_cam->SetDirection(cam->native_dir());
-					m_cam->SetUp(cam->native_up());
-					m_cam->SetEye(cam->native_eye());*/
-					//m_cam->SetScale(cam->native_scale());
 
 					inited = true;
 				}
@@ -316,7 +264,6 @@ void servoce::see(servoce::scene& scn)
 {
 	TRACE();
 	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
-	//auto v = viewer(scn);
 	auto vv = scn.viewer().create_view();
 	vv.see();
 }
@@ -400,19 +347,10 @@ std::pair<servoce::point3, bool> servoce::view::intersect_point( double x, doubl
 		else
 			continue;
 
-		//std::cout << ip.X() << ' ' << ip.Y() << ' ' << ip.Z() << std::endl;
-
 		return std::make_pair(servoce::point3(ip), true);
 	}
 	return std::make_pair(servoce::point3(), false);
 }
-
-
-
-//servoce::shape_view_controller servoce::viewer::add(const servoce::shape& obj, servoce::color color)
-//{
-
-//}
 
 double servoce::view::scale()
 {
@@ -425,18 +363,6 @@ void servoce::view::set_scale(double arg)
 	TRACE();
 	occ->m_view->SetScale(arg);
 }
-
-
-/*std::pair<uint16_t, uint16_t> servoce::view::size() 
-{
-
-}
-
-void servoce::view::resize(std::pair<uint16_t, uint16_t> sz) 
-{
-
-}*/
-
 
 std::pair<uint16_t, uint16_t> servoce::view::size() 
 {

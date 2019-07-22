@@ -20,12 +20,13 @@ namespace servoce
 		view create_view();
 		void close();
 
-		void set_triedron_axes();
+		void set_triedron_axes(bool en = true);
 		void redraw();
 
 		void add_scene(scene& scn);
 		void clean_context();
 		void display(shape_view& controller);
+		void display(interactive_object& controller);
 	};
 }
 

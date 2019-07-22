@@ -16,6 +16,7 @@ servoce::viewer::viewer()
 {
 	TRACE();
 	occ = new OccViewerContext();
+	set_triedron_axes(true);
 }
 
 
@@ -24,21 +25,24 @@ servoce::viewer::~viewer()
 	TRACE();
 }
 
-void servoce::viewer::set_triedron_axes()
+void servoce::viewer::set_triedron_axes(bool en)
 {
 	TRACE();
 	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
-	Handle(AIS_Axis) axX = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0, 0, 0), gp_Vec(1, 0, 0)));
-	Handle(AIS_Axis) axY = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0, 0, 0), gp_Vec(0, 1, 0)));
-	Handle(AIS_Axis) axZ = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0, 0, 0), gp_Vec(0, 0, 1)));
 
-	axX->SetColor(Quantity_NOC_RED);
-	axY->SetColor(Quantity_NOC_GREEN);
-	axZ->SetColor(Quantity_NOC_BLUE1);
+	if (en)
+	{
+		occ->m_context->Display(occ->axX, false);
+		occ->m_context->Display(occ->axY, false);
+		occ->m_context->Display(occ->axZ, false);
+	}
 
-	occ->m_context->Display(axX, false);
-	occ->m_context->Display(axY, false);
-	occ->m_context->Display(axZ, false);
+	else 
+	{
+		occ->m_context->Erase(occ->axX, false);
+		occ->m_context->Erase(occ->axY, false);
+		occ->m_context->Erase(occ->axZ, false);
+	}
 }
 
 servoce::view servoce::viewer::create_view()
@@ -75,6 +79,7 @@ void servoce::viewer::add_scene(servoce::scene& scn)
 	TRACE();
 	//scn.set_viewer(this);
 	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
+
 	for (auto& s : scn.shape_views)
 	{
 		occ->m_context->Display(s->native(), false);
@@ -85,5 +90,13 @@ void servoce::viewer::display(servoce::shape_view& controller)
 {
 	TRACE();
 	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
+	occ->m_context->Display(controller.native(), false);
+}
+
+void servoce::viewer::display(servoce::interactive_object& controller)
+{
+	TRACE();
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
+	controller.set_context(occ->m_context);
 	occ->m_context->Display(controller.native(), false);
 }
