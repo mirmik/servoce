@@ -468,7 +468,9 @@ PYBIND11_MODULE(libservoce, m)
 	;
 
 	py::class_<interactive_object, std::shared_ptr<interactive_object>>(m, "interactive_object")
-	.def("set_color", &interactive_object::set_color, ungil())
+	.def(py::init<const servoce::shape&>(), ungil())
+	.def("set_color", (void(interactive_object::*)(const servoce::color&))&interactive_object::set_color, ungil())
+	.def("set_color", (void(interactive_object::*)(float,float,float,float))&interactive_object::set_color, py::arg("r"), py::arg("g"), py::arg("b"), py::arg("a")=0, ungil())
 	.def("color", &interactive_object::color, ungil())
 	.def("set_location", &interactive_object::set_location, ungil())
 	.def("hide", &interactive_object::hide, ungil())

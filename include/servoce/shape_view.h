@@ -22,9 +22,11 @@ namespace servoce
 
 	public:
 		interactive_object(Handle(AIS_InteractiveObject) ais) : m_ais(ais) {}
+		interactive_object(const shape& shp);
 
 		servoce::color color() const;
 		void set_color(const servoce::color&);
+		void set_color(float r, float g, float b, float a=0);
 
 		Handle(AIS_InteractiveObject) native() { return m_ais; }
 		Handle(AIS_InteractiveObject) const native() const { return m_ais; }
