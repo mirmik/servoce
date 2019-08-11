@@ -17,6 +17,7 @@ void servoce::interactive_object::set_color(const servoce::color& clr)
 {
 	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	m_ais->SetColor(clr.Color());
+	m_ais->SetTransparency(clr.a);
 }
 
 void servoce::interactive_object::set_color(float r, float g, float b, float a)
