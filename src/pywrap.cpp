@@ -473,6 +473,7 @@ PYBIND11_MODULE(libservoce, m)
 	.def("set_color", (void(interactive_object::*)(float,float,float,float))&interactive_object::set_color, py::arg("r"), py::arg("g"), py::arg("b"), py::arg("a")=0, ungil())
 	.def("color", &interactive_object::color, ungil())
 	.def("set_location", &interactive_object::set_location, ungil())
+	.def("relocate", &interactive_object::relocate, ungil())
 	.def("hide", &interactive_object::hide, ungil())
 	;
 
@@ -480,6 +481,7 @@ PYBIND11_MODULE(libservoce, m)
 	.def("shape", &shape_view::shape, ungil())
 	.def("color", &shape_view::color, ungil())
 	.def("set_location", &shape_view::set_location, ungil())
+	.def("relocate", &shape_view::relocate, ungil())
 	.def("hide", &shape_view::hide, ungil())
 	;
 

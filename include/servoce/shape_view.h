@@ -32,6 +32,8 @@ namespace servoce
 		Handle(AIS_InteractiveObject) const native() const { return m_ais; }
 
 		void set_location(const servoce::transformation& trans);
+		void relocate(const servoce::transformation& trans) { set_location(trans); }
+		
 		void hide(bool en);
 
 		void set_context(Handle(AIS_InteractiveContext) cntxt) { m_context = cntxt; }
@@ -56,6 +58,7 @@ namespace servoce
 		AIS_Shape* const native() const { return m_ashp; }
 
 		void set_location(const servoce::transformation& trans);
+		void relocate(const servoce::transformation& trans) { set_location(trans); }
 		void hide(bool en);
 
 	private:
