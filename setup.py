@@ -46,6 +46,7 @@ pyservoce_lib = Extension(
     sources= [
         "src/pywrap.cpp",
         "src/geombase_py.cpp",
+        "src/color_py.cpp",
         "src/surface.cpp",
         "src/curve2.cpp",
         "src/b64.cpp",

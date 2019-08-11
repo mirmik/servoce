@@ -445,6 +445,8 @@ PYBIND11_MODULE(libservoce, m)
 //GRAPHIC
 	py::class_<color>(m, "Color")
 	.def(py::init<>(), ungil())
+	.def(py::init<py::list>())
+	.def(py::init<py::tuple>())
 	.def(py::init<const color&>(), ungil())
 	.def(py::init<float, float, float>(), ungil())
 	.def(py::init<float, float, float,float>(), ungil())
