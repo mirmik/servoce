@@ -36,12 +36,14 @@ namespace servoce
 
 		AIS_InteractiveContext* InteractiveContext();
 
-		std::shared_ptr<servoce::shape_view> operator[](int idx) 
-		{ 
+		std::shared_ptr<servoce::shape_view> operator[](int idx)
+		{
 			auto it = shape_views.begin();
 			std::advance(it, idx);
-			return *it; 
+			return *it;
 		}
+
+		size_t total() {return shape_views.size();}
 	};
 }
 
