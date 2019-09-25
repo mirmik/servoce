@@ -15,8 +15,9 @@ licant.include("nos", "nos/nos.g.py")
 install_lib_dir = "/usr/lib/"
 install_inc_dir = "/usr/local/include/"
 
-shared_library(
-    "cxxbuild/libservoce.so", builddir="cxxbuild", mdepends=["servoce_sources", "nos"]
+shared_library("cxxbuild/libservoce.so", 
+    builddir="cxxbuild", 
+    mdepends=["servoce_sources", "nos"]
 )
 
 

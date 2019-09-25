@@ -108,7 +108,7 @@ setup(
     long_description_content_type="text/markdown",
     keywords=["testing", "cad"],
     classifiers=[],
-    package_data={"pyservoce": "libs\\*"},
+    package_data={"pyservoce": ["libs\\*"]},
     include_package_data=True,
     ext_modules=[pyservoce_lib],
     cmdclass={"bdist_wheel": bdist_wheel},
