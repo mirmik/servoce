@@ -361,6 +361,24 @@ PYBIND11_MODULE(libservoce, m)
 	m.def("curve2_ellipse", curve2::ellipse, ungil());
 	m.def("curve2_segment", curve2::segment, ungil());
 
+//CURVE3
+	py::class_<curve3::curve3>(m, "curve3")
+		.def("value", &curve3::curve3::value)
+		.def(py::pickle(
+		[](const curve3::curve3 & self) { return b64::base64_encode(string_dump(self)); },
+		[](const std::string & in) { return restore_string_dump<curve3::curve3>(b64::base64_decode(in)); }), ungil())
+		//.def("rotate", &curve3::curve3::rotate, ungil())
+	;
+	//py::class_<curve3::trimmed_curve3, curve3::curve3>(m, "trimmed_curve3")
+	//	.def(py::init<const curve3::curve3&, double, double>(), ungil())
+	;
+	//m.def("curve3_ellipse", curve3::ellipse, ungil());
+	//m.def("curve3_segment", curve3::segment, ungil());
+
+	m.def("curve3_interpolate", (curve3::curve3(*)(const std::vector<point3>&, const std::vector<vector3>&, bool))&curve3::interpolate, ungil(), py::arg("pnts"), py::arg("tang"), py::arg("closed") = false);
+	m.def("curve3_interpolate", (curve3::curve3(*)(const std::vector<point3>&, const bool))&curve3::interpolate, ungil(), py::arg("pnts"), py::arg("closed") = false);
+	
+
 //BOOLEAN
 	m.def("union", (shape(*)(const std::vector<const shape*>&))&make_union, ungil());
 	m.def("difference", (shape(*)(const std::vector<const shape*>&))&make_difference, ungil());

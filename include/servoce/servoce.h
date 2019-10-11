@@ -14,6 +14,7 @@
 
 #include <servoce/surface.h>
 #include <servoce/curve2.h>
+#include <servoce/curve3.h>
 #include <servoce/util.h>
 
 #include <servoce/prs3d.h>

@@ -139,6 +139,7 @@ module(
         "solid.cpp",
         "surface.cpp",
         "curve2.cpp",
+        "curve3.cpp",
         "face.cpp",
         "wire.cpp",
         "boolops.cpp",

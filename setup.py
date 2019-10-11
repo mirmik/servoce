@@ -49,6 +49,7 @@ pyservoce_lib = Extension(
         "src/color_py.cpp",
         "src/surface.cpp",
         "src/curve2.cpp",
+        "src/curve3.cpp",
         "src/b64.cpp",
         "src/topo.cpp",
         "src/trans.cpp",
