@@ -4,8 +4,8 @@ import os
 moduledir = os.path.dirname(__file__)
 extra_dll_dir = os.path.join(moduledir, "libs")
 
-print(sys.platform)
-print(extra_dll_dir)
+#print(sys.platform)
+#print(extra_dll_dir)
 
 #if (sys.platform == 'win32' or sys.platform == 'win64') and os.path.isdir(extra_dll_dir):
 #   os.environ.setdefault('PATH', '')
