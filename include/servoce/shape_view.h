@@ -52,6 +52,8 @@ namespace servoce
 
 		servoce::shape shape() const;
 		servoce::color color() const;
+		void set_color(const servoce::color&);
+		void set_color(float r, float g, float b, float a=0);
 		const servoce::scene& scene() const { return *scn; }
 
 		AIS_Shape* native() { return m_ashp; }

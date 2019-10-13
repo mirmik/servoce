@@ -92,3 +92,17 @@ void servoce::shape_view::hide(bool en)
 	else
 		this->scene().viewer().occ->m_context->Display(native(), false);
 }
+
+void servoce::shape_view::set_color(const servoce::color& clr)
+{
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
+	native()->SetColor(clr.Color());
+	native()->SetTransparency(clr.a);
+}
+
+void servoce::shape_view::set_color(float r, float g, float b, float a)
+{
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
+	native()->SetColor(Quantity_Color(r,g,b, Quantity_TOC_RGB));
+	native()->SetTransparency(a);
+}
