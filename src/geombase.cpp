@@ -3,6 +3,7 @@
 
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
+#include <gp_Dir.hxx>
 #include <gp_Quaternion.hxx>
 
 #include <TopoDS_Vertex.hxx>
@@ -28,6 +29,11 @@ servoce::quaternion::quaternion(const gp_Quaternion& q)
 gp_Vec servoce::vector3::Vec() const
 {
 	return gp_Vec(x, y, z);
+}
+
+gp_Dir servoce::vector3::Dir() const
+{
+	return gp_Dir(x, y, z);
 }
 
 gp_Pnt servoce::point3::Pnt() const

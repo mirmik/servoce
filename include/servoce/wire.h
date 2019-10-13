@@ -14,7 +14,7 @@ namespace servoce
 	shape make_interpolate(const std::vector<point3>& pnts, const vector3& atang, const vector3& btang, bool closed = false);
 	shape make_interpolate(const std::vector<point3>& pnts, const std::vector<vector3>& tang, bool closed = false);
 
-	shape make_arc_by_points(const point3& a, const point3& b, const point3& c);
+	//shape make_arc_by_points(const point3& a, const point3& b, const point3& c);
 
 	shape circle_arc(const point3& p1, const point3& p2, const point3& p3);
 	

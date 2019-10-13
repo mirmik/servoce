@@ -7,6 +7,7 @@
 class TopoDS_Vertex;
 
 class gp_Vec;
+class gp_Dir;
 class gp_Pnt;
 class gp_Pnt2d;
 class gp_Quaternion;
@@ -66,6 +67,7 @@ namespace servoce
 		point3 to_point3() const;
 
 		gp_Vec Vec() const;
+		gp_Dir Dir() const;
 
 		vector3(const pybind11::list&);
 		vector3(const pybind11::tuple&);
@@ -116,10 +118,8 @@ namespace servoce
 			return point3(linalg::lerp<vec,vec,double>(*this, o, koeff));
 		}
 
-		bool operator < (const servoce::point3& b)
-		{
-			return lexless_xyz(*this, b);
-		}
+		bool operator < (const servoce::point3& b) const { return lexless_xyz(*this, b); }
+		bool operator == (const servoce::point3& oth) const { return x == oth.x && y == oth.y && z == oth.z; }
 	};
 
 	class quaternion : public linalg::vec<double,4>
