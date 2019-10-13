@@ -19,6 +19,7 @@ static Aspect_TypeOfLine line_type_to_TypeOfLine(servoce::line_style style)
 		case servoce::line_style::dot_line: return Aspect_TOL_DOT;
 		case servoce::line_style::dotdash_line: return Aspect_TOL_DOTDASH;
 	}
+	throw std::runtime_error("wrong line_style");
 }
 
 servoce::interactive_object servoce::draw::arrow(

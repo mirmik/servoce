@@ -369,12 +369,11 @@ PYBIND11_MODULE(libservoce, m)
 		[](const std::string & in) { return restore_string_dump<curve3::curve3>(b64::base64_decode(in)); }), ungil())
 		//.def("rotate", &curve3::curve3::rotate, ungil())
 	;
-	//py::class_<curve3::trimmed_curve3, curve3::curve3>(m, "trimmed_curve3")
-	//	.def(py::init<const curve3::curve3&, double, double>(), ungil())
-	;
-	//m.def("curve3_ellipse", curve3::ellipse, ungil());
-	//m.def("curve3_segment", curve3::segment, ungil());
 
+	// basic:
+	m.def("curve3_line", &curve3::line);
+
+	// advanced: 
 	m.def("curve3_interpolate", (curve3::curve3(*)(const std::vector<point3>&, const std::vector<vector3>&, bool))&curve3::interpolate, ungil(), py::arg("pnts"), py::arg("tang"), py::arg("closed") = false);
 	m.def("curve3_interpolate", (curve3::curve3(*)(const std::vector<point3>&, const bool))&curve3::interpolate, ungil(), py::arg("pnts"), py::arg("closed") = false);
 	
