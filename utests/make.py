@@ -12,7 +12,10 @@ licant.include("servoce")
 liboce_include_path = "/usr/local/include/opencascade/"
 
 tests = [
-	"curve3"
+	"curve3",
+    "solid",
+    "face",
+    "wire"
 ]
 
 tests_c = [
