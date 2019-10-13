@@ -88,7 +88,7 @@ void servoce::shape_view::hide(bool en)
 	TRACE();
 	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	if (en)
-		this->scene().viewer().occ->m_context->Erase(native(), true);
+		this->scene().viewer().occ->m_context->Erase(native(), false);
 	else
-		this->scene().viewer().occ->m_context->Display(native(), true);
+		this->scene().viewer().occ->m_context->Display(native(), false);
 }

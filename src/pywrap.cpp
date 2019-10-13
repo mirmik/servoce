@@ -172,6 +172,7 @@ PYBIND11_MODULE(libservoce, m)
 	.def_readwrite("z", &vector3::z)
 	.def("__len__", [](const vector3&){return 3;})
 	.def("__mul__", (vector3(*)(const vector3&, double)) &servoce::operator* )
+	.def("__rmul__", (vector3(*)(const vector3&, double)) &servoce::operator* )
 	.def("__truediv__", (vector3(*)(const vector3&, double)) &servoce::operator/ )
 	.def("__add__", (vector3(*)(const vector3&, const vector3&)) &servoce::operator+ )
 	.def("__sub__", (vector3(*)(const vector3&, const vector3&)) &servoce::operator- )
@@ -371,7 +372,7 @@ PYBIND11_MODULE(libservoce, m)
 	;
 
 	// basic:
-	m.def("curve3_line", &curve3::line);
+	m.def("curve3_line", &curve3::line, ungil());
 
 	// advanced: 
 	m.def("curve3_interpolate", (curve3::curve3(*)(const std::vector<point3>&, const std::vector<vector3>&, bool))&curve3::interpolate, ungil(), py::arg("pnts"), py::arg("tang"), py::arg("closed") = false);
@@ -453,11 +454,7 @@ PYBIND11_MODULE(libservoce, m)
 	m.def("scaleXYZ", &scaleXYZ, ungil(), py::arg("x"), py::arg("y"), py::arg("z"));
 	m.def("nulltrans", nulltrans, ungil());
 
-	//m.def("scaleX", scale, py::arg("factor"), py::arg("center") = servoce::point3());
-	//m.def("scaleY", scale, py::arg("factor"), py::arg("center") = servoce::point3());
-	//m.def("scaleZ", scale, py::arg("factor"), py::arg("center") = servoce::point3());
-
-	//m.def("simplify_with_bspline", &simplify_with_bspline);
+	m.def("short_rotate", &short_rotate, ungil());
 
 //GRAPHIC
 	py::class_<color>(m, "Color")
@@ -509,6 +506,7 @@ PYBIND11_MODULE(libservoce, m)
 	.def_readonly("viewer", &scene::vwer, py::return_value_policy::reference)
 	.def("add", (std::shared_ptr<shape_view>(scene::*)(const shape&, color))&scene::add, py::arg("shape"), py::arg("color") = color{0.6, 0.6, 0.8}, ungil())
 	.def("add", (std::shared_ptr<shape_view>(scene::*)(const point3&, color))&scene::add, py::arg("shape"), py::arg("color") = color{0.6, 0.6, 0.8}, ungil())
+	.def("add", (void(scene::*)(const std::shared_ptr<servoce::interactive_object>&))&scene::add, py::arg("iobj"), ungil())
 	.def("append", (void(scene::*)(const scene&))&scene::append, py::arg("scene"), ungil())
 	.def("shapes_array", (std::vector<shape>(scene::*)())&scene::shapes_array, ungil())
 	.def("color_array", (std::vector<color>(scene::*)())&scene::color_array, ungil())

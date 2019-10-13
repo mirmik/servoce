@@ -25,10 +25,13 @@ def Scene_add(scene, obj, color=default_color):
     if not isinstance(color, pyservoce.libservoce.Color):
         color = pyservoce.libservoce.Color(*color)
 
-    if isinstance(obj, pyservoce.libservoce.Shape) or isinstance(
-        obj, pyservoce.libservoce.point3
+    if (
+    	   isinstance(obj, pyservoce.libservoce.Shape) 
+    	or isinstance(obj, pyservoce.libservoce.point3)
     ):
         return Raw_Scene_add(scene, obj, color)
+    elif isinstance(obj, pyservoce.libservoce.interactive_object):
+        return Raw_Scene_add(scene, obj)
     else:
         return obj.bind_to_scene(scene, color)
 

@@ -3,6 +3,8 @@
 
 #include <servoce/linalg/linalg.h>
 #include <igris/dprint.h>
+#include <nos/print.h>
+#include <nos/fprint.h>
 
 class TopoDS_Vertex;
 
@@ -44,7 +46,7 @@ namespace servoce
 		static bool lexless_xy(const point2& a, const point2& b);
 		static bool early(const point2& a, const point2& b, double eps = 0.0000001);
 
-		bool operator < (const servoce::point2& b)
+		bool operator < (const servoce::point2& b) const
 		{
 			return lexless_xy(*this, b);
 		}
@@ -72,14 +74,19 @@ namespace servoce
 		vector3(const pybind11::list&);
 		vector3(const pybind11::tuple&);
 
-		vector3 normalize() { return vector3(linalg::normalize(*this)); }
+		auto length() const { return linalg::length(*this); }
+		vector3 normalize() const { return vector3(linalg::normalize(*this)); }
 		
-		vector3 cross(const vector3& oth) { return vector3(linalg::cross(*this, oth)); }
+		vector3 cross(const vector3& oth) const { return vector3(linalg::cross(*this, oth)); }
 
 		bool operator==(const vector3& oth) const { return oth.x == x && oth.y == y && oth.z == z; }
 		bool operator!=(const vector3& oth) const { return oth.x != x || oth.y != y || oth.z != z; }
 		vector3 operator-() const { return vector3(-x, -y, -z); }
 
+		ssize_t print_to(nos::ostream& out) const
+		{
+			return nos::fprint_to(out, "vector3({},{},{})", x, y, z);
+		}
 	};
 
 	class point3 : public linalg::vec<double, 3>
@@ -105,7 +112,7 @@ namespace servoce
 		static bool lexless_xyz(const point3& a, const point3& b);
 		static bool early(const point3& a, const point3& b, double eps = 0.0000001);
 
-		double distance(const point3& o)
+		double distance(const point3& o) const
 		{
 			double xd = x - o.x;
 			double yd = y - o.y;
@@ -113,13 +120,18 @@ namespace servoce
 			return sqrt(xd * xd + yd * yd + zd * zd);
 		}
 
-		point3 lerp(const point3& o, double koeff)
+		point3 lerp(const point3& o, double koeff) const
 		{
 			return point3(linalg::lerp<vec,vec,double>(*this, o, koeff));
 		}
 
 		bool operator < (const servoce::point3& b) const { return lexless_xyz(*this, b); }
 		bool operator == (const servoce::point3& oth) const { return x == oth.x && y == oth.y && z == oth.z; }
+
+		ssize_t print_to(nos::ostream& out) const
+		{
+			return nos::fprint_to(out, "point3({},{},{})", x, y, z);
+		}
 	};
 
 	class quaternion : public linalg::vec<double,4>
@@ -140,7 +152,7 @@ namespace servoce
 		quaternion(const pybind11::list&);
 		quaternion(const pybind11::tuple&);
 
-		vector3 rotation_vector() 
+		vector3 rotation_vector() const
 		{
 			double angle = linalg::qangle(*this);
 			if (::fabs(angle) < 0.000001) 
@@ -157,6 +169,9 @@ namespace servoce
 	{ return vector3(v.x / a, v.y / a, v.z / a); }
 
 	static inline vector3 operator*(const vector3& v, double a)
+	{ return vector3(v.x * a, v.y * a, v.z * a); }
+
+	static inline vector3 operator*(double a, const vector3& v)
 	{ return vector3(v.x * a, v.y * a, v.z * a); }
 
 	static inline vector3 operator+(const vector3& a, const vector3& b)

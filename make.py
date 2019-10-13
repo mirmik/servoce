@@ -21,7 +21,7 @@ shared_library("cxxbuild/libservoce.so",
 )
 
 
-@licant.routine
+@licant.routine(deps=["cxxbuild/libservoce.so"])
 def install():
     os.system("cp cxxbuild/libservoce.so {}".format(install_lib_dir + "libservoce.so"))
     os.system("cp -r include/servoce {}".format(install_inc_dir))

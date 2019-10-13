@@ -15,7 +15,8 @@ tests = [
 	"curve3",
     "solid",
     "face",
-    "wire"
+    "wire",
+    "trans"
 ]
 
 tests_c = [

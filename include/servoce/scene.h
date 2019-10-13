@@ -20,6 +20,7 @@ namespace servoce
 	{
 	public:
 		std::list<std::shared_ptr<shape_view>> shape_views;
+		std::list<std::shared_ptr<interactive_object>> iobjs;
 		servoce::viewer vwer;
 
 		scene();
@@ -29,6 +30,12 @@ namespace servoce
 
 		std::shared_ptr<shape_view> add(const servoce::shape& shp, servoce::color color = mech);
 		std::shared_ptr<shape_view> add(const servoce::point3& pnt, servoce::color color = mech);
+		void add(const std::shared_ptr<servoce::interactive_object>& iobj) 
+		{ 
+			iobjs.push_back(iobj);
+			vwer.display(*iobj);
+		}
+		
 		void append(const servoce::scene& scn);
 
 		std::vector<servoce::shape> shapes_array();

@@ -17,6 +17,7 @@
 #include <BRepBuilderAPI_Transform.hxx>
 #include <BRepBuilderAPI_GTransform.hxx>
 
+#define NOTRACE 1
 #include <nos/trace.h>
 
 servoce::transformation::transformation(const transformation& oth)
@@ -85,11 +86,11 @@ servoce::transformation servoce::mirrorXZ()
 	return servoce::plane_mirror(0, 1, 0);
 }
 
-servoce::transformation servoce::transformation::invert() 
+servoce::transformation servoce::transformation::invert()
 {
 	TRACE();
 	gp_Trsf pr = trsf->Inverted();
-	return transformation(new gp_Trsf(pr));	
+	return transformation(new gp_Trsf(pr));
 }
 
 servoce::shape servoce::transformation::operator()(const servoce::shape& shp) const
@@ -165,7 +166,7 @@ servoce::general_transformation servoce::scaleX(double s)
 {
 	TRACE();
 	auto gtrsf = new gp_GTrsf();
-	gtrsf->SetVectorialPart(gp_Mat(s,0,0,0,1,0,0,0,1));
+	gtrsf->SetVectorialPart(gp_Mat(s, 0, 0, 0, 1, 0, 0, 0, 1));
 	return servoce::general_transformation(gtrsf);
 }
 
@@ -173,7 +174,7 @@ servoce::general_transformation servoce::scaleY(double s)
 {
 	TRACE();
 	auto gtrsf = new gp_GTrsf();
-	gtrsf->SetVectorialPart(gp_Mat(1,0,0,0,s,0,0,0,1));
+	gtrsf->SetVectorialPart(gp_Mat(1, 0, 0, 0, s, 0, 0, 0, 1));
 	return servoce::general_transformation(gtrsf);
 }
 
@@ -181,7 +182,7 @@ servoce::general_transformation servoce::scaleZ(double s)
 {
 	TRACE();
 	auto gtrsf = new gp_GTrsf();
-	gtrsf->SetVectorialPart(gp_Mat(1,0,0,0,1,0,0,0,s));
+	gtrsf->SetVectorialPart(gp_Mat(1, 0, 0, 0, 1, 0, 0, 0, s));
 	return servoce::general_transformation(gtrsf);
 }
 
@@ -189,7 +190,7 @@ servoce::general_transformation servoce::scaleXY(double x, double y)
 {
 	TRACE();
 	auto gtrsf = new gp_GTrsf();
-	gtrsf->SetVectorialPart(gp_Mat(x,0,0,0,y,0,0,0,1));
+	gtrsf->SetVectorialPart(gp_Mat(x, 0, 0, 0, y, 0, 0, 0, 1));
 	return servoce::general_transformation(gtrsf);
 }
 
@@ -197,7 +198,7 @@ servoce::general_transformation servoce::scaleYZ(double y, double z)
 {
 	TRACE();
 	auto gtrsf = new gp_GTrsf();
-	gtrsf->SetVectorialPart(gp_Mat(1,0,0,0,y,0,0,0,z));
+	gtrsf->SetVectorialPart(gp_Mat(1, 0, 0, 0, y, 0, 0, 0, z));
 	return servoce::general_transformation(gtrsf);
 }
 
@@ -205,7 +206,7 @@ servoce::general_transformation servoce::scaleXZ(double x, double z)
 {
 	TRACE();
 	auto gtrsf = new gp_GTrsf();
-	gtrsf->SetVectorialPart(gp_Mat(x,0,0,0,1,0,0,0,z));
+	gtrsf->SetVectorialPart(gp_Mat(x, 0, 0, 0, 1, 0, 0, 0, z));
 	return servoce::general_transformation(gtrsf);
 }
 
@@ -213,7 +214,7 @@ servoce::general_transformation servoce::scaleXYZ(double x, double y, double z)
 {
 	TRACE();
 	auto gtrsf = new gp_GTrsf();
-	gtrsf->SetVectorialPart(gp_Mat(x,0,0,0,y,0,0,0,z));
+	gtrsf->SetVectorialPart(gp_Mat(x, 0, 0, 0, y, 0, 0, 0, z));
 	return servoce::general_transformation(gtrsf);
 }
 
@@ -345,7 +346,7 @@ servoce::general_transformation servoce::general_transformation::restore_string_
 	return tr;
 }
 
-servoce::transformation servoce::nulltrans() 
+servoce::transformation servoce::nulltrans()
 {
 	TRACE();
 	return servoce::transformation(new gp_Trsf());
@@ -377,4 +378,15 @@ servoce::quaternion servoce::transformation::rotation() const
 	TRACE();
 	auto tr = trsf->GetRotation();
 	return tr;
+}
+
+servoce::transformation servoce::short_rotate(const vector3& from, const vector3& to)
+{
+	auto f = from.normalize();
+	auto t = to.normalize();
+
+	auto rot = f.cross(t);
+	auto mul = linalg::uangle(f, t);
+
+	return axrotation(rot.x, rot.y, rot.z, mul);
 }
