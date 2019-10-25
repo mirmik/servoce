@@ -18,7 +18,7 @@ using namespace servoce;
 #define DEF_TRANSFORM_OPERATIONS(TYPE) 					\
 .def("transform", (TYPE(TYPE::*)(const transformation& trans)) &TYPE::transform, ungil())			\
 .def("transform", (TYPE(TYPE::*)(const general_transformation& trans)) &TYPE::transform, ungil())	\
-.def("translate", &TYPE::translate, ungil())			\
+.def("translate", &TYPE::translate, py::arg("x")=0, py::arg("y")=0, py::arg("z")=0, ungil())			\
 .def("up", &TYPE::up, ungil())							\
 .def("down", &TYPE::down, ungil())						\
 .def("right", &TYPE::right, ungil())					\
@@ -421,8 +421,8 @@ PYBIND11_MODULE(libservoce, m)
 	[](const std::string & in) { return general_transformation::restore_string_dump(b64::base64_decode(in)); }), ungil())
 	;
 
-	m.def("translate", (transformation(*)(double, double, double)) &translate, ungil());
-	m.def("translate", (transformation(*)(double, double)) &translate, ungil());
+	m.def("translate", (transformation(*)(double, double, double)) &translate, py::arg("x")=0, py::arg("y")=0, py::arg("z")=0, ungil());
+	m.def("translate", (transformation(*)(double, double)) &translate, py::arg("x")=0, py::arg("y")=0, ungil());
 	m.def("translate", (transformation(*)(const vector3&)) &translate, ungil());
 	m.def("axrotation", axrotation, ungil());
 	m.def("axis_mirror", axis_mirror, ungil());
