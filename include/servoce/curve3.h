@@ -79,14 +79,22 @@ namespace servoce
 			Standard_EXPORT virtual void D0 (const Standard_Real U, gp_Pnt& P) const 
 			{ 
 				P.SetX(U); 
-				P.SetY(0); 
-				P.SetZ(0); 
+				P.SetY(U*U); 
+				P.SetZ(U); 
 			};
 			Standard_EXPORT virtual void D1 (const Standard_Real U, gp_Pnt& P, gp_Vec& V1) const { BUG(); };
 			Standard_EXPORT virtual void D2 (const Standard_Real U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const { 
-				P.SetX(0); 
-				P.SetY(0); 
-				P.SetZ(0); 
+				P.SetX(U); 
+				P.SetY(U*U); 
+				P.SetZ(U); 
+
+				V1.SetX(1); 
+				V1.SetY(2*U); 
+				V1.SetZ(1); 
+
+				V2.SetX(0); 
+				V2.SetY(2); 
+				V2.SetZ(0); 
 			};
 			Standard_EXPORT virtual void D3 (const Standard_Real U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3) const { BUG(); };
 			Standard_EXPORT virtual gp_Vec DN (const Standard_Real U, const Standard_Integer N) const { BUG(); };

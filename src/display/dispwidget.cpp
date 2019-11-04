@@ -56,7 +56,6 @@ const Handle_AIS_InteractiveContext& servoce::disp::DisplayWidget::getContext() 
 void servoce::disp::DisplayWidget::showEvent(QShowEvent* e)
 {
     static bool isinit = false;
-    dprln("showEvent");
     QWidget::showEvent(e);
 
     if (isinit == false)
@@ -70,7 +69,6 @@ void servoce::disp::DisplayWidget::showEvent(QShowEvent* e)
 
 void servoce::disp::DisplayWidget::paintEvent(QPaintEvent* e)
 {
-    dprln("paintEvent");
     static bool isinit = false;
     Q_UNUSED(e);
 
@@ -80,7 +78,6 @@ void servoce::disp::DisplayWidget::paintEvent(QPaintEvent* e)
         
         for (auto& shp : scn->shape_views)
         {
-            dprln("HERE");
             m_context->Display (shp->native(), false);
         }
 
