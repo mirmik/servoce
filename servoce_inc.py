@@ -156,6 +156,7 @@ module(
         "surface.cpp",
         "curve2.cpp",
         "curve3.cpp",
+        "analytic_curve3.cpp",
         "face.cpp",
         "wire.cpp",
         "boolops.cpp",

@@ -1,6 +1,7 @@
 #include <servoce/servoce.h>
 //#include <servoce/display.h>
 #include <servoce/util/b64.h>
+#include <servoce/analytic_curve.h>
 
 #include <pybind11/pybind11.h>
 #include <pybind11/operators.h>
@@ -377,7 +378,8 @@ PYBIND11_MODULE(libservoce, m)
 	// advanced: 
 	m.def("curve3_interpolate", (curve3::curve3(*)(const std::vector<point3>&, const std::vector<vector3>&, bool))&curve3::interpolate, ungil(), py::arg("pnts"), py::arg("tang"), py::arg("closed") = false);
 	m.def("curve3_interpolate", (curve3::curve3(*)(const std::vector<point3>&, const bool))&curve3::interpolate, ungil(), py::arg("pnts"), py::arg("closed") = false);
-	
+
+		
 
 //BOOLEAN
 	m.def("union", (shape(*)(const std::vector<const shape*>&))&make_union, ungil());
@@ -599,4 +601,11 @@ PYBIND11_MODULE(libservoce, m)
 
 	m.def("draw_arrow", &draw::arrow, py::arg("pnt"), py::arg("vec"), py::arg("clr")=yellow, py::arg("arrlen")=1, py::arg("width")=1);
 	m.def("draw_line", &draw::line, py::arg("a"), py::arg("b"), py::arg("clr")=black, py::arg("style")=line_style::solid_line, py::arg("width")=1);
+
+// ANALYTIC
+	py::class_<analytic_curve3>(m, "analytic")
+		.def(py::init<>(), ungil())
+		.def_readwrite("func", &analytic_curve3::func)
+		.def("doit", &analytic_curve3::doit);
+
 }
