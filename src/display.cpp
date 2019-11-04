@@ -10,8 +10,8 @@ void servoce::display(const servoce::scene& scn) {
 
 	int argc = 0;
 	QApplication a(argc, nullptr);
-	auto w = new disp::MainWidget;
-	w->display->setScene(&scn);
+	auto w = new disp::DisplayWidget;
+	w->setScene(&scn);
 
 	w->show();
 	a.exec();

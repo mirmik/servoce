@@ -67,7 +67,7 @@ namespace servoce
 		class ACurve : public Geom_Curve
 		{
 			Standard_EXPORT virtual void Transform (const gp_Trsf& T) { BUG(); };
-			Standard_EXPORT virtual Handle(Geom_Geometry) Copy() const { BUG(); };
+			Standard_EXPORT virtual Handle(Geom_Geometry) Copy() const { return new ACurve(); };
 			Standard_EXPORT virtual void Reverse() { BUG(); };
 			Standard_EXPORT virtual Standard_Real ReversedParameter (const Standard_Real U) const { BUG(); };
 			Standard_EXPORT virtual Standard_Real FirstParameter() const { return -10; };
@@ -83,7 +83,11 @@ namespace servoce
 				P.SetZ(0); 
 			};
 			Standard_EXPORT virtual void D1 (const Standard_Real U, gp_Pnt& P, gp_Vec& V1) const { BUG(); };
-			Standard_EXPORT virtual void D2 (const Standard_Real U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const { BUG(); };
+			Standard_EXPORT virtual void D2 (const Standard_Real U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const { 
+				P.SetX(0); 
+				P.SetY(0); 
+				P.SetZ(0); 
+			};
 			Standard_EXPORT virtual void D3 (const Standard_Real U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3) const { BUG(); };
 			Standard_EXPORT virtual gp_Vec DN (const Standard_Real U, const Standard_Integer N) const { BUG(); };
 			//void Delete() override {}

@@ -12,6 +12,8 @@
 #include <QtOpenGL/QGLWidget>
 
 #include <servoce/linalg/linalg.h>
+#include <servoce/viewer.h>
+//#include <local/OccViewContext.h>
 
 #include <servoce/scene.h>
 
@@ -28,6 +30,7 @@ namespace servoce
 			Q_OBJECT
 
 		public:
+			//OccViewerContext* m_viewer;
 			Handle(V3d_Viewer) m_viewer;
 			Handle(V3d_View) m_view;
 			Handle(AIS_InteractiveContext) m_context;
@@ -87,7 +90,7 @@ namespace servoce
 			void autoscale();
 		};
 
-		class MainWidget : public QMainWindow
+		/*class MainWidget : public QMainWindow
 		{
 			Q_OBJECT
 
@@ -120,7 +123,7 @@ namespace servoce
 
 		public:
 			MainWidget(QWidget* parent = nullptr);
-		};
+		};*/
 	}
 }
 

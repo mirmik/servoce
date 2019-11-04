@@ -46,11 +46,7 @@
 #include <nos/fprint.h>
 #include <nos/trace.h>
 
-static Handle(Graphic3d_GraphicDriver)& GetGraphicDriver()
-{
-    static Handle(Graphic3d_GraphicDriver) aGraphicDriver;
-    return aGraphicDriver;
-}
+#include <local/OccViewContext.h>
 
 const Handle_AIS_InteractiveContext& servoce::disp::DisplayWidget::getContext() const
 {
@@ -59,22 +55,32 @@ const Handle_AIS_InteractiveContext& servoce::disp::DisplayWidget::getContext() 
 
 void servoce::disp::DisplayWidget::showEvent(QShowEvent* e)
 {
+    static bool isinit = false;
+    dprln("showEvent");
     QWidget::showEvent(e);
-    //init();
+
+    if (isinit == false)
+    {
+        init();
+        isinit = true;
+    }
     //m_view->MustBeResized();
     //m_view->Redraw();
 }
 
 void servoce::disp::DisplayWidget::paintEvent(QPaintEvent* e)
 {
+    dprln("paintEvent");
+    static bool isinit = false;
     Q_UNUSED(e);
 
-    if (m_context.IsNull())
+    if (isinit == false)
     {
-        init();
-
+        //init();
+        
         for (auto& shp : scn->shape_views)
         {
+            dprln("HERE");
             m_context->Display (shp->native(), false);
         }
 
@@ -90,6 +96,7 @@ void servoce::disp::DisplayWidget::paintEvent(QPaintEvent* e)
         getContext()->Display(axY, false);
         getContext()->Display(axZ, false);
         autoscale();
+        isinit = true;
     }
 
     m_view->Redraw();
@@ -144,7 +151,7 @@ void servoce::disp::DisplayWidget::init()
     Handle(Xw_Window) wind = new Xw_Window(aDisplayConnection, (Window) window_handle);
 #endif
 
-    m_viewer = new V3d_Viewer(GetGraphicDriver());
+    m_viewer = scn->vwer.occ->m_viewer;
     m_viewer->SetDefaultLights();
     m_viewer->SetLightOn();
 
@@ -159,7 +166,7 @@ void servoce::disp::DisplayWidget::init()
     m_view->SetWindow(wind);
     if (!wind->IsMapped()) wind->Map();
 
-    m_context = new AIS_InteractiveContext(m_viewer);
+    m_context = scn->vwer.occ->m_context;
     m_context->DefaultDrawer ()->SetFaceBoundaryDraw(true);
 
     m_view->MustBeResized();

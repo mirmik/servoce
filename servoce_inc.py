@@ -167,13 +167,22 @@ module(
         "viewer.cpp",
         "camera.cpp",
         "prs3d.cpp",
-        "interactive_object.cpp"
+        "interactive_object.cpp",
+
+        "display.cpp",
+        "display/dispwidget.cpp",
+        "display/dispwidget_qt.cpp"
     ] + add_sources,
-    moc=[] + add_moc,
+    moc=[
+
+        "local/display.h"
+    ] + add_moc,
     include_paths=["include", ".", "src"],
     mdepends=[
         "liboce",
         "nos",
+
+        "libqt"
     ] + add_modules,
     cxx_flags="-Wall -fPIC -DQT_NO_VERSION_TAGGING -ffunction-sections -fdata-sections",
     cc_flags="-Wall -fPIC -ffunction-sections -fdata-sections",
