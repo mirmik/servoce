@@ -9,7 +9,7 @@
 
 #include <vector>
 
-namespace servoce 
+namespace servoce
 {
 	namespace curve3
 	{
@@ -20,7 +20,7 @@ namespace servoce
 		public:
 			curve3(Geom_Curve* crv) : crv(crv) {}
 			curve3(Handle(Geom_Curve) crv);
-			curve3(){}
+			curve3() {}
 
 			Handle(Geom_Curve) Curve() { return crv; }
 			const Handle(Geom_Curve) Curve() const { return crv; }
@@ -44,7 +44,7 @@ namespace servoce
 			// TODO
 		};
 
-	// Basic:
+		// Basic:
 		bounded_curve3 bezier(); //TODO
 		bounded_curve3 bspline(); //TODO
 		bounded_curve3 trimmed(); //TODO
@@ -57,13 +57,40 @@ namespace servoce
 		curve3 line(const point3& a, const vector3& b);
 		curve3 offset(); //TODO
 
-	// Advanced:
+		// Advanced:
 		curve3 interpolate(
-			const std::vector<servoce::point3>& pnts, const std::vector<servoce::vector3>& tang, bool closed);
-		
+		    const std::vector<servoce::point3>& pnts, const std::vector<servoce::vector3>& tang, bool closed);
+
 		curve3 interpolate(
-			const std::vector<servoce::point3>& pnts, bool closed);
+		    const std::vector<servoce::point3>& pnts, bool closed);		
+
+		class ACurve : public Geom_Curve
+		{
+			Standard_EXPORT virtual void Transform (const gp_Trsf& T) { BUG(); };
+			Standard_EXPORT virtual Handle(Geom_Geometry) Copy() const { BUG(); };
+			Standard_EXPORT virtual void Reverse() { BUG(); };
+			Standard_EXPORT virtual Standard_Real ReversedParameter (const Standard_Real U) const { BUG(); };
+			Standard_EXPORT virtual Standard_Real FirstParameter() const { return -10; };
+			Standard_EXPORT virtual Standard_Real LastParameter() const { return 10; };
+			Standard_EXPORT virtual Standard_Boolean IsClosed() const { return false; };
+			Standard_EXPORT virtual Standard_Boolean IsPeriodic() const { return false; };
+			Standard_EXPORT virtual GeomAbs_Shape Continuity() const { BUG(); };
+			Standard_EXPORT virtual Standard_Boolean IsCN (const Standard_Integer N) const { BUG(); };
+			Standard_EXPORT virtual void D0 (const Standard_Real U, gp_Pnt& P) const 
+			{ 
+				P.SetX(U); 
+				P.SetY(0); 
+				P.SetZ(0); 
+			};
+			Standard_EXPORT virtual void D1 (const Standard_Real U, gp_Pnt& P, gp_Vec& V1) const { BUG(); };
+			Standard_EXPORT virtual void D2 (const Standard_Real U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const { BUG(); };
+			Standard_EXPORT virtual void D3 (const Standard_Real U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3) const { BUG(); };
+			Standard_EXPORT virtual gp_Vec DN (const Standard_Real U, const Standard_Integer N) const { BUG(); };
+			//void Delete() override {}
+		};
 	}
 }
+
+static servoce::curve3::ACurve a;
 
 #endif

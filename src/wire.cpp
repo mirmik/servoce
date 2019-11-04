@@ -1,4 +1,6 @@
 #include <servoce/wire.h>
+#include <servoce/curve3.h>
+
 #include <local/util.h>
 
 #include <exception>
@@ -328,4 +330,9 @@ bool servoce::shape::is_closed()
 {
 	auto pair = sfvertex();
 	return servoce::point3::early(pair.first, pair.second, 0.0001);
+}
+
+servoce::shape servoce::make_edge(const servoce::curve3::curve3& crv, double p1, double p2) 
+{
+	return BRepBuilderAPI_MakeEdge(crv.Curve(), p1, p2).Shape();
 }

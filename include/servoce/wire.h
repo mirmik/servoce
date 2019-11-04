@@ -2,6 +2,7 @@
 #define SERVOCE_WIRE_H
 
 #include <servoce/topo.h>
+#include <servoce/curve3.h>
 #include <vector>
 
 namespace servoce
@@ -23,6 +24,8 @@ namespace servoce
 
 	/// Сшить wire или edge между собой.
 	shape sew(const std::vector<const shape*>& arr);
+
+	shape make_edge(const servoce::curve3::curve3& crv, double p1, double p2);
 }
 
 #endif
