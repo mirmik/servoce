@@ -105,7 +105,7 @@ pyservoce_lib = Extension(
 setup(
     name="pyservoce",
     packages=["pyservoce"],
-    version="1.12.2",
+    version="1.12.3",
     license="MIT",
     description="CAD system for righteous zen programmers ",
     author="mirmik",
