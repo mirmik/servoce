@@ -10,6 +10,7 @@ if len(sys.argv) > 1:
     vers = sys.argv[1]
 
 os.system("mkdir -p pyservoce/libs")
+iswin = sys.platform == "win32" or sys.platform == "win64"
 
 listlibs = [
     "TKernel",
@@ -23,7 +24,7 @@ listlibs = [
     "TKPrim",
     "TKBO",
     "TKBool",
-    "TKOffset",
+    "TKOffset"
     "TKService",
     "TKV3d",
     "TKOpenGl",
@@ -41,7 +42,8 @@ for l in listlibs:
     for f in filelist:
         if l + ".so.{}".format(vers) in f:
             cmd0 = "cp {0} pyservoce/libs/".format(os.path.join("/usr/local/lib/", f))
-            #cmd05 = "patchelf --set-rpath '$ORIGIN' pyservoce/libs/{0}".format(f)
+            if not iswin:
+            	cmd05 = "patchelf --set-rpath '$ORIGIN' pyservoce/libs/{0}".format(f)
             cmd1 = "ln -s {2}/pyservoce/libs/{0} {2}/pyservoce/libs/{1}".format(
                 f, f[:-4], os.getcwd()
             )
@@ -50,11 +52,13 @@ for l in listlibs:
             )
 
             print(cmd0)
-            #print(cmd05)
+            if not iswin:
+            	print(cmd05)
             print(cmd1)
             print(cmd2)
 
             os.system(cmd0)
-            #os.system(cmd05)
+            if not iswin:
+            	os.system(cmd05)
             os.system(cmd1)
             os.system(cmd2)
