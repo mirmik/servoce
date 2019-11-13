@@ -33,6 +33,13 @@ matrix:
         - sudo apt-get update
         - sudo apt install -y libocct-foundation-7.3 libocct-ocaf-7.3 libocct-data-exchange-7.3 libocct-foundation-dev libocct-ocaf-dev libocct-data-exchange-dev
  
+        - git clone https://github.com/google/googletest googletest/
+        - cd googletest
+        - cmake .
+        - make
+        - sudo make install
+        - cd ..
+
         - cd igris
         - cmake .
         - make
