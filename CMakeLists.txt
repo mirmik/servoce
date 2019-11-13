@@ -23,8 +23,7 @@ file(GLOB SOURCES
 	src/topo.cpp   
 	src/viewer.cpp
 	src/camera.cpp   
-	src/curve2.cpp    
-	src/occversion.cpp          
+	src/curve2.cpp           
 	src/scene.cpp   
 	src/surface.cpp     
 	src/trans.cpp  

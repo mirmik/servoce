@@ -436,33 +436,6 @@ src/interactive_object.cpp.s:
 	$(MAKE) -f CMakeFiles/servoce.dir/build.make CMakeFiles/servoce.dir/src/interactive_object.cpp.s
 .PHONY : src/interactive_object.cpp.s
 
-src/occversion.o: src/occversion.cpp.o
-
-.PHONY : src/occversion.o
-
-# target to build an object file
-src/occversion.cpp.o:
-	$(MAKE) -f CMakeFiles/servoce.dir/build.make CMakeFiles/servoce.dir/src/occversion.cpp.o
-.PHONY : src/occversion.cpp.o
-
-src/occversion.i: src/occversion.cpp.i
-
-.PHONY : src/occversion.i
-
-# target to preprocess a source file
-src/occversion.cpp.i:
-	$(MAKE) -f CMakeFiles/servoce.dir/build.make CMakeFiles/servoce.dir/src/occversion.cpp.i
-.PHONY : src/occversion.cpp.i
-
-src/occversion.s: src/occversion.cpp.s
-
-.PHONY : src/occversion.s
-
-# target to generate assembly for a file
-src/occversion.cpp.s:
-	$(MAKE) -f CMakeFiles/servoce.dir/build.make CMakeFiles/servoce.dir/src/occversion.cpp.s
-.PHONY : src/occversion.cpp.s
-
 src/prs3d.o: src/prs3d.cpp.o
 
 .PHONY : src/prs3d.o
@@ -937,9 +910,6 @@ help:
 	@echo "... src/interactive_object.o"
 	@echo "... src/interactive_object.i"
 	@echo "... src/interactive_object.s"
-	@echo "... src/occversion.o"
-	@echo "... src/occversion.i"
-	@echo "... src/occversion.s"
 	@echo "... src/prs3d.o"
 	@echo "... src/prs3d.i"
 	@echo "... src/prs3d.s"
