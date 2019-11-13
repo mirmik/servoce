@@ -55,4 +55,6 @@ matrix:
         - cmake .
         - make
 
+script:
+  - echo "Ok"
 
