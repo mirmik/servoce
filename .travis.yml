@@ -19,12 +19,6 @@ install:
   - sudo find . -name "gp_Pnt.hxx*"
   - cd -
 
-  - ls /usr/include/opencascade || true
-  - ls /usr/local/include/opencascade || true
-  - ls /usr/include/ || true
-  - ls /usr/include/x86_64-linux-gnu || true
-  - ls /usr/local/include/ || true
-
   - locate libTKernel.so || true
   
   - python3 -m pip install licant
