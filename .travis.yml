@@ -14,9 +14,9 @@ install:
   - sudo apt-get update
   - sudo apt install apt-file -y
   - sudo apt install -y libocct-foundation-7.3 libocct-ocaf-7.3 libocct-data-exchange-7.3 libocct-foundation-dev libocct-ocaf-dev libocct-data-exchange-dev
+  - sudo apt install python3-pybind11
   
   - python3 -m pip install licant
-  - python3 -m pip install pybind11
   - python3 ./setup.py install
 
 script:
