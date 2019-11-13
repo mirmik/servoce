@@ -9,9 +9,9 @@ install:
   - pwd
   - ls
 
-  - sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+  - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
   - sudo apt-get update
-  - sudo apt install libocct-*
+  - sudo apt install libocct-* -y
   - python3 -m pip install licant --user
 
   - python3 ./setup.py install --user
