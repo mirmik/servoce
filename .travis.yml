@@ -33,6 +33,16 @@ matrix:
         - sudo apt-get update
         - sudo apt install -y libocct-foundation-7.3 libocct-ocaf-7.3 libocct-data-exchange-7.3 libocct-foundation-dev libocct-ocaf-dev libocct-data-exchange-dev
  
+        - cd igris
+        - make
+        - sudo make install
+        - cd ..
+
+        - cd nos
+        - make
+        - sudo make install
+        - cd ..
+
         - source ./tools/set_occt_paths.sh
         - cmake .
         - make
