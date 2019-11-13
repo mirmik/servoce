@@ -1,27 +1,44 @@
 language: python
 
-os: linux
-python:
-  "3.7"
+matrix:
+  include:
+    - os: linux
+      python:
+        "3.7"
+            
+      install: 
+        - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+        - sudo add-apt-repository ppa:freecad-maintainers/occt-releases -y
+        - sudo add-apt-repository ppa:freecad-maintainers/freecad-stable -y
+        - sudo apt-get update
+        - sudo apt install -y libocct-foundation-7.3 libocct-ocaf-7.3 libocct-data-exchange-7.3 libocct-foundation-dev libocct-ocaf-dev libocct-data-exchange-dev
+        - sudo apt install python3-pybind11
+        
+        - python3 -m pip install licant
+        - python3 ./setup.py install
       
-install: 
-  - echo "INSTALL"
-  - pwd
-  - ls
+      script:
+        - echo "SCRIPT"
+        - pwd
+        - ls
 
-  - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-  - sudo add-apt-repository ppa:freecad-maintainers/occt-releases -y
-  - sudo add-apt-repository ppa:freecad-maintainers/freecad-stable -y
-  - sudo apt-get update
-  - sudo apt install apt-file -y
-  - sudo apt install -y libocct-foundation-7.3 libocct-ocaf-7.3 libocct-data-exchange-7.3 libocct-foundation-dev libocct-ocaf-dev libocct-data-exchange-dev
-  - sudo apt install python3-pybind11
-  
-  - python3 -m pip install licant
-  - python3 ./setup.py install
+    - os: linux
+      python:
+        "3.7"
+            
+      install: 
+        - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+        - sudo add-apt-repository ppa:freecad-maintainers/occt-releases -y
+        - sudo add-apt-repository ppa:freecad-maintainers/freecad-stable -y
+        - sudo apt-get update
+        - sudo apt install -y libocct-foundation-7.3 libocct-ocaf-7.3 libocct-data-exchange-7.3 libocct-foundation-dev libocct-ocaf-dev libocct-data-exchange-dev
+ 
+        - source ./tools/set_occt_paths.sh
+        - cmake .
+        - make
 
-script:
-  - echo "SCRIPT"
-  - pwd
-  - ls
+      script:
+        - echo "SCRIPT"
+        - pwd
+        - ls
 

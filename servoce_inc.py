@@ -8,6 +8,21 @@ from licant.modules import module, submodule
 import licant.libs
 import os
 
+
+def get_occt_include_directory():
+    dirs = ["/usr/include/", "/usr/local/include/"]
+    subdirs = ["occt", "opencascade"]
+
+    for d in dirs:
+        if os.path.exists(d):
+            for f in subdirs:
+                fp = os.path.join(d, f)
+                if os.path.exists(fp):
+                    print("OpenCascade Headers directory:", fp)
+                    return fp 
+
+    raise Exception("can't find occt")
+
 full_list = [
     "TKBinL",
     "TKBin",
@@ -90,7 +105,7 @@ if os.name == "posix":
 
 
 #    liboce_include_path = "/usr/local/include/opencascade/"
-    liboce_include_path = "/usr/include/opencascade/"
+    liboce_include_path = get_occt_include_directory()
     lib_prefix = ""
 
 elif os.name == "nt":

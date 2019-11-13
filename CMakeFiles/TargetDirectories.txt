@@ -1,0 +1,9 @@
+/home/mirmik/project/servoce/CMakeFiles/install/strip.dir
+/home/mirmik/project/servoce/CMakeFiles/install.dir
+/home/mirmik/project/servoce/CMakeFiles/servoce.dir
+/home/mirmik/project/servoce/CMakeFiles/install/local.dir
+/home/mirmik/project/servoce/CMakeFiles/test.dir
+/home/mirmik/project/servoce/CMakeFiles/list_install_components.dir
+/home/mirmik/project/servoce/CMakeFiles/servoce_test.dir
+/home/mirmik/project/servoce/CMakeFiles/edit_cache.dir
+/home/mirmik/project/servoce/CMakeFiles/rebuild_cache.dir
