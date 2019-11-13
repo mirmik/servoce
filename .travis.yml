@@ -12,6 +12,7 @@ install:
   - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
   - sudo add-apt-repository ppa:freecad-maintainers/occt-releases -y
   - sudo apt-get update
+  - sudo apt install apt-file -y
   - sudo apt install libocct-foundation-7.3 -y
   - sudo apt install libocct-ocaf-7.3 -y
   - sudo apt install libocct-data-exchange-7.3 -y
