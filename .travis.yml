@@ -21,7 +21,7 @@ install:
   - sudo apt install libocct-data-exchange-dev -y
 
   - cd /
-  - find . -name "libTKernel*"
+  - sudo find . -name "gp_Pnt.hxx*"
   - cd -
 
   - ls /usr/include/opencascade || true
