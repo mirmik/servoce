@@ -16,11 +16,6 @@ matrix:
         
         - python3 -m pip install licant
         - python3 ./setup.py install
-      
-      script:
-        - echo "SCRIPT"
-        - pwd
-        - ls
 
     - os: linux
       python:
@@ -56,8 +51,10 @@ matrix:
         - cmake .
         - make
 
-      script:
-        - echo "SCRIPT"
-        - pwd
-        - ls
+script:
+  - echo "SCRIPT"
+  - pwd
+  - ls
+  - cd pytest
+  - python3 ./inctest.py
 

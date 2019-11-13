@@ -9,7 +9,7 @@ import licant
 
 licant.include("nos", "nos/nos.g.py")
 licant.include("igris", "igris/igris.g.py")
-licant.cxx_objects("nos-objects", mdepends=["nos", "igris.include"])
+licant.cxx_objects("nos-objects", mdepends=["nos", "igris", "igris.include"])
 nosopts = licant.core.core.get("nos-objects").finalopts
 
 add_sources = []
