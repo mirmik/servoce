@@ -38,8 +38,8 @@ file(GLOB SOURCES_TEST
 add_executable(servoce_test ${SOURCES_TEST})
 add_library(servoce SHARED ${SOURCES})
 
-target_include_directories(servoce_test PRIVATE . $ENV{OCCT_INCLUDE} src include)
-target_include_directories(servoce PRIVATE . $ENV{OCCT_INCLUDE} src include)
+target_include_directories(servoce_test PRIVATE . $ENV{OCCT_INCLUDE} src include igris nos)
+target_include_directories(servoce PRIVATE . $ENV{OCCT_INCLUDE} src include igris nos)
 
 target_link_libraries(servoce_test servoce)
 target_link_libraries(servoce_test gtest)
