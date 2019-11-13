@@ -14,14 +14,9 @@ install:
   - sudo apt-get update
   - sudo apt install apt-file -y
   - sudo apt install -y libocct-foundation-7.3 libocct-ocaf-7.3 libocct-data-exchange-7.3 libocct-foundation-dev libocct-ocaf-dev libocct-data-exchange-dev
-
-  - cd /
-  - sudo find . -name "gp_Pnt.hxx*"
-  - cd -
-
-  - locate libTKernel.so || true
   
   - python3 -m pip install licant
+  - python3 -m pip install pybind11
   - python3 ./setup.py install
 
 script:
