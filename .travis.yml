@@ -19,6 +19,8 @@ install:
   - sudo apt install libocct-ocaf-dev -y
   - sudo apt install libocct-data-exchange-dev -y
 
+  - apt-file list libocct-foundation-7.3
+
   - ls /usr/include/opencascade || true
   - ls /usr/local/include/opencascade || true
   - ls /usr/include/ || true
