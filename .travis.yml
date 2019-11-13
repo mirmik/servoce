@@ -19,8 +19,10 @@ install:
   - sudo apt install libocct-ocaf-dev -y
   - sudo apt install libocct-data-exchange-dev -y
 
-  - ls /usr/include/opencascade
-  - ls /usr/local/include/opencascade
+  - ls /usr/include/opencascade && true
+  - ls /usr/local/include/opencascade && true
+  - ls /usr/include/ && true
+  - ls /usr/local/include/ && true
   
   - python3 -m pip install licant
   - python3 ./setup.py install
