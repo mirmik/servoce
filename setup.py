@@ -17,7 +17,7 @@ add_modules = []
 add_moc = []
 
 if os.name == "posix":
-    liboce_include_path = "/usr/local/include/opencascade/"
+    liboce_include_path = "/usr/include/opencascade/"
     lib_prefix = ""
 
 elif os.name == "nt":

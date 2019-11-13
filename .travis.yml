@@ -1,0 +1,18 @@
+language: python
+
+os: linux
+python:
+  "3.7"
+      
+install: 
+  - echo "INSTALL"
+  - pwd
+  - ls
+
+  - python3 ./setup.py install
+
+script:
+  - echo "SCRIPT"
+  - pwd
+  - ls
+

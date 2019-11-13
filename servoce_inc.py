@@ -89,7 +89,8 @@ if os.name == "posix":
         pass
 
 
-    liboce_include_path = "/usr/local/include/opencascade/"
+#    liboce_include_path = "/usr/local/include/opencascade/"
+    liboce_include_path = "/usr/include/opencascade/"
     lib_prefix = ""
 
 elif os.name == "nt":
