@@ -9,6 +9,8 @@ install:
   - pwd
   - ls
 
+  - python3 -m pip install licant
+
   - python3 ./setup.py install
 
 script:
