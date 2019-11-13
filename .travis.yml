@@ -18,9 +18,9 @@ install:
   - sudo apt install libocct-foundation-dev -y
   - sudo apt install libocct-ocaf-dev -y
   - sudo apt install libocct-data-exchange-dev -y
-  - python3 -m pip install licant --user
-
-  - python3 ./setup.py install --user
+  
+  - python3 -m pip install licant
+  - python3 ./setup.py install
 
 script:
   - echo "SCRIPT"
