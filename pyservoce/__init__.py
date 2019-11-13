@@ -15,7 +15,6 @@ if sys.platform == "win32" or sys.platform == "win64":
 #   os.environ['PATH'] += os.pathsep + "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib"
 
 from pyservoce.libservoce import *
-from pyservoce.controllers import *
 
 # Patch Scene object to suport display python objects.
 Raw_Scene_add = pyservoce.libservoce.Scene.add
