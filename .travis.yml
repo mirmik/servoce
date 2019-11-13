@@ -13,12 +13,7 @@ install:
   - sudo add-apt-repository ppa:freecad-maintainers/occt-releases -y
   - sudo apt-get update
   - sudo apt install apt-file -y
-  - sudo apt install libocct-foundation-7.3 -y
-  - sudo apt install libocct-ocaf-7.3 -y
-  - sudo apt install libocct-data-exchange-7.3 -y
-  - sudo apt install libocct-foundation-dev -y
-  - sudo apt install libocct-ocaf-dev -y
-  - sudo apt install libocct-data-exchange-dev -y
+  - sudo apt install -y libocct-foundation-7.3 libocct-ocaf-7.3 libocct-data-exchange-7.3 libocct-foundation-dev libocct-ocaf-dev libocct-data-exchange-dev
 
   - cd /
   - sudo find . -name "gp_Pnt.hxx*"
