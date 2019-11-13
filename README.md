@@ -1,6 +1,7 @@
 This library is part of zencad project.
 Servoce wraps opencascade core for integrate with zencad.
 
+![](https://travis-ci.com/mirmik/servoce.svg?branch=master)
 [ZenCad](https://github.com/mirmik/zencad)
 
 Source Code. Getting and Installation
