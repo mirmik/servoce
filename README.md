@@ -10,7 +10,7 @@ Install from PyPi.
 python3 -m pip install pyservoce
 ```
 
-Source Code. Getting and Installation
+Install from Source Code.
 -------------------------------------
 1. Get Dependies. (OCCT, PyBind11, Licant) 
 ```
@@ -18,7 +18,7 @@ sudo add-apt-repository ppa:freecad-maintainers/occt-releases -y
 sudo add-apt-repository ppa:freecad-maintainers/freecad-stable -y
 sudo apt-get update
 sudo apt install -y libocct-foundation-7.3 libocct-ocaf-7.3 libocct-data-exchange-7.3 libocct-foundation-dev libocct-ocaf-dev libocct-data-exchange-dev
-sudo apt install python3-pybind11
+sudo apt install -y python3-pybind11
 python3 -m pip install licant --user
 ```
 
