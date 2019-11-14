@@ -1,7 +1,10 @@
 This library is part of zencad project.
 Servoce wraps opencascade core for integrate with zencad.
 
-![](https://travis-ci.com/mirmik/servoce.svg?branch=master)  
+Status:  
+![](https://travis-ci.com/mirmik/servoce.svg?branch=master) - master  
+![](https://travis-ci.com/mirmik/servoce.svg?branch=dev) - dev  
+
 [ZenCad](https://github.com/mirmik/zencad)
 
 Install from PyPi.
