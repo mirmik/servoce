@@ -180,6 +180,7 @@ PYBIND11_MODULE(libservoce, m)
 	.def("__setitem__", [](vector3 & self, int key, double value) { self[key] = value; })
 	.def("__getitem__", [](const vector3 & self, int key) { return self[key]; })
 	.def("normalize", &vector3::normalize)
+	.def("length", &vector3::length)
 	.def("cross", &vector3::cross)
 	.def("__repr__", [](const vector3 & pnt)
 	{

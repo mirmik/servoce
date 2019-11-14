@@ -74,7 +74,7 @@ namespace servoce
 		vector3(const pybind11::list&);
 		vector3(const pybind11::tuple&);
 
-		auto length() const { return linalg::length(*this); }
+		double length() const { return linalg::length(*this); }
 		vector3 normalize() const { return vector3(linalg::normalize(*this)); }
 		
 		vector3 cross(const vector3& oth) const { return vector3(linalg::cross(*this, oth)); }
