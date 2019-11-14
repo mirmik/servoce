@@ -53,9 +53,7 @@ inline Handle(Aspect_DisplayConnection) GetDisplayConnection()
 
 	if (!inited)
 	{
-		dprln("BEFORE");
 		g_displayConnection = new Aspect_DisplayConnection();
-		dprln("AFTER");
 	}
 
 	return g_displayConnection;
