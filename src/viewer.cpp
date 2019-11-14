@@ -15,8 +15,6 @@ Handle(Graphic3d_GraphicDriver) g_graphicDriver = nullptr;
 servoce::viewer::viewer()
 {
 	TRACE();
-	occ = new OccViewerContext();
-	set_triedron_axes(true);
 }
 
 

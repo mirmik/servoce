@@ -6,17 +6,39 @@
 
 class OccViewerContext;
 
-namespace servoce 
+template<typename T>
+class lazy_ptr
+{
+private:
+	T *child;
+
+public:
+	lazy_ptr() : child(0) {}
+	~lazy_ptr() { delete child; }
+	
+	T &operator*()
+	{
+		if (!child) child = new T;
+
+		return *child;
+	}
+
+	const T &operator*() const { return *child; }
+	T *operator->() { return &**this; }
+	const T *operator->() const { return &**this; }
+};
+
+namespace servoce
 {
 	class viewer
 	{
 	public:
-		OccViewerContext* occ = nullptr;
+		lazy_ptr<OccViewerContext> occ;
 
 	public:
 		viewer();
 		~viewer();
-		
+
 		view create_view();
 		void close();
 
