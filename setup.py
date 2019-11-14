@@ -88,7 +88,9 @@ pyservoce_lib = Extension(
         "src/prs3d.cpp",
         "src/interactive_object.cpp",
     ] + nosopts["sources"],
-    extra_compile_args=["-fPIC", "-std=c++14", "-DNODTRACE=1", "-DNOTRACE=1"],
+    extra_compile_args=["-fPIC", "-std=c++14", 
+    #    "-DNODTRACE=1", "-DNOTRACE=1"
+    ],
     extra_link_args=extra_link_args,
     include_dirs=[liboce_include_path, "src", "include"] + nosopts["include_paths"],
     #library_dir=["C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib"],

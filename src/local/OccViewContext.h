@@ -48,11 +48,14 @@ extern std::recursive_mutex viewrecursive_mutex;
 
 inline Handle(Aspect_DisplayConnection) GetDisplayConnection()
 {
+	TRACE();
 	static bool inited = false;
 
 	if (!inited)
 	{
+		dprln("BEFORE");
 		g_displayConnection = new Aspect_DisplayConnection();
+		dprln("AFTER");
 	}
 
 	return g_displayConnection;
@@ -60,6 +63,7 @@ inline Handle(Aspect_DisplayConnection) GetDisplayConnection()
 
 inline Handle(Graphic3d_GraphicDriver) GetGraphicDriver()
 {
+	TRACE();
 	static bool inited = false;
 
 	if (!inited)

@@ -9,14 +9,12 @@
 
 //Global resource for viewer, view, scene, shape_view, OccViewContext
 std::recursive_mutex viewrecursive_mutex;
-Handle(Aspect_DisplayConnection) g_displayConnection;
-Handle(Graphic3d_GraphicDriver) g_graphicDriver;
+Handle(Aspect_DisplayConnection) g_displayConnection = nullptr;
+Handle(Graphic3d_GraphicDriver) g_graphicDriver = nullptr;
 
 servoce::viewer::viewer()
 {
 	TRACE();
-	occ = new OccViewerContext();
-	set_triedron_axes(true);
 }
 
 
