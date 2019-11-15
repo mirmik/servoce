@@ -16,7 +16,7 @@ python3 -m pip install pyservoce
 Install from Source Code.
 -------------------------------------
 1. Get Dependies. (OCCT, PyBind11, Licant) 
-```
+```sh
 sudo add-apt-repository ppa:freecad-maintainers/occt-releases -y
 sudo add-apt-repository ppa:freecad-maintainers/freecad-stable -y
 sudo apt-get update
@@ -25,11 +25,29 @@ sudo apt install -y python3-pybind11
 python3 -m pip install licant --user
 ```
 
-2. Build and Install
-```
+2. Get source code
+```sh
 git clone https://github.com/mirmik/servoce --recursive
 cd servoce
+```
+
+3. Install python package from sources.
+```sh
 python3 ./setup.py install --user
+```
+
+4. Install python dynamic library with CMake.
+```sh
+source ./tools/set_occt_paths.sh
+cmake .
+cmake --build
+cmake --build . --target install
+```
+
+5. Install python dynamic library with Licant.
+```sh
+./make.py
+sudo ./make.py install
 ```
 
 Depend repositories:
