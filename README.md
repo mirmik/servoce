@@ -31,12 +31,12 @@ git clone https://github.com/mirmik/servoce --recursive
 cd servoce
 ```
 
-3. Install python package from sources.
+3. Install as python package from sources.
 ```sh
 python3 ./setup.py install --user
 ```
 
-4. Install python dynamic library with CMake.
+4. Install as dynamic library with CMake.
 ```sh
 source ./tools/set_occt_paths.sh
 cmake .
@@ -44,7 +44,7 @@ cmake --build
 cmake --build . --target install
 ```
 
-5. Install python dynamic library with Licant.
+5. Install as dynamic library with Licant.
 ```sh
 ./make.py
 sudo ./make.py install
