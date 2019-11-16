@@ -520,7 +520,7 @@ PYBIND11_MODULE(libservoce, m)
 	//.def("__getitem__", [](const scene & s, size_t i) { return s[i]; }, ungil())
 	;
 
-	py::class_<viewer>(m, "Viewer")
+	py::class_<viewer, std::shared_ptr<viewer>>(m, "Viewer")
 	.def("create_view", &viewer::create_view, ungil())
 	.def("redraw", &viewer::redraw, ungil())
 	.def("close", &viewer::close, ungil())
