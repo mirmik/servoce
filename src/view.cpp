@@ -264,7 +264,7 @@ void servoce::see(servoce::scene& scn)
 {
 	TRACE();
 	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
-	auto vv = scn.viewer().create_view();
+	auto vv = scn.viewer()->create_view();
 	vv.see();
 }
 

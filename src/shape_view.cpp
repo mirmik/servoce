@@ -80,7 +80,7 @@ void servoce::shape_view::set_location(const servoce::transformation& trans)
 {
 	TRACE();
 	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
-	this->scene().viewer().occ->m_context->SetLocation(native(), *trans.trsf);
+	this->scene().viewer()->occ->m_context->SetLocation(native(), *trans.trsf);
 }
 
 void servoce::shape_view::hide(bool en)
@@ -88,9 +88,9 @@ void servoce::shape_view::hide(bool en)
 	TRACE();
 	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	if (en)
-		this->scene().viewer().occ->m_context->Erase(native(), false);
+		this->scene().viewer()->occ->m_context->Erase(native(), false);
 	else
-		this->scene().viewer().occ->m_context->Display(native(), false);
+		this->scene().viewer()->occ->m_context->Display(native(), false);
 }
 
 void servoce::shape_view::set_color(const servoce::color& clr)

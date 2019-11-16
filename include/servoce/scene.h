@@ -21,21 +21,31 @@ namespace servoce
 	public:
 		std::list<std::shared_ptr<shape_view>> shape_views;
 		std::list<std::shared_ptr<interactive_object>> iobjs;
-		servoce::viewer vwer;
+		std::shared_ptr<servoce::viewer> vwer;
 
 		scene();
 
-		servoce::viewer& viewer() { return vwer; }
-		const servoce::viewer& viewer() const { return vwer; }
+		std::shared_ptr<servoce::viewer> viewer()
+		{
+			if (vwer.get() == nullptr)
+				throw std::runtime_error("viewer is not inited");
+			return vwer;
+		}
+		const std::shared_ptr<servoce::viewer> viewer() const
+		{
+			if (vwer.get() == nullptr)
+				throw std::runtime_error("viewer is not inited");
+			return vwer;
+		}
 
 		std::shared_ptr<shape_view> add(const servoce::shape& shp, servoce::color color = mech);
 		std::shared_ptr<shape_view> add(const servoce::point3& pnt, servoce::color color = mech);
-		void add(const std::shared_ptr<servoce::interactive_object>& iobj) 
-		{ 
+		void add(const std::shared_ptr<servoce::interactive_object>& iobj)
+		{
 			iobjs.push_back(iobj);
-			vwer.display(*iobj);
+			vwer->display(*iobj);
 		}
-		
+
 		void append(const servoce::scene& scn);
 
 		std::vector<servoce::shape> shapes_array();

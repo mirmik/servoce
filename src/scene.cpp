@@ -9,7 +9,7 @@
 
 extern std::recursive_mutex viewrecursive_mutex;
 
-servoce::scene::scene() {}
+servoce::scene::scene() : vwer(new servoce::viewer()) {}
 
 //#define uassert(e) if (!(e)) { printf("assert: %s\n", #e); exit(-1); }
 
@@ -37,7 +37,7 @@ std::shared_ptr<servoce::shape_view> servoce::scene::add(const servoce::shape& s
 	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	shape_views.emplace_back(
 	    std::make_shared<servoce::shape_view>(shp, color, this));
-	vwer.display(*shape_views.back());
+	vwer->display(*shape_views.back());
 	return shape_views.back();
 }
 
@@ -48,7 +48,7 @@ std::shared_ptr<servoce::shape_view> servoce::scene::add(const servoce::point3& 
 	TopoDS_Vertex vtx = pnt.Vtx();
 	shape_views.emplace_back(
 	    std::make_shared<servoce::shape_view>(servoce::shape(vtx), color, this));
-	vwer.display(*shape_views.back());
+	vwer->display(*shape_views.back());
 	return shape_views.back();
 }
 
@@ -62,5 +62,5 @@ void servoce::scene::append(const servoce::scene& scn)
 
 AIS_InteractiveContext* servoce::scene::InteractiveContext() 
 {
-	return this->vwer.occ->m_context.get();
+	return this->vwer->occ->m_context.get();
 }

@@ -160,6 +160,9 @@ namespace servoce
 			return vector3(linalg::qaxis(*this) * angle);
 		}
 
+		quaternion inverse() { return linalg::qconj(*this); }
+		vector3 rotate(const vector3& vec) { return linalg::qrot(*this, vec); }
+
 	//	bool operator==(const vector3& oth) const { return oth.x == x && oth.y == y && oth.z == z; }
 	//	bool operator!=(const vector3& oth) const { return oth.x != x || oth.y != y || oth.z != z; }
 	//	vector3 operator-() const { return vector3(-x, -y, -z); }
