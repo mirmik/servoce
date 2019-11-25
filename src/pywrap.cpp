@@ -254,8 +254,12 @@ PYBIND11_MODULE(libservoce, m)
 	.def("faces", &shape::faces, ungil())
 	.def("edges", &shape::edges, ungil())
 	.def("wires", &shape::wires, ungil())
+	.def("shells", &shape::shells, ungil())
+	.def("compounds", &shape::compounds, ungil())
+	.def("compsolids", &shape::compsolids, ungil())
 
 	.def("shapetype", &shape::shapetype_as_string, ungil())
+	.def("print_topo_dump", &shape::print_topo_dump, ungil())
 
 	.def("fillet", (shape(shape::*)(double, const std::vector<point3>&))&shape::fillet, ungil(), py::arg("r"), py::arg("refs"))
 	.def("fillet", (shape(shape::*)(double))&shape::fillet, ungil(), py::arg("r"))

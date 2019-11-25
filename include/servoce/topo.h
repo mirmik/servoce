@@ -127,6 +127,9 @@ namespace servoce
 
 		std::vector<servoce::point3> vertices() const;
 		std::vector<servoce::shape> solids() const;
+		std::vector<servoce::shape> shells() const;
+		std::vector<servoce::shape> compounds() const;
+		std::vector<servoce::shape> compsolids() const;
 		std::vector<servoce::shape> faces() const;
 		std::vector<servoce::shape> wires() const;
 		std::vector<servoce::shape> edges() const;
@@ -145,6 +148,8 @@ namespace servoce
 
 		topoenum type();
 		std::string shapetype_as_string();
+
+		void print_topo_dump();
 	};
 
 	class BoundBox 

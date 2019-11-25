@@ -6,6 +6,9 @@
 #include <TopoDS_Solid.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Wire.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_CompSolid.hxx>
 #include <TopoDS.hxx>
 #include <gp_Pln.hxx>
 
@@ -27,7 +30,9 @@
 
 #include <BRepBndLib.hxx>
 
+#include <TopTools_HSequenceOfShape.hxx>
 #include <TopOpeBRepBuild_Tools.hxx>
+#include <ShapeExtend_Explorer.hxx>
 
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp_Explorer.hxx>
@@ -272,6 +277,48 @@ std::vector<servoce::shape> servoce::shape::edges() const
 	return ret;
 }
 
+
+std::vector<servoce::shape> servoce::shape::shells() const
+{
+	std::vector<servoce::shape> ret;
+
+	for (TopExp_Explorer ex(Shape(), TopAbs_SHELL); ex.More(); ex.Next())
+	{
+		TopoDS_Shell obj = TopoDS::Shell(ex.Current());
+		ret.emplace_back(obj);
+	}
+
+	return ret;
+}
+
+std::vector<servoce::shape> servoce::shape::compounds() const 
+{
+
+	std::vector<servoce::shape> ret;
+
+	for (TopExp_Explorer ex(Shape(), TopAbs_COMPOUND); ex.More(); ex.Next())
+	{
+		TopoDS_Compound obj = TopoDS::Compound(ex.Current());
+		ret.emplace_back(obj);
+	}
+
+	return ret;
+}
+
+std::vector<servoce::shape> servoce::shape::compsolids() const 
+{
+
+	std::vector<servoce::shape> ret;
+
+	for (TopExp_Explorer ex(Shape(), TopAbs_COMPSOLID); ex.More(); ex.Next())
+	{
+		TopoDS_CompSolid obj = TopoDS::CompSolid(ex.Current());
+		ret.emplace_back(obj);
+	}
+
+	return ret;
+}
+
 servoce::shape servoce::near_face(const servoce::shape& shp, const servoce::point3& pnt)
 {
 	double min = std::numeric_limits<double>::max();
@@ -391,4 +438,28 @@ servoce::shape servoce::shape::chamfer2d(double r, const std::vector<servoce::po
 servoce::shape servoce::shape::chamfer2d(double r)
 {
 	return servoce::chamfer2d(*this, r);
+}
+
+void servoce::shape::print_topo_dump()
+{
+	if (!Shape().IsNull())
+	{
+		cout << "____shape type: " << Shape().ShapeType() << "____" << endl;
+
+		Handle(TopTools_HSequenceOfShape) seqShape = new TopTools_HSequenceOfShape;
+		Handle(TopTools_HSequenceOfShape) compounds, compsolids, solids, shells, faces, wires, edges, vertices;
+
+		ShapeExtend_Explorer anExp;
+
+		anExp.SeqFromCompound(Shape(), false);
+		anExp.DispatchList(seqShape, vertices, edges, wires, faces, shells, solids, compsolids, compounds);
+		cout << "____Nb compounds: " << compounds->Length() << "____" << endl;
+		cout << "____Nb compsolids: " << compsolids->Length() << "____" << endl;
+		cout << "____Nb solids: " << solids->Length() << "____" << endl;
+		cout << "____Nb shells: " << shells->Length() << "____" << endl;
+		cout << "____Nb faces: " << faces->Length() << "____" << endl;
+		cout << "____Nb wires: " << wires->Length() << "____" << endl;
+		cout << "____Nb edges: " << edges->Length() << "____" << endl;
+		cout << "____Nb vertices: " << vertices->Length() << "____" << endl;
+	}
 }
