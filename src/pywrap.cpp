@@ -108,7 +108,7 @@ PYBIND11_MODULE(libservoce, m)
 		return std::string(buf);
 	})
 	.def(py::pickle(
-	         [](const point3 & self)
+			 [](const point3 & self)
 	{
 		double arr[3] = {self.x, self.y, self.z};
 		return b64::base64_encode((uint8_t*)&arr, 3 * sizeof(double));
@@ -145,7 +145,7 @@ PYBIND11_MODULE(libservoce, m)
 		return std::string(buf);
 	})
 	.def(py::pickle(
-	         [](const point2 & self)
+			 [](const point2 & self)
 	{
 		double arr[2] = {self.x, self.y};
 		return b64::base64_encode((uint8_t*)&arr, 2 * sizeof(double));
@@ -180,6 +180,7 @@ PYBIND11_MODULE(libservoce, m)
 	.def("__setitem__", [](vector3 & self, int key, double value) { self[key] = value; })
 	.def("__getitem__", [](const vector3 & self, int key) { return self[key]; })
 	.def("normalize", &vector3::normalize)
+	.def("outerprod", &vector3::outerprod)
 	.def("length", &vector3::length)
 	.def("cross", &vector3::cross)
 	.def("__repr__", [](const vector3 & pnt)
@@ -189,7 +190,7 @@ PYBIND11_MODULE(libservoce, m)
 		return std::string(buf);
 	})
 	.def(py::pickle(
-	         [](const vector3 & self)
+			 [](const vector3 & self)
 	{
 		double arr[3] = {self.x, self.y, self.z};
 		return b64::base64_encode((uint8_t*)&arr, 3 * sizeof(double));
@@ -217,6 +218,7 @@ PYBIND11_MODULE(libservoce, m)
 	.def("__len__", [](const quaternion&){return 4;})
 	.def("rotation_vector", &quaternion::rotation_vector)
 	.def("rotate", &quaternion::rotate)
+	.def("to_matrix", &quaternion::to_matrix)
 	.def("inverse", &quaternion::inverse)
 	//.def("__mul__", (vector3(*)(const vector3&, double)) &servoce::operator* )
 	//.def("__truediv__", (vector3(*)(const vector3&, double)) &servoce::operator/ )
@@ -231,6 +233,19 @@ PYBIND11_MODULE(libservoce, m)
 		return std::string(buf);
 	})
 	;
+
+	py::class_<matrix33>(m, "matrix33", py::buffer_protocol())
+		.def_buffer([](matrix33 &m) -> py::buffer_info {
+			return py::buffer_info(
+				m.data(),                               /* Pointer to buffer */
+				sizeof(double),                          /* Size of one scalar */
+				py::format_descriptor<double>::format(), /* Python struct-style format descriptor */
+				2,                                      /* Number of dimensions */
+				{ m.rows(), m.cols() },                 /* Buffer dimensions */
+				{ sizeof(double),             /* Strides (in bytes) for each index */
+				 sizeof(double) * m.cols() }
+		);
+	});
 
 	py::class_<shape>(m, "Shape")
 	DEF_TRANSFORM_OPERATIONS(shape)
@@ -598,11 +613,11 @@ PYBIND11_MODULE(libservoce, m)
 	m.attr("mech") = mech;
 
 	py::enum_<line_style>(m, "line_style")
-    	.value("solid_line", line_style::solid_line)
-    	.value("dash_line", line_style::dash_line)
-    	.value("dot_line", line_style::dot_line)
-    	.value("dotdash_line", line_style::dotdash_line)
-    .export_values();
+		.value("solid_line", line_style::solid_line)
+		.value("dash_line", line_style::dash_line)
+		.value("dot_line", line_style::dot_line)
+		.value("dotdash_line", line_style::dotdash_line)
+	.export_values();
 
 	m.def("draw_arrow", &draw::arrow, py::arg("pnt"), py::arg("vec"), py::arg("clr")=yellow, py::arg("arrlen")=1, py::arg("width")=1);
 	m.def("draw_line", &draw::line, py::arg("a"), py::arg("b"), py::arg("clr")=black, py::arg("style")=line_style::solid_line, py::arg("width")=1);

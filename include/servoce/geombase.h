@@ -26,6 +26,7 @@ namespace pybind11
 namespace servoce
 {
 	class point3;
+	class matrix33;
 
 	class point2 : public linalg::vec<double, 2>
 	{
@@ -83,6 +84,8 @@ namespace servoce
 		bool operator!=(const vector3& oth) const { return oth.x != x || oth.y != y || oth.z != z; }
 		vector3 operator-() const { return vector3(-x, -y, -z); }
 
+		matrix33 outerprod(const vector3& oth);
+
 		ssize_t print_to(nos::ostream& out) const
 		{
 			return nos::fprint_to(out, "vector3({},{},{})", x, y, z);
@@ -134,6 +137,32 @@ namespace servoce
 		}
 	};
 
+	class matrix33 : public linalg::mat<double,3,3> 
+	{
+		using parent = linalg::mat<double,3,3>;
+
+	public:
+		matrix33(	
+				double a00, double a01, double a02, 
+				double a10, double a11, double a12, 
+				double a20, double a21, double a22) 
+			:
+				parent({a00,a10,a20}, {a01,a11,a21}, {a02,a12,a22})
+		{
+
+		}	
+
+		matrix33(const parent& oth) : parent(oth) {}
+
+		double* data() 
+		{
+			return parent::arr;
+		}
+
+		static constexpr int rows() { return 3; }
+		static constexpr int cols() { return 3; }
+	};
+
 	class quaternion : public linalg::vec<double,4>
 	{
 	public:
@@ -151,6 +180,11 @@ namespace servoce
 
 		quaternion(const pybind11::list&);
 		quaternion(const pybind11::tuple&);
+
+		matrix33 to_matrix() 
+		{
+			return linalg::qmat(*this);
+		}
 
 		vector3 rotation_vector() const
 		{
@@ -201,6 +235,8 @@ namespace servoce
 
 	inline point3 vector3::to_point3() const { return point3(x,y,z); }
 
+
+	inline matrix33 vector3::outerprod(const vector3& oth) { return linalg::outerprod(*this, oth); }
 }
 
 #endif

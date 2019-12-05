@@ -206,7 +206,12 @@ namespace linalg
     // Small, fixed-length vector type, consisting of exactly M elements of type T, and presumed to be a column-vector unless otherwise noted
     template<class T> struct vec<T,1>
     {
-        T                           x;
+        union{
+            struct{
+                T                           x;
+            };
+            T                               arr[1];
+        };
         constexpr                   vec()                               : x() {}
         constexpr                   vec(const T & x_)                   : x(x_) {}
         // NOTE: vec<T,1> does NOT have a constructor from pointer, this can conflict with initializing its single element from zero
@@ -220,7 +225,13 @@ namespace linalg
     };
     template<class T> struct vec<T,2>
     {
-        T                           x,y;
+        union{
+            struct{
+                T                           x,y;
+            };
+            T                               arr[2];
+        };
+        
         constexpr                   vec()                               : x(), y() {}
         constexpr                   vec(const T & x_, const T & y_)     : x(x_), y(y_) {}
         constexpr explicit          vec(const T & s)                    : vec(s, s) {}
@@ -235,7 +246,12 @@ namespace linalg
     };
     template<class T> struct vec<T,3>
     {
-        T                           x,y,z;
+        union{
+            struct{
+                T                           x,y,z;
+            };
+            T                               arr[3];
+        };
         constexpr                   vec()                               : x(), y(), z() {}
         constexpr                   vec(const T & x_, const T & y_, 
                                         const T & z_)                   : x(x_), y(y_), z(z_) {}
@@ -255,7 +271,12 @@ namespace linalg
     };
     template<class T> struct vec<T,4>
     {
-        T                           x,y,z,w;
+        union{
+            struct{
+                T                           x,y,z,w;
+            };
+            T                               arr[4];
+        };
         constexpr                   vec()                               : x(), y(), z(), w() {}
         constexpr                   vec(const T & x_, const T & y_,
                                         const T & z_, const T & w_)     : x(x_), y(y_), z(z_), w(w_) {}
@@ -282,7 +303,12 @@ namespace linalg
     template<class T, int M> struct mat<T,M,1>
     {
         typedef vec<T,M>            V;
-        V                           x;
+        union{
+            struct{
+                V                           x;
+            };
+            T                               arr[M];
+        };
         constexpr                   mat()                               : x() {}
         constexpr                   mat(const V & x_)                   : x(x_) {}
         constexpr explicit          mat(const T & s)                    : x(s) {}
@@ -299,7 +325,12 @@ namespace linalg
     template<class T, int M> struct mat<T,M,2>
     {
         typedef vec<T,M>            V;
-        V                           x,y;
+        union{
+            struct{
+                V                           x,y;
+            };
+            T                               arr[2*M];
+        };
         constexpr                   mat()                               : x(), y() {}
         constexpr                   mat(const V & x_, const V & y_)     : x(x_), y(y_) {}
         constexpr explicit          mat(const T & s)                    : x(s), y(s) {}
@@ -316,7 +347,12 @@ namespace linalg
     template<class T, int M> struct mat<T,M,3>
     {
         typedef vec<T,M>            V;
-        V                           x,y,z;
+        union{
+            struct{
+                V                           x,y,z;
+            };
+            T                               arr[3*M];
+        };
         constexpr                   mat()                               : x(), y(), z() {}
         constexpr                   mat(const V & x_, const V & y_, 
                                         const V & z_)                   : x(x_), y(y_), z(z_) {}
@@ -334,7 +370,12 @@ namespace linalg
     template<class T, int M> struct mat<T,M,4>
     {
         typedef vec<T,M>            V;
-        V                           x,y,z,w;
+        union{
+            struct{
+                V                           x,y,z,w;
+            };
+            T                               arr[4*M];
+        };
         constexpr                   mat()                               : x(), y(), z(), w() {}
         constexpr                   mat(const V & x_, const V & y_,
                                         const V & z_, const V & w_)     : x(x_), y(y_), z(z_), w(w_) {}
