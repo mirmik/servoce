@@ -161,6 +161,7 @@ PYBIND11_MODULE(libservoce, m)
 
 	py::class_<vector3>(m, "vector3")
 	.def(py::init<>())
+	.def(py::init<const servoce::vector3&>())
 	.def(py::init<double, double, double>())
 	.def(py::init<double, double>())
 	.def(py::init<py::list>())
@@ -182,6 +183,9 @@ PYBIND11_MODULE(libservoce, m)
 	.def("normalize", &vector3::normalize)
 	.def("outerprod", &vector3::outerprod)
 	.def("length", &vector3::length)
+	.def("length2", &vector3::length2)
+	.def("early", &vector3::early)
+	.def("dot", &vector3::dot)
 	.def("cross", &vector3::cross)
 	.def("__repr__", [](const vector3 & pnt)
 	{
@@ -235,6 +239,25 @@ PYBIND11_MODULE(libservoce, m)
 	;
 
 	py::class_<matrix33>(m, "matrix33", py::buffer_protocol())
+		.def(py::init<>())
+		.def(py::init<double,double,double>())
+		.def(py::init<double,double,double,double,double,double,double,double,double>())
+		.def("inverse", &matrix33::inverse)
+		.def("transpose", &matrix33::transpose)
+		.def("__mul__", (matrix33(matrix33::*)(const matrix33&)) &matrix33::operator*)
+		.def("__mul__", (vector3(matrix33::*)(const vector3&)) &matrix33::operator*)
+		.def("__mul__", (matrix33(matrix33::*)(double)) &matrix33::operator*)
+		.def("__rmul__", (matrix33(matrix33::*)(double)) &matrix33::operator*)
+		.def("__add__", (matrix33(matrix33::*)(const matrix33&)) &matrix33::operator+)
+		.def("__sub__", (matrix33(matrix33::*)(const matrix33&)) &matrix33::operator-)
+		.def("__getitem__", (double&(matrix33::*)(std::pair<int,int>))&matrix33::operator())
+		.def("__repr__", [](const matrix33 & m)
+		{
+			char buf[128];
+			sprintf(buf, "matrix33(%f,%f,%f,%f,%f,%f,%f,%f,%f)", 
+				m.x.x, m.y.x, m.z.x, m.x.y, m.y.y, m.z.y, m.x.z, m.y.z, m.z.z);
+			return std::string(buf);
+		})
 		.def_buffer([](matrix33 &m) -> py::buffer_info {
 			return py::buffer_info(
 				m.data(),                               /* Pointer to buffer */
