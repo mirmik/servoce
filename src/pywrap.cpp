@@ -159,6 +159,14 @@ PYBIND11_MODULE(libservoce, m)
 	}))
 	;
 
+	py::class_<xyz>(m, "xyz")
+	.def("__add__", &gp_XYZ::operator+ )
+	.def("__sub__", &gp_XYZ::operator- )
+	.def("__mul__", (gp_XYZ(gp_XYZ::*)(double)const)&gp_XYZ::operator* )
+	//.def("__mul__", (gp_XYZ(gp_XYZ::* const)(double))&gp_XYZ::operator* )
+	.def("dot", &gp_XYZ::Dot)
+	;
+
 	py::class_<vector3>(m, "vector3")
 	.def(py::init<>())
 	.def(py::init<const servoce::vector3&>())

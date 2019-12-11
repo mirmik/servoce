@@ -6,6 +6,9 @@
 #include <nos/print.h>
 #include <nos/fprint.h>
 
+#include <gp_XYZ.hxx>
+#include <gp_Mat.hxx>
+
 class TopoDS_Vertex;
 
 class gp_Vec;
@@ -27,6 +30,9 @@ namespace servoce
 {
 	class point3;
 	class matrix33;
+
+	class xyz : public gp_XYZ
+	{};
 
 	class point2 : public linalg::vec<double, 2>
 	{
@@ -155,6 +161,23 @@ namespace servoce
 		{
 
 		}	
+
+		matrix33(const gp_Mat& oth) 
+		{
+			gp_XYZ a,b,c;
+			a = oth.Column(0);
+			b = oth.Column(1);
+			c = oth.Column(2);
+			parent::x.x = a.X();
+			parent::x.y = a.Y();
+			parent::x.z = a.Z();
+			parent::y.x = b.X();
+			parent::y.y = b.Y();
+			parent::y.z = b.Z();
+			parent::z.x = c.X();
+			parent::z.y = c.Y();
+			parent::z.z = c.Z();
+		}
 
 		matrix33(	
 				double a00,  
