@@ -652,4 +652,12 @@ PYBIND11_MODULE(libservoce, m)
 
 	m.def("draw_arrow", &draw::arrow, py::arg("pnt"), py::arg("vec"), py::arg("clr")=yellow, py::arg("arrlen")=1, py::arg("width")=1);
 	m.def("draw_line", &draw::line, py::arg("a"), py::arg("b"), py::arg("clr")=black, py::arg("style")=line_style::solid_line, py::arg("width")=1);
+
+	py::class_<geomprops>(m, "geomprops")
+	//	.def("volume_properties", &geomprops::volume_properties)
+	//	.def("mass", &GProp_GProps::Mass)
+		.def("cmpoint", &GProp_GProps::CentreOfMass)
+	//	.def("cmradius", &geomprops::cmradius)
+	//	.def("inermat", &GProp_GProps::MatrixOfInertia)
+	;
 }

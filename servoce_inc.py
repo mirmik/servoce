@@ -161,6 +161,7 @@ module(
         "boolops.cpp",
         "convert.cpp",
         "geombase.cpp",
+        "geomprops.cpp",
         "view.cpp",
         "shape_view.cpp",
         "scene.cpp",

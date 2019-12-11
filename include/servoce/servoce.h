@@ -18,5 +18,6 @@
 #include <servoce/util.h>
 
 #include <servoce/prs3d.h>
+#include <servoce/geomprops.h>
 
 #endif

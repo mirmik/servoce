@@ -82,6 +82,7 @@ pyservoce_lib = Extension(
         "src/convert.cpp",
         "src/view.cpp",
         "src/scene.cpp",
+        "src/geomprops.cpp",
         "src/viewer.cpp",
         "src/shape_view.cpp",
         "src/camera.cpp",

@@ -2,23 +2,27 @@
 #define SERVOCE_GEOMPROPS_H
 
 #include <BRepGProp.hxx>
+#include <GProp_GProps.hxx>
 
 namespace servoce 
 {
-	class geomprops 
+	class geomprops : public GProp_GProps
 	{
-		 GProp_GProps _props;
+		 // _props;
 
 	public:	
 		static geomprops linear_properties(const servoce::shape& shp);
 		static geomprops surface_properties(const servoce::shape& shp);
 		static geomprops volume_properties(const servoce::shape& shp);
 
+		geomprops(const geomprops& props);
+
 		//Returns the mass of the current system. If no density is attached to the components of the current system the returned value corresponds to : More...
 		double mass () const;
  
 		//Returns the center of mass of the current system. If the gravitational field is uniform, it is the center of gravity. The coordinates returned for the center of mass are expressed in the absolute Cartesian coordinate system. More...
- 		servoce::vector3 center_of_mass () const;
+ 		//servoce::vector3 center_of_mass () const;
+ 		servoce::vector3 cmradius () const { return {0,0,0}; }
  	
 		//returns the matrix of inertia. It is a symmetrical matrix. The coefficients of the matrix are the quadratic moments of inertia. More...
  		servoce::matrix33 matrix_of_inertia () const;
