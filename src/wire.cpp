@@ -28,6 +28,7 @@
 #include <TColgp_HArray1OfPnt.hxx>
 #include <TColgp_Array1OfVec.hxx>
 #include <GeomAPI_Interpolate.hxx>
+#include <Geom_BezierCurve.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <BRep_Tool.hxx>
@@ -328,4 +329,28 @@ bool servoce::shape::is_closed()
 {
 	auto pair = sfvertex();
 	return servoce::point3::early(pair.first, pair.second, 0.0001);
+}
+
+servoce::shape servoce::bezier(const std::vector<point3>& pnts) 
+{
+	TColgp_Array1OfPnt _pnts(1, pnts.size());
+	for (unsigned int i = 0; i < pnts.size(); ++i) 
+		_pnts.SetValue(i + 1, pnts[i].Pnt());
+
+	Handle(Geom_BezierCurve) curve = new Geom_BezierCurve(_pnts);
+	return BRepBuilderAPI_MakeEdge(curve).Shape();
+}
+
+servoce::shape servoce::bezier(const std::vector<point3>& pnts, const std::vector<double>& weights) 
+{
+	TColgp_Array1OfPnt _pnts(1, pnts.size());
+	for (unsigned int i = 0; i < pnts.size(); ++i) 
+		_pnts.SetValue(i + 1, pnts[i].Pnt());
+
+	TColStd_Array1OfReal _weights(1, weights.size());
+	for (unsigned int i = 0; i < weights.size(); ++i) 
+		_weights.SetValue(i + 1, weights[i]);
+
+	Handle(Geom_BezierCurve) curve = new Geom_BezierCurve(_pnts, _weights);
+	return BRepBuilderAPI_MakeEdge(curve).Shape();
 }
