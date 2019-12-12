@@ -16,6 +16,9 @@ namespace servoce
 
 	//shape make_arc_by_points(const point3& a, const point3& b, const point3& c);
 
+	shape bezier(const std::vector<point3>& pnts);
+	shape bezier(const std::vector<point3>& pnts, const std::vector<double>& weights);
+
 	shape circle_arc(const point3& p1, const point3& p2, const point3& p3);
 	
 	shape make_helix(double pitch, double height, double radius, double angle = 0, bool leftHanded = false, bool newStyle = true);
