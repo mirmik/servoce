@@ -87,6 +87,15 @@ bool servoce::point3::early(const point3& a, const point3& b, double eps)
 	return early_zero(xdiff, eps) && early_zero(ydiff, eps) && early_zero(zdiff, eps);
 }
 
+bool servoce::vector3::early(const vector3& a, const vector3& b, double eps)
+{
+	double xdiff = a.x - b.x;
+	double ydiff = a.y - b.y;
+	double zdiff = a.z - b.z;
+
+	return early_zero(xdiff, eps) && early_zero(ydiff, eps) && early_zero(zdiff, eps);
+}
+
 
 bool servoce::point2::early(const point2& a, const point2& b, double eps)
 {

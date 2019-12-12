@@ -6,6 +6,9 @@
 #include <nos/print.h>
 #include <nos/fprint.h>
 
+#include <gp_XYZ.hxx>
+#include <gp_Mat.hxx>
+
 class TopoDS_Vertex;
 
 class gp_Vec;
@@ -27,6 +30,9 @@ namespace servoce
 {
 	class point3;
 	class matrix33;
+
+	class xyz : public gp_XYZ
+	{};
 
 	class point2 : public linalg::vec<double, 2>
 	{
@@ -74,8 +80,11 @@ namespace servoce
 
 		vector3(const pybind11::list&);
 		vector3(const pybind11::tuple&);
+		static bool early(const vector3& a, const vector3& b, double eps = 0.0000001);
 
+		double dot(const vector3& oth) const { return linalg::dot(*this, oth); }
 		double length() const { return linalg::length(*this); }
+		double length2() const { return linalg::length2(*this); }
 		vector3 normalize() const { return vector3(linalg::normalize(*this)); }
 		
 		vector3 cross(const vector3& oth) const { return vector3(linalg::cross(*this, oth)); }
@@ -139,6 +148,7 @@ namespace servoce
 
 	class matrix33 : public linalg::mat<double,3,3> 
 	{
+	public:
 		using parent = linalg::mat<double,3,3>;
 
 	public:
@@ -152,6 +162,40 @@ namespace servoce
 
 		}	
 
+		matrix33(const gp_Mat& oth) 
+		{
+			gp_XYZ a,b,c;
+			a = oth.Column(0);
+			b = oth.Column(1);
+			c = oth.Column(2);
+			parent::x.x = a.X();
+			parent::x.y = a.Y();
+			parent::x.z = a.Z();
+			parent::y.x = b.X();
+			parent::y.y = b.Y();
+			parent::y.z = b.Z();
+			parent::z.x = c.X();
+			parent::z.y = c.Y();
+			parent::z.z = c.Z();
+		}
+
+		matrix33(	
+				double a00,  
+				double a11, 
+				double a22) 
+			:
+				parent({a00,0,0}, {0,a11,0}, {0,0,a22})
+		{
+
+		}	
+
+		matrix33()
+			:
+				parent({0,0,0}, {0,0,0}, {0,0,0})
+		{
+
+		}	
+
 		matrix33(const parent& oth) : parent(oth) {}
 
 		double* data() 
@@ -159,9 +203,32 @@ namespace servoce
 			return parent::arr;
 		}
 
+		double& operator()(int i, int j) 
+		{
+			return (*this)[j][i];
+		}
+
+		double& operator()(std::pair<int,int> p) 
+		{
+			return (*this)[p.second][p.first];
+		}
+
+		matrix33 inverse() { return linalg::inverse((parent&)*this); }
+		matrix33 transpose() { return linalg::transpose((parent&)*this); }
+
+		vector3 operator* (const vector3& vec) { return linalg::mul(*this, vec); }
+		matrix33 operator* (const matrix33& mat) { return linalg::mul(*this, mat); }
+		matrix33 operator- (const matrix33& mat) { return *(parent*)(this) - (parent&)mat; }
+		matrix33 operator+ (const matrix33& mat) { return *(parent*)(this) + (parent&)mat; }
+		matrix33 operator* (double c) { return *(parent*)this * c; }
+
 		static constexpr int rows() { return 3; }
 		static constexpr int cols() { return 3; }
 	};
+
+	static inline matrix33 operator* (double c, const matrix33& mat) { 
+		return c * (const matrix33::parent&)mat; }
+
 
 	class quaternion : public linalg::vec<double,4>
 	{

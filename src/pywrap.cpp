@@ -159,8 +159,17 @@ PYBIND11_MODULE(libservoce, m)
 	}))
 	;
 
+	py::class_<xyz>(m, "xyz")
+	.def("__add__", &gp_XYZ::operator+ )
+	.def("__sub__", &gp_XYZ::operator- )
+	.def("__mul__", (gp_XYZ(gp_XYZ::*)(double)const)&gp_XYZ::operator* )
+	//.def("__mul__", (gp_XYZ(gp_XYZ::* const)(double))&gp_XYZ::operator* )
+	.def("dot", &gp_XYZ::Dot)
+	;
+
 	py::class_<vector3>(m, "vector3")
 	.def(py::init<>())
+	.def(py::init<const servoce::vector3&>())
 	.def(py::init<double, double, double>())
 	.def(py::init<double, double>())
 	.def(py::init<py::list>())
@@ -182,6 +191,9 @@ PYBIND11_MODULE(libservoce, m)
 	.def("normalize", &vector3::normalize)
 	.def("outerprod", &vector3::outerprod)
 	.def("length", &vector3::length)
+	.def("length2", &vector3::length2)
+	.def("early", &vector3::early)
+	.def("dot", &vector3::dot)
 	.def("cross", &vector3::cross)
 	.def("__repr__", [](const vector3 & pnt)
 	{
@@ -235,6 +247,25 @@ PYBIND11_MODULE(libservoce, m)
 	;
 
 	py::class_<matrix33>(m, "matrix33", py::buffer_protocol())
+		.def(py::init<>())
+		.def(py::init<double,double,double>())
+		.def(py::init<double,double,double,double,double,double,double,double,double>())
+		.def("inverse", &matrix33::inverse)
+		.def("transpose", &matrix33::transpose)
+		.def("__mul__", (matrix33(matrix33::*)(const matrix33&)) &matrix33::operator*)
+		.def("__mul__", (vector3(matrix33::*)(const vector3&)) &matrix33::operator*)
+		.def("__mul__", (matrix33(matrix33::*)(double)) &matrix33::operator*)
+		.def("__rmul__", (matrix33(matrix33::*)(double)) &matrix33::operator*)
+		.def("__add__", (matrix33(matrix33::*)(const matrix33&)) &matrix33::operator+)
+		.def("__sub__", (matrix33(matrix33::*)(const matrix33&)) &matrix33::operator-)
+		.def("__getitem__", (double&(matrix33::*)(std::pair<int,int>))&matrix33::operator())
+		.def("__repr__", [](const matrix33 & m)
+		{
+			char buf[128];
+			sprintf(buf, "matrix33(%f,%f,%f,%f,%f,%f,%f,%f,%f)", 
+				m.x.x, m.y.x, m.z.x, m.x.y, m.y.y, m.z.y, m.x.z, m.y.z, m.z.z);
+			return std::string(buf);
+		})
 		.def_buffer([](matrix33 &m) -> py::buffer_info {
 			return py::buffer_info(
 				m.data(),                               /* Pointer to buffer */
@@ -621,4 +652,12 @@ PYBIND11_MODULE(libservoce, m)
 
 	m.def("draw_arrow", &draw::arrow, py::arg("pnt"), py::arg("vec"), py::arg("clr")=yellow, py::arg("arrlen")=1, py::arg("width")=1);
 	m.def("draw_line", &draw::line, py::arg("a"), py::arg("b"), py::arg("clr")=black, py::arg("style")=line_style::solid_line, py::arg("width")=1);
+
+	py::class_<geomprops>(m, "geomprops")
+	//	.def("volume_properties", &geomprops::volume_properties)
+	//	.def("mass", &GProp_GProps::Mass)
+		.def("cmpoint", &GProp_GProps::CentreOfMass)
+	//	.def("cmradius", &geomprops::cmradius)
+	//	.def("inermat", &GProp_GProps::MatrixOfInertia)
+	;
 }
