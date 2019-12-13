@@ -385,18 +385,7 @@ PYBIND11_MODULE(libservoce, m)
 	m.def("fill", &fill, ungil());
 
 //PRIM1D
-	m.def("segment", make_segment, ungil());
-	m.def("polysegment", (shape(*)(const std::vector<point3>&, const bool))&make_polysegment, ungil(), py::arg("pnts"), py::arg("closed") = false);
-	m.def("interpolate", (shape(*)(const std::vector<point3>&, const std::vector<vector3>&, bool))&make_interpolate, ungil(), py::arg("pnts"), py::arg("tang"), py::arg("closed") = false);
-	m.def("interpolate", (shape(*)(const std::vector<point3>&, const bool))&make_interpolate, ungil(), py::arg("pnts"), py::arg("closed") = false);
-	m.def("bezier", (shape(*)(const std::vector<point3>&, const std::vector<double>&))&bezier, ungil(), py::arg("pnts"), py::arg("weights"));
-	m.def("bezier", (shape(*)(const std::vector<point3>&))&bezier, ungil(), py::arg("pnts"));
-	m.def("helix", make_helix, ungil(), py::arg("step"), py::arg("height"), py::arg("radius"), py::arg("angle") = 0, py::arg("leftHanded") = false, py::arg("newStyle") = true);
-	m.def("long_helix", make_long_helix, ungil(), py::arg("step"), py::arg("height"), py::arg("radius"), py::arg("angle") = 0, py::arg("leftHanded") = false);
-
-	m.def("circle_arc", &circle_arc, ungil());
-
-	m.def("sew", &sew, ungil());
+	#include <servoce/pywrap/wire.h>
 
 //SURFACE
 	py::class_<surface::surface>(m, "surface")
@@ -418,21 +407,7 @@ PYBIND11_MODULE(libservoce, m)
 	m.def("curve2_segment", curve2::segment, ungil());
 
 //CURVE3
-	py::class_<curve3::curve3>(m, "curve3")
-		.def("value", &curve3::curve3::value)
-		.def(py::pickle(
-		[](const curve3::curve3 & self) { return b64::base64_encode(string_dump(self)); },
-		[](const std::string & in) { return restore_string_dump<curve3::curve3>(b64::base64_decode(in)); }), ungil())
-		//.def("rotate", &curve3::curve3::rotate, ungil())
-	;
-
-	// basic:
-	m.def("curve3_line", &curve3::line, ungil());
-
-	// advanced: 
-	m.def("curve3_interpolate", (curve3::curve3(*)(const std::vector<point3>&, const std::vector<vector3>&, bool))&curve3::interpolate, ungil(), py::arg("pnts"), py::arg("tang"), py::arg("closed") = false);
-	m.def("curve3_interpolate", (curve3::curve3(*)(const std::vector<point3>&, const bool))&curve3::interpolate, ungil(), py::arg("pnts"), py::arg("closed") = false);
-	
+	#include <servoce/pywrap/curve3.h>
 
 //BOOLEAN
 	m.def("union", (shape(*)(const std::vector<const shape*>&))&make_union, ungil());

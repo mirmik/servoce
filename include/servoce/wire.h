@@ -6,6 +6,10 @@
 
 namespace servoce
 {
+	namespace curve3 {
+		class curve3;
+	}
+
 	shape make_segment(const point3& a, const point3& b);
 	shape make_polysegment(const point3* data, size_t size, bool closed = false);
 	shape make_polysegment(const std::vector<point3>& vec, bool closed = false);
@@ -19,6 +23,24 @@ namespace servoce
 	shape bezier(const std::vector<point3>& pnts);
 	shape bezier(const std::vector<point3>& pnts, const std::vector<double>& weights);
 
+	shape bspline(
+		const std::vector<point3>& poles,
+		const std::vector<double>& knots,
+		const std::vector<int>& multiplicities,
+		int degree,
+		bool periodic=false
+	);
+
+	shape bspline(
+		const std::vector<point3>& poles,
+		const std::vector<double>& weights,
+		const std::vector<double>& knots,
+		const std::vector<int>& multiplicities,
+		int degree,
+		bool periodic=false,
+		bool check_rational=true 
+	);
+
 	shape circle_arc(const point3& p1, const point3& p2, const point3& p3);
 	
 	shape make_helix(double pitch, double height, double radius, double angle = 0, bool leftHanded = false, bool newStyle = true);
@@ -26,6 +48,9 @@ namespace servoce
 
 	/// Сшить wire или edge между собой.
 	shape sew(const std::vector<const shape*>& arr);
+
+	shape make_edge(const servoce::curve3::curve3& crv);
+	shape make_edge(const servoce::curve3::curve3& crv, double strt, double fini);
 }
 
 #endif

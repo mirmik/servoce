@@ -9,18 +9,21 @@
 
 #include <vector>
 
-namespace servoce 
+namespace servoce
 {
+	class shape;
+
 	namespace curve3
 	{
 		class curve3
 		{
+		protected:
 			Handle(Geom_Curve) crv;
 
 		public:
 			curve3(Geom_Curve* crv) : crv(crv) {}
-			curve3(Handle(Geom_Curve) crv);
-			curve3(){}
+			curve3(Handle(Geom_Curve) crv) : crv(crv) {}
+			curve3() {}
 
 			Handle(Geom_Curve) Curve() { return crv; }
 			const Handle(Geom_Curve) Curve() const { return crv; }
@@ -31,12 +34,16 @@ namespace servoce
 			void dump(std::ostream& out) const;
 			void load(std::istream& in);
 
-			//curve3 rotate(double angle);
+			servoce::shape edge();
+			servoce::shape edge(double strt, double fini);
 		};
 
 		class bounded_curve3 : public curve3
 		{
-			// TODO
+		public:
+			bounded_curve3(Geom_Curve* crv) : curve3(crv) {}
+			bounded_curve3(Handle(Geom_Curve) crv) : curve3(crv) {}
+			bounded_curve3() {}
 		};
 
 		class conic_curve3 : public curve3
@@ -44,9 +51,33 @@ namespace servoce
 			// TODO
 		};
 
-	// Basic:
-		bounded_curve3 bezier(); //TODO
-		bounded_curve3 bspline(); //TODO
+		// Basic:
+		bounded_curve3 bezier(
+			const std::vector<point3>& pnts);
+		
+		bounded_curve3 bezier(
+			const std::vector<point3>& pnts, 
+			const std::vector<double>& weights);
+
+		bounded_curve3 bspline(
+		    const std::vector<point3>& poles,
+		    const std::vector<double>& knots,
+		    const std::vector<int>& multiplicities,
+		    int degree,
+		    bool periodic = false
+		);
+
+		bounded_curve3 bspline(
+		    const std::vector<point3>& poles,
+		    const std::vector<double>& weights,
+		    const std::vector<double>& knots,
+		    const std::vector<int>& multiplicities,
+		    int degree,
+		    bool periodic = false,
+		    bool check_rational = true
+		);
+
+
 		bounded_curve3 trimmed(); //TODO
 
 		conic_curve3 circle(); //TODO
@@ -57,12 +88,12 @@ namespace servoce
 		curve3 line(const point3& a, const vector3& b);
 		curve3 offset(); //TODO
 
-	// Advanced:
+		// Advanced:
 		curve3 interpolate(
-			const std::vector<servoce::point3>& pnts, const std::vector<servoce::vector3>& tang, bool closed);
-		
+		    const std::vector<servoce::point3>& pnts, const std::vector<servoce::vector3>& tang, bool closed);
+
 		curve3 interpolate(
-			const std::vector<servoce::point3>& pnts, bool closed);
+		    const std::vector<servoce::point3>& pnts, bool closed);
 	}
 }
 

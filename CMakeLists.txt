@@ -13,6 +13,7 @@ file(GLOB SOURCES
 	src/curve3.cpp   
 	src/face.cpp         
 	src/interactive_object.cpp  
+	src/opencascade_types.cpp  
 	src/prs3d.cpp   
 	src/shape_view.cpp  
 	src/view.cpp

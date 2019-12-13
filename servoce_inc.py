@@ -168,7 +168,8 @@ module(
         "viewer.cpp",
         "camera.cpp",
         "prs3d.cpp",
-        "interactive_object.cpp"
+        "interactive_object.cpp",
+        "opencascade_types.cpp"
     ] + add_sources,
     moc=[] + add_moc,
     include_paths=["include", ".", "src"],
