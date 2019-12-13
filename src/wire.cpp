@@ -1,4 +1,5 @@
 #include <servoce/wire.h>
+#include <servoce/curve3.h>
 #include <local/util.h>
 
 #include <exception>
@@ -288,12 +289,12 @@ servoce::shape servoce::sew(const std::vector<const servoce::shape*>& arr)
 	/*try {*/
 	return mk.Wire();
 	/*}
-	catch 
+	catch
 	{
 		std::cout << "fail. maybe unsorted" << std::endl;
 
 		std::vector<const servoce::shape*> sorted;
-		sorted.push_back(arr[0]); 
+		sorted.push_back(arr[0]);
 
 	}*/
 }
@@ -305,52 +306,82 @@ servoce::shape servoce::circle_arc(const point3& p1, const point3& p2, const poi
 }
 
 #include <TopExp.hxx>
-std::pair<servoce::point3, servoce::point3> servoce::shape::sfvertex() 
+std::pair<servoce::point3, servoce::point3> servoce::shape::sfvertex()
 {
 	if (Shape().ShapeType() == TopAbs_WIRE)
 	{
 		TopoDS_Vertex a, b;
 		TopExp::Vertices(Wire(), a, b);
-		return std::pair<servoce::point3, servoce::point3>(a,b);
+		return std::pair<servoce::point3, servoce::point3>(a, b);
 	}
-	
-	else if (Shape().ShapeType() == TopAbs_EDGE) 
+
+	else if (Shape().ShapeType() == TopAbs_EDGE)
 	{
 		return std::pair<servoce::point3, servoce::point3>(TopExp::FirstVertex(Edge()), TopExp::LastVertex(Edge()));
 	}
-	
-	else 
+
+	else
 	{
 		throw "TODO Error";
 	}
 }
 
-bool servoce::shape::is_closed() 
+bool servoce::shape::is_closed()
 {
 	auto pair = sfvertex();
 	return servoce::point3::early(pair.first, pair.second, 0.0001);
 }
 
-servoce::shape servoce::bezier(const std::vector<point3>& pnts) 
+servoce::shape servoce::bezier(
+    const std::vector<point3>& pnts)
 {
-	TColgp_Array1OfPnt _pnts(1, pnts.size());
-	for (unsigned int i = 0; i < pnts.size(); ++i) 
-		_pnts.SetValue(i + 1, pnts[i].Pnt());
+	return make_edge(servoce::curve3::bezier(pnts));
+}
 
-	Handle(Geom_BezierCurve) curve = new Geom_BezierCurve(_pnts);
+servoce::shape servoce::bezier(
+    const std::vector<point3>& pnts,
+    const std::vector<double>& weights)
+{
+	return make_edge(servoce::curve3::bezier(pnts, weights));
+}
+
+servoce::shape servoce::bspline(
+    const std::vector<point3>& poles,
+    const std::vector<double>& knots,
+    const std::vector<int>& multiplicities,
+    int degree,
+    bool periodic
+)
+{
+	return make_edge(servoce::curve3::bspline(
+		poles, knots, multiplicities, 
+		degree, periodic));
+}
+
+servoce::shape servoce::bspline(
+    const std::vector<point3>& poles,
+    const std::vector<double>& weights,
+    const std::vector<double>& knots,
+    const std::vector<int>& multiplicities,
+    int degree,
+    bool periodic,
+    bool check_rational
+) 
+{
+	return make_edge(servoce::curve3::bspline(
+		poles, weights, knots, multiplicities, 
+		degree, periodic, check_rational));
+}
+
+
+servoce::shape servoce::make_edge(const servoce::curve3::curve3& crv)
+{
+	auto curve = crv.Curve();
 	return BRepBuilderAPI_MakeEdge(curve).Shape();
 }
 
-servoce::shape servoce::bezier(const std::vector<point3>& pnts, const std::vector<double>& weights) 
+servoce::shape servoce::make_edge(const servoce::curve3::curve3& crv, double strt, double fini)
 {
-	TColgp_Array1OfPnt _pnts(1, pnts.size());
-	for (unsigned int i = 0; i < pnts.size(); ++i) 
-		_pnts.SetValue(i + 1, pnts[i].Pnt());
-
-	TColStd_Array1OfReal _weights(1, weights.size());
-	for (unsigned int i = 0; i < weights.size(); ++i) 
-		_weights.SetValue(i + 1, weights[i]);
-
-	Handle(Geom_BezierCurve) curve = new Geom_BezierCurve(_pnts, _weights);
-	return BRepBuilderAPI_MakeEdge(curve).Shape();
+	auto curve = crv.Curve();
+	return BRepBuilderAPI_MakeEdge(curve, strt, fini).Shape();
 }

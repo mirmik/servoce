@@ -88,6 +88,7 @@ pyservoce_lib = Extension(
         "src/camera.cpp",
         "src/prs3d.cpp",
         "src/interactive_object.cpp",
+        "src/opencascade_types.cpp",
     ] + nosopts["sources"],
     extra_compile_args=["-fPIC", "-std=c++14", 
         "-DNODTRACE=1", "-DNOTRACE=1"
