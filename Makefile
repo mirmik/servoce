@@ -436,6 +436,33 @@ src/interactive_object.cpp.s:
 	$(MAKE) -f CMakeFiles/servoce.dir/build.make CMakeFiles/servoce.dir/src/interactive_object.cpp.s
 .PHONY : src/interactive_object.cpp.s
 
+src/opencascade_types.o: src/opencascade_types.cpp.o
+
+.PHONY : src/opencascade_types.o
+
+# target to build an object file
+src/opencascade_types.cpp.o:
+	$(MAKE) -f CMakeFiles/servoce.dir/build.make CMakeFiles/servoce.dir/src/opencascade_types.cpp.o
+.PHONY : src/opencascade_types.cpp.o
+
+src/opencascade_types.i: src/opencascade_types.cpp.i
+
+.PHONY : src/opencascade_types.i
+
+# target to preprocess a source file
+src/opencascade_types.cpp.i:
+	$(MAKE) -f CMakeFiles/servoce.dir/build.make CMakeFiles/servoce.dir/src/opencascade_types.cpp.i
+.PHONY : src/opencascade_types.cpp.i
+
+src/opencascade_types.s: src/opencascade_types.cpp.s
+
+.PHONY : src/opencascade_types.s
+
+# target to generate assembly for a file
+src/opencascade_types.cpp.s:
+	$(MAKE) -f CMakeFiles/servoce.dir/build.make CMakeFiles/servoce.dir/src/opencascade_types.cpp.s
+.PHONY : src/opencascade_types.cpp.s
+
 src/prs3d.o: src/prs3d.cpp.o
 
 .PHONY : src/prs3d.o
@@ -910,6 +937,9 @@ help:
 	@echo "... src/interactive_object.o"
 	@echo "... src/interactive_object.i"
 	@echo "... src/interactive_object.s"
+	@echo "... src/opencascade_types.o"
+	@echo "... src/opencascade_types.i"
+	@echo "... src/opencascade_types.s"
 	@echo "... src/prs3d.o"
 	@echo "... src/prs3d.i"
 	@echo "... src/prs3d.s"
