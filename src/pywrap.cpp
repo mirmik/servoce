@@ -205,6 +205,8 @@ PYBIND11_MODULE(libservoce, m)
 	.def("early", &vector3::early)
 	.def("dot", &vector3::dot)
 	.def("cross", &vector3::cross)
+	.def("vecmul_matrix", &vector3::vecmul_matrix)
+	.def("elementwise_mul", &vector3::elementwise_mul)
 	.def("__repr__", [](const vector3 & pnt)
 	{
 		char buf[128];
