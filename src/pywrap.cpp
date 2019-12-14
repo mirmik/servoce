@@ -64,16 +64,26 @@ std::vector<servoce::point3> points(const py::list& lst)
 PYBIND11_MODULE(libservoce, m)
 {
 // EXCEPTIONS
-	static py::exception<Standard_Failure> exc(m, "OpenCascade_Standard_Failure");
+	static py::exception<Standard_Failure> standart_failure(m, 
+		"OpenCascade_Standard_Failure");
+	
+	static py::exception<Standard_ConstructionError> construction_error(m, 
+		"OpenCascade_Standard_ConstructionError");
+
+
 	py::register_exception_translator([](std::exception_ptr p)
 	{
 		try
 		{
 			if (p) std::rethrow_exception(p);
 		}
+		catch (const Standard_ConstructionError &e)
+		{
+			construction_error(e.GetMessageString());
+		}
 		catch (const Standard_Failure &e)
 		{
-			exc(e.GetMessageString());
+			standart_failure(e.GetMessageString());	
 		}
 	});
 
@@ -195,6 +205,8 @@ PYBIND11_MODULE(libservoce, m)
 	.def("early", &vector3::early)
 	.def("dot", &vector3::dot)
 	.def("cross", &vector3::cross)
+	.def("vecmul_matrix", &vector3::vecmul_matrix)
+	.def("elementwise_mul", &vector3::elementwise_mul)
 	.def("__repr__", [](const vector3 & pnt)
 	{
 		char buf[128];
@@ -385,7 +397,7 @@ PYBIND11_MODULE(libservoce, m)
 	m.def("fill", &fill, ungil());
 
 //PRIM1D
-	#include <servoce/pywrap/wire.h>
+	#include <pywrap/wire.h>
 
 //SURFACE
 	py::class_<surface::surface>(m, "surface")
@@ -407,7 +419,7 @@ PYBIND11_MODULE(libservoce, m)
 	m.def("curve2_segment", curve2::segment, ungil());
 
 //CURVE3
-	#include <servoce/pywrap/curve3.h>
+	#include <pywrap/curve3.h>
 
 //BOOLEAN
 	m.def("union", (shape(*)(const std::vector<const shape*>&))&make_union, ungil());

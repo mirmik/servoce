@@ -82,6 +82,8 @@ namespace servoce
 		vector3(const pybind11::tuple&);
 		static bool early(const vector3& a, const vector3& b, double eps = 0.0000001);
 
+		vector3 elementwise_mul(const vector3& oth) { return { x*oth.x, y*oth.y, z*oth.z }; }
+
 		double dot(const vector3& oth) const { return linalg::dot(*this, oth); }
 		double length() const { return linalg::length(*this); }
 		double length2() const { return linalg::length2(*this); }
@@ -99,6 +101,8 @@ namespace servoce
 		{
 			return nos::fprint_to(out, "vector3({},{},{})", x, y, z);
 		}
+
+		matrix33 vecmul_matrix();
 	};
 
 	class point3 : public linalg::vec<double, 3>
@@ -304,6 +308,16 @@ namespace servoce
 
 
 	inline matrix33 vector3::outerprod(const vector3& oth) { return linalg::outerprod(*this, oth); }
+
+
+	inline matrix33 vector3::vecmul_matrix() 
+	{
+		return matrix33(
+			 0, -z,  y,
+			 z,  0, -x,
+			-y,  x,  0
+		);
+	}
 }
 
 #endif

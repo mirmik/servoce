@@ -36,16 +36,24 @@ listlibs = [
 	"TKHLR",
 ]
 
-filelist = os.listdir("/usr/local/lib/")
-#print(filelist)
-print(filelist)
+def get_occt_library_directory():
+	dirs = ["/usr/local/lib/", "/usr/lib/x86_64-linux-gnu/"]
+	
+	for d in dirs:
+		if "libTKernel.so" in os.listdir(d):
+			return d 
+	else:
+		raise Exception("can't find occt")
+occt_libs_dir = get_occt_library_directory()
+
+filelist = os.listdir(occt_libs_dir)
 
 for l in listlibs:
 	fl = "lib" + l + ".so.{}".format(vers)
 	if fl in filelist:
 		f = fl
 
-		cmd0 = "cp {0} pyservoce/libs/".format(os.path.join("/usr/local/lib/", f))
+		cmd0 = "cp {0} pyservoce/libs/".format(os.path.join(occt_libs_dir, f))
 		if not iswin:
 			cmd05 = "patchelf --set-rpath '$ORIGIN' pyservoce/libs/{0}".format(f)
 		cmd1 = "ln -s {2}/pyservoce/libs/{0} {2}/pyservoce/libs/{1}".format(
