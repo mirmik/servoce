@@ -35,12 +35,12 @@ namespace servoce
 			return algo.Parameter();
 		}
 
-		double linoff(double dist) const 
+		/*double linoff(double dist) const 
 		{
 			auto adaptor = self().AdaptorCurve();
 			GCPnts_AbscissaPoint algo(adaptor, dist, adaptor.FirstParameter());
 			return algo.Parameter();
-		}
+		}*/
 
 		std::pair<double,double> range() const
 		{
@@ -53,10 +53,10 @@ namespace servoce
 			return d0(linoff(dist, start));
 		}
 
-		PointType linoff_point(double dist) const
+		/*PointType linoff_point(double dist) const
 		{
 			return d0(linoff(dist));
-		}
+		}*/
 
 		std::vector<PointType> uniform_points(int npoints, double strt, double fini) const
 		{
