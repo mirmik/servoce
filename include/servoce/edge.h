@@ -9,10 +9,10 @@
 #include <servoce/curve_algo.h>
 
 namespace servoce {
-	class edge_shape : public shape, public curve_algo<edge_shape, servoce::point3>
+	class edge_shape : public shape, public curve_algo<edge_shape, servoce::point3, servoce::vector3>
 	{
 	public:
-		using crvalgo = curve_algo<edge_shape, servoce::point3>;
+		using crvalgo = curve_algo<edge_shape, servoce::point3, servoce::vector3>;
 
 		//edge_shape(TopoDS_Edge& arg) : shape(arg) {}
 		edge_shape(){}

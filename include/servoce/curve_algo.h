@@ -8,7 +8,7 @@
 
 namespace servoce
 {
-	template<class Self, class PointType>
+	template<class Self, class PointType, class VectorType>
 	class curve_algo
 	{
 		Self& self() { return (Self&)*this; }
@@ -26,6 +26,14 @@ namespace servoce
 			gp_Pnt pnt;
 			self().AdaptorCurve().D0(arg, pnt);
 			return pnt;
+		}
+
+		std::pair<PointType, VectorType> d1(double arg) const 
+		{
+			gp_Vec vec;
+			gp_Pnt pnt;
+			self().AdaptorCurve().D1(arg, pnt, vec);
+			return { pnt, vec };
 		}
 
 		double linoff(double dist, double start) const 
