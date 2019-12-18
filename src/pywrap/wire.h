@@ -2,37 +2,37 @@ m.def("segment",
       make_segment, ungil()
      );
 
-m.def("polysegment", (shape(*)(const std::vector<point3>&, const bool))
+m.def("polysegment", (wire_shape(*)(const std::vector<point3>&, const bool))
       &make_polysegment, ungil(),
       py::arg("pnts"),
       py::arg("closed") = false
      );
 
-m.def("interpolate", (shape(*)(const std::vector<point3>&, const std::vector<vector3>&, bool))
+m.def("interpolate", (edge_shape(*)(const std::vector<point3>&, const std::vector<vector3>&, bool))
       &make_interpolate, ungil(),
       py::arg("pnts"),
       py::arg("tang"),
       py::arg("closed") = false
      );
 
-m.def("interpolate", (shape(*)(const std::vector<point3>&, const bool))
+m.def("interpolate", (edge_shape(*)(const std::vector<point3>&, const bool))
       &make_interpolate, ungil(),
       py::arg("pnts"),
       py::arg("closed") = false
      );
 
-m.def("bezier", (shape(*)(const std::vector<point3>&, const std::vector<double>&))
+m.def("bezier", (edge_shape(*)(const std::vector<point3>&, const std::vector<double>&))
       &bezier, ungil(),
       py::arg("pnts"),
       py::arg("weights")
      );
 
-m.def("bezier", (shape(*)(const std::vector<point3>&))
+m.def("bezier", (edge_shape(*)(const std::vector<point3>&))
       &bezier, ungil(),
       py::arg("pnts")
      );
 
-m.def("bspline", (shape(*)(
+m.def("bspline", (edge_shape(*)(
                       const std::vector<point3>& poles, const std::vector<double>& knots, const std::vector<int>& multiplicities,
                       int degree, bool periodic))
       &bspline, ungil(),
@@ -43,7 +43,7 @@ m.def("bspline", (shape(*)(
       py::arg("periodic") = false
      );
 
-m.def("bspline", (shape(*)(
+m.def("bspline", (edge_shape(*)(
                       const std::vector<point3>& poles, const std::vector<double>& weights, const std::vector<double>& knots, const std::vector<int>& multiplicities,
                       int degree, bool periodic, bool check_rational))
       &bspline, ungil(),
@@ -82,3 +82,5 @@ m.def("circle_arc",
 m.def("sew",
       &sew, ungil()
      );
+
+m.def("extract_curve", &extract_curve, ungil());

@@ -34,6 +34,8 @@ namespace servoce
 			void dump(std::ostream& out) const;
 			void load(std::istream& in);
 
+			std::pair<double, double> range() const;
+
 			servoce::shape edge();
 			servoce::shape edge(double strt, double fini);
 		};

@@ -77,6 +77,7 @@ pyservoce_lib = Extension(
         "src/solid.cpp",
         "src/face.cpp",
         "src/wire.cpp",
+        "src/edge.cpp",
         "src/boolops.cpp",
         "src/geombase.cpp",
         "src/convert.cpp",
@@ -124,7 +125,7 @@ pyservoce_lib = Extension(
 setup(
     name="pyservoce",
     packages=["pyservoce"],
-    version="1.14.0",
+    version="1.15.2",
     license="MIT",
     description="CAD system for righteous zen programmers ",
     author="mirmik",

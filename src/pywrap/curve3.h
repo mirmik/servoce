@@ -1,5 +1,6 @@
 py::class_<curve3::curve3>(m, "curve3")
 .def("value", &curve3::curve3::value)
+.def("range", &curve3::curve3::range)
 .def(py::pickle(
 [](const curve3::curve3 & self) { return b64::base64_encode(string_dump(self)); },
 [](const std::string & in) { return restore_string_dump<curve3::curve3>(b64::base64_decode(in)); }), ungil())

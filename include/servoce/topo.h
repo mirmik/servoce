@@ -63,6 +63,7 @@ namespace servoce
 
 		TopoDS_Edge& Edge();
 		const TopoDS_Edge& Edge() const;
+		TopoDS_Edge Edge_OrOneEdgedWireToEdge() const;
 
 		TopoDS_Vertex& Vertex();
 		const TopoDS_Vertex& Vertex() const;
@@ -134,6 +135,8 @@ namespace servoce
 		std::vector<servoce::shape> wires() const;
 		std::vector<servoce::shape> edges() const;
 
+		std::vector<TopoDS_Edge> Edges() const;
+
 		shape fillet(double r, const std::vector<point3>& refs);
 		shape fillet(double r);
 		shape chamfer(double r, const std::vector<point3>& refs);
@@ -147,9 +150,17 @@ namespace servoce
 		bool is_closed(); // for wire
 
 		topoenum type();
-		std::string shapetype_as_string();
+		std::string shapetype_as_string() const;
 
 		void print_topo_dump();
+	};
+
+	class wire_shape : public shape 
+	{
+	public:
+		//wire_shape(TopoDS_Wire& arg) : shape(arg) {}
+		wire_shape(){}
+		wire_shape(const TopoDS_Wire& arg) : shape((const TopoDS_Shape&)arg) {}
 	};
 
 	class BoundBox 

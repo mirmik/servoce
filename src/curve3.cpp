@@ -1,5 +1,6 @@
 #include <servoce/curve3.h>
 #include <servoce/wire.h>
+#include <servoce/edge.h>
 
 #include <TColgp_HArray1OfPnt.hxx>
 #include <TColStd_HArray1OfBoolean.hxx>
@@ -140,4 +141,10 @@ servoce::shape servoce::curve3::curve3::edge()
 servoce::shape servoce::curve3::curve3::edge(double strt, double fini) 
 {
 	return servoce::make_edge(*this, strt, fini);
+}
+
+std::pair<double,double> 
+servoce::curve3::curve3::range() const 
+{
+	return { crv->FirstParameter(), crv->LastParameter() };
 }
