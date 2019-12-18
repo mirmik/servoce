@@ -158,6 +158,7 @@ module(
         "curve3.cpp",
         "face.cpp",
         "wire.cpp",
+        "edge.cpp",
         "boolops.cpp",
         "convert.cpp",
         "geombase.cpp",

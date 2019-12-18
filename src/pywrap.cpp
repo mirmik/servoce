@@ -335,6 +335,13 @@ PYBIND11_MODULE(libservoce, m)
 	.def("fillet2d", [](const shape& shp, double r, const py::list& arr) { return fillet(shp,r,points(arr)); }, ungil(), py::arg("r"), py::arg("refs"))
 	;
 
+	py::class_<edge_shape, shape>(m, "Edge")
+	.def("range", &edge_shape::range)
+	;
+
+	py::class_<wire_shape, shape>(m, "Wire")
+	;
+
 	m.def("fillet", (shape(*)(const shape&, double, const std::vector<point3>&))&servoce::fillet, ungil(), py::arg("shp"), py::arg("r"), py::arg("refs"));
 	m.def("fillet", (shape(*)(const shape&, double))&servoce::fillet, ungil(), py::arg("shp"), py::arg("r"));
 	m.def("chamfer", (shape(*)(const shape&, double, const std::vector<point3>&))&servoce::chamfer, ungil(), py::arg("shp"), py::arg("r"), py::arg("refs"));

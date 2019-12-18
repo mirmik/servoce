@@ -264,6 +264,19 @@ std::vector<servoce::shape> servoce::shape::wires() const
 	return ret;
 }
 
+std::vector<TopoDS_Edge> servoce::shape::Edges() const
+{
+	std::vector<TopoDS_Edge> ret;
+
+	for (TopExp_Explorer ex(Shape(), TopAbs_EDGE); ex.More(); ex.Next())
+	{
+		TopoDS_Edge obj = TopoDS::Edge(ex.Current());
+		ret.emplace_back(obj);
+	}
+
+	return ret;
+}
+
 std::vector<servoce::shape> servoce::shape::edges() const
 {
 	std::vector<servoce::shape> ret;
@@ -373,7 +386,7 @@ servoce::shape servoce::near_vertex(const servoce::shape& shp, const servoce::po
 	return ret;
 }
 
-std::string servoce::shape::shapetype_as_string()
+std::string servoce::shape::shapetype_as_string() const
 {
 	switch (Shape().ShapeType())
 	{
@@ -462,4 +475,28 @@ void servoce::shape::print_topo_dump()
 		cout << "____Nb edges: " << edges->Length() << "____" << endl;
 		cout << "____Nb vertices: " << vertices->Length() << "____" << endl;
 	}
+}
+
+TopoDS_Edge servoce::shape::Edge_OrOneEdgedWireToEdge() const 
+{
+	if (Shape().ShapeType() == TopAbs_EDGE) 
+	{
+		return Edge();
+	}
+	
+	else if (Shape().ShapeType() == TopAbs_WIRE)
+	{
+		auto edgs = Edges();
+		if (edgs.size() > 1) 
+		{
+			throw std::runtime_error(
+				"Attempt to extract edge from multiedged wire");
+		}
+
+		return edgs[0];
+	}
+	
+	else 
+		throw std::runtime_error(
+			"Attempt to extract edge from uncompatible type of shape");
 }

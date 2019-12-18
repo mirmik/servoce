@@ -40,12 +40,12 @@ servoce::shape servoce::shape::infill_face()
 	return BRepBuilderAPI_MakeFace(Wire()).Face();
 }
 
-servoce::shape servoce::make_segment(const servoce::point3& a, const servoce::point3& b)
+servoce::edge_shape servoce::make_segment(const servoce::point3& a, const servoce::point3& b)
 {
-	return BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(a.Pnt(), b.Pnt())).Wire();
+	return BRepBuilderAPI_MakeEdge(a.Pnt(), b.Pnt()).Edge();
 }
 
-servoce::shape servoce::make_polysegment(const std::vector<servoce::point3>& pnts, bool closed)
+servoce::wire_shape servoce::make_polysegment(const std::vector<servoce::point3>& pnts, bool closed)
 {
 	if (pnts.size() <= 1)
 		throw std::logic_error("Need at least two points for polysegment");
@@ -235,7 +235,7 @@ servoce::shape servoce::make_long_helix(double pitch, double height,
 	return shape;
 }
 
-servoce::shape servoce::make_interpolate(const std::vector<servoce::point3>& pnts, const std::vector<servoce::vector3>& tang, bool closed)
+servoce::edge_shape servoce::make_interpolate(const std::vector<servoce::point3>& pnts, const std::vector<servoce::vector3>& tang, bool closed)
 {
 	Handle(TColgp_HArray1OfPnt) _pnts = new TColgp_HArray1OfPnt(1, pnts.size());
 
@@ -262,7 +262,7 @@ servoce::shape servoce::make_interpolate(const std::vector<servoce::point3>& pnt
 	return BRepBuilderAPI_MakeEdge(algo.Curve()).Edge();
 }
 
-servoce::shape servoce::make_interpolate(const std::vector<servoce::point3>& pnts, bool closed)
+servoce::edge_shape servoce::make_interpolate(const std::vector<servoce::point3>& pnts, bool closed)
 {
 	Handle(TColgp_HArray1OfPnt) _pnts = new TColgp_HArray1OfPnt(1, pnts.size());
 
@@ -299,10 +299,10 @@ servoce::shape servoce::sew(const std::vector<const servoce::shape*>& arr)
 	}*/
 }
 
-servoce::shape servoce::circle_arc(const point3& p1, const point3& p2, const point3& p3)
+servoce::edge_shape servoce::circle_arc(const point3& p1, const point3& p2, const point3& p3)
 {
 	Handle(Geom_TrimmedCurve) aArcOfCircle = GC_MakeArcOfCircle(p1.Pnt(), p2.Pnt(), p3.Pnt());
-	return BRepBuilderAPI_MakeEdge(aArcOfCircle).Shape();
+	return BRepBuilderAPI_MakeEdge(aArcOfCircle).Edge();
 }
 
 #include <TopExp.hxx>
@@ -332,20 +332,20 @@ bool servoce::shape::is_closed()
 	return servoce::point3::early(pair.first, pair.second, 0.0001);
 }
 
-servoce::shape servoce::bezier(
+servoce::edge_shape servoce::bezier(
     const std::vector<point3>& pnts)
 {
 	return make_edge(servoce::curve3::bezier(pnts));
 }
 
-servoce::shape servoce::bezier(
+servoce::edge_shape servoce::bezier(
     const std::vector<point3>& pnts,
     const std::vector<double>& weights)
 {
 	return make_edge(servoce::curve3::bezier(pnts, weights));
 }
 
-servoce::shape servoce::bspline(
+servoce::edge_shape servoce::bspline(
     const std::vector<point3>& poles,
     const std::vector<double>& knots,
     const std::vector<int>& multiplicities,
@@ -358,7 +358,7 @@ servoce::shape servoce::bspline(
 		degree, periodic));
 }
 
-servoce::shape servoce::bspline(
+servoce::edge_shape servoce::bspline(
     const std::vector<point3>& poles,
     const std::vector<double>& weights,
     const std::vector<double>& knots,
@@ -374,14 +374,29 @@ servoce::shape servoce::bspline(
 }
 
 
-servoce::shape servoce::make_edge(const servoce::curve3::curve3& crv)
+servoce::edge_shape servoce::make_edge(const servoce::curve3::curve3& crv)
 {
 	auto curve = crv.Curve();
-	return BRepBuilderAPI_MakeEdge(curve).Shape();
+	return BRepBuilderAPI_MakeEdge(curve).Edge();
 }
 
-servoce::shape servoce::make_edge(const servoce::curve3::curve3& crv, double strt, double fini)
+servoce::edge_shape servoce::make_edge(const servoce::curve3::curve3& crv, double strt, double fini)
 {
 	auto curve = crv.Curve();
-	return BRepBuilderAPI_MakeEdge(curve, strt, fini).Shape();
+	return BRepBuilderAPI_MakeEdge(curve, strt, fini).Edge();
+}
+
+servoce::curve3::curve3 servoce::extract_curve(const servoce::shape& edg) 
+{
+	double first;
+	double last;
+
+	const TopoDS_Edge& Edg = edg.Edge_OrOneEdgedWireToEdge(); 
+
+	BRep_Tool::Range(Edg, first, last);
+
+	auto crv = BRep_Tool::Curve(
+		Edg, first, last);	
+
+	return servoce::curve3::curve3(crv);
 }

@@ -141,3 +141,9 @@ servoce::shape servoce::curve3::curve3::edge(double strt, double fini)
 {
 	return servoce::make_edge(*this, strt, fini);
 }
+
+std::pair<double,double> 
+servoce::curve3::curve3::range() const 
+{
+	return { crv->FirstParameter(), crv->LastParameter() };
+}
