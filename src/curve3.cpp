@@ -1,5 +1,6 @@
 #include <servoce/curve3.h>
 #include <servoce/wire.h>
+#include <servoce/edge.h>
 
 #include <TColgp_HArray1OfPnt.hxx>
 #include <TColStd_HArray1OfBoolean.hxx>

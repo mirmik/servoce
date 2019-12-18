@@ -336,10 +336,24 @@ PYBIND11_MODULE(libservoce, m)
 	;
 
 	py::class_<edge_shape, shape>(m, "Edge")
-	.def("range", &edge_shape::range)
+	.def(py::pickle(
+	[](const edge_shape & self) { return b64::base64_encode(string_dump(self)); },
+	[](const std::string & in) { return restore_string_dump<edge_shape>(b64::base64_decode(in)); }), ungil())
+	.def("range", &edge_shape::range, ungil())
+	.def("length", &edge_shape::length, ungil())
+	.def("d0", &edge_shape::length, ungil())
+	.def("linoff", (double(edge_shape::*)(double,double)const)&edge_shape::linoff, ungil())
+	.def("linoff", (double(edge_shape::*)(double)const)&edge_shape::linoff, ungil())
+	.def("linoff_point", (point3(edge_shape::*)(double,double)const)&edge_shape::linoff_point, ungil())
+	.def("linoff_point", (point3(edge_shape::*)(double)const)&edge_shape::linoff_point, ungil())
+	.def("uniform_points", (std::vector<servoce::point3>(edge_shape::crvalgo::*)(int, double, double)const)&edge_shape::uniform_points, ungil(), py::arg("npnts"), py::arg("strt"), py::arg("fini"))
+	.def("uniform_points", (std::vector<servoce::point3>(edge_shape::crvalgo::*)(int)const)&edge_shape::uniform_points, ungil(), py::arg("npnts"))
 	;
 
 	py::class_<wire_shape, shape>(m, "Wire")
+	.def(py::pickle(
+	[](const wire_shape & self) { return b64::base64_encode(string_dump(self)); },
+	[](const std::string & in) { return restore_string_dump<wire_shape>(b64::base64_decode(in)); }), ungil())
 	;
 
 	m.def("fillet", (shape(*)(const shape&, double, const std::vector<point3>&))&servoce::fillet, ungil(), py::arg("shp"), py::arg("r"), py::arg("refs"));

@@ -155,20 +155,11 @@ namespace servoce
 		void print_topo_dump();
 	};
 
-	class edge_shape : public shape 
-	{
-	public:
-		//edge_shape(TopoDS_Edge& arg) : shape(arg) {}
-		edge_shape(const TopoDS_Edge& arg) : shape((const TopoDS_Shape&)arg) {}
-
-		std::pair<double,double> range();
-		double length();
-	};
-
 	class wire_shape : public shape 
 	{
 	public:
 		//wire_shape(TopoDS_Wire& arg) : shape(arg) {}
+		wire_shape(){}
 		wire_shape(const TopoDS_Wire& arg) : shape((const TopoDS_Shape&)arg) {}
 	};
 

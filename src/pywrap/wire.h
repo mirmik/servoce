@@ -83,4 +83,4 @@ m.def("sew",
       &sew, ungil()
      );
 
-m.def("extract_curve", &extract_curve);
+m.def("extract_curve", &extract_curve, ungil());

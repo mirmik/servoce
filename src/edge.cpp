@@ -1,7 +1,12 @@
 #include <servoce/topo.h>
+#include <servoce/edge.h>
 #include <servoce/wire.h>
 
 #include <BRep_Tool.hxx>
+#include <BRepAdaptor_Curve.hxx>
+
+#include <GCPnts_AbscissaPoint.hxx>
+#include <GCPnts_UniformAbscissa.hxx>
 
 std::pair<double,double> servoce::edge_shape::range() 
 {
@@ -13,7 +18,7 @@ std::pair<double,double> servoce::edge_shape::range()
 	return { first, last };
 }
 
-double servoce::edge_shape::length() 
+BRepAdaptor_Curve servoce::edge_shape::AdaptorCurve() const 
 {
-	
+	return BRepAdaptor_Curve(Edge());
 }

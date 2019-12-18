@@ -1,4 +1,5 @@
 #include <servoce/wire.h>
+#include <servoce/edge.h>
 #include <servoce/curve3.h>
 #include <local/util.h>
 
