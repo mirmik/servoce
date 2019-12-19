@@ -1,6 +1,7 @@
 #include <servoce/topo.h>
 #include <servoce/face.h>
 #include <servoce/solid.h>
+#include <servoce/geomprops.h>
 
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Solid.hxx>
@@ -165,10 +166,10 @@ void servoce::shape::load(std::istream& in)
 	m_shp->Orientation (anOrient);
 }
 
-servoce::point3 servoce::shape::center()
+servoce::point3 servoce::shape::center() const
 {
 	GProp_GProps props;
-	BRepGProp::LinearProperties(Shape(), props);
+	BRepGProp::VolumeProperties(Shape(), props);
 	gp_Pnt centerMass = props.CentreOfMass();
 	return point3(centerMass);
 }
@@ -304,7 +305,7 @@ std::vector<servoce::shape> servoce::shape::shells() const
 	return ret;
 }
 
-std::vector<servoce::shape> servoce::shape::compounds() const 
+std::vector<servoce::shape> servoce::shape::compounds() const
 {
 
 	std::vector<servoce::shape> ret;
@@ -318,7 +319,7 @@ std::vector<servoce::shape> servoce::shape::compounds() const
 	return ret;
 }
 
-std::vector<servoce::shape> servoce::shape::compsolids() const 
+std::vector<servoce::shape> servoce::shape::compsolids() const
 {
 
 	std::vector<servoce::shape> ret;
@@ -477,26 +478,57 @@ void servoce::shape::print_topo_dump()
 	}
 }
 
-TopoDS_Edge servoce::shape::Edge_OrOneEdgedWireToEdge() const 
+TopoDS_Edge servoce::shape::Edge_OrOneEdgedWireToEdge() const
 {
-	if (Shape().ShapeType() == TopAbs_EDGE) 
+	if (Shape().ShapeType() == TopAbs_EDGE)
 	{
 		return Edge();
 	}
-	
+
 	else if (Shape().ShapeType() == TopAbs_WIRE)
 	{
 		auto edgs = Edges();
-		if (edgs.size() > 1) 
+		if (edgs.size() > 1)
 		{
 			throw std::runtime_error(
-				"Attempt to extract edge from multiedged wire");
+			    "Attempt to extract edge from multiedged wire");
 		}
 
 		return edgs[0];
 	}
-	
-	else 
+
+	else
 		throw std::runtime_error(
-			"Attempt to extract edge from uncompatible type of shape");
+		    "Attempt to extract edge from uncompatible type of shape");
+}
+
+
+servoce::vector3 servoce::shape::cmradius() const
+{
+	return geomprops::volume_properties(*this,1).cmradius();
+}
+
+double servoce::shape::mass() const
+{
+	return geomprops::volume_properties(*this,1).mass();
+}
+
+servoce::matrix33 servoce::shape::matrix_of_inertia() const
+{
+	return geomprops::volume_properties(*this,1).matrix_of_inertia();
+}
+
+std::tuple<double, double, double> servoce::shape::static_moments () const
+{
+	return geomprops::volume_properties(*this,1).static_moments();
+}
+
+double servoce::shape::moment_of_inertia(const servoce::vector3& axis) const
+{
+	return geomprops::volume_properties(*this,1).moment_of_inertia(axis);
+}
+
+double servoce::shape::radius_of_gyration(const servoce::vector3& axis) const
+{
+	return geomprops::volume_properties(*this,1).radius_of_gyration(axis);
 }

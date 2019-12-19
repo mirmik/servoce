@@ -83,7 +83,7 @@ namespace servoce
 
 		shape transform(const transformation& trans) { return trans(*this); }
 		shape transform(const general_transformation& trans) { return trans(*this); }
-		
+
 		shape translate(double x, double y, double z) { return transform(servoce::translate(x, y, z)); }
 		shape up(double z) { return translate(0, 0, z); }
 		shape down(double z) { return translate(0, 0, -z); }
@@ -109,12 +109,18 @@ namespace servoce
 		shape scaleX(double s) { return transform(servoce::scaleX(s)); }
 		shape scaleY(double s) { return transform(servoce::scaleY(s)); }
 		shape scaleZ(double s) { return transform(servoce::scaleZ(s)); }
-		shape scaleXY(double x, double y) { return transform(servoce::scaleXY(x,y)); }
-		shape scaleYZ(double y, double z) { return transform(servoce::scaleYZ(y,z)); }
-		shape scaleXZ(double x, double z) { return transform(servoce::scaleXZ(x,z)); }
+		shape scaleXY(double x, double y) { return transform(servoce::scaleXY(x, y)); }
+		shape scaleYZ(double y, double z) { return transform(servoce::scaleYZ(y, z)); }
+		shape scaleXZ(double x, double z) { return transform(servoce::scaleXZ(x, z)); }
 		shape scaleXYZ(double x, double y, double z) { return transform(servoce::scaleXYZ(x, y, z)); }
 
-		point3 center();
+		point3 center() const;
+		vector3 cmradius() const;
+		double mass() const;
+		matrix33 matrix_of_inertia() const;
+		std::tuple<double, double, double> static_moments () const;
+		double moment_of_inertia(const servoce::vector3& axis) const;
+		double radius_of_gyration(const servoce::vector3& axis) const;
 
 		servoce::shape infill_face(); ///< Превращает замкнутый двумерный контур в 2d объект
 
@@ -155,15 +161,15 @@ namespace servoce
 		void print_topo_dump();
 	};
 
-	class wire_shape : public shape 
+	class wire_shape : public shape
 	{
 	public:
 		//wire_shape(TopoDS_Wire& arg) : shape(arg) {}
-		wire_shape(){}
+		wire_shape() {}
 		wire_shape(const TopoDS_Wire& arg) : shape((const TopoDS_Shape&)arg) {}
 	};
 
-	class BoundBox 
+	class BoundBox
 	{
 		double xmin, xmax, xdim;
 		double ymin, ymax, ydim;

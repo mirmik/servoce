@@ -162,9 +162,12 @@ namespace servoce
 				double a20, double a21, double a22) 
 			:
 				parent({a00,a10,a20}, {a01,a11,a21}, {a02,a12,a22})
-		{
+		{}	
 
-		}	
+		matrix33(double * a) 
+			:
+				parent({a[0],a[3],a[6]}, {a[1],a[4],a[7]}, {a[2],a[5],a[8]})
+		{}	
 
 		matrix33(const gp_Mat& oth) 
 		{
@@ -207,6 +210,12 @@ namespace servoce
 			return parent::arr;
 		}
 
+		const double* data() const
+		{
+			return parent::arr;
+		}
+
+
 		double& operator()(int i, int j) 
 		{
 			return (*this)[j][i];
@@ -216,6 +225,17 @@ namespace servoce
 		{
 			return (*this)[p.second][p.first];
 		}
+
+		const double& operator()(int i, int j) const
+		{
+			return (*this)[j][i];
+		}
+
+		const double& operator()(std::pair<int,int> p) const
+		{
+			return (*this)[p.second][p.first];
+		}
+
 
 		matrix33 inverse() { return linalg::inverse((parent&)*this); }
 		matrix33 transpose() { return linalg::transpose((parent&)*this); }
@@ -241,9 +261,13 @@ namespace servoce
 
 		quaternion() : quat{0, 0, 0, 1} {}
 		quaternion(double x, double y, double z, double w) : quat{ x, y, z, w } {}
+		quaternion(double * arr) : quat(arr) {}
 
 		quaternion(const quat& q) : quat(q) {};
 		quaternion(const gp_Quaternion& vec);
+
+		double* data() { return quat::arr; }
+		const double* data() const { return quat::arr; }
 
 		quaternion normalize() { return quaternion(linalg::normalize(*this)); }
 		//quaternion(double* arr) : quat { arr } {}
