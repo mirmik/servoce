@@ -46,7 +46,7 @@ servoce::geomprops::static_moments() const
 {
 	double x,y,z;
 	StaticMoments(x,y,z);
-	return {x,y,z};
+	return std::make_tuple(x,y,z);
 }
 
 double
