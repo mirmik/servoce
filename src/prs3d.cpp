@@ -22,6 +22,7 @@ static Aspect_TypeOfLine line_type_to_TypeOfLine(servoce::line_style style)
 	throw std::runtime_error("wrong line_style");
 }
 
+#if !OPENCASCADE_OCE
 servoce::interactive_object servoce::draw::arrow(
 	const servoce::point3& pnt, 
 	const servoce::vector3& vec, 
@@ -53,6 +54,7 @@ servoce::interactive_object servoce::draw::arrow(
 	
 	return servoce::interactive_object(aisLine);
 }
+#endif
 
 servoce::interactive_object servoce::draw::line(
 		    const servoce::point3& pnt1,
@@ -62,6 +64,7 @@ servoce::interactive_object servoce::draw::line(
 			double width
 		    ) 
 {
+#if !OPENCASCADE_OCE
 	Handle(Geom_CartesianPoint) geomPoint1 = new Geom_CartesianPoint(pnt1.Pnt());
 	Handle(Geom_CartesianPoint) geomPoint2 = new Geom_CartesianPoint(pnt2.Pnt());
 
@@ -79,4 +82,5 @@ servoce::interactive_object servoce::draw::line(
 	//aisLine->SetColor(Quantity_Color(clr.r, clr.g, clr.b, Quantity_TOC_RGB));
 
 	return servoce::interactive_object(aisLine);
+#endif
 }

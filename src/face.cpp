@@ -22,7 +22,11 @@
 #include <BRepAdaptor_Curve.hxx>
 
 #include <BRepOffsetAPI_MakePipe.hxx>
+
+#if !OPENCASCADE_OCE
 #include <Font_BRepTextBuilder.hxx>
+#include <Font_BRepFont.hxx>
+#endif
 
 servoce::shape servoce::circle(double r, bool wire)
 {
@@ -154,6 +158,7 @@ servoce::shape servoce::square(double a, bool center, bool wire)
 
 servoce::shape servoce::textshape(const std::string& text, const std::string fontpath, size_t size)
 {
+#if !OPENCASCADE_OCE
 	Font_BRepTextBuilder builder;
 	Font_BRepFont font;
 
@@ -166,6 +171,9 @@ servoce::shape servoce::textshape(const std::string& text, const std::string fon
 	NCollection_String collection(text.c_str());
 	TopoDS_Shape textshp = builder.Perform (font, collection);
 	return textshp;
+#else
+	throw std::runtime_error("unsuported for oce for now");
+#endif
 }
 
 servoce::shape servoce::fill(const servoce::shape& obj) 

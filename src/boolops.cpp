@@ -21,7 +21,10 @@ static inline TopoDS_Shape __make_union(const TopoDS_Shape& a, const TopoDS_Shap
 	algo.Build();
 	if ( ! algo.IsDone() ) {
 		printf("warn: union algotithm failed\n");
+
+#if !OPENCASCADE_OCE
 		algo.GetReport()->Dump(std::cout);
+#endif
 		//printf("error status: %d \n", algo.ErrorStatus());
 		//printf("warning status: %d \n", algo.WarningStatus());
 	}
@@ -34,7 +37,9 @@ static inline TopoDS_Shape __make_difference(const TopoDS_Shape& a, const TopoDS
 	algo.Build();
 	if ( ! algo.IsDone() ) {
 		printf("warn: difference algotithm failed\n");
+#if !OPENCASCADE_OCE
 		algo.GetReport()->Dump(std::cout);
+#endif
 		//printf("error status: %d \n", algo.ErrorStatus());
 		//printf("warning status: %d \n", algo.WarningStatus());
 	}
@@ -47,7 +52,9 @@ static inline TopoDS_Shape __make_intersect(const TopoDS_Shape& a, const TopoDS_
 	algo.Build();
 	if ( ! algo.IsDone() ) {
 		printf("warn: intersect algotithm failed\n");
+#if !OPENCASCADE_OCE
 		algo.GetReport()->Dump(std::cout);
+#endif
 		//printf("error status: %d \n", algo.ErrorStatus());
 		//printf("warning status: %d \n", algo.WarningStatus());
 	}

@@ -5,6 +5,7 @@
 
 #include <OpenGl_GraphicDriver.hxx>
 
+#include <gp_Lin.hxx>
 #include <V3d_View.hxx>
 #include <V3d_AmbientLight.hxx>
 #include <V3d_DirectionalLight.hxx>
@@ -218,7 +219,11 @@ public:
 		axY->SetColor(Quantity_NOC_GREEN);
 		axZ->SetColor(Quantity_NOC_BLUE1);
 
+		#if !OPENCASCADE_OCE
 		m_viewer = new V3d_Viewer(GetGraphicDriver());
+		#else
+		m_viewer = new V3d_Viewer(GetGraphicDriver(), Standard_ExtString(""));
+		#endif
 
 		m_viewer->SetDefaultLights();
 		m_viewer->SetLightOn();

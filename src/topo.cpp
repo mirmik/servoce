@@ -404,6 +404,8 @@ std::string servoce::shape::shapetype_as_string() const
 	return "undefined";
 }
 
+
+#if !OPENCASCADE_OCE
 servoce::BoundBox::BoundBox(const servoce::shape& shp)
 {
 	Bnd_Box B;
@@ -413,6 +415,7 @@ servoce::BoundBox::BoundBox(const servoce::shape& shp)
 	ydim = ymax - ymin;
 	zdim = zmax - zmin;
 }
+#endif
 
 servoce::shape servoce::shape::fillet(double r, const std::vector<servoce::point3>& refs)
 {

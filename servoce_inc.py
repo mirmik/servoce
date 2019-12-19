@@ -8,8 +8,17 @@ from licant.modules import module, submodule
 import licant.libs
 import os
 
+occt_define = ""
+
+licant.cli.add_argument("--conda", action="store_true", default=False)
+opts, args = licant.cli.parse(sys.argv[1:])
 
 def get_occt_include_directory():
+    global occt_define
+    if opts.conda:
+        occt_define = "-DOPENCASCADE_OCE=1"
+        return os.path.join(os.environ["CONDA_PREFIX"], "include/oce")
+
     dirs = ["/usr/include/", "/usr/local/include/"]
     subdirs = ["occt", "opencascade"]
 
@@ -178,7 +187,7 @@ module(
         "liboce",
         "nos",
     ] + add_modules,
-    cxx_flags="-Wall -fPIC -DQT_NO_VERSION_TAGGING -ffunction-sections -fdata-sections",
+    cxx_flags="-Wall -fPIC -DQT_NO_VERSION_TAGGING -ffunction-sections -fdata-sections " + occt_define,
     cc_flags="-Wall -fPIC -ffunction-sections -fdata-sections",
-    ld_flags="-ffunction-sections -fdata-sections -Wl,--gc-sections -Wl,--as-needed",
+    ld_flags="-L/home/mirmik/anaconda3/lib -ffunction-sections -fdata-sections -Wl,--gc-sections -Wl,--as-needed",
 )

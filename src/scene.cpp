@@ -3,6 +3,7 @@
 
 #include <nos/trace.h>
 
+#include <TopoDS_Vertex.hxx>
 #include <AIS_Shape.hxx>
 #include <local/OccViewContext.h>
 #include <BRepBuilderAPI_Copy.hxx>
@@ -60,7 +61,7 @@ void servoce::scene::append(const servoce::scene& scn)
 		add(shpview->shape(), shpview->color());
 }
 
-AIS_InteractiveContext* servoce::scene::InteractiveContext() 
+Handle(AIS_InteractiveContext) servoce::scene::InteractiveContext() 
 {
-	return this->vwer->occ->m_context.get();
+	return this->vwer->occ->m_context;
 }

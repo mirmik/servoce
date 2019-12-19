@@ -306,6 +306,7 @@ void servoce::view::rotation(int x, int y)
 
 std::pair<servoce::point3, bool> servoce::view::intersect_point( double x, double y )
 {
+#if !OPENCASCADE_OCE
 	TRACE();
 	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	auto m_view = occ->m_view;
@@ -350,6 +351,7 @@ std::pair<servoce::point3, bool> servoce::view::intersect_point( double x, doubl
 		return std::make_pair(servoce::point3(ip), true);
 	}
 	return std::make_pair(servoce::point3(), false);
+#endif
 }
 
 double servoce::view::scale()

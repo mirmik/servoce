@@ -265,6 +265,7 @@ shape servoce::revol(const shape& proto, double angle)
 		return BRepPrimAPI_MakeRevol(proto.Shape(), ax, angle).Shape();
 }
 
+#if !OPENCASCADE_OCE
 shape servoce::thicksolid(const shape& proto, const std::vector<point3>& pnts, double thickness)
 {
 	TopTools_ListOfShape facesToRemove;
@@ -276,6 +277,7 @@ shape servoce::thicksolid(const shape& proto, const std::vector<point3>& pnts, d
 	algo.MakeThickSolidByJoin(proto.Shape(), facesToRemove, thickness, 1.e-3);
 	return algo.Shape();
 }
+#endif
 
 servoce::shape servoce::fillet(const servoce::shape& shp, double r, const std::vector<servoce::point3>& refs)
 {
@@ -352,6 +354,7 @@ servoce::shape servoce::fillet(const servoce::shape& shp, double r)
 	}
 }
 
+#if !OPENCASCADE_OCE
 servoce::shape servoce::chamfer(const servoce::shape& shp, double r, const std::vector<servoce::point3>& refs)
 {
 	auto type = shp.Shape().ShapeType();
@@ -433,6 +436,7 @@ servoce::shape servoce::chamfer(const servoce::shape& shp, double r)
 		throw std::runtime_error("Fillet argument has unsuported type.");
 	}
 }
+#endif
 
 shape _unify_face(const servoce::shape& proto)
 {

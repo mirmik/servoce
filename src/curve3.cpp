@@ -2,6 +2,7 @@
 #include <servoce/wire.h>
 #include <servoce/edge.h>
 
+#include <TColgp_Array1OfVec.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 #include <TColStd_HArray1OfBoolean.hxx>
 #include <BinTools_CurveSet.hxx>
@@ -13,6 +14,13 @@
 #include <Geom_BSplineCurve.hxx>
 
 #include <servoce/opencascade_types.h>
+
+#if !OPENCASCADE_OCE
+auto getCurve(auto& arg) 
+{
+	return dynamic_cast<Geom_Curve*>(arg.get());
+}
+#endif
 
 servoce::curve3::curve3 servoce::curve3::line(const servoce::point3& a, const servoce::vector3& b) 
 {
@@ -44,7 +52,7 @@ servoce::curve3::curve3 servoce::curve3::interpolate(
 	}
 
 	algo.Perform();
-	return dynamic_cast<Geom_Curve*>(algo.Curve().get());
+	return getCurve(algo.Curve());
 }
 
 servoce::curve3::curve3 servoce::curve3::interpolate(
@@ -58,12 +66,12 @@ servoce::curve3::curve3 servoce::curve3::interpolate(
 	GeomAPI_Interpolate algo(_pnts, /*_params,*/ closed, 0.0000001);
 
 	algo.Perform();
-	return dynamic_cast<Geom_Curve*>(algo.Curve().get());
+	return getCurve(algo.Curve());
 }
 
 void servoce::curve3::curve3::dump(std::ostream& out) const
 {
-	Handle(Geom_Curve) h = dynamic_cast<Geom_Curve*>(crv.get());
+	Handle(Geom_Curve) h = crv;
 	BinTools_CurveSet::WriteCurve(h, out);
 }
 
@@ -71,7 +79,7 @@ void servoce::curve3::curve3::load(std::istream& in)
 {
 	Handle(Geom_Curve) h;
 	BinTools_CurveSet::ReadCurve (in, h);
-	crv = dynamic_cast<Geom_Curve*>(h.get());
+	crv = h;
 }
 
 servoce::curve3::bounded_curve3 servoce::curve3::bspline(

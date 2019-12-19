@@ -20,7 +20,7 @@ curve2 servoce::curve2::ellipse(double major, double minor)
 
 Handle(Geom2d_TrimmedCurve) servoce::curve2::trimmed_curve2::TrimmedCurve() 
 {
-	return dynamic_cast<Geom2d_TrimmedCurve*>(crv.get());
+	return Handle(Geom2d_TrimmedCurve)::DownCast(crv);
 }
 
 const Handle(Geom2d_TrimmedCurve) servoce::curve2::trimmed_curve2::TrimmedCurve() const 
@@ -61,7 +61,7 @@ void servoce::curve2::curve2::dump(std::ostream& out) const
 {
 	BinTools_Curve2dSet instrument;
 
-	Handle(Geom2d_Curve) h = dynamic_cast<Geom2d_Curve*>(crv.get());
+	Handle(Geom2d_Curve) h = crv;//dynamic_cast<Geom2d_Curve*>(crv.get());
 	BinTools_Curve2dSet::WriteCurve2d(h, out);
 }
 
@@ -69,5 +69,5 @@ void servoce::curve2::curve2::load(std::istream& in)
 {
 	Handle(Geom2d_Curve) h;
 	BinTools_Curve2dSet::ReadCurve2d (in, h);
-	crv = dynamic_cast<Geom2d_Curve*>(h.get());
+	crv = h;//dynamic_cast<Geom2d_Curve*>(h.get());
 }

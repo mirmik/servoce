@@ -51,7 +51,7 @@ namespace servoce
 		std::vector<servoce::shape> shapes_array();
 		std::vector<servoce::color> color_array();
 
-		AIS_InteractiveContext* InteractiveContext();
+		Handle(AIS_InteractiveContext) InteractiveContext();
 
 		std::shared_ptr<servoce::shape_view> operator[](int idx)
 		{

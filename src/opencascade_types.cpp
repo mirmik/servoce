@@ -1,5 +1,7 @@
 #include <servoce/opencascade_types.h>
 
+#if !OPENCASCADE_OCE
+
 TColgp_Array1OfPnt servoce::opencascade_array1_of_pnt(const std::vector<point3>& arr)
 {
 	TColgp_Array1OfPnt ret(1, arr.size());
@@ -21,3 +23,5 @@ TColStd_Array1OfInteger servoce::opencascade_array1_of_int(const std::vector<int
 	for (unsigned int i = 0; i < arr.size(); ++i) ret.SetValue(i + 1, arr[i]);
 	return ret;
 }
+
+#endif 
