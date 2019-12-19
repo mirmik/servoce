@@ -503,29 +503,50 @@ TopoDS_Edge servoce::shape::Edge_OrOneEdgedWireToEdge() const
 }
 
 
+servoce::geomprops gprops(const servoce::shape& shp) 
+{
+	switch (shp.Shape().ShapeType()) 
+	{
+		case TopAbs_VERTEX:
+		case TopAbs_WIRE:
+		case TopAbs_EDGE:
+			return servoce::geomprops::linear_properties(shp, 1);
+	
+		case TopAbs_FACE:
+		case TopAbs_SHELL:
+			return servoce::geomprops::surface_properties(shp, 1);
+	
+		case TopAbs_SOLID:
+		case TopAbs_COMPSOLID:
+		case TopAbs_COMPOUND:
+		case TopAbs_SHAPE: 
+			return servoce::geomprops::volume_properties(shp, 1);
+	}
+}
+
 servoce::vector3 servoce::shape::cmradius() const
 {
-	return geomprops::volume_properties(*this,1).cmradius();
+	return gprops(*this).cmradius();
 }
 
 double servoce::shape::mass() const
 {
-	return geomprops::volume_properties(*this,1).mass();
+	return gprops(*this).mass();
 }
 
 servoce::matrix33 servoce::shape::matrix_of_inertia() const
 {
-	return geomprops::volume_properties(*this,1).matrix_of_inertia();
+	return gprops(*this).matrix_of_inertia();
 }
 
 std::tuple<double, double, double> servoce::shape::static_moments () const
 {
-	return geomprops::volume_properties(*this,1).static_moments();
+	return gprops(*this).static_moments();
 }
 
 double servoce::shape::moment_of_inertia(const servoce::vector3& axis) const
 {
-	return geomprops::volume_properties(*this,1).moment_of_inertia(axis);
+	return gprops(*this).moment_of_inertia(axis);
 }
 
 double servoce::shape::radius_of_gyration(const servoce::vector3& axis) const
