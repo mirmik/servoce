@@ -14,10 +14,12 @@ Handle(Graphic3d_GraphicDriver) g_graphicDriver = nullptr;
 
 servoce::viewer::viewer()
 {
+#if !defined(_MSC_VER) 
 	if (getenv("DISPLAY")==NULL) 
 	{
 		throw std::runtime_error("DISPLAY missing");
 	}
+#endif
 	
 	TRACE();
 }
