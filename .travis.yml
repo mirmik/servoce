@@ -19,7 +19,7 @@ matrix:
       env: PATH=/c/Python38:/c/Python38/Scripts:$PATH
       before_install:
          - choco install python --version=3.8.1
-         - choco install vcredist-all vcredist2019
+         - choco install vcredist-all vcredist140
          - python -m pip install pyservoce
 
       script:
