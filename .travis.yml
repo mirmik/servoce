@@ -11,8 +11,8 @@ matrix:
 
       script:
         - cd pytest
-        - python3 ./inctest.py
-        - python3 ./apitest.py
+        - python ./inctest.py
+        - python ./apitest.py
 
     - os: linux
       python:
