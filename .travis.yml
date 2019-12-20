@@ -4,11 +4,10 @@ matrix:
   include:
     - os: windows
       language: shell
-      python:
-        "3.7"
-            
-      install: 
-        - python3 -m pip install pyservoce
+      env: PATH=/c/Python38:/c/Python38/Scripts:$PATH
+      before_install:
+         - choco install python
+         - python -m pip install pyservoce
 
       script:
         - cd pytest
