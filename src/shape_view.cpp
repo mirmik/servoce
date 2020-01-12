@@ -98,6 +98,7 @@ void servoce::shape_view::set_color(const servoce::color& clr)
 	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	native()->SetColor(clr.Color());
 	native()->SetTransparency(clr.a);
+	m_color = clr;
 }
 
 void servoce::shape_view::set_color(float r, float g, float b, float a)
@@ -105,4 +106,5 @@ void servoce::shape_view::set_color(float r, float g, float b, float a)
 	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	native()->SetColor(Quantity_Color(r,g,b, Quantity_TOC_RGB));
 	native()->SetTransparency(a);
+	m_color = servoce::color(r,g,b,a);
 }
