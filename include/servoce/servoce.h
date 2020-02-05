@@ -12,6 +12,7 @@
 #include <servoce/viewer.h>
 #include <servoce/scene.h>
 #include <servoce/shape_view.h>
+#include <servoce/interactive_object.h>
 
 #include <servoce/surface.h>
 #include <servoce/curve2.h>

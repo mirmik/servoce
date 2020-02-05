@@ -77,7 +77,7 @@ void servoce::viewer::clean_context()
 	//occ->m_context->RemoveAll(true);
 }
 
-void servoce::viewer::add_scene(servoce::scene& scn)
+/*void servoce::viewer::add_scene(servoce::scene& scn)
 {
 	TRACE();
 	//scn.set_viewer(this);
@@ -87,14 +87,14 @@ void servoce::viewer::add_scene(servoce::scene& scn)
 	{
 		occ->m_context->Display(s->native(), false);
 	}
-}
-
+}*/
+/*
 void servoce::viewer::display(servoce::shape_view& controller)
 {
 	TRACE();
 	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	occ->m_context->Display(controller.native(), false);
-}
+}*/
 
 void servoce::viewer::display(servoce::interactive_object& controller)
 {

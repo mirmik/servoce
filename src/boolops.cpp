@@ -17,39 +17,33 @@
 
 static inline TopoDS_Shape __make_union(const TopoDS_Shape& a, const TopoDS_Shape& b)
 {
-	BRepAlgoAPI_Fuse algo(a, b);//.Shape();
+	BRepAlgoAPI_Fuse algo(a, b);
 	algo.Build();
 	if ( ! algo.IsDone() ) {
 		printf("warn: union algotithm failed\n");
 		algo.GetReport()->Dump(std::cout);
-		//printf("error status: %d \n", algo.ErrorStatus());
-		//printf("warning status: %d \n", algo.WarningStatus());
 	}
 	return algo.Shape();
 }
 
 static inline TopoDS_Shape __make_difference(const TopoDS_Shape& a, const TopoDS_Shape& b)
 {
-	BRepAlgoAPI_Cut algo(a, b);//.Shape();
+	BRepAlgoAPI_Cut algo(a, b);
 	algo.Build();
 	if ( ! algo.IsDone() ) {
 		printf("warn: difference algotithm failed\n");
 		algo.GetReport()->Dump(std::cout);
-		//printf("error status: %d \n", algo.ErrorStatus());
-		//printf("warning status: %d \n", algo.WarningStatus());
 	}
 	return algo.Shape();
 }
 
 static inline TopoDS_Shape __make_intersect(const TopoDS_Shape& a, const TopoDS_Shape& b)
 {
-	BRepAlgoAPI_Common algo(a, b);//.Shape();
+	BRepAlgoAPI_Common algo(a, b);
 	algo.Build();
 	if ( ! algo.IsDone() ) {
 		printf("warn: intersect algotithm failed\n");
 		algo.GetReport()->Dump(std::cout);
-		//printf("error status: %d \n", algo.ErrorStatus());
-		//printf("warning status: %d \n", algo.WarningStatus());
 	}
 	return algo.Shape();
 }
@@ -75,7 +69,7 @@ servoce::shape servoce::make_union(const std::vector<const servoce::shape*>& vec
 
 	unsigned int nrsize;
 	unsigned int rsize = vec.size() / 2 + vec.size() % 2;
-	//TopoDS_Shape narr[rsize];
+
 	TopoDS_Shape* narr = (TopoDS_Shape*) alloca(sizeof(TopoDS_Shape) * rsize);
 
 	for (unsigned int i = 0; i < rsize; ++i)
@@ -137,7 +131,7 @@ servoce::shape servoce::make_intersect(const std::vector<const servoce::shape*>&
 static inline TopoDS_Shape __make_section(const TopoDS_Shape& a, 
 	const TopoDS_Shape& b)
 {
-	BRepAlgoAPI_Section algo(a, b);//.Shape();
+	BRepAlgoAPI_Section algo(a, b);
 	algo.Build();
 	if ( ! algo.IsDone() ) {
 		printf("warn: section algotithm failed\n");

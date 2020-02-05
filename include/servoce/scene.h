@@ -2,6 +2,7 @@
 #define SERVOCE_SCENE_H
 
 #include <servoce/shape_view.h>
+#include <servoce/interactive_object.h>
 #include <servoce/viewer.h>
 #include <servoce/topo.h>
 
@@ -19,7 +20,7 @@ namespace servoce
 	class scene
 	{
 	public:
-		std::list<std::shared_ptr<shape_view>> shape_views;
+		//std::list<std::shared_ptr<shape_view>> shape_views;
 		std::list<std::shared_ptr<interactive_object>> iobjs;
 		std::shared_ptr<servoce::viewer> vwer;
 
@@ -38,29 +39,25 @@ namespace servoce
 			return vwer;
 		}
 
-		std::shared_ptr<shape_view> add(const servoce::shape& shp, servoce::color color = mech);
-		std::shared_ptr<shape_view> add(const servoce::point3& pnt, servoce::color color = mech);
-		void add(const std::shared_ptr<servoce::interactive_object>& iobj)
-		{
-			iobjs.push_back(iobj);
-			vwer->display(*iobj);
-		}
+		std::shared_ptr<interactive_object> add(const servoce::shape& shp, servoce::color color = mech);
+		std::shared_ptr<interactive_object> add(const servoce::point3& pnt, servoce::color color = mech);
+		std::shared_ptr<interactive_object> add(std::shared_ptr<servoce::interactive_object> iobj);
 
-		void append(const servoce::scene& scn);
+		//void append(const servoce::scene& scn);
 
-		std::vector<servoce::shape> shapes_array();
-		std::vector<servoce::color> color_array();
+		//std::vector<servoce::shape> shapes_array();
+		//std::vector<servoce::color> color_array();
 
 		AIS_InteractiveContext* InteractiveContext();
 
-		std::shared_ptr<servoce::shape_view> operator[](int idx)
+		std::shared_ptr<servoce::interactive_object> operator[](int idx)
 		{
-			auto it = shape_views.begin();
+			auto it = iobjs.begin();
 			std::advance(it, idx);
 			return *it;
 		}
 
-		size_t total() {return shape_views.size();}
+		size_t total() {return iobjs.size();}
 	};
 }
 
