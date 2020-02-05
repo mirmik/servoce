@@ -9,7 +9,11 @@ import licant
 
 licant.include("nos", "nos/nos.g.py")
 licant.include("igris", "igris/igris.g.py")
-licant.cxx_objects("nos-objects", mdepends=["nos", "igris", "igris.include"])
+licant.cxx_objects("nos-objects", mdepends=[
+    "nos", 
+    "igris", 
+    "igris.include", 
+    ("igris.sshell", "__none__")])
 nosopts = licant.core.core.get("nos-objects").finalopts
 
 add_sources = []
@@ -36,7 +40,7 @@ if os.name == "posix":
     lib_prefix = ""
 
 elif os.name == "nt":
-    liboce_include_path = "../../OpenCASCADE-7.3.0-vc14-64/opencascade-7.3.0/inc"
+    liboce_include_path = "C:\\OpenCASCADE-7.3.0-vc14-64/opencascade-7.3.0/inc"
     lib_prefix = "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\"
 
 if sys.platform=="win32" or sys.platform=="win64":

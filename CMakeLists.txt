@@ -20,6 +20,7 @@ file(GLOB SOURCES
 	src/boolops.cpp  
 	src/convert.cpp   
 	src/geombase.cpp  
+	src/geomprops.cpp  
 	src/solid.cpp       
 	src/topo.cpp   
 	src/viewer.cpp

@@ -12,9 +12,9 @@ namespace servoce
 		 // _props;
 
 	public:	
-		static geomprops linear_properties(const servoce::shape& shp, double density);
-		static geomprops surface_properties(const servoce::shape& shp, double density);
-		static geomprops volume_properties(const servoce::shape& shp, double density);
+		static geomprops linear_properties(const servoce::shape& shp, double density=1);
+		static geomprops surface_properties(const servoce::shape& shp, double density=1);
+		static geomprops volume_properties(const servoce::shape& shp, double density=1);
 
 		geomprops(const GProp_GProps& props) : GProp_GProps(props) {}
 		geomprops(const geomprops& props) = default;

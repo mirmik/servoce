@@ -214,7 +214,7 @@ PYBIND11_MODULE(libservoce, m)
 		return std::string(buf);
 	})
 	.def(py::pickle(
-			 [](const vector3 & self)
+	[](const vector3 & self)
 	{
 		double arr[3] = {self.x, self.y, self.z};
 		return b64::base64_encode((uint8_t*)&arr, 3 * sizeof(double));
@@ -256,6 +256,19 @@ PYBIND11_MODULE(libservoce, m)
 		sprintf(buf, "quaternion(%f,%f,%f,%f)", (double)pnt.x, (double)pnt.y, (double)pnt.z, (double)pnt.w);
 		return std::string(buf);
 	})
+
+	.def(py::pickle(
+		[](const quaternion & self)
+		{
+			return b64::base64_encode((const uint8_t*)self.data(), 4 * sizeof(double));
+		},
+		[](const std::string & in)
+		{
+			double arr[4];
+			std::string decoded = b64::base64_decode(in);
+			memcpy(&arr, decoded.data(), 4 * sizeof(double));
+			return quaternion(arr);
+		}))
 	;
 
 	py::class_<matrix33>(m, "matrix33", py::buffer_protocol())
@@ -287,8 +300,23 @@ PYBIND11_MODULE(libservoce, m)
 				{ m.rows(), m.cols() },                 /* Buffer dimensions */
 				{ sizeof(double),             /* Strides (in bytes) for each index */
 				 sizeof(double) * m.cols() }
-		);
-	});
+			);
+		})
+		.def(py::pickle(
+		[](const matrix33 & self)
+		{
+			return b64::base64_encode((const uint8_t*)self.data(), 9 * sizeof(double));
+		},
+		[](const std::string & in)
+		{
+			double arr[9];
+			std::string decoded = b64::base64_decode(in);
+			memcpy(&arr, decoded.data(), 9 * sizeof(double));
+			return matrix33(arr);
+		}))
+	;
+
+	;
 
 	py::class_<shape>(m, "Shape")
 	DEF_TRANSFORM_OPERATIONS(shape)
@@ -333,6 +361,15 @@ PYBIND11_MODULE(libservoce, m)
 	.def("chamfer", [](const shape& shp, double r, const py::list& arr) { return fillet(shp,r,points(arr)); }, ungil(), py::arg("r"), py::arg("refs"))
 	.def("chamfer2d", [](const shape& shp, double r, const py::list& arr) { return fillet(shp,r,points(arr)); }, ungil(), py::arg("r"), py::arg("refs"))
 	.def("fillet2d", [](const shape& shp, double r, const py::list& arr) { return fillet(shp,r,points(arr)); }, ungil(), py::arg("r"), py::arg("refs"))
+	
+	.def("cmradius", &shape::cmradius, ungil())
+	.def("mass", &shape::mass, ungil())
+	.def("matrix_of_inertia", &shape::matrix_of_inertia, ungil())
+	.def("static_moments", &shape::static_moments, ungil())
+	//.def("moment_of_inertia", &shape::moment_of_inertia, ungil()) //TODO
+	//.def("radius_of_gyration", &shape::radius_of_gyration, ungil()) //TODO
+
+
 	;
 
 	py::class_<edge_shape, shape>(m, "Edge")
@@ -349,6 +386,8 @@ PYBIND11_MODULE(libservoce, m)
 	//.def("linoff_point", (point3(edge_shape::*)(double)const)&edge_shape::linoff_point, ungil())
 	.def("uniform_points", (std::vector<servoce::point3>(edge_shape::crvalgo::*)(int, double, double)const)&edge_shape::uniform_points, ungil(), py::arg("npnts"), py::arg("strt"), py::arg("fini"))
 	.def("uniform_points", (std::vector<servoce::point3>(edge_shape::crvalgo::*)(int)const)&edge_shape::uniform_points, ungil(), py::arg("npnts"))
+	.def("uniform", (std::vector<double>(edge_shape::crvalgo::*)(int, double, double)const)&edge_shape::uniform, ungil(), py::arg("npnts"), py::arg("strt"), py::arg("fini"))
+	.def("uniform", (std::vector<double>(edge_shape::crvalgo::*)(int)const)&edge_shape::uniform, ungil(), py::arg("npnts"))
 	;
 
 	py::class_<wire_shape, shape>(m, "Wire")
