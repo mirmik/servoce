@@ -521,6 +521,8 @@ servoce::geomprops gprops(const servoce::shape& shp)
 		case TopAbs_COMPOUND:
 		case TopAbs_SHAPE: 
 			return servoce::geomprops::volume_properties(shp, 1);
+		default:
+			throw std::runtime_error("undefined shape");
 	}
 }
 
@@ -552,4 +554,11 @@ double servoce::shape::moment_of_inertia(const servoce::vector3& axis) const
 double servoce::shape::radius_of_gyration(const servoce::vector3& axis) const
 {
 	return geomprops::volume_properties(*this,1).radius_of_gyration(axis);
+}
+
+servoce::boundbox servoce::shape::bounding_box() 
+{
+	Bnd_Box box;
+	BRepBndLib::Add(Shape(), box);
+	return {box};
 }

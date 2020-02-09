@@ -9,6 +9,7 @@
 #include <servoce/boolops.h>
 #include <servoce/trans.h>
 #include <servoce/geombase.h>
+#include <servoce/boundbox.h>
 
 class TopoDS_Shape;
 class TopoDS_Shell;
@@ -159,6 +160,8 @@ namespace servoce
 		std::string shapetype_as_string() const;
 
 		void print_topo_dump();
+
+		boundbox bounding_box();
 	};
 
 	class wire_shape : public shape

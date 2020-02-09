@@ -244,19 +244,12 @@ PYBIND11_MODULE(libservoce, m)
 	.def("rotate", &quaternion::rotate)
 	.def("to_matrix", &quaternion::to_matrix)
 	.def("inverse", &quaternion::inverse)
-	//.def("__mul__", (vector3(*)(const vector3&, double)) &servoce::operator* )
-	//.def("__truediv__", (vector3(*)(const vector3&, double)) &servoce::operator/ )
-	//.def("__add__", (vector3(*)(const vector3&, const vector3&)) &servoce::operator+ )
-	//.def("__sub__", (vector3(*)(const vector3&, const vector3&)) &servoce::operator- )
-	//.def("__setitem__", [](vector3 & self, int key, double value) { self[key] = value; })
-	//.def("__getitem__", [](const vector3 & self, int key) { return self[key]; })
 	.def("__repr__", [](const quaternion & pnt)
 	{
 		char buf[128];
 		sprintf(buf, "quaternion(%f,%f,%f,%f)", (double)pnt.x, (double)pnt.y, (double)pnt.z, (double)pnt.w);
 		return std::string(buf);
 	})
-
 	.def(py::pickle(
 		[](const quaternion & self)
 		{
@@ -316,6 +309,7 @@ PYBIND11_MODULE(libservoce, m)
 		}))
 	;
 
+	py::class_<boundbox>(m, "boundbox")
 	;
 
 	py::class_<shape>(m, "Shape")

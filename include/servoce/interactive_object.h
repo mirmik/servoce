@@ -3,6 +3,7 @@
 
 #include <servoce/topo.h>
 #include <servoce/color.h>
+#include <servoce/boundbox.h>
 
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_InteractiveContext.hxx>
@@ -32,6 +33,8 @@ namespace servoce
 		void hide(bool en);
 
 		void set_context(Handle(AIS_InteractiveContext) cntxt) { m_context = cntxt; }
+
+		boundbox bounding_box();
 	};
 }
 

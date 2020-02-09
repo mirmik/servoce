@@ -168,6 +168,7 @@ module(
         "scene.cpp",
         "viewer.cpp",
         "camera.cpp",
+        "boundbox.cpp",
         "prs3d.cpp",
         "interactive_object.cpp",
         "opencascade_types.cpp"

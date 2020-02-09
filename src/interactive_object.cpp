@@ -56,3 +56,10 @@ servoce::interactive_object::interactive_object(const servoce::shape& shp, const
 {
 	set_color(clr);
 }
+
+servoce::boundbox servoce::interactive_object::bounding_box() 
+{
+	Bnd_Box box;
+	m_ais->BoundingBox(box);
+	return {box};
+}
