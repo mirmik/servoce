@@ -84,6 +84,7 @@ pyservoce_lib = Extension(
         "src/edge.cpp",
         "src/boolops.cpp",
         "src/geombase.cpp",
+        "src/boundbox.cpp",
         "src/convert.cpp",
         "src/view.cpp",
         "src/scene.cpp",
