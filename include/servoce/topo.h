@@ -9,7 +9,6 @@
 #include <servoce/boolops.h>
 #include <servoce/trans.h>
 #include <servoce/geombase.h>
-#include <servoce/boundbox.h>
 
 class TopoDS_Shape;
 class TopoDS_Shell;
@@ -22,6 +21,8 @@ class TopoDS_Compound;
 
 namespace servoce
 {
+	class boundbox;
+
 	enum topoenum
 	{
 		vertex,
@@ -170,15 +171,6 @@ namespace servoce
 		//wire_shape(TopoDS_Wire& arg) : shape(arg) {}
 		wire_shape() {}
 		wire_shape(const TopoDS_Wire& arg) : shape((const TopoDS_Shape&)arg) {}
-	};
-
-	class BoundBox
-	{
-		double xmin, xmax, xdim;
-		double ymin, ymax, ydim;
-		double zmin, zmax, zdim;
-
-		BoundBox(const servoce::shape& shp);
 	};
 
 	shape	near_face		(const shape& shp, const point3& pnt);

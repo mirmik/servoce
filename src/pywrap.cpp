@@ -310,6 +310,38 @@ PYBIND11_MODULE(libservoce, m)
 	;
 
 	py::class_<boundbox>(m, "boundbox")
+	.def_readonly("xmin", &servoce::boundbox::xmin)
+	.def_readonly("ymin", &servoce::boundbox::ymin)
+	.def_readonly("zmin", &servoce::boundbox::zmin)
+	.def_readonly("xmax", &servoce::boundbox::xmax)
+	.def_readonly("ymax", &servoce::boundbox::ymax)
+	.def_readonly("zmax", &servoce::boundbox::zmax)
+	.def("xrange", &servoce::boundbox::xrange)
+	.def("yrange", &servoce::boundbox::yrange)
+	.def("zrange", &servoce::boundbox::zrange)
+	.def("corner_min", &servoce::boundbox::corner_min)
+	.def("corner_max", &servoce::boundbox::corner_max)
+	.def("__repr__", [](const boundbox & box)
+	{
+		char buf[128];
+		sprintf(buf, "bbox(x:(%f,%f),y:(%f,%f),z:(%f,%f))", 
+			(double)box.xmin, (double)box.ymin, (double)box.zmin, 
+			(double)box.xmax, (double)box.ymax, (double)box.zmax);
+		return std::string(buf);
+	})
+	.def(py::pickle(
+	[](const boundbox & self)
+	{
+		double arr[6] = {self.xmin, self.ymin, self.zmin, self.xmax, self.ymax, self.zmax};
+		return b64::base64_encode((uint8_t*)&arr, 6 * sizeof(double));
+	},
+	[](const std::string & in)
+	{
+		double arr[6];
+		std::string decoded = b64::base64_decode(in);
+		memcpy(&arr, decoded.data(), 6 * sizeof(double));
+		return boundbox{arr[0],arr[1],arr[2],arr[3],arr[4],arr[5]};
+	}), ungil())
 	;
 
 	py::class_<shape>(m, "Shape")
@@ -360,6 +392,8 @@ PYBIND11_MODULE(libservoce, m)
 	.def("mass", &shape::mass, ungil())
 	.def("matrix_of_inertia", &shape::matrix_of_inertia, ungil())
 	.def("static_moments", &shape::static_moments, ungil())
+
+	.def("bbox", &servoce::shape::bounding_box, ungil())
 	//.def("moment_of_inertia", &shape::moment_of_inertia, ungil()) //TODO
 	//.def("radius_of_gyration", &shape::radius_of_gyration, ungil()) //TODO
 
@@ -588,6 +622,7 @@ PYBIND11_MODULE(libservoce, m)
 	.def("set_location", &interactive_object::set_location, ungil())
 	.def("relocate", &interactive_object::relocate, ungil())
 	.def("hide", &interactive_object::hide, ungil())
+	.def("bbox", &servoce::interactive_object::bounding_box, ungil())
 	;
 
 	/*py::class_<shape_view, std::shared_ptr<shape_view>>(m, "ShapeView")

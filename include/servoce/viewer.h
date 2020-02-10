@@ -1,7 +1,7 @@
 #ifndef SERVOCE_VIEWER_H
 #define SERVOCE_VIEWER_H
 
-#include <servoce/shape_view.h>
+//#include <servoce/shape_view.h>
 #include <servoce/interactive_object.h>
 #include <servoce/view.h>
 

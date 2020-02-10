@@ -2,6 +2,7 @@
 #include <servoce/face.h>
 #include <servoce/solid.h>
 #include <servoce/geomprops.h>
+#include <servoce/boundbox.h>
 
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Solid.hxx>
@@ -402,16 +403,6 @@ std::string servoce::shape::shapetype_as_string() const
 		case TopAbs_SHAPE: return "shape";
 	}
 	return "undefined";
-}
-
-servoce::BoundBox::BoundBox(const servoce::shape& shp)
-{
-	Bnd_Box B;
-	BRepBndLib::Add(shp.Shape(), B);
-	B.Get(xmin, ymin, zmin, xmax, ymax, zmax);
-	xdim = xmax - xmin;
-	ydim = ymax - ymin;
-	zdim = zmax - zmin;
 }
 
 servoce::shape servoce::shape::fillet(double r, const std::vector<servoce::point3>& refs)
