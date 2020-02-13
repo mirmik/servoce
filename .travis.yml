@@ -2,8 +2,6 @@ language: python
 
 matrix:
   include:
-
-#######################################################################
     - os: linux
       python:
         "3.7"
@@ -16,7 +14,6 @@ matrix:
         - python3 ./inctest.py
         - python3 ./apitest.py
 
-######################################################################
     - os: linux
       python:
         "3.7"
@@ -38,18 +35,14 @@ matrix:
         - python3 ./inctest.py
         - python3 ./apitest.py
 
-######################################################################
     - os: linux
       python:
         "3.7"
 
-      sources:
-        - ubuntu-toolchain-r-test
-
-      packages:
-        - gcc-6
-        - g++-6
-        - cmake
+      addons:
+        apt:
+          packages:
+            - g++-6
             
       install: 
         - env | grep DISPLAY
@@ -82,6 +75,5 @@ matrix:
         - cmake .
         - make
 
-        script:
-          - echo "Ok"
-
+script:
+  - echo "Ok"
