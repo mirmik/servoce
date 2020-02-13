@@ -40,7 +40,7 @@ matrix:
         "3.7"
 
       install: 
-        - sudo apt install g++-8 -y
+        - sudo apt install clang-8 -y
 
         - env | grep DISPLAY
         - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
