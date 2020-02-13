@@ -100,6 +100,36 @@ namespace servoce
 
 			return ret;
 		}
+
+		std::vector<double> uniform(int npoints, double strt, double fini) const
+		{
+			std::vector<double> ret;
+
+			auto adaptor = self().AdaptorCurve();
+			GCPnts_UniformAbscissa algo(adaptor, npoints, strt, fini);
+
+			for (int i = 0; i < npoints; ++i)
+			{
+				ret.push_back(algo.Parameter(i+1));
+			}
+
+			return ret;
+		}
+
+		std::vector<double> uniform(int npoints) const
+		{
+			std::vector<double> ret;
+
+			auto adaptor = self().AdaptorCurve();
+			GCPnts_UniformAbscissa algo(adaptor, npoints);
+
+			for (int i = 0; i < npoints; ++i)
+			{
+				ret.push_back(algo.Parameter(i+1));
+			}
+
+			return ret;
+		}
 	};
 }
 

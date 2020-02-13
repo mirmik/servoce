@@ -1,4 +1,5 @@
 #include <servoce/shape_view.h>
+#include <servoce/interactive_object.h>
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_Shape.hxx>
 
@@ -49,3 +50,16 @@ void servoce::interactive_object::hide(bool en)
 servoce::interactive_object::interactive_object(const servoce::shape& shp) :
 	interactive_object(new AIS_Shape(shp.Shape()))	
 {}
+
+servoce::interactive_object::interactive_object(const servoce::shape& shp, const servoce::color& clr) :
+	interactive_object(shp)	
+{
+	set_color(clr);
+}
+
+servoce::boundbox servoce::interactive_object::bounding_box() 
+{
+	Bnd_Box box;
+	m_ais->BoundingBox(box);
+	return {box};
+}

@@ -214,7 +214,7 @@ PYBIND11_MODULE(libservoce, m)
 		return std::string(buf);
 	})
 	.def(py::pickle(
-			 [](const vector3 & self)
+	[](const vector3 & self)
 	{
 		double arr[3] = {self.x, self.y, self.z};
 		return b64::base64_encode((uint8_t*)&arr, 3 * sizeof(double));
@@ -244,18 +244,24 @@ PYBIND11_MODULE(libservoce, m)
 	.def("rotate", &quaternion::rotate)
 	.def("to_matrix", &quaternion::to_matrix)
 	.def("inverse", &quaternion::inverse)
-	//.def("__mul__", (vector3(*)(const vector3&, double)) &servoce::operator* )
-	//.def("__truediv__", (vector3(*)(const vector3&, double)) &servoce::operator/ )
-	//.def("__add__", (vector3(*)(const vector3&, const vector3&)) &servoce::operator+ )
-	//.def("__sub__", (vector3(*)(const vector3&, const vector3&)) &servoce::operator- )
-	//.def("__setitem__", [](vector3 & self, int key, double value) { self[key] = value; })
-	//.def("__getitem__", [](const vector3 & self, int key) { return self[key]; })
 	.def("__repr__", [](const quaternion & pnt)
 	{
 		char buf[128];
 		sprintf(buf, "quaternion(%f,%f,%f,%f)", (double)pnt.x, (double)pnt.y, (double)pnt.z, (double)pnt.w);
 		return std::string(buf);
 	})
+	.def(py::pickle(
+		[](const quaternion & self)
+		{
+			return b64::base64_encode((const uint8_t*)self.data(), 4 * sizeof(double));
+		},
+		[](const std::string & in)
+		{
+			double arr[4];
+			std::string decoded = b64::base64_decode(in);
+			memcpy(&arr, decoded.data(), 4 * sizeof(double));
+			return quaternion(arr);
+		}))
 	;
 
 	py::class_<matrix33>(m, "matrix33", py::buffer_protocol())
@@ -287,8 +293,56 @@ PYBIND11_MODULE(libservoce, m)
 				{ m.rows(), m.cols() },                 /* Buffer dimensions */
 				{ sizeof(double),             /* Strides (in bytes) for each index */
 				 sizeof(double) * m.cols() }
-		);
-	});
+			);
+		})
+		.def(py::pickle(
+		[](const matrix33 & self)
+		{
+			return b64::base64_encode((const uint8_t*)self.data(), 9 * sizeof(double));
+		},
+		[](const std::string & in)
+		{
+			double arr[9];
+			std::string decoded = b64::base64_decode(in);
+			memcpy(&arr, decoded.data(), 9 * sizeof(double));
+			return matrix33(arr);
+		}))
+	;
+
+	py::class_<boundbox>(m, "boundbox")
+	.def_readonly("xmin", &servoce::boundbox::xmin)
+	.def_readonly("ymin", &servoce::boundbox::ymin)
+	.def_readonly("zmin", &servoce::boundbox::zmin)
+	.def_readonly("xmax", &servoce::boundbox::xmax)
+	.def_readonly("ymax", &servoce::boundbox::ymax)
+	.def_readonly("zmax", &servoce::boundbox::zmax)
+	.def("xrange", &servoce::boundbox::xrange)
+	.def("yrange", &servoce::boundbox::yrange)
+	.def("zrange", &servoce::boundbox::zrange)
+	.def("corner_min", &servoce::boundbox::corner_min)
+	.def("corner_max", &servoce::boundbox::corner_max)
+	.def("__repr__", [](const boundbox & box)
+	{
+		char buf[128];
+		sprintf(buf, "bbox(x:(%f,%f),y:(%f,%f),z:(%f,%f))", 
+			(double)box.xmin, (double)box.ymin, (double)box.zmin, 
+			(double)box.xmax, (double)box.ymax, (double)box.zmax);
+		return std::string(buf);
+	})
+	.def(py::pickle(
+	[](const boundbox & self)
+	{
+		double arr[6] = {self.xmin, self.ymin, self.zmin, self.xmax, self.ymax, self.zmax};
+		return b64::base64_encode((uint8_t*)&arr, 6 * sizeof(double));
+	},
+	[](const std::string & in)
+	{
+		double arr[6];
+		std::string decoded = b64::base64_decode(in);
+		memcpy(&arr, decoded.data(), 6 * sizeof(double));
+		return boundbox{arr[0],arr[1],arr[2],arr[3],arr[4],arr[5]};
+	}), ungil())
+	;
 
 	py::class_<shape>(m, "Shape")
 	DEF_TRANSFORM_OPERATIONS(shape)
@@ -333,6 +387,17 @@ PYBIND11_MODULE(libservoce, m)
 	.def("chamfer", [](const shape& shp, double r, const py::list& arr) { return fillet(shp,r,points(arr)); }, ungil(), py::arg("r"), py::arg("refs"))
 	.def("chamfer2d", [](const shape& shp, double r, const py::list& arr) { return fillet(shp,r,points(arr)); }, ungil(), py::arg("r"), py::arg("refs"))
 	.def("fillet2d", [](const shape& shp, double r, const py::list& arr) { return fillet(shp,r,points(arr)); }, ungil(), py::arg("r"), py::arg("refs"))
+	
+	.def("cmradius", &shape::cmradius, ungil())
+	.def("mass", &shape::mass, ungil())
+	.def("matrix_of_inertia", &shape::matrix_of_inertia, ungil())
+	.def("static_moments", &shape::static_moments, ungil())
+
+	.def("bbox", &servoce::shape::bounding_box, ungil())
+	//.def("moment_of_inertia", &shape::moment_of_inertia, ungil()) //TODO
+	//.def("radius_of_gyration", &shape::radius_of_gyration, ungil()) //TODO
+
+
 	;
 
 	py::class_<edge_shape, shape>(m, "Edge")
@@ -349,6 +414,8 @@ PYBIND11_MODULE(libservoce, m)
 	//.def("linoff_point", (point3(edge_shape::*)(double)const)&edge_shape::linoff_point, ungil())
 	.def("uniform_points", (std::vector<servoce::point3>(edge_shape::crvalgo::*)(int, double, double)const)&edge_shape::uniform_points, ungil(), py::arg("npnts"), py::arg("strt"), py::arg("fini"))
 	.def("uniform_points", (std::vector<servoce::point3>(edge_shape::crvalgo::*)(int)const)&edge_shape::uniform_points, ungil(), py::arg("npnts"))
+	.def("uniform", (std::vector<double>(edge_shape::crvalgo::*)(int, double, double)const)&edge_shape::uniform, ungil(), py::arg("npnts"), py::arg("strt"), py::arg("fini"))
+	.def("uniform", (std::vector<double>(edge_shape::crvalgo::*)(int)const)&edge_shape::uniform, ungil(), py::arg("npnts"))
 	;
 
 	py::class_<wire_shape, shape>(m, "Wire")
@@ -555,9 +622,10 @@ PYBIND11_MODULE(libservoce, m)
 	.def("set_location", &interactive_object::set_location, ungil())
 	.def("relocate", &interactive_object::relocate, ungil())
 	.def("hide", &interactive_object::hide, ungil())
+	.def("bbox", &servoce::interactive_object::bounding_box, ungil())
 	;
 
-	py::class_<shape_view, std::shared_ptr<shape_view>>(m, "ShapeView")
+	/*py::class_<shape_view, std::shared_ptr<shape_view>>(m, "ShapeView")
 	.def("shape", &shape_view::shape, ungil())
 	.def("color", &shape_view::color, ungil())
 	.def("set_color", (void(shape_view::*)(const servoce::color&))&shape_view::set_color, ungil())
@@ -565,17 +633,17 @@ PYBIND11_MODULE(libservoce, m)
 	.def("set_location", &shape_view::set_location, ungil())
 	.def("relocate", &shape_view::relocate, ungil())
 	.def("hide", &shape_view::hide, ungil())
-	;
+	;*/
 
 	py::class_<scene>(m, "Scene")
 	.def(py::init<>(), ungil())
 	.def_readonly("viewer", &scene::vwer, py::return_value_policy::reference)
-	.def("add", (std::shared_ptr<shape_view>(scene::*)(const shape&, color))&scene::add, py::arg("shape"), py::arg("color") = color{0.6, 0.6, 0.8}, ungil())
-	.def("add", (std::shared_ptr<shape_view>(scene::*)(const point3&, color))&scene::add, py::arg("shape"), py::arg("color") = color{0.6, 0.6, 0.8}, ungil())
-	.def("add", (void(scene::*)(const std::shared_ptr<servoce::interactive_object>&))&scene::add, py::arg("iobj"), ungil())
-	.def("append", (void(scene::*)(const scene&))&scene::append, py::arg("scene"), ungil())
-	.def("shapes_array", (std::vector<shape>(scene::*)())&scene::shapes_array, ungil())
-	.def("color_array", (std::vector<color>(scene::*)())&scene::color_array, ungil())
+	.def("add", (std::shared_ptr<interactive_object>(scene::*)(const shape&, color))&scene::add, py::arg("shape"), py::arg("color") = color{0.6, 0.6, 0.8}, ungil())
+	.def("add", (std::shared_ptr<interactive_object>(scene::*)(const point3&, color))&scene::add, py::arg("shape"), py::arg("color") = color{0.6, 0.6, 0.8}, ungil())
+	.def("add", (std::shared_ptr<interactive_object>(scene::*)(std::shared_ptr<servoce::interactive_object>))&scene::add, py::arg("iobj"), ungil())
+	//.def("append", (void(scene::*)(const scene&))&scene::append, py::arg("scene"), ungil())
+	//.def("shapes_array", (std::vector<shape>(scene::*)())&scene::shapes_array, ungil())
+	//.def("color_array", (std::vector<color>(scene::*)())&scene::color_array, ungil())
 	.def("__getitem__", &scene::operator[])
 	.def("total", &scene::total)
 	//.def("__getitem__", [](const scene & s, size_t i) { return s[i]; }, ungil())
@@ -585,9 +653,9 @@ PYBIND11_MODULE(libservoce, m)
 	.def("create_view", &viewer::create_view, ungil())
 	.def("redraw", &viewer::redraw, ungil())
 	.def("close", &viewer::close, ungil())
-	.def("add_scene", &viewer::add_scene, ungil())
+//	.def("add_scene", &viewer::add_scene, ungil())
 	.def("clean_context", &viewer::clean_context, ungil())
-	.def("display", (void(viewer::*)(shape_view&))&viewer::display, ungil())
+//	.def("display", (void(viewer::*)(shape_view&))&viewer::display, ungil())
 	.def("display", (void(viewer::*)(interactive_object&))&viewer::display, ungil())
 	.def("set_triedron_axes", &viewer::set_triedron_axes, py::arg("en")=true, ungil())
 	;

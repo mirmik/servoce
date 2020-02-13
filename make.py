@@ -17,7 +17,14 @@ install_inc_dir = "/usr/local/include/"
 
 shared_library("cxxbuild/libservoce.so", 
     builddir="cxxbuild", 
-    mdepends=["servoce_sources", "nos"]
+    mdepends=
+    [
+    	"servoce_sources", 
+    	"nos",
+    	"igris", 
+    	"igris.include", 
+    	("igris.sshell", "__none__")
+    ]
 )
 
 
