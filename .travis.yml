@@ -45,15 +45,12 @@ matrix:
 
       sources:
         - ubuntu-toolchain-r-test
-      
-      addons:
-        apt:
-          packages:
-          - gcc-4.8
-          - gcc-6
-          - g++-6
-          - cmake
-  
+
+      packages:
+        - gcc-6
+        - g++-6
+        - cmake
+            
       install: 
         - env | grep DISPLAY
         - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
@@ -85,6 +82,6 @@ matrix:
         - cmake .
         - make
 
-       script:
-         - echo "Ok"
+        script:
+          - echo "Ok"
 
