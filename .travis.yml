@@ -45,9 +45,11 @@ matrix:
 
       sources:
         - ubuntu-toolchain-r-test
-
-      apt:
-        packages:
+      
+      addons:
+        apt:
+          packages:
+          - gcc-4.8
           - gcc-6
           - g++-6
           - cmake
