@@ -41,9 +41,9 @@ void servoce::interactive_object::hide(bool en)
 	if (m_context)
 	{
 		if (en)
-			m_context->Erase(m_ais, true);
+			m_context->Erase(m_ais, false);
 		else
-			m_context->Display(m_ais, true);
+			m_context->Display(m_ais, false);
 	}
 }
 
