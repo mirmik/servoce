@@ -39,21 +39,14 @@ matrix:
       python:
         "3.7"
 
-      addons:
-      apt:
-      sources:
-      - ubuntu-toolchain-r-test
-      - llvm-toolchain-xenial-8
-      
-      packages:
-      - clang-8
-
       install: 
         - env | grep DISPLAY
         - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+        - sudo apt-add-repository "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-6.0 main"
         - sudo add-apt-repository ppa:freecad-maintainers/occt-releases -y
         - sudo add-apt-repository ppa:freecad-maintainers/freecad-stable -y
         - sudo apt-get update
+        - sudo apt-get install clang-8
         - sudo apt install -y libocct-foundation-7.3 libocct-ocaf-7.3 libocct-data-exchange-7.3 libocct-foundation-dev libocct-ocaf-dev libocct-data-exchange-dev
  
         - git clone https://github.com/google/googletest googletest/
