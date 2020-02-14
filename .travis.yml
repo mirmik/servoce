@@ -38,38 +38,38 @@ matrix:
     - os: linux
       python:
         "3.7"
-            
+
       install: 
         - env | grep DISPLAY
         - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
         - sudo add-apt-repository ppa:freecad-maintainers/occt-releases -y
         - sudo add-apt-repository ppa:freecad-maintainers/freecad-stable -y
         - sudo apt-get update
+        - sudo apt install gcc-7 g++-7
         - sudo apt install -y libocct-foundation-7.3 libocct-ocaf-7.3 libocct-data-exchange-7.3 libocct-foundation-dev libocct-ocaf-dev libocct-data-exchange-dev
  
         - git clone https://github.com/google/googletest googletest/
         - cd googletest
-        - cmake .
+        - CXX=g++-7 CC=gcc-7 cmake .
         - make
         - sudo make install
         - cd ..
 
         - cd igris
-        - cmake .
+        - CXX=g++-7 CC=gcc-7 cmake .
         - make
         - sudo make install
         - cd ..
 
         - cd nos
-        - cmake .
+        - CXX=g++-7 CC=gcc-7 cmake .
         - make
         - sudo make install
         - cd ..
 
         - source ./tools/set_occt_paths.sh
-        - cmake .
+        - CXX=g++-7 CC=gcc-7 cmake .
         - make
 
 script:
   - echo "Ok"
-
