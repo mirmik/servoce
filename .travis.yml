@@ -56,19 +56,19 @@ matrix:
         - cd ..
 
         - cd igris
-        - cmake .
+        - CXX=g++-7 CC=gcc-7 cmake .
         - make
         - sudo make install
         - cd ..
 
         - cd nos
-        - cmake .
+        - CXX=g++-7 CC=gcc-7 cmake .
         - make
         - sudo make install
         - cd ..
 
         - source ./tools/set_occt_paths.sh
-        - cmake .
+        - CXX=g++-7 CC=gcc-7 cmake .
         - make
 
 script:
