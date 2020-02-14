@@ -50,7 +50,7 @@ matrix:
  
         - git clone https://github.com/google/googletest googletest/
         - cd googletest
-        - cmake .
+        - CXX=g++-7 CC=gcc-7 cmake .
         - make
         - sudo make install
         - cd ..
