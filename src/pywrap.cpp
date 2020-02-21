@@ -10,8 +10,6 @@
 
 #include <Standard_Failure.hxx>
 
-//#include <nos/trace.h>
-
 namespace py = pybind11;
 using namespace servoce;
 

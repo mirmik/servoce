@@ -8,8 +8,6 @@
 #include <Prs3d_LineAspect.hxx>
 #include <AIS_InteractiveContext.hxx>
 
-#include <igris/dprint.h>
-
 static Aspect_TypeOfLine line_type_to_TypeOfLine(servoce::line_style style) 
 {
 	switch (style) 

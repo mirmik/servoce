@@ -5,20 +5,6 @@ from setuptools import setup, Extension, Command
 from distutils.util import get_platform
 import sys
 import os
-import licant
-
-licant.include("nos", "nos/nos.g.py")
-licant.include("igris", "igris/igris.g.py")
-licant.cxx_objects("nos-objects", mdepends=[
-    "nos", 
-    "igris", 
-    "igris.include", 
-    ("igris.sshell", "__none__")])
-nosopts = licant.core.core.get("nos-objects").finalopts
-
-add_sources = []
-add_modules = []
-add_moc = []
 
 def get_occt_include_directory():
     dirs = ["/usr/include/", "/usr/local/include/"]
@@ -95,12 +81,10 @@ pyservoce_lib = Extension(
         "src/prs3d.cpp",
         "src/interactive_object.cpp",
         "src/opencascade_types.cpp",
-    ] + nosopts["sources"],
-    extra_compile_args=["-fPIC", "-std=c++14", 
-        "-DNODTRACE=1", "-DNOTRACE=1"
     ],
+    extra_compile_args=["-fPIC", "-std=c++14"],
     extra_link_args=extra_link_args,
-    include_dirs=[liboce_include_path, "src", "include"] + nosopts["include_paths"],
+    include_dirs=[liboce_include_path, "src", "include"],
     #library_dir=["C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib"],
     libraries=[
         lib_prefix + "TKernel",
@@ -130,7 +114,7 @@ pyservoce_lib = Extension(
 setup(
     name="pyservoce",
     packages=["pyservoce"],
-    version="1.17.1",
+    version="1.18.0",
     license="MIT",
     description="CAD system for righteous zen programmers ",
     author="mirmik",

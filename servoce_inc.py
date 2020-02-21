@@ -177,7 +177,6 @@ module(
     include_paths=["include", ".", "src"],
     mdepends=[
         "liboce",
-        "nos",
     ] + add_modules,
     cxx_flags="-Wall -fPIC -DQT_NO_VERSION_TAGGING -ffunction-sections -fdata-sections",
     cc_flags="-Wall -fPIC -ffunction-sections -fdata-sections",

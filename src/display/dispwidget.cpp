@@ -42,10 +42,6 @@
 #include <local/display.h>
 #include <local/util.h>
 
-#include <nos/print.h>
-#include <nos/fprint.h>
-#include <nos/trace.h>
-
 static Handle(Graphic3d_GraphicDriver)& GetGraphicDriver()
 {
     static Handle(Graphic3d_GraphicDriver) aGraphicDriver;
@@ -311,7 +307,6 @@ gp_Pnt servoce::disp::DisplayWidget::getMousePositionWithObjects(const QPoint po
             continue;
         }
 
-        nos::fprintln("intPoint: ({},{},{})", ip.X(), ip.Y(), ip.Z());
         break;
     }
 }

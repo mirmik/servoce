@@ -2,9 +2,6 @@
 #define SERVOCE_GEOMBASE_H
 
 #include <servoce/linalg/linalg.h>
-#include <igris/dprint.h>
-#include <nos/print.h>
-#include <nos/fprint.h>
 
 #include <gp_XYZ.hxx>
 #include <gp_Mat.hxx>
@@ -97,10 +94,10 @@ namespace servoce
 
 		matrix33 outerprod(const vector3& oth);
 
-		ssize_t print_to(nos::ostream& out) const
+		/*ssize_t print_to(nos::ostream& out) const
 		{
 			return nos::fprint_to(out, "vector3({},{},{})", x, y, z);
-		}
+		}*/
 
 		matrix33 vecmul_matrix();
 	};
@@ -144,10 +141,10 @@ namespace servoce
 		bool operator < (const servoce::point3& b) const { return lexless_xyz(*this, b); }
 		bool operator == (const servoce::point3& oth) const { return x == oth.x && y == oth.y && z == oth.z; }
 
-		ssize_t print_to(nos::ostream& out) const
+		/*ssize_t print_to(nos::ostream& out) const
 		{
 			return nos::fprint_to(out, "point3({},{},{})", x, y, z);
-		}
+		}*/
 	};
 
 	class matrix33 : public linalg::mat<double,3,3> 

@@ -6,8 +6,6 @@
 #include <vector>
 #include <memory>
 
-#include <nos/trace.h>
-
 class OccViewWindow;
 
 namespace servoce
@@ -71,7 +69,7 @@ namespace servoce
 
 		view(OccViewWindow* occ);
 		view(const view&) = delete;
-		view(view&& other) { TRACE(); occ = other.occ; other.occ = nullptr; }
+		view(view&& other) { occ = other.occ; other.occ = nullptr; }
 		~view();
 	
 	private:

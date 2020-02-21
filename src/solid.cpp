@@ -49,9 +49,6 @@
 #include <exception>
 #include <assert.h>
 
-#define NOTRACE 1
-#include <nos/trace.h>
-
 using namespace servoce;
 
 shape servoce::box(double x, double y, double z, bool center)

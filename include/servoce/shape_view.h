@@ -3,7 +3,6 @@
 
 #include <servoce/topo.h>
 #include <servoce/color.h>
-#include <nos/trace.h>
 
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_InteractiveContext.hxx>
@@ -18,7 +17,7 @@ namespace servoce
 	class shape_view
 	{
 	public:
-		shape_view() { TRACE(); }
+		shape_view() {}
 		shape_view(const servoce::shape& a, servoce::color color, scene* scn);
 		shape_view(const shape_view& oth);
 		shape_view(shape_view&& oth);
