@@ -18,7 +18,8 @@ shared_library("cxxbuild/libservoce.so",
     mdepends=
     [
     	"servoce_sources", 
-    ]
+    ],
+    cxx_flags="-Wall -Wextra"
 )
 
 

@@ -86,7 +86,7 @@ std::string servoce::getSVG(const servoce::shape& shp)
 	for (auto p : visible_paths) 
 	{
 		char buf[128];
-		sprintf(buf, PATHTEMPLATE, p);
+		sprintf(buf, PATHTEMPLATE, p.c_str());
 		visible_content.append(buf);
 	}
 	
@@ -94,7 +94,7 @@ std::string servoce::getSVG(const servoce::shape& shp)
 	for (auto p : hidden_paths) 
 	{
 		char buf[128];
-		sprintf(buf, PATHTEMPLATE, p);
+		sprintf(buf, PATHTEMPLATE, p.c_str());
 		hidden_content.append(buf);
 	}
 

@@ -5,7 +5,7 @@
 #include <BRepBuilderAPI_Copy.hxx>
 
 #include <mutex>
-
+/*
 servoce::shape servoce::shape_view::shape() const
 {
 	return servoce::shape(native()->Shape());
@@ -97,4 +97,4 @@ void servoce::shape_view::set_color(float r, float g, float b, float a)
 	native()->SetColor(Quantity_Color(r,g,b, Quantity_TOC_RGB));
 	native()->SetTransparency(a);
 	m_color = servoce::color(r,g,b,a);
-}
+}*/

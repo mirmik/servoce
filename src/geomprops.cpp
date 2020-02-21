@@ -7,7 +7,7 @@ servoce::geomprops servoce::geomprops::linear_properties(const servoce::shape& s
 	GProp_GProps scaled;
 	GProp_GProps gener;
 	BRepGProp::LinearProperties(shp.Shape(), gener);
-	scaled.Add(gener);
+	scaled.Add(gener, density);
 	return scaled;
 }
 
@@ -16,7 +16,7 @@ servoce::geomprops servoce::geomprops::surface_properties(const servoce::shape& 
 	GProp_GProps scaled;
 	GProp_GProps gener;
 	BRepGProp::SurfaceProperties(shp.Shape(), gener);
-	scaled.Add(gener);
+	scaled.Add(gener, density);
 	return scaled;
 }
 
@@ -25,7 +25,7 @@ servoce::geomprops servoce::geomprops::volume_properties(const servoce::shape& s
 	GProp_GProps scaled;
 	GProp_GProps gener;
 	BRepGProp::VolumeProperties(shp.Shape(), gener);
-	scaled.Add(gener);
+	scaled.Add(gener, density);
 	return scaled;
 }
 
@@ -53,6 +53,7 @@ double
 servoce::geomprops::moment_of_inertia(
     const servoce::vector3& axis) const
 {
+	(void)axis;
 	throw std::runtime_error("NotImplemented");
 	return 0;
 }
@@ -61,6 +62,7 @@ double
 servoce::geomprops::radius_of_gyration(
     const servoce::vector3& axis) const
 {
+	(void)axis;
 	throw std::runtime_error("NotImplemented");
 	return 0;
 }

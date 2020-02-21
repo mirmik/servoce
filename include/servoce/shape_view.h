@@ -8,7 +8,7 @@
 #include <AIS_InteractiveContext.hxx>
 
 
-class AIS_Shape;
+/*class AIS_Shape;
 
 namespace servoce
 {
@@ -44,6 +44,6 @@ namespace servoce
 		AIS_Shape* m_ashp = nullptr;
 		servoce::color m_color;
 	};
-}
+}*/
 
 #endif
