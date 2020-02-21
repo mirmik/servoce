@@ -109,7 +109,7 @@ public:
 #endif
 	}
 
-	void set_window(int window_handle)
+	void set_window(uintptr_t  window_handle)
 	{
 		std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 		winddesc = window_handle;

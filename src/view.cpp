@@ -168,7 +168,7 @@ std::vector<unsigned char> servoce::view::rawarray(int w, int h)
 #if defined(WNT) || defined(_MSC_VER)
 void servoce::view::see(int width, int height) { BUG(); }
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
-void servoce::view::see(int width, int height) { BUG(); }
+void servoce::view::see(int width, int height) { throw std::runtime_error("servoce::view::see: unsuported for macos : TODO"); }
 #else
 void servoce::view::see(int width, int height)
 {

@@ -481,8 +481,8 @@ std::vector<servoce::shape> _unify_faces_array(const std::vector<servoce::shape>
 
 				if (
 				    dir0.IsEqual(dir1, 0.00001) &&
-				    abs(pln0.Distance(pln1.Axis().Location())) < 0.0000001 &&
-				    abs(pln1.Distance(pln0.Axis().Location())) < 0.0000001)
+				    std::abs(pln0.Distance(pln1.Axis().Location())) < 0.0000001 &&
+				    std::abs(pln1.Distance(pln0.Axis().Location())) < 0.0000001)
 				{
 					found = true;
 					arr.emplace_back(&i);

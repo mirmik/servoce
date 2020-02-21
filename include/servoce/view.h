@@ -6,7 +6,7 @@
 #include <vector>
 #include <memory>
 
-class OccViewWindow;
+struct OccViewWindow;
 
 namespace servoce
 {
