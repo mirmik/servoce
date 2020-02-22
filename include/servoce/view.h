@@ -17,8 +17,8 @@ namespace servoce
 	{
 	public:
 		void set_virtual_window(int w, int h);
-		void set_window(int wind);
-
+		void set_window(uintptr_t wind);
+		
 		void fit_all(double margin);
 		void set_direction(float a, float b, float c);
 		std::tuple<double, double, double> direction();

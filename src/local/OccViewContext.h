@@ -66,7 +66,7 @@ inline Handle(Graphic3d_GraphicDriver) GetGraphicDriver()
 	return g_graphicDriver;
 }
 
-class OccViewerContext;
+struct OccViewerContext;
 
 struct OccViewWindow
 {
@@ -81,7 +81,11 @@ struct OccViewWindow
 #endif
 
 	OccViewerContext* parent;
+	#if defined(__APPLE__)
+	void* winddesc;
+	#else
 	int winddesc;
+	#endif
 
 public:
 	OccViewWindow(Handle(V3d_View) view, OccViewerContext* parent)
@@ -99,7 +103,7 @@ public:
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
 		m_window = new Cocoa_Window ((std::string("virtual") + std::to_string(i++)).c_str(), 0, 0, w, h);
 		m_window->SetVirtual  (Standard_True);
-		winddesc = m_window->NativeHandle();
+		winddesc = (void*)m_window->NativeHandle();
 		m_view->SetWindow  (m_window);
 #else
 		m_window = new Xw_Window (GetDisplayConnection(), (std::string("virtual") + std::to_string(i++)).c_str(), 0, 0, w, h);
@@ -109,7 +113,11 @@ public:
 #endif
 	}
 
-	void set_window(uintptr_t  window_handle)
+#if defined(__APPLE__)
+	void set_window(void* window_handle)
+#else	
+	void set_window(int  window_handle)
+#endif
 	{
 		std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 		winddesc = window_handle;

@@ -153,7 +153,7 @@ servoce::shape servoce::make_long_helix(double pitch, double height,
 	Handle(Geom_Surface) surf;
 	Standard_Boolean isCylinder;
 
-	if (abs(angle) < Precision::Confusion())     // Cylindrical helix
+	if (std::abs(angle) < Precision::Confusion())     // Cylindrical helix
 	{
 		if (radius < Precision::Confusion())
 			Standard_Failure::Raise("Radius of helix too small");
@@ -164,7 +164,7 @@ servoce::shape servoce::make_long_helix(double pitch, double height,
 	else                                    // Conical helix
 	{
 		//angle = to_radian(angle);
-		if (abs(angle) < Precision::Confusion())
+		if (std::abs(angle) < Precision::Confusion())
 			Standard_Failure::Raise("Angle of helix too small");
 
 		surf = new Geom_ConicalSurface(gp_Ax3(cylAx2), angle, radius);
