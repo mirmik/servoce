@@ -5,7 +5,7 @@
 #include <servoce/interactive_object.h>
 #include <servoce/view.h>
 
-class OccViewerContext;
+struct OccViewerContext;
 
 template<typename T>
 class lazy_ptr

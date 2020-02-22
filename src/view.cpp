@@ -81,10 +81,15 @@ void servoce::view::set_virtual_window(int w, int h)
 	this->h = h;
 	occ->set_virtual_window(w, h);
 }
-void servoce::view::set_window(int n)
+
+void servoce::view::set_window(uintptr_t wind)
 {
 	assert(occ);
-	occ->set_window(n);
+#if defined(__APPLE__)
+	occ->set_window((void*)wind);
+#else
+	occ->set_window(wind);
+#endif
 }
 
 void servoce::view::set_direction(float a, float b, float c)
