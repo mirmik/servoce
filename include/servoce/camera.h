@@ -1,7 +1,7 @@
 #ifndef SERVOCE_CAMERA_H
 #define SERVOCE_CAMERA_H
 
-#include <servoce/linalg/linalg.h>
+/*#include <servoce/linalg/linalg.h>
 #include <servoce/util/setget.h>
 
 using namespace linalg::aliases;
@@ -48,6 +48,6 @@ namespace servoce
 		gp_Pnt native_eye() override;
 		float native_scale() override;
 	};
-}
+}*/
 
 #endif
