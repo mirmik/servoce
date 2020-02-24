@@ -47,8 +47,6 @@ target_link_libraries(servoce_test gtest)
 target_link_libraries(servoce_test pthread)
 
 target_link_libraries(servoce 
-	nos
-	igris
 	TKernel
 	TKMath
 	TKG2d
