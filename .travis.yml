@@ -14,6 +14,18 @@ matrix:
         - python3 ./inctest.py
         - python3 ./apitest.py
 
+- os: osx
+      python:
+        "3.7"
+
+      install:
+        - python3 -m pip install pyservoce
+
+      script:
+        - cd pytest
+        - python3 ./inctest.py
+        - python3 ./apitest.py
+
     - os: linux
       python:
         "3.7"
