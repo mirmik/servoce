@@ -16,7 +16,7 @@ matrix:
 
     - os: osx
       python:
-        "3.7"
+        "3.8"
 
       install:
         - python3 -m pip install pyservoce
