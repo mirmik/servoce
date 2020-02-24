@@ -5,6 +5,11 @@ import io
 import os
 import sys
 
+
+def do_command(cmd):
+	print(cmd)
+	os.system(cmd)
+
 #vers = "7.3.0"
 vers = "7"
 
@@ -42,7 +47,10 @@ listlibs = [
 	"TKLCAF",
 	"TKCDF",
 	"TKBinL",
+]
 
+darwin_only_copy = [
+	("/usr/local/lib/libfreetype.6.dylib", "libfreetype.6.dylib")
 ]
 
 def get_occt_library_directory():
@@ -84,10 +92,6 @@ def debian_collect(f):
 def darwin_collect(f,l):
 	import subprocess 
 
-	def do_command(cmd):
-		print(cmd)
-		os.system(cmd)
-
 	lib = f"pyservoce/libs/{f}"
 
 	do_command(f"cp {occt_libs_dir}/{f} {lib}")
@@ -100,7 +104,7 @@ def darwin_collect(f,l):
 
 	fstrs = []
 	for s in strs:
-		if "libTK" in s:
+		if "libTK" in s or "libfreetype" in s:
 			fstrs.append(s.strip().split(" ")[0])
 
 	for f in fstrs:
@@ -110,6 +114,7 @@ def darwin_collect(f,l):
 		print(cmd)
 		os.system(cmd)
 
+	
 for l in listlibs:
 	if sys.platform == "darwin":
 		fl = "lib" + l + ".{}.dylib".format(vers)
@@ -126,6 +131,10 @@ for l in listlibs:
 
 		else:
 			debian_collect(f)
+
+if sys.platform == "darwin":
+	for p in darwin_only_copy:
+		do_command(f"cp {p[0]} {os.path.join('pyservoce/libs',p[1])}")
 
 
 
