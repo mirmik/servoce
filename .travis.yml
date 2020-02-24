@@ -14,7 +14,7 @@ matrix:
         - python3 ./inctest.py
         - python3 ./apitest.py
 
-- os: osx
+    - os: osx
       python:
         "3.7"
 
