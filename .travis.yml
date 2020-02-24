@@ -15,8 +15,9 @@ matrix:
         - python3 ./apitest.py
 
     - os: osx
+      osx_image: xcode-11.2
       python:
-        "3.6"
+        "3.7"
 
       install:
         - python3 -m pip install pyservoce
