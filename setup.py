@@ -6,8 +6,8 @@ from setuptools import setup, Extension, Command
 from distutils.util import get_platform
 import sys
 import os
-
-from subprocess import call
+import io
+import subprocess
 
 def get_occt_include_directory():
 	dirs = ["/usr/include/", "/usr/local/include/"]
@@ -37,6 +37,9 @@ if sys.platform=="win32" or sys.platform=="win64":
 else:
 	extra_link_args = ["-Wl,-rpath,$ORIGIN/libs"]
 
+if sys.platform == "darwin":
+	extra_link_args = ["-Wl,-rpath,@loader_path/libs"]	
+
 
 class build_ext(build_ext_):
 	def build_extensions(self):
@@ -47,13 +50,27 @@ class build_ext(build_ext_):
 		print("Builded library path:", lib)
 
 		if sys.platform == "darwin":
-			self.darwin_correct_libpathes(lib)
+			self.darwin_correct_libpathes(os.path.join(self.build_lib, "pyservoce", lib))
 
 	def darwin_correct_libpathes(self, lib):
-		otool_l = call(f'otool -l {lib}', shell=True)
+		print("Correct library pathes for:", lib)
+		otool_l = subprocess.Popen(f'otool -L {lib}', shell=True, stdout=subprocess.PIPE)
+		otool_l = io.TextIOWrapper(otool_l.stdout).read()
+		
+		strs = otool_l.split("\n")
 		print(otool_l)
 
+		fstrs = []
+		for s in strs:
+			if "libTK" in s:
+				fstrs.append(s.strip().split(" ")[0])
 
+		for f in fstrs:
+			#filter parasite dirs addition, f.e. last @rpath addition 
+			libname = [ l for l in f.split("/") if "dylib" in l ][0]
+			cmd = f"install_name_tool -change {f} @rpath/{libname} {lib}"
+			print(cmd)
+			os.system(cmd)
 
 class bdist_wheel(bdist_wheel_):
 	def finalize_options(self):
@@ -128,7 +145,7 @@ pyservoce_lib = Extension(
 		lib_prefix + "TKBin",
 		lib_prefix + "TKShHealing",
 		lib_prefix + "TKMesh",
-		lib_prefix + "TKHLR",
+		lib_prefix + "TKHLR"
 	],
 )
 
