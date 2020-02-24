@@ -1,7 +1,7 @@
 #ifndef SERVOCE_EDGE_H
 #define SERVOCE_EDGE_H
 
-#include <servoce/topo.h>
+#include <servoce/shape.h>
 #include <servoce/curve3.h>
 
 #include <BRepAdaptor_Curve.hxx>

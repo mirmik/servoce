@@ -2,7 +2,7 @@
 #define ZENCAD_SURFACE_H
 
 #include <servoce/curve2.h>
-#include <servoce/topo.h>
+#include <servoce/shape.h>
 
 class Geom_CylindricalSurface;
 class Geom_Surface;

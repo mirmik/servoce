@@ -4,7 +4,7 @@
 #include <servoce/shape_view.h>
 #include <servoce/interactive_object.h>
 #include <servoce/viewer.h>
-#include <servoce/topo.h>
+#include <servoce/shape.h>
 
 #include <list>
 #include <memory>

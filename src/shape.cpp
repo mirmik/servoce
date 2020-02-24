@@ -1,4 +1,4 @@
-#include <servoce/topo.h>
+#include <servoce/shape.h>
 #include <servoce/face.h>
 #include <servoce/solid.h>
 #include <servoce/geomprops.h>

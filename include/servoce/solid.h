@@ -1,7 +1,7 @@
 #ifndef ZENGEOM_SOLID_H
 #define ZENGEOM_SOLID_H
 
-#include <servoce/topo.h>
+#include <servoce/shape.h>
 
 namespace servoce
 {

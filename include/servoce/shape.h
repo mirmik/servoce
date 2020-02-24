@@ -6,9 +6,12 @@
 #include <iostream>
 #include <memory>
 #include <set>
+
+#include <servoce/geombase.h>
 #include <servoce/boolops.h>
 #include <servoce/trans.h>
-#include <servoce/geombase.h>
+#include <servoce/transformable.h>
+#include <servoce/boundbox.h>
 
 class TopoDS_Shape;
 class TopoDS_Shell;
@@ -33,7 +36,7 @@ namespace servoce
 		compound
 	};
 
-	class shape
+	class shape : public servoce::transformable<shape>
 	{
 	public:
 		TopoDS_Shape* m_shp = nullptr;
@@ -82,39 +85,6 @@ namespace servoce
 
 		TopoDS_Compound& Compound();
 		const TopoDS_Compound& Compound() const;
-
-		shape transform(const transformation& trans) { return trans(*this); }
-		shape transform(const general_transformation& trans) { return trans(*this); }
-
-		shape translate(double x, double y, double z) { return transform(servoce::translate(x, y, z)); }
-		shape up(double z) { return translate(0, 0, z); }
-		shape down(double z) { return translate(0, 0, -z); }
-		shape forw(double y) { return translate(0, y, 0); }
-		shape back(double y) { return translate(0, -y, 0); }
-		shape right(double x) { return translate(x, 0, 0); }
-		shape left(double x) { return translate(-x, 0, 0); }
-
-		shape rotate(vector3 vec, double a) { return transform(servoce::rotate(vec, a)); }
-		shape rotateX(double a) { return transform(servoce::rotateX(a)); }
-		shape rotateY(double a) { return transform(servoce::rotateY(a)); }
-		shape rotateZ(double a) { return transform(servoce::rotateZ(a)); }
-
-		shape mirrorX() { return transform(servoce::mirrorX()); }
-		shape mirrorY() { return transform(servoce::mirrorY()); }
-		shape mirrorZ() { return transform(servoce::mirrorZ()); }
-
-		shape mirrorXY() { return transform(servoce::mirrorXY()); }
-		shape mirrorYZ() { return transform(servoce::mirrorYZ()); }
-		shape mirrorXZ() { return transform(servoce::mirrorXZ()); }
-
-		shape scale(double s, point3 center = point3()) { return transform(servoce::scale(s, center)); }
-		shape scaleX(double s) { return transform(servoce::scaleX(s)); }
-		shape scaleY(double s) { return transform(servoce::scaleY(s)); }
-		shape scaleZ(double s) { return transform(servoce::scaleZ(s)); }
-		shape scaleXY(double x, double y) { return transform(servoce::scaleXY(x, y)); }
-		shape scaleYZ(double y, double z) { return transform(servoce::scaleYZ(y, z)); }
-		shape scaleXZ(double x, double z) { return transform(servoce::scaleXZ(x, z)); }
-		shape scaleXYZ(double x, double y, double z) { return transform(servoce::scaleXYZ(x, y, z)); }
 
 		point3 center() const;
 		vector3 cmradius() const;

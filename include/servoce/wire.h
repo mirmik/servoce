@@ -1,7 +1,7 @@
 #ifndef SERVOCE_WIRE_H
 #define SERVOCE_WIRE_H
 
-#include <servoce/topo.h>
+#include <servoce/shape.h>
 #include <vector>
 
 namespace servoce

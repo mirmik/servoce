@@ -1,5 +1,5 @@
 #include <servoce/convert.h>
-#include <servoce/topo.h>
+#include <servoce/shape.h>
 
 #include <StlAPI_Writer.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>

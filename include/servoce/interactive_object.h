@@ -1,7 +1,7 @@
 #ifndef SERVOCE_INTERACTIVE_OBJECT_H
 #define SERVOCE_INTERACTIVE_OBJECT_H
 
-#include <servoce/topo.h>
+#include <servoce/shape.h>
 #include <servoce/color.h>
 #include <servoce/boundbox.h>
 

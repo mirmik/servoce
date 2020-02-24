@@ -1,7 +1,7 @@
 #ifndef SERVOCE_GEOMPROPS_H
 #define SERVOCE_GEOMPROPS_H
 
-#include <servoce/topo.h>
+#include <servoce/shape.h>
 #include <BRepGProp.hxx>
 #include <GProp_GProps.hxx>
 

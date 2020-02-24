@@ -1,5 +1,5 @@
 #include <servoce/boolops.h>
-#include <servoce/topo.h>
+#include <servoce/shape.h>
 
 #include <local/util.h>
 

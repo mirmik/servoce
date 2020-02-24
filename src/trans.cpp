@@ -1,4 +1,4 @@
-#include <servoce/topo.h>
+#include <servoce/shape.h>
 #include <servoce/trans.h>
 #include <local/util.h>
 
@@ -23,9 +23,17 @@ servoce::transformation::transformation(const transformation& oth)
 servoce::general_transformation::general_transformation(const general_transformation& oth)
 	: gtrsf(new gp_GTrsf(*oth.gtrsf)) {}
 
-servoce::transformation servoce::rotate(const servoce::vector3& vec, double a)
+servoce::transformation servoce::rotate(double a, const servoce::vector3& vec)
 {
 	return servoce::axrotation(vec.x, vec.y, vec.z, a);
+}
+
+servoce::transformation servoce::rotate(double x, double z, double y)
+{
+	auto v = linalg::vec<double,3>(x,y,z);
+	auto norm = linalg::length(v);
+	auto ort = linalg::normalize(v);
+	return servoce::axrotation(ort.x, ort.y, ort.z, norm);
 }
 
 servoce::transformation servoce::rotateX(double a)
@@ -116,11 +124,6 @@ servoce::transformation::~transformation()
 servoce::general_transformation::~general_transformation()
 {
 	delete gtrsf;
-}
-
-servoce::transformation servoce::translate(double x, double y)
-{
-	return servoce::translate(x, y, 0);
 }
 
 servoce::transformation servoce::translate(double x, double y, double z)
@@ -240,6 +243,32 @@ servoce::transformation servoce::left(double x)
 servoce::transformation servoce::right(double x)
 {
 	return servoce::translate(x, 0, 0);
+}
+
+
+servoce::transformation servoce::move(double x, double y, double z)
+{
+	return servoce::translate(x, y, z);
+}
+
+servoce::transformation servoce::move(const vector3& v)
+{
+	return servoce::translate(v.x, v.y, v.z);
+}
+
+servoce::transformation servoce::moveX(double x)
+{
+	return servoce::translate(x, 0, 0);
+}
+
+servoce::transformation servoce::moveY(double y)
+{
+	return servoce::translate(0, y, 0);
+}
+
+servoce::transformation servoce::moveZ(double z)
+{
+	return servoce::translate(0, 0, z);
 }
 
 

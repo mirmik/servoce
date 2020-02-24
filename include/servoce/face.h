@@ -2,7 +2,7 @@
 #define SERVOCE_SOLID_H
 
 #include <vector>
-#include <servoce/topo.h>
+#include <servoce/shape.h>
 
 class BRepPrimAPI_MakeSweep;
 

@@ -1,7 +1,7 @@
 #ifndef SERVOCE_SHAPE_VIEW
 #define SERVOCE_SHAPE_VIEW
 
-#include <servoce/topo.h>
+#include <servoce/shape.h>
 #include <servoce/color.h>
 
 #include <AIS_InteractiveObject.hxx>

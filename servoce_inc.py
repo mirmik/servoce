@@ -150,7 +150,7 @@ module(
     "servoce_sources",
     srcdir="src",
     sources=[
-        "topo.cpp",
+        "shape.cpp",
         "trans.cpp",
         "solid.cpp",
         "surface.cpp",

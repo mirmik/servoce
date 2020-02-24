@@ -61,24 +61,14 @@ namespace servoce
 
 	transformation nulltrans();
 
-	//Aphine Transforms
-	transformation translate(double x, double y);
+	//Aphine Transforms (translate and move is same)
 	transformation translate(double x, double y, double z);
 	transformation translate(const vector3& vec);
-	transformation axrotation(double ax, double ay, double az, double angle);
-	transformation axis_mirror(double ax, double ay, double az);
-	transformation plane_mirror(double ax, double ay, double az);
-
-	transformation rotate(const vector3& ax, double a);
-	transformation rotateX(double a);
-	transformation rotateY(double a);
-	transformation rotateZ(double a);
-	transformation mirrorX();
-	transformation mirrorY();
-	transformation mirrorZ();
-	transformation mirrorXY();
-	transformation mirrorYZ();
-	transformation mirrorXZ();
+	transformation move(double x, double y, double z);
+	transformation move(const vector3& vec);
+	transformation moveX(double);
+	transformation moveY(double);
+	transformation moveZ(double);
 
 	transformation up(double);
 	transformation down(double);
@@ -86,6 +76,22 @@ namespace servoce
 	transformation back(double);
 	transformation left(double);
 	transformation right(double);
+
+	transformation axrotation(double ax, double ay, double az, double angle);
+	transformation rotate(double a, const vector3& ax);
+	transformation rotate(double x, double y, double z);
+	transformation rotateX(double a);
+	transformation rotateY(double a);
+	transformation rotateZ(double a);
+
+	transformation axis_mirror(double ax, double ay, double az);
+	transformation plane_mirror(double ax, double ay, double az);
+	transformation mirrorX();
+	transformation mirrorY();
+	transformation mirrorZ();
+	transformation mirrorXY();
+	transformation mirrorYZ();
+	transformation mirrorXZ();
 
 	transformation scale(double, point3 center = point3());
 
