@@ -75,11 +75,18 @@ void registry_trans(py::module & m)
 	m.def("rotateZ", rotateZ, ungil());
 	m.def("short_rotate", &short_rotate, ungil());
 
-	m.def("axis_mirror", axis_mirror, ungil());
-	m.def("plane_mirror", plane_mirror, ungil());
+	m.def("mirrorO", (transformation(*)(double,double,double))&mirrorO, ungil());
+	m.def("mirrorO", (transformation(*)(const point3&))&mirrorO, ungil());
+	m.def("mirrorO", (transformation(*)())&mirrorO, ungil());
+
+	m.def("mirror_axis", (transformation(*)(double,double,double))&mirror_axis, ungil());
+	m.def("mirror_axis", (transformation(*)(vector3))&mirror_axis, ungil());
 	m.def("mirrorX", mirrorX, ungil());
 	m.def("mirrorY", mirrorY, ungil());
 	m.def("mirrorZ", mirrorZ, ungil());
+
+	m.def("mirror_plane", (transformation(*)(double,double,double))&mirror_plane, ungil());
+	m.def("mirror_plane", (transformation(*)(vector3))&mirror_plane, ungil());
 	m.def("mirrorXY", mirrorXY, ungil());
 	m.def("mirrorXZ", mirrorXZ, ungil());
 	m.def("mirrorYZ", mirrorYZ, ungil());

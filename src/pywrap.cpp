@@ -440,10 +440,17 @@ PYBIND11_MODULE(libservoce, m)
 		memcpy(&arr, decoded.data(), 4 * sizeof(float));
 		return color{arr[0],arr[1],arr[2],arr[3]};
 	}), ungil())
+	.def("__repr__", [](const color & pnt)
+	{
+		char buf[128];
+		sprintf(buf, "Color(%f,%f,%f,%f)", (double)pnt.r, (double)pnt.g, (double)pnt.b, (double)pnt.a);
+		return std::string(buf);
+	})
 	;
 
 	py::class_<interactive_object, std::shared_ptr<interactive_object>>(m, "interactive_object")
 	.def(py::init<const servoce::shape&>(), ungil())
+	.def(py::init<const servoce::shape&, const servoce::color&>(), ungil())
 	.def("set_color", (void(interactive_object::*)(const servoce::color&))&interactive_object::set_color, ungil())
 	.def("set_color", (void(interactive_object::*)(float,float,float,float))&interactive_object::set_color, py::arg("r"), py::arg("g"), py::arg("b"), py::arg("a")=0, ungil())
 	.def("color", &interactive_object::color, ungil())

@@ -1,3 +1,6 @@
+## 1.20.0 
+Transformation API improved.
+
 ## 1.19.1
 Refactor
 

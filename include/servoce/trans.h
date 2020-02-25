@@ -24,7 +24,8 @@ namespace servoce
 		transformation operator()(const servoce::transformation& sld) const;
 		transformation operator*(const servoce::transformation& oth) const;
 
-		transformation invert();
+		transformation invert();	
+		transformation inverse() { return invert(); }
 
 		transformation() : trsf(nullptr) {}
 		~transformation();
@@ -84,8 +85,13 @@ namespace servoce
 	transformation rotateY(double a);
 	transformation rotateZ(double a);
 
-	transformation axis_mirror(double ax, double ay, double az);
-	transformation plane_mirror(double ax, double ay, double az);
+	transformation mirror_axis(double ax, double ay, double az);
+	transformation mirror_axis(vector3 vec);
+	transformation mirror_plane(double ax, double ay, double az);
+	transformation mirror_plane(vector3 vec);
+	transformation mirrorO(double ax, double ay, double az);
+	transformation mirrorO(const point3& pnt);
+	transformation mirrorO();
 	transformation mirrorX();
 	transformation mirrorY();
 	transformation mirrorZ();

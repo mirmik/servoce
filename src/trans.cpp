@@ -53,32 +53,32 @@ servoce::transformation servoce::rotateZ(double a)
 
 servoce::transformation servoce::mirrorX()
 {
-	return servoce::axis_mirror(1, 0, 0);
+	return servoce::mirror_axis(1, 0, 0);
 }
 
 servoce::transformation servoce::mirrorY()
 {
-	return servoce::axis_mirror(0, 1, 0);
+	return servoce::mirror_axis(0, 1, 0);
 }
 
 servoce::transformation servoce::mirrorZ()
 {
-	return servoce::axis_mirror(0, 0, 1);
+	return servoce::mirror_axis(0, 0, 1);
 }
 
 servoce::transformation servoce::mirrorXY()
 {
-	return servoce::plane_mirror(0, 0, 1);
+	return servoce::mirror_plane(0, 0, 1);
 }
 
 servoce::transformation servoce::mirrorYZ()
 {
-	return servoce::plane_mirror(1, 0, 0);
+	return servoce::mirror_plane(1, 0, 0);
 }
 
 servoce::transformation servoce::mirrorXZ()
 {
-	return servoce::plane_mirror(0, 1, 0);
+	return servoce::mirror_plane(0, 1, 0);
 }
 
 servoce::transformation servoce::transformation::invert()
@@ -201,19 +201,31 @@ servoce::transformation servoce::axrotation(double ax, double ay, double az, dou
 	return servoce::transformation(trsf);
 }
 
-servoce::transformation servoce::axis_mirror(double ax, double ay, double az)
+servoce::transformation servoce::mirror_axis(double ax, double ay, double az)
 {
 	auto trsf = new gp_Trsf();
 	trsf->SetMirror(gp_Ax1(gp_Pnt(0, 0, 0), gp_Vec(ax, ay, az)));
 	return servoce::transformation(trsf);
 }
+servoce::transformation servoce::mirror_axis(vector3 v) { return mirror_axis(v.x,v.y,v.z); }
 
-servoce::transformation servoce::plane_mirror(double ax, double ay, double az)
+servoce::transformation servoce::mirror_plane(double ax, double ay, double az)
 {
 	auto trsf = new gp_Trsf();
 	trsf->SetMirror(gp_Ax2(gp_Pnt(0, 0, 0), gp_Vec(ax, ay, az)));
 	return servoce::transformation(trsf);
 }
+servoce::transformation servoce::mirror_plane(vector3 v) { return mirror_plane(v.x,v.y,v.z); }
+
+servoce::transformation servoce::mirrorO(double x, double y, double z)
+{
+	auto trsf = new gp_Trsf();
+	trsf->SetMirror(gp_Pnt(x,y,z));
+	return servoce::transformation(trsf);
+}
+servoce::transformation servoce::mirrorO() { return mirrorO(0,0,0); }
+servoce::transformation servoce::mirrorO(const point3& v) { return mirrorO(v.x,v.y,v.z); }
+
 
 servoce::transformation servoce::up(double z)
 {
