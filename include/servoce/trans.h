@@ -113,7 +113,7 @@ namespace servoce
 	general_transformation scaleXYZ(double,double,double);
 
 //Advanced:
-	transformation short_rotate(const vector3& from, const vector3& to);
+	transformation short_rotate(const vector3& t, const vector3& f={0,0,1});
 }
 
 #endif

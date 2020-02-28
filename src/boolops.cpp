@@ -129,9 +129,16 @@ servoce::shape servoce::make_intersect(const std::vector<const servoce::shape*>&
 
 ///////////////////////////SECTION ALGO///////////////////////////////////////
 static inline TopoDS_Shape __make_section(const TopoDS_Shape& a, 
-	const TopoDS_Shape& b)
+	const TopoDS_Shape& b, bool pretty)
 {
 	BRepAlgoAPI_Section algo(a, b);
+
+	if (pretty) 
+	{
+		algo.ComputePCurveOn1(true);
+		algo.Approximation(true);
+	}
+
 	algo.Build();
 	if ( ! algo.IsDone() ) {
 		printf("warn: section algotithm failed\n");
@@ -140,13 +147,13 @@ static inline TopoDS_Shape __make_section(const TopoDS_Shape& a,
 }
 
 servoce::shape servoce::make_section(const servoce::shape& a, 
-	const servoce::shape& b)
+	const servoce::shape& b, bool pretty)
 {
-	return __make_section(a.Shape(), b.Shape());
+	return __make_section(a.Shape(), b.Shape(), pretty);
 }
 
-servoce::shape servoce::make_section(const servoce::shape& a)
+servoce::shape servoce::make_section(const servoce::shape& a, bool pretty)
 {
-	return make_section(a, servoce::infplane());
+	return make_section(a, servoce::infplane(), pretty);
 }
 /////////////////////////////////////////////////////////////////////////////

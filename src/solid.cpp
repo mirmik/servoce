@@ -49,6 +49,9 @@
 #include <exception>
 #include <assert.h>
 
+#include <servoce/edge.h>
+#include <servoce/face.h>
+
 using namespace servoce;
 
 shape servoce::box(double x, double y, double z, bool center)
@@ -443,13 +446,13 @@ shape _unify_face(const servoce::shape& proto)
 #include <BRepAdaptor_Surface.hxx>
 #include <servoce/boolops.h>
 
-std::vector<servoce::shape> _unify_faces_array(const std::vector<servoce::shape>& input)
+std::vector<servoce::shape> _unify_faces_array(const std::vector<servoce::face_shape>& input)
 {
 	std::vector<servoce::shape> ret;
 	ret.reserve(input.size());
 	std::map<Handle(Geom_Plane), std::vector<const servoce::shape*>> fset;
 
-	for (const servoce::shape& i : input)
+	for (const servoce::face_shape& i : input)
 	{
 		Handle(Geom_Surface) surface = BRep_Tool::Surface(i.Face());
 
@@ -558,14 +561,14 @@ shape _unify_compound(const servoce::shape& proto)
 		builder.Add(comp, _unify_shell(explorer.Current()).Shell());
 	}
 
-	std::vector<servoce::shape> faces;
+	std::vector<servoce::face_shape> faces;
 
 	for (explorer.Init(proto.Shape(), TopAbs_FACE, TopAbs_SHELL); explorer.More(); explorer.Next())
 	{
-		faces.emplace_back(explorer.Current());
+		faces.emplace_back((TopoDS_Face&)explorer.Current());
 	}
 
-	auto faces_new = _unify_faces_array(faces);
+	std::vector<servoce::shape> faces_new = _unify_faces_array(faces);
 
 	for (auto& f : faces_new)
 	{

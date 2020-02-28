@@ -73,7 +73,7 @@ void registry_trans(py::module & m)
 	m.def("rotateX", rotateX, ungil());
 	m.def("rotateY", rotateY, ungil());
 	m.def("rotateZ", rotateZ, ungil());
-	m.def("short_rotate", &short_rotate, ungil());
+	m.def("short_rotate", &short_rotate, py::arg("t"), py::arg("f")=vector3(0,0,1), ungil());
 
 	m.def("mirrorO", (transformation(*)(double,double,double))&mirrorO, ungil());
 	m.def("mirrorO", (transformation(*)(const point3&))&mirrorO, ungil());

@@ -69,6 +69,7 @@ namespace servoce
 		vector3(const vec& oth) : vec(oth) {}
 		vector3(const vector3& oth) : vec(oth) {}
 		vector3(const gp_Vec& vec);
+		vector3(const gp_Dir& vec);
 
 		point3 to_point3() const;
 

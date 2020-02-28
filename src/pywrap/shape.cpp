@@ -9,6 +9,8 @@
 #include <servoce/util/b64.h>
 #include <servoce/shape.h>
 #include <servoce/solid.h>
+#include <servoce/face.h>
+#include <servoce/edge.h>
 #include <servoce/trans.h>
 
 namespace py = pybind11;

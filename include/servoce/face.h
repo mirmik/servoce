@@ -3,11 +3,26 @@
 
 #include <vector>
 #include <servoce/shape.h>
+#include <servoce/surface_algo.h>
+
+#include <BRepAdaptor_Surface.hxx>
 
 class BRepPrimAPI_MakeSweep;
 
 namespace servoce
 {
+	class face_shape : public shape, public surface_algo<face_shape>
+	{
+	public:
+		using surfalgo = surface_algo<face_shape>;
+
+		//edge_shape(TopoDS_Edge& arg) : shape(arg) {}
+		face_shape(){}
+		face_shape(const TopoDS_Face& arg) : shape((const TopoDS_Shape&)arg) {}
+	
+		BRepAdaptor_Surface AdaptorSurface() const;
+	};
+
 	//prim2d
 	shape circle(double r, bool wire = false);
 	shape circle(double r, double angle, bool wire = false);
@@ -15,7 +30,6 @@ namespace servoce
 
 	shape ellipse(double r1, double r2, bool wire = false);
 	shape ellipse(double r1, double r2, double a1, double a2, bool wire = false);
-
 	
 	shape polygon(const servoce::point3* pnts, size_t size);
 	shape polygon(const std::vector<servoce::point3>& pnts);
@@ -24,18 +38,16 @@ namespace servoce
 	shape rectangle(double a, double b, bool center = false, bool wire = false);
 
 	shape textshape(const std::string& text, const std::string fontpath, size_t size);
-
-	shape fill(const servoce::shape& arr);
-
-	shape infplane();
+	face_shape fill(const servoce::shape& arr);
+	face_shape infplane();
 
 	//sweep2d
 	//shape make_sweep(const servoce::shape& profile, const servoce::shape& path); //Не нужна.
 
 	shape fillet2d(const shape& shp, double r, const std::vector<point3>& refs);
 	shape fillet2d(const shape& shp, double r);
-	shape chamfer2d(const shape& shp, double r, const std::vector<point3>& refs);
-	shape chamfer2d(const shape& shp, double r);
+	face_shape chamfer2d(const shape& shp, double r, const std::vector<point3>& refs);
+	face_shape chamfer2d(const shape& shp, double r);
 }
 
 #endif

@@ -24,6 +24,8 @@ class TopoDS_Compound;
 
 namespace servoce
 {
+	class face_shape;
+	class edge_shape;
 	class boundbox;
 
 	enum topoenum
@@ -109,9 +111,9 @@ namespace servoce
 		std::vector<servoce::shape> shells() const;
 		std::vector<servoce::shape> compounds() const;
 		std::vector<servoce::shape> compsolids() const;
-		std::vector<servoce::shape> faces() const;
+		std::vector<servoce::face_shape> faces() const;
 		std::vector<servoce::shape> wires() const;
-		std::vector<servoce::shape> edges() const;
+		std::vector<servoce::edge_shape> edges() const;
 
 		std::vector<TopoDS_Edge> Edges() const;
 
@@ -143,8 +145,8 @@ namespace servoce
 		wire_shape(const TopoDS_Wire& arg) : shape((const TopoDS_Shape&)arg) {}
 	};
 
-	shape	near_face		(const shape& shp, const point3& pnt);
-	shape	near_edge		(const shape& shp, const point3& pnt);
+	face_shape	near_face		(const shape& shp, const point3& pnt);
+	edge_shape	near_edge		(const shape& shp, const point3& pnt);
 	shape 	near_vertex		(const shape& shp, const point3& pnt);
 }
 

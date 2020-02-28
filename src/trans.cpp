@@ -366,7 +366,7 @@ servoce::quaternion servoce::transformation::rotation() const
 	return tr;
 }
 
-servoce::transformation servoce::short_rotate(const vector3& from, const vector3& to)
+servoce::transformation servoce::short_rotate(const vector3& to, const vector3& from)
 {
 	auto f = from.normalize();
 	auto t = to.normalize();

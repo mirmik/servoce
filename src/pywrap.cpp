@@ -321,6 +321,13 @@ PYBIND11_MODULE(libservoce, m)
 	[](const std::string & in) { return restore_string_dump<wire_shape>(b64::base64_decode(in)); }), ungil())
 	;
 
+	py::class_<face_shape, shape>(m, "Face")
+	.def(py::pickle(
+	[](const face_shape & self) { return b64::base64_encode(string_dump(self)); },
+	[](const std::string & in) { return restore_string_dump<face_shape>(b64::base64_decode(in)); }), ungil())
+	.def("normal", &face_shape::normal, py::arg("u")=0, py::arg("v")=0, ungil())
+	;
+
 	m.def("fillet", (shape(*)(const shape&, double, const std::vector<point3>&))&servoce::fillet, ungil(), py::arg("shp"), py::arg("r"), py::arg("refs"));
 	m.def("fillet", (shape(*)(const shape&, double))&servoce::fillet, ungil(), py::arg("shp"), py::arg("r"));
 	m.def("chamfer", (shape(*)(const shape&, double, const std::vector<point3>&))&servoce::chamfer, ungil(), py::arg("shp"), py::arg("r"), py::arg("refs"));
@@ -328,8 +335,8 @@ PYBIND11_MODULE(libservoce, m)
 	
 	m.def("fillet2d", (shape(*)(const shape&, double, const std::vector<point3>&))&servoce::fillet2d, ungil(), py::arg("shp"), py::arg("r"), py::arg("refs"));
 	m.def("fillet2d", (shape(*)(const shape&, double))&servoce::fillet2d, ungil(), py::arg("shp"), py::arg("r"));
-	m.def("chamfer2d", (shape(*)(const shape&, double, const std::vector<point3>&))&servoce::chamfer2d, ungil(), py::arg("shp"), py::arg("r"), py::arg("refs"));
-	m.def("chamfer2d", (shape(*)(const shape&, double))&servoce::chamfer2d, ungil(), py::arg("shp"), py::arg("r"));
+	m.def("chamfer2d", (face_shape(*)(const shape&, double, const std::vector<point3>&))&servoce::chamfer2d, ungil(), py::arg("shp"), py::arg("r"), py::arg("refs"));
+	m.def("chamfer2d", (face_shape(*)(const shape&, double))&servoce::chamfer2d, ungil(), py::arg("shp"), py::arg("r"));
 
 //PRIM3D
 	m.def("box", 		box, ungil(), py::arg("x"), py::arg("y"), py::arg("z"), py::arg("center") = false);
@@ -411,8 +418,8 @@ PYBIND11_MODULE(libservoce, m)
 	m.def("union", (shape(*)(const std::vector<const shape*>&))&make_union, ungil());
 	m.def("difference", (shape(*)(const std::vector<const shape*>&))&make_difference, ungil());
 	m.def("intersect", (shape(*)(const std::vector<const shape*>&))&make_intersect, ungil());
-	m.def("section", (shape(*)(const shape&, const shape&))&make_section, ungil());
-	m.def("section", (shape(*)(const shape&))&make_section, ungil());
+	m.def("section", (shape(*)(const shape&, const shape&,bool))&make_section, ungil());
+	m.def("section", (shape(*)(const shape&,bool))&make_section, ungil());
 
 
 //GRAPHIC
