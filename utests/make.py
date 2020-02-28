@@ -5,8 +5,6 @@ from licant.cxx_modules import application
 from licant.modules import submodule, module
 from licant.libs import include
 
-licant.include("igris")
-licant.include("nos")
 licant.include("servoce")
 
 liboce_include_path = "/usr/local/include/opencascade/"
@@ -33,10 +31,7 @@ application("runtests",
 	ld_flags = "-L/usr/local/lib/",
 
 	include_paths = [".", liboce_include_path],
-	mdepends = [
-		"igris",
-		#"servoce_sources"
-	],
+	mdepends = [],
 
 
 	libs = ["gtest", "pthread",

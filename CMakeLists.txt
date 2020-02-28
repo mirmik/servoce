@@ -21,8 +21,9 @@ file(GLOB SOURCES
 	src/convert.cpp   
 	src/geombase.cpp  
 	src/geomprops.cpp  
-	src/solid.cpp       
-	src/topo.cpp   
+	src/solid.cpp      
+	src/shell.cpp     
+	src/shape.cpp     
 	src/viewer.cpp
 	src/camera.cpp   
 	src/curve2.cpp           
