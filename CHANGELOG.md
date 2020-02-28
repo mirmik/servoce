@@ -1,18 +1,21 @@
 ## 1.20.0 
-Transformation API improved.
+	Transformation API improved.
+	Add shape classes.
+	Change few function`s signature.
+	Many other small changes.
 
 ## 1.19.1
-Refactor
+	Refactor
 
 ## 1.19.0
-Add OSX support.
+	Add OSX support.
 
 ## 1.18.0
-Remove depend modules igris and nos.
+	Remove depend modules igris and nos.
 
 ## 1.17.1
-Fix interactive_object fast drawing for hide function.
+	Fix interactive_object fast drawing for hide function.
 
 ## 1.17.0:
-Add Changelog.
-Add boundbox.
+	Add Changelog.
+	Add boundbox.

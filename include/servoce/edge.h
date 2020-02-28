@@ -23,6 +23,8 @@ namespace servoce {
 		BRepAdaptor_Curve AdaptorCurve() const;
 
 		//curve3::curve3& adaptor_curve
+
+		face_shape fill();
 	};
 
 	edge_shape make_edge(const servoce::curve3::curve3& crv);

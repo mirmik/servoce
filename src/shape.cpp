@@ -193,6 +193,21 @@ servoce::shape servoce::shape::fill()
 	throw "unsuported type";
 }
 
+servoce::shape servoce::fill(const servoce::shape& shp)
+{
+	if (shp.Shape().ShapeType() == TopAbs_EDGE)
+	{
+		return	BRepBuilderAPI_MakeFace(BRepBuilderAPI_MakeWire(shp.Edge()).Wire()).Shape();
+	}
+
+	if (shp.Shape().ShapeType() == TopAbs_WIRE)
+	{
+		return BRepBuilderAPI_MakeFace(shp.Wire()).Shape();
+	}
+
+	throw "unsuported type";
+}
+
 std::vector<servoce::point3> servoce::shape::vertices() const
 {
 	std::vector<servoce::point3> pnts;

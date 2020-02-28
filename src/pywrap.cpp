@@ -10,6 +10,11 @@ namespace py = pybind11;
 using namespace servoce;
 
 void registry_shape(py::module &);
+void registry_wire_shape(py::module &);
+void registry_edge_shape(py::module &);
+void registry_shell_shape(py::module &);
+void registry_solid_shape(py::module & m);
+void registry_face_shape(py::module &);
 void registry_trans(py::module &);
 
 PYBIND11_MODULE(libservoce, m)
@@ -295,38 +300,14 @@ PYBIND11_MODULE(libservoce, m)
 	;
 
 	registry_shape(m);
+	registry_edge_shape(m);
+	registry_wire_shape(m);
+	registry_face_shape(m);
+	registry_shell_shape(m);
+	registry_solid_shape(m);
+
 	registry_trans(m);
 
-	py::class_<edge_shape, shape>(m, "Edge")
-	.def(py::pickle(
-	[](const edge_shape & self) { return b64::base64_encode(string_dump(self)); },
-	[](const std::string & in) { return restore_string_dump<edge_shape>(b64::base64_decode(in)); }), ungil())
-	.def("range", &edge_shape::range, ungil())
-	.def("length", &edge_shape::length, ungil())
-	.def("d0", &edge_shape::d0, ungil())
-	.def("d1", &edge_shape::d1, ungil())
-	.def("linoff", (double(edge_shape::*)(double,double)const)&edge_shape::linoff, ungil())
-	//.def("linoff", (double(edge_shape::*)(double)const)&edge_shape::linoff, ungil())
-	.def("linoff_point", (point3(edge_shape::*)(double,double)const)&edge_shape::linoff_point, ungil())
-	//.def("linoff_point", (point3(edge_shape::*)(double)const)&edge_shape::linoff_point, ungil())
-	.def("uniform_points", (std::vector<servoce::point3>(edge_shape::crvalgo::*)(int, double, double)const)&edge_shape::uniform_points, ungil(), py::arg("npnts"), py::arg("strt"), py::arg("fini"))
-	.def("uniform_points", (std::vector<servoce::point3>(edge_shape::crvalgo::*)(int)const)&edge_shape::uniform_points, ungil(), py::arg("npnts"))
-	.def("uniform", (std::vector<double>(edge_shape::crvalgo::*)(int, double, double)const)&edge_shape::uniform, ungil(), py::arg("npnts"), py::arg("strt"), py::arg("fini"))
-	.def("uniform", (std::vector<double>(edge_shape::crvalgo::*)(int)const)&edge_shape::uniform, ungil(), py::arg("npnts"))
-	;
-
-	py::class_<wire_shape, shape>(m, "Wire")
-	.def(py::pickle(
-	[](const wire_shape & self) { return b64::base64_encode(string_dump(self)); },
-	[](const std::string & in) { return restore_string_dump<wire_shape>(b64::base64_decode(in)); }), ungil())
-	;
-
-	py::class_<face_shape, shape>(m, "Face")
-	.def(py::pickle(
-	[](const face_shape & self) { return b64::base64_encode(string_dump(self)); },
-	[](const std::string & in) { return restore_string_dump<face_shape>(b64::base64_decode(in)); }), ungil())
-	.def("normal", &face_shape::normal, py::arg("u")=0, py::arg("v")=0, ungil())
-	;
 
 	m.def("fillet", (shape(*)(const shape&, double, const std::vector<point3>&))&servoce::fillet, ungil(), py::arg("shp"), py::arg("r"), py::arg("refs"));
 	m.def("fillet", (shape(*)(const shape&, double))&servoce::fillet, ungil(), py::arg("shp"), py::arg("r"));
@@ -338,27 +319,7 @@ PYBIND11_MODULE(libservoce, m)
 	m.def("chamfer2d", (face_shape(*)(const shape&, double, const std::vector<point3>&))&servoce::chamfer2d, ungil(), py::arg("shp"), py::arg("r"), py::arg("refs"));
 	m.def("chamfer2d", (face_shape(*)(const shape&, double))&servoce::chamfer2d, ungil(), py::arg("shp"), py::arg("r"));
 
-//PRIM3D
-	m.def("box", 		box, ungil(), py::arg("x"), py::arg("y"), py::arg("z"), py::arg("center") = false);
 
-	m.def("sphere", 	(shape(*)(double))&sphere, ungil(), py::arg("r"));
-	m.def("sphere", 	(shape(*)(double,double))&sphere, ungil(), py::arg("r"), py::arg("yaw"));
-	m.def("sphere", 	(shape(*)(double,double,double))&sphere, ungil(), py::arg("r"), py::arg("pitch0"), py::arg("pitch1"));
-	m.def("sphere", 	(shape(*)(double,double,double,double))&sphere, ungil(), py::arg("r"), py::arg("pitch0"), py::arg("pitch1"), py::arg("yaw"));
-
-	m.def("cylinder", 	(shape(*)(double, double, bool)) &cylinder, ungil(), py::arg("r"), py::arg("h"), py::arg("center") = false);
-	m.def("cylinder", 	(shape(*)(double, double, double, bool)) &cylinder, ungil(), py::arg("r"), py::arg("h"), py::arg("yaw"), py::arg("center") = false);
-
-	m.def("cone", 		(shape(*)(double, double, double, bool)) &cone, ungil(), py::arg("r1"), py::arg("r2"), py::arg("h"), py::arg("center") = false);
-	m.def("cone", 		(shape(*)(double, double, double, double, bool)) &cone, ungil(), py::arg("r1"), py::arg("r2"), py::arg("h"), py::arg("yaw"), py::arg("center") = false);
-
-	m.def("torus", 		(shape(*)(double, double)) &torus, ungil(), py::arg("r1"), py::arg("r2"));
-	m.def("torus", 		(shape(*)(double, double, double)) &torus, ungil(), py::arg("r1"), py::arg("r2"), py::arg("yaw"));
-	m.def("torus", 		(shape(*)(double, double, double, double)) &torus, ungil(), py::arg("r1"), py::arg("r2"), py::arg("pitch0"), py::arg("pitch1"));
-	m.def("torus", 		(shape(*)(double, double, double, double, double)) &torus, ungil(), py::arg("r1"), py::arg("r2"), py::arg("pitch0"), py::arg("pitch1"), py::arg("yaw"));
-	m.def("halfspace", 	&halfspace, ungil());
-
-	m.def("thicksolid", &thicksolid, ungil());
 	m.def("unify", 		&unify, ungil());
 
 //OPS3D
@@ -369,28 +330,6 @@ PYBIND11_MODULE(libservoce, m)
 	m.def("pipe_shell", 	make_pipe_shell, ungil(), py::arg("prof"), py::arg("path"), py::arg("isFrenet") = false);
 	m.def("loft", 			loft, ungil(), py::arg("arr"), py::arg("smooth")=false);
 	m.def("revol", 			revol, ungil());
-
-//PRIM2D
-	m.def("square", 	square, ungil(), py::arg("a"), py::arg("center") = false, py::arg("wire")=false);
-	m.def("rectangle", 	rectangle, ungil(), py::arg("a"), py::arg("b"), py::arg("center") = false, py::arg("wire")=false);
-	
-	m.def("circle", 	(shape(*)(double, bool)) &circle, ungil(), py::arg("r"), py::arg("wire")=false);
-	m.def("circle", 	(shape(*)(double, double, bool)) &circle, ungil(), py::arg("r"), py::arg("angle"), py::arg("wire")=false);
-	m.def("circle", 	(shape(*)(double, double, double, bool)) &circle, ungil(), py::arg("r"), py::arg("a1"), py::arg("a2"), py::arg("wire")=false);
-	
-	m.def("ellipse", 	(shape(*)(double, double, bool)) &ellipse, ungil(), py::arg("r1"), py::arg("r2"), py::arg("wire")=false);
-	m.def("ellipse", 	(shape(*)(double, double, double, double, bool)) &ellipse, ungil(), py::arg("r1"), py::arg("r2"), py::arg("a1"), py::arg("a2"), py::arg("wire")=false);
-	
-	m.def("ngon", 		ngon, ungil(), py::arg("r"), py::arg("n"), py::arg("wire")=false);
-	m.def("polygon", 	(shape(*)(const std::vector<point3>&))&polygon, ungil(), py::arg("pnts"));
-	m.def("textshape", 	textshape, ungil(), py::arg("text"), py::arg("fontpath"), py::arg("size"));
-
-	m.def("infplane", 	infplane, ungil());
-
-	m.def("fill", &fill, ungil());
-
-//PRIM1D
-	#include <pywrap/wire.h>
 
 //SURFACE
 	py::class_<surface::surface>(m, "surface")

@@ -96,7 +96,7 @@ namespace servoce
 		double moment_of_inertia(const servoce::vector3& axis) const;
 		double radius_of_gyration(const servoce::vector3& axis) const;
 
-		servoce::shape infill_face(); ///< Превращает замкнутый двумерный контур в 2d объект
+		//servoce::shape infill_face(); ///< Превращает замкнутый двумерный контур в 2d объект
 
 		servoce::shape operator+(const shape& oth) const { return servoce::make_union(*this, oth); }
 		servoce::shape operator-(const shape& oth) const { return servoce::make_difference(*this, oth); }
@@ -137,13 +137,7 @@ namespace servoce
 		boundbox bounding_box();
 	};
 
-	class wire_shape : public shape
-	{
-	public:
-		//wire_shape(TopoDS_Wire& arg) : shape(arg) {}
-		wire_shape() {}
-		wire_shape(const TopoDS_Wire& arg) : shape((const TopoDS_Shape&)arg) {}
-	};
+	shape fill(const shape&);
 
 	face_shape	near_face		(const shape& shp, const point3& pnt);
 	edge_shape	near_edge		(const shape& shp, const point3& pnt);

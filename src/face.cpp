@@ -102,15 +102,15 @@ servoce::shape servoce::ellipse(double r1, double r2, double a1, double a2, bool
 
 
 
-servoce::shape servoce::polygon(const servoce::point3* pnts, size_t size)
+servoce::face_shape servoce::polygon(const servoce::point3* pnts, size_t size)
 {
 	BRepBuilderAPI_MakePolygon mk;
 	for (unsigned int i = 0; i < size; ++i) mk.Add(pnts[i].Pnt());
 	mk.Close();
-	return BRepBuilderAPI_MakeFace(mk).Shape();
+	return BRepBuilderAPI_MakeFace(mk).Face();
 }
 
-servoce::shape servoce::polygon(const std::vector<servoce::point3>& pnts)
+servoce::face_shape servoce::polygon(const std::vector<servoce::point3>& pnts)
 {
 	return polygon(pnts.data(), pnts.size());
 }
@@ -174,11 +174,11 @@ servoce::shape servoce::textshape(const std::string& text, const std::string fon
 	return textshp;
 }
 
-servoce::face_shape servoce::fill(const servoce::shape& obj) 
+/*servoce::face_shape servoce::fill(const servoce::shape& obj) 
 {
 	BRepBuilderAPI_MakeFace mk(obj.Wire_orEdgeToWire());
 	return mk.Face();
-}
+}*/
 
 servoce::shape servoce::fillet2d(const servoce::shape& shp, double r, const std::vector<servoce::point3>& refs)
 {

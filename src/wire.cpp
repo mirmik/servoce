@@ -1,5 +1,6 @@
 #include <servoce/wire.h>
 #include <servoce/edge.h>
+#include <servoce/face.h>
 #include <servoce/curve3.h>
 #include <local/util.h>
 
@@ -36,10 +37,13 @@
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
 
+#include <assert.h>
+
+/*
 servoce::shape servoce::shape::infill_face()
 {
 	return BRepBuilderAPI_MakeFace(Wire()).Face();
-}
+}*/
 
 servoce::edge_shape servoce::make_segment(const servoce::point3& a, const servoce::point3& b)
 {
@@ -275,7 +279,13 @@ servoce::edge_shape servoce::make_interpolate(const std::vector<servoce::point3>
 	return BRepBuilderAPI_MakeEdge(algo.Curve()).Edge();
 }
 
-servoce::shape servoce::sew(const std::vector<const servoce::shape*>& arr)
+servoce::wire_shape servoce::sew(const std::vector<const servoce::shape*>& arr)
+{
+	std::cout << "servoce::sew is deprecated. use servoce::make_wire instead." <<std::endl;
+	return make_wire(arr);
+}
+
+servoce::wire_shape servoce::make_wire(const std::vector<const servoce::shape*>& arr)
 {
 	BRepBuilderAPI_MakeWire mk;
 
@@ -287,18 +297,10 @@ servoce::shape servoce::sew(const std::vector<const servoce::shape*>& arr)
 			mk.Add(ptr->Edge());
 	}
 
-	/*try {*/
 	return mk.Wire();
-	/*}
-	catch
-	{
-		std::cout << "fail. maybe unsorted" << std::endl;
-
-		std::vector<const servoce::shape*> sorted;
-		sorted.push_back(arr[0]);
-
-	}*/
 }
+
+
 
 servoce::edge_shape servoce::circle_arc(const point3& p1, const point3& p2, const point3& p3)
 {
@@ -400,4 +402,10 @@ servoce::curve3::curve3 servoce::extract_curve(const servoce::shape& edg)
 		Edg, first, last);	
 
 	return servoce::curve3::curve3(crv);
+}
+
+servoce::face_shape servoce::wire_shape::fill()
+{
+	assert(Shape().ShapeType() == TopAbs_WIRE);
+	return BRepBuilderAPI_MakeFace(Wire()).Face();
 }

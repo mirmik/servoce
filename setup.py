@@ -95,6 +95,11 @@ pyservoce_lib = Extension(
 	sources= [
 		"src/pywrap.cpp",
 		"src/pywrap/shape.cpp",
+		"src/pywrap/edge.cpp",
+		"src/pywrap/wire.cpp",
+		"src/pywrap/shell.cpp",
+		"src/pywrap/solid.cpp",
+		"src/pywrap/face.cpp",
 		"src/pywrap/trans.cpp",
 
 		"src/geombase_py.cpp",
@@ -106,6 +111,7 @@ pyservoce_lib = Extension(
 		"src/shape.cpp",
 		"src/trans.cpp",
 		"src/solid.cpp",
+		"src/shell.cpp",
 		"src/face.cpp",
 		"src/wire.cpp",
 		"src/edge.cpp",
@@ -117,7 +123,6 @@ pyservoce_lib = Extension(
 		"src/scene.cpp",
 		"src/geomprops.cpp",
 		"src/viewer.cpp",
-		"src/shape_view.cpp",
 		"src/camera.cpp",
 		"src/prs3d.cpp",
 		"src/interactive_object.cpp",
@@ -156,7 +161,7 @@ pyservoce_lib = Extension(
 setup(
 	name="pyservoce",
 	packages=["pyservoce"],
-	version="1.18.0",
+	version="1.20.0",
 	license="MIT",
 	description="CAD system for righteous zen programmers ",
 	author="mirmik",

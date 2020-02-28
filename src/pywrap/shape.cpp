@@ -124,4 +124,6 @@ void registry_shape(py::module & m)
 	//.def("moment_of_inertia", &shape::moment_of_inertia, ungil()) //TODO
 	//.def("radius_of_gyration", &shape::radius_of_gyration, ungil()) //TODO
 	;
+
+	m.def("fill", &servoce::fill, ungil());
 }

@@ -1,7 +1,6 @@
 #ifndef SERVOCE_SCENE_H
 #define SERVOCE_SCENE_H
 
-#include <servoce/shape_view.h>
 #include <servoce/interactive_object.h>
 #include <servoce/viewer.h>
 #include <servoce/shape.h>
@@ -20,7 +19,6 @@ namespace servoce
 	class scene
 	{
 	public:
-		//std::list<std::shared_ptr<shape_view>> shape_views;
 		std::list<std::shared_ptr<interactive_object>> iobjs;
 		std::shared_ptr<servoce::viewer> vwer;
 
@@ -42,11 +40,6 @@ namespace servoce
 		std::shared_ptr<interactive_object> add(const servoce::shape& shp, servoce::color color = mech);
 		std::shared_ptr<interactive_object> add(const servoce::point3& pnt, servoce::color color = mech);
 		std::shared_ptr<interactive_object> add(std::shared_ptr<servoce::interactive_object> iobj);
-
-		//void append(const servoce::scene& scn);
-
-		//std::vector<servoce::shape> shapes_array();
-		//std::vector<servoce::color> color_array();
 
 		AIS_InteractiveContext* InteractiveContext();
 
