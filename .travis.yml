@@ -4,9 +4,21 @@ matrix:
   include:
     - os: linux
       python:
-        "3.7"
+        "3.8"
             
       install: 
+        - python3 -m pip install pyservoce
+
+      script:
+        - cd pytest
+        - python3 ./inctest.py
+        - python3 ./apitest.py
+
+    - os: osx
+      osx_image: xcode11.2
+      language: shell
+
+      install:
         - python3 -m pip install pyservoce
 
       script:
@@ -50,18 +62,6 @@ matrix:
  
         - git clone https://github.com/google/googletest googletest/
         - cd googletest
-        - CXX=g++-7 CC=gcc-7 cmake .
-        - make
-        - sudo make install
-        - cd ..
-
-        - cd igris
-        - CXX=g++-7 CC=gcc-7 cmake .
-        - make
-        - sudo make install
-        - cd ..
-
-        - cd nos
         - CXX=g++-7 CC=gcc-7 cmake .
         - make
         - sudo make install

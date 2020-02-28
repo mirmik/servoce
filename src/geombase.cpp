@@ -14,8 +14,11 @@
 servoce::point2::point2(const gp_Pnt2d& pnt)
 	: vec(pnt.X(), pnt.Y()) {}
 
-servoce::vector3::vector3(const gp_Vec& pnt)
-	: vec(pnt.X(), pnt.Y(), pnt.Z()) {}
+servoce::vector3::vector3(const gp_Vec& v)
+	: vec(v.X(), v.Y(), v.Z()) {}
+
+servoce::vector3::vector3(const gp_Dir& d)
+	: vec(d.X(), d.Y(), d.Z()) {}
 
 servoce::point3::point3(const gp_Pnt& pnt)
 	: vec(pnt.X(), pnt.Y(), pnt.Z()) {}

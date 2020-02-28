@@ -1,65 +1,21 @@
 #include <servoce/servoce.h>
-//#include <servoce/display.h>
 #include <servoce/util/b64.h>
 
-#include <pybind11/pybind11.h>
-#include <pybind11/operators.h>
-#include <pybind11/stl.h>
+#include <local/pywrap_util.h>
 
 #include <exception>
-
 #include <Standard_Failure.hxx>
-
-//#include <nos/trace.h>
 
 namespace py = pybind11;
 using namespace servoce;
 
-#define DEF_TRANSFORM_OPERATIONS(TYPE) 					\
-.def("transform", (TYPE(TYPE::*)(const transformation& trans)) &TYPE::transform, ungil())			\
-.def("transform", (TYPE(TYPE::*)(const general_transformation& trans)) &TYPE::transform, ungil())	\
-.def("translate", &TYPE::translate, py::arg("x")=0, py::arg("y")=0, py::arg("z")=0, ungil())			\
-.def("up", &TYPE::up, ungil())							\
-.def("down", &TYPE::down, ungil())						\
-.def("right", &TYPE::right, ungil())					\
-.def("left", &TYPE::left, ungil())						\
-.def("forw", &TYPE::forw, ungil())						\
-.def("back", &TYPE::back, ungil())						\
-.def("rotate", &TYPE::rotate, ungil())					\
-.def("rotateX", &TYPE::rotateX, ungil())				\
-.def("rotateY", &TYPE::rotateY, ungil())				\
-.def("rotateZ", &TYPE::rotateZ, ungil())				\
-.def("mirrorX", &TYPE::mirrorX, ungil())				\
-.def("mirrorY", &TYPE::mirrorY, ungil())				\
-.def("mirrorZ", &TYPE::mirrorZ, ungil())				\
-.def("mirrorXY", &TYPE::mirrorXY, ungil())				\
-.def("mirrorYZ", &TYPE::mirrorYZ, ungil())				\
-.def("mirrorXZ", &TYPE::mirrorXZ, ungil())				\
-.def("scale", 	 &TYPE::scale,    ungil(), py::arg("factor"), py::arg("center") = point3()) \
-.def("scaleX",   &TYPE::scaleX,   ungil(), py::arg("factor")) \
-.def("scaleY",   &TYPE::scaleY,   ungil(), py::arg("factor")) \
-.def("scaleZ",   &TYPE::scaleZ,   ungil(), py::arg("factor")) \
-.def("scaleXY",  &TYPE::scaleXY,  ungil(), py::arg("x"), py::arg("y")) \
-.def("scaleYZ",  &TYPE::scaleYZ,  ungil(), py::arg("y"), py::arg("z")) \
-.def("scaleXZ",  &TYPE::scaleXZ,  ungil(), py::arg("x"), py::arg("z")) \
-.def("scaleXYZ", &TYPE::scaleXYZ, ungil(), py::arg("x"), py::arg("y"), py::arg("z")) 
-
-using ungil = py::call_guard<py::gil_scoped_release>;
-
-std::vector<servoce::point3> points(const py::list& lst) 
-{
-	std::vector<servoce::point3> ret;
-	ret.reserve(lst.size());
-	for (auto& l : lst) 
-	{
-		bool b = py::isinstance<py::list>(l);
-		if (b)
-			ret.emplace_back(servoce::point3(l.cast<py::list>()));
-		else 
-			ret.emplace_back(l.cast<servoce::point3>());
-	}
-	return ret;
-} 
+void registry_shape(py::module &);
+void registry_wire_shape(py::module &);
+void registry_edge_shape(py::module &);
+void registry_shell_shape(py::module &);
+void registry_solid_shape(py::module & m);
+void registry_face_shape(py::module &);
+void registry_trans(py::module &);
 
 PYBIND11_MODULE(libservoce, m)
 {
@@ -69,7 +25,6 @@ PYBIND11_MODULE(libservoce, m)
 	
 	static py::exception<Standard_ConstructionError> construction_error(m, 
 		"OpenCascade_Standard_ConstructionError");
-
 
 	py::register_exception_translator([](std::exception_ptr p)
 	{
@@ -344,85 +299,15 @@ PYBIND11_MODULE(libservoce, m)
 	}), ungil())
 	;
 
-	py::class_<shape>(m, "Shape")
-	DEF_TRANSFORM_OPERATIONS(shape)
-	.def("__add__", (shape(shape::*)(const shape&))&shape::operator+, ungil())
-	.def("__sub__", &shape::operator-, ungil())
-	.def("__xor__", &shape::operator^, ungil())
-	.def(py::pickle(
-	[](const shape & self) { return b64::base64_encode(string_dump(self)); },
-	[](const std::string & in) { return restore_string_dump<shape>(b64::base64_decode(in)); }), ungil())
-	.def("fill", &shape::fill)
-	.def("center", &shape::center, ungil())
-	.def("extrude", (shape(shape::*)(const vector3&, bool)) &shape::extrude, ungil(), py::arg("vec"), py::arg("center") = false)
-	.def("extrude", (shape(shape::*)(double, double, double, bool)) &shape::extrude, ungil(), py::arg("x"), py::arg("y"), py::arg("z"), py::arg("center") = false)
-	.def("extrude", (shape(shape::*)(double, bool)) &shape::extrude, ungil(), py::arg("z"), py::arg("center") = false)
-	.def("is_closed", &shape::is_closed, ungil())
-	.def("sfvertex", &shape::sfvertex, ungil())
-	.def("endpoints", &shape::sfvertex, ungil())
+	registry_shape(m);
+	registry_edge_shape(m);
+	registry_wire_shape(m);
+	registry_face_shape(m);
+	registry_shell_shape(m);
+	registry_solid_shape(m);
 
-	.def("vertices", &shape::vertices, ungil())
-	.def("solids", &shape::solids, ungil())
-	.def("faces", &shape::faces, ungil())
-	.def("edges", &shape::edges, ungil())
-	.def("wires", &shape::wires, ungil())
-	.def("shells", &shape::shells, ungil())
-	.def("compounds", &shape::compounds, ungil())
-	.def("compsolids", &shape::compsolids, ungil())
+	registry_trans(m);
 
-	.def("shapetype", &shape::shapetype_as_string, ungil())
-	.def("print_topo_dump", &shape::print_topo_dump, ungil())
-
-	.def("fillet", (shape(shape::*)(double, const std::vector<point3>&))&shape::fillet, ungil(), py::arg("r"), py::arg("refs"))
-	.def("fillet", (shape(shape::*)(double))&shape::fillet, ungil(), py::arg("r"))
-	.def("chamfer", (shape(shape::*)(double, const std::vector<point3>&))&shape::chamfer, ungil(), py::arg("r"), py::arg("refs"))
-	.def("chamfer", (shape(shape::*)(double))&shape::chamfer, ungil(), py::arg("r"))
-	
-	.def("fillet2d", (shape(shape::*)(double, const std::vector<point3>&))&shape::fillet2d, ungil(), py::arg("r"), py::arg("refs"))
-	.def("fillet2d", (shape(shape::*)(double))&shape::fillet2d, ungil(), py::arg("r"))
-	.def("chamfer2d", (shape(shape::*)(double, const std::vector<point3>&))&shape::chamfer2d, ungil(), py::arg("r"), py::arg("refs"))
-	.def("chamfer2d", (shape(shape::*)(double))&shape::chamfer2d, ungil(), py::arg("r"))
-	
-	.def("fillet", [](const shape& shp, double r, const py::list& arr) { return fillet(shp,r,points(arr)); }, ungil(), py::arg("r"), py::arg("refs"))
-	.def("chamfer", [](const shape& shp, double r, const py::list& arr) { return fillet(shp,r,points(arr)); }, ungil(), py::arg("r"), py::arg("refs"))
-	.def("chamfer2d", [](const shape& shp, double r, const py::list& arr) { return fillet(shp,r,points(arr)); }, ungil(), py::arg("r"), py::arg("refs"))
-	.def("fillet2d", [](const shape& shp, double r, const py::list& arr) { return fillet(shp,r,points(arr)); }, ungil(), py::arg("r"), py::arg("refs"))
-	
-	.def("cmradius", &shape::cmradius, ungil())
-	.def("mass", &shape::mass, ungil())
-	.def("matrix_of_inertia", &shape::matrix_of_inertia, ungil())
-	.def("static_moments", &shape::static_moments, ungil())
-
-	.def("bbox", &servoce::shape::bounding_box, ungil())
-	//.def("moment_of_inertia", &shape::moment_of_inertia, ungil()) //TODO
-	//.def("radius_of_gyration", &shape::radius_of_gyration, ungil()) //TODO
-
-
-	;
-
-	py::class_<edge_shape, shape>(m, "Edge")
-	.def(py::pickle(
-	[](const edge_shape & self) { return b64::base64_encode(string_dump(self)); },
-	[](const std::string & in) { return restore_string_dump<edge_shape>(b64::base64_decode(in)); }), ungil())
-	.def("range", &edge_shape::range, ungil())
-	.def("length", &edge_shape::length, ungil())
-	.def("d0", &edge_shape::d0, ungil())
-	.def("d1", &edge_shape::d1, ungil())
-	.def("linoff", (double(edge_shape::*)(double,double)const)&edge_shape::linoff, ungil())
-	//.def("linoff", (double(edge_shape::*)(double)const)&edge_shape::linoff, ungil())
-	.def("linoff_point", (point3(edge_shape::*)(double,double)const)&edge_shape::linoff_point, ungil())
-	//.def("linoff_point", (point3(edge_shape::*)(double)const)&edge_shape::linoff_point, ungil())
-	.def("uniform_points", (std::vector<servoce::point3>(edge_shape::crvalgo::*)(int, double, double)const)&edge_shape::uniform_points, ungil(), py::arg("npnts"), py::arg("strt"), py::arg("fini"))
-	.def("uniform_points", (std::vector<servoce::point3>(edge_shape::crvalgo::*)(int)const)&edge_shape::uniform_points, ungil(), py::arg("npnts"))
-	.def("uniform", (std::vector<double>(edge_shape::crvalgo::*)(int, double, double)const)&edge_shape::uniform, ungil(), py::arg("npnts"), py::arg("strt"), py::arg("fini"))
-	.def("uniform", (std::vector<double>(edge_shape::crvalgo::*)(int)const)&edge_shape::uniform, ungil(), py::arg("npnts"))
-	;
-
-	py::class_<wire_shape, shape>(m, "Wire")
-	.def(py::pickle(
-	[](const wire_shape & self) { return b64::base64_encode(string_dump(self)); },
-	[](const std::string & in) { return restore_string_dump<wire_shape>(b64::base64_decode(in)); }), ungil())
-	;
 
 	m.def("fillet", (shape(*)(const shape&, double, const std::vector<point3>&))&servoce::fillet, ungil(), py::arg("shp"), py::arg("r"), py::arg("refs"));
 	m.def("fillet", (shape(*)(const shape&, double))&servoce::fillet, ungil(), py::arg("shp"), py::arg("r"));
@@ -431,30 +316,10 @@ PYBIND11_MODULE(libservoce, m)
 	
 	m.def("fillet2d", (shape(*)(const shape&, double, const std::vector<point3>&))&servoce::fillet2d, ungil(), py::arg("shp"), py::arg("r"), py::arg("refs"));
 	m.def("fillet2d", (shape(*)(const shape&, double))&servoce::fillet2d, ungil(), py::arg("shp"), py::arg("r"));
-	m.def("chamfer2d", (shape(*)(const shape&, double, const std::vector<point3>&))&servoce::chamfer2d, ungil(), py::arg("shp"), py::arg("r"), py::arg("refs"));
-	m.def("chamfer2d", (shape(*)(const shape&, double))&servoce::chamfer2d, ungil(), py::arg("shp"), py::arg("r"));
+	m.def("chamfer2d", (face_shape(*)(const shape&, double, const std::vector<point3>&))&servoce::chamfer2d, ungil(), py::arg("shp"), py::arg("r"), py::arg("refs"));
+	m.def("chamfer2d", (face_shape(*)(const shape&, double))&servoce::chamfer2d, ungil(), py::arg("shp"), py::arg("r"));
 
-//PRIM3D
-	m.def("box", 		box, ungil(), py::arg("x"), py::arg("y"), py::arg("z"), py::arg("center") = false);
 
-	m.def("sphere", 	(shape(*)(double))&sphere, ungil(), py::arg("r"));
-	m.def("sphere", 	(shape(*)(double,double))&sphere, ungil(), py::arg("r"), py::arg("yaw"));
-	m.def("sphere", 	(shape(*)(double,double,double))&sphere, ungil(), py::arg("r"), py::arg("pitch0"), py::arg("pitch1"));
-	m.def("sphere", 	(shape(*)(double,double,double,double))&sphere, ungil(), py::arg("r"), py::arg("pitch0"), py::arg("pitch1"), py::arg("yaw"));
-
-	m.def("cylinder", 	(shape(*)(double, double, bool)) &cylinder, ungil(), py::arg("r"), py::arg("h"), py::arg("center") = false);
-	m.def("cylinder", 	(shape(*)(double, double, double, bool)) &cylinder, ungil(), py::arg("r"), py::arg("h"), py::arg("yaw"), py::arg("center") = false);
-
-	m.def("cone", 		(shape(*)(double, double, double, bool)) &cone, ungil(), py::arg("r1"), py::arg("r2"), py::arg("h"), py::arg("center") = false);
-	m.def("cone", 		(shape(*)(double, double, double, double, bool)) &cone, ungil(), py::arg("r1"), py::arg("r2"), py::arg("h"), py::arg("yaw"), py::arg("center") = false);
-
-	m.def("torus", 		(shape(*)(double, double)) &torus, ungil(), py::arg("r1"), py::arg("r2"));
-	m.def("torus", 		(shape(*)(double, double, double)) &torus, ungil(), py::arg("r1"), py::arg("r2"), py::arg("yaw"));
-	m.def("torus", 		(shape(*)(double, double, double, double)) &torus, ungil(), py::arg("r1"), py::arg("r2"), py::arg("pitch0"), py::arg("pitch1"));
-	m.def("torus", 		(shape(*)(double, double, double, double, double)) &torus, ungil(), py::arg("r1"), py::arg("r2"), py::arg("pitch0"), py::arg("pitch1"), py::arg("yaw"));
-	m.def("halfspace", 	&halfspace, ungil());
-
-	m.def("thicksolid", &thicksolid, ungil());
 	m.def("unify", 		&unify, ungil());
 
 //OPS3D
@@ -465,28 +330,6 @@ PYBIND11_MODULE(libservoce, m)
 	m.def("pipe_shell", 	make_pipe_shell, ungil(), py::arg("prof"), py::arg("path"), py::arg("isFrenet") = false);
 	m.def("loft", 			loft, ungil(), py::arg("arr"), py::arg("smooth")=false);
 	m.def("revol", 			revol, ungil());
-
-//PRIM2D
-	m.def("square", 	square, ungil(), py::arg("a"), py::arg("center") = false, py::arg("wire")=false);
-	m.def("rectangle", 	rectangle, ungil(), py::arg("a"), py::arg("b"), py::arg("center") = false, py::arg("wire")=false);
-	
-	m.def("circle", 	(shape(*)(double, bool)) &circle, ungil(), py::arg("r"), py::arg("wire")=false);
-	m.def("circle", 	(shape(*)(double, double, bool)) &circle, ungil(), py::arg("r"), py::arg("angle"), py::arg("wire")=false);
-	m.def("circle", 	(shape(*)(double, double, double, bool)) &circle, ungil(), py::arg("r"), py::arg("a1"), py::arg("a2"), py::arg("wire")=false);
-	
-	m.def("ellipse", 	(shape(*)(double, double, bool)) &ellipse, ungil(), py::arg("r1"), py::arg("r2"), py::arg("wire")=false);
-	m.def("ellipse", 	(shape(*)(double, double, double, double, bool)) &ellipse, ungil(), py::arg("r1"), py::arg("r2"), py::arg("a1"), py::arg("a2"), py::arg("wire")=false);
-	
-	m.def("ngon", 		ngon, ungil(), py::arg("r"), py::arg("n"), py::arg("wire")=false);
-	m.def("polygon", 	(shape(*)(const std::vector<point3>&))&polygon, ungil(), py::arg("pnts"));
-	m.def("textshape", 	textshape, ungil(), py::arg("text"), py::arg("fontpath"), py::arg("size"));
-
-	m.def("infplane", 	infplane, ungil());
-
-	m.def("fill", &fill, ungil());
-
-//PRIM1D
-	#include <pywrap/wire.h>
 
 //SURFACE
 	py::class_<surface::surface>(m, "surface")
@@ -514,78 +357,9 @@ PYBIND11_MODULE(libservoce, m)
 	m.def("union", (shape(*)(const std::vector<const shape*>&))&make_union, ungil());
 	m.def("difference", (shape(*)(const std::vector<const shape*>&))&make_difference, ungil());
 	m.def("intersect", (shape(*)(const std::vector<const shape*>&))&make_intersect, ungil());
-	m.def("section", (shape(*)(const shape&, const shape&))&make_section, ungil());
-	m.def("section", (shape(*)(const shape&))&make_section, ungil());
+	m.def("section", (shape(*)(const shape&, const shape&,bool))&make_section, ungil());
+	m.def("section", (shape(*)(const shape&,bool))&make_section, ungil());
 
-//TRANS
-	py::class_<transformation>(m, "transformation")
-	.def("__call__", (shape(transformation::*)(const shape&)const)&transformation::operator(), ungil())
-	.def("__call__", (point3(transformation::*)(const point3&)const)&transformation::operator(), ungil())
-	.def("__call__", (vector3(transformation::*)(const vector3&)const)&transformation::operator(), ungil())
-	.def("__call__", (transformation(transformation::*)(const transformation&)const)&transformation::operator(), ungil())
-	.def("__mul__", &transformation::operator*, ungil())
-	.def("invert", &transformation::invert)
-	.def("inverse", &transformation::invert)
-	.def(py::pickle(
-	[](const transformation & self) { return b64::base64_encode(self.string_dump()); },
-	[](const std::string & in) { return transformation::restore_string_dump(b64::base64_decode(in)); }), ungil())
-	.def("translation_part", &transformation::translation_part)
-	.def("rotation_part", &transformation::rotation_part)
-	.def("translation", &transformation::translation)
-	.def("rotation", &transformation::rotation)
-	.def("__repr__", [](const transformation & trsf)
-	{
-		char buf[128];
-		auto rot = trsf.rotation();
-		auto mov = trsf.translation(); 
-		sprintf(buf, "trans((%f,%f,%f,%f),(%f,%f,%f))", rot.x, rot.y, rot.z, rot.w, mov.x, mov.y, mov.z);
-		return std::string(buf);
-	})
-	;
-
-	py::class_<general_transformation>(m, "general_transformation")
-	.def("__call__", (shape(general_transformation::*)(const shape&)const)&general_transformation::operator(), ungil())
-	.def("__call__", (general_transformation(general_transformation::*)(const general_transformation&)const)&general_transformation::operator(), ungil())
-	//.def("__mul__", &general_transformation::operator* )
-	.def(py::pickle(
-	[](const general_transformation & self) { return b64::base64_encode(self.string_dump()); },
-	[](const std::string & in) { return general_transformation::restore_string_dump(b64::base64_decode(in)); }), ungil())
-	;
-
-	m.def("translate", (transformation(*)(double, double, double)) &translate, py::arg("x")=0, py::arg("y")=0, py::arg("z")=0, ungil());
-	m.def("translate", (transformation(*)(double, double)) &translate, py::arg("x")=0, py::arg("y")=0, ungil());
-	m.def("translate", (transformation(*)(const vector3&)) &translate, ungil());
-	m.def("axrotation", axrotation, ungil());
-	m.def("axis_mirror", axis_mirror, ungil());
-	m.def("plane_mirror", plane_mirror, ungil());
-
-	m.def("rotate", rotate, ungil());
-	m.def("rotateX", rotateX, ungil());
-	m.def("rotateY", rotateY, ungil());
-	m.def("rotateZ", rotateZ, ungil());
-	m.def("mirrorX", mirrorX, ungil());
-	m.def("mirrorY", mirrorY, ungil());
-	m.def("mirrorZ", mirrorZ, ungil());
-	m.def("mirrorXY", mirrorXY, ungil());
-	m.def("mirrorXZ", mirrorXZ, ungil());
-	m.def("mirrorYZ", mirrorYZ, ungil());
-	m.def("up", up, ungil());
-	m.def("down", down, ungil());
-	m.def("left", left, ungil());
-	m.def("right", right, ungil());
-	m.def("forw", forw, ungil());
-	m.def("back", back, ungil());
-	m.def("scale", &scale, ungil(), py::arg("factor"), py::arg("center") = servoce::point3());
-	m.def("scaleX", scaleX, ungil(), py::arg("factor"));
-	m.def("scaleY", scaleY, ungil(), py::arg("factor"));
-	m.def("scaleZ", scaleZ, ungil(), py::arg("factor"));
-	m.def("scaleXY", scaleXY, ungil(), py::arg("x"), py::arg("y"));
-	m.def("scaleYZ", scaleYZ, ungil(), py::arg("y"), py::arg("z"));
-	m.def("scaleXZ", scaleXZ, ungil(), py::arg("x"), py::arg("z"));
-	m.def("scaleXYZ", &scaleXYZ, ungil(), py::arg("x"), py::arg("y"), py::arg("z"));
-	m.def("nulltrans", nulltrans, ungil());
-
-	m.def("short_rotate", &short_rotate, ungil());
 
 //GRAPHIC
 	py::class_<color>(m, "Color")
@@ -612,10 +386,17 @@ PYBIND11_MODULE(libservoce, m)
 		memcpy(&arr, decoded.data(), 4 * sizeof(float));
 		return color{arr[0],arr[1],arr[2],arr[3]};
 	}), ungil())
+	.def("__repr__", [](const color & pnt)
+	{
+		char buf[128];
+		sprintf(buf, "Color(%f,%f,%f,%f)", (double)pnt.r, (double)pnt.g, (double)pnt.b, (double)pnt.a);
+		return std::string(buf);
+	})
 	;
 
 	py::class_<interactive_object, std::shared_ptr<interactive_object>>(m, "interactive_object")
 	.def(py::init<const servoce::shape&>(), ungil())
+	.def(py::init<const servoce::shape&, const servoce::color&>(), ungil())
 	.def("set_color", (void(interactive_object::*)(const servoce::color&))&interactive_object::set_color, ungil())
 	.def("set_color", (void(interactive_object::*)(float,float,float,float))&interactive_object::set_color, py::arg("r"), py::arg("g"), py::arg("b"), py::arg("a")=0, ungil())
 	.def("color", &interactive_object::color, ungil())
@@ -624,16 +405,6 @@ PYBIND11_MODULE(libservoce, m)
 	.def("hide", &interactive_object::hide, ungil())
 	.def("bbox", &servoce::interactive_object::bounding_box, ungil())
 	;
-
-	/*py::class_<shape_view, std::shared_ptr<shape_view>>(m, "ShapeView")
-	.def("shape", &shape_view::shape, ungil())
-	.def("color", &shape_view::color, ungil())
-	.def("set_color", (void(shape_view::*)(const servoce::color&))&shape_view::set_color, ungil())
-	.def("set_color", (void(shape_view::*)(float,float,float,float))&shape_view::set_color, py::arg("r"), py::arg("g"), py::arg("b"), py::arg("a")=0, ungil())
-	.def("set_location", &shape_view::set_location, ungil())
-	.def("relocate", &shape_view::relocate, ungil())
-	.def("hide", &shape_view::hide, ungil())
-	;*/
 
 	py::class_<scene>(m, "Scene")
 	.def(py::init<>(), ungil())
@@ -740,3 +511,18 @@ PYBIND11_MODULE(libservoce, m)
 	//	.def("inermat", &GProp_GProps::MatrixOfInertia)
 	;
 }
+
+std::vector<servoce::point3> points(const py::list& lst) 
+{
+	std::vector<servoce::point3> ret;
+	ret.reserve(lst.size());
+	for (auto& l : lst) 
+	{
+		bool b = py::isinstance<py::list>(l);
+		if (b)
+			ret.emplace_back(servoce::point3(l.cast<py::list>()));
+		else 
+			ret.emplace_back(l.cast<servoce::point3>());
+	}
+	return ret;
+} 

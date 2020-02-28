@@ -35,10 +35,6 @@
 #include <AIS_Axis.hxx>
 #include <Geom_Axis1Placement.hxx>
 
-//debug
-#include <nos/trace.h>
-#include <igris/util/bug.h>
-
 #include <mutex>
 
 extern Handle(Aspect_DisplayConnection) g_displayConnection;
@@ -48,7 +44,6 @@ extern std::recursive_mutex viewrecursive_mutex;
 
 inline Handle(Aspect_DisplayConnection) GetDisplayConnection()
 {
-	TRACE();
 	static bool inited = false;
 
 	if (!inited)
@@ -61,7 +56,6 @@ inline Handle(Aspect_DisplayConnection) GetDisplayConnection()
 
 inline Handle(Graphic3d_GraphicDriver) GetGraphicDriver()
 {
-	TRACE();
 	static bool inited = false;
 
 	if (!inited)
@@ -72,7 +66,7 @@ inline Handle(Graphic3d_GraphicDriver) GetGraphicDriver()
 	return g_graphicDriver;
 }
 
-class OccViewerContext;
+struct OccViewerContext;
 
 struct OccViewWindow
 {
@@ -87,28 +81,29 @@ struct OccViewWindow
 #endif
 
 	OccViewerContext* parent;
+	#if defined(__APPLE__)
+	void* winddesc;
+	#else
 	int winddesc;
+	#endif
 
 public:
 	OccViewWindow(Handle(V3d_View) view, OccViewerContext* parent)
 		: m_view(view), parent(parent) 
-	{
-		TRACE();
-	}
+	{}
 
 	void set_virtual_window(int w, int h)
 	{
-		TRACE();
 		std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 		static int i = 0;
 		
 #if defined(WNT) || defined(_MSC_VER)
 		//m_window = new WNT_Window ((std::string("virtual") + std::to_string(i++)).c_str(), 0, 0, w, h);
-		BUG();
+		throw std::runtime_error("set_virtual_window::windows not supported");
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
 		m_window = new Cocoa_Window ((std::string("virtual") + std::to_string(i++)).c_str(), 0, 0, w, h);
 		m_window->SetVirtual  (Standard_True);
-		winddesc = m_window->NativeHandle();
+		winddesc = (void*)m_window->NativeHandle();
 		m_view->SetWindow  (m_window);
 #else
 		m_window = new Xw_Window (GetDisplayConnection(), (std::string("virtual") + std::to_string(i++)).c_str(), 0, 0, w, h);
@@ -118,9 +113,12 @@ public:
 #endif
 	}
 
-	void set_window(int window_handle)
+#if defined(__APPLE__)
+	void set_window(void* window_handle)
+#else	
+	void set_window(int  window_handle)
+#endif
 	{
-		TRACE();
 		std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 		winddesc = window_handle;
 
@@ -140,35 +138,30 @@ public:
 
 	void fit_all()
 	{
-		TRACE();
 		std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 		m_view->FitAll();
 	}
 
 	void dump(const std::string& path)
 	{
-		TRACE();
 		std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 		m_view->Dump(path.c_str());
 	}
 
 	void redraw()
 	{
-		TRACE();
 		std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 		m_view->Redraw();
 	}
 
 	void must_be_resized()
 	{
-		TRACE();
 		std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 		m_view->MustBeResized();
 	}
 
 	void set_triedron(bool en = true)
 	{
-		TRACE();
 		std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 
 		if (en)
@@ -179,7 +172,6 @@ public:
 
 	gp_Lin viewline(double x, double y, Handle(V3d_View) view)
 	{
-		TRACE();
 		std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 		Standard_Real Xp = x, Yp = y;
 		Standard_Real Xv, Yv, Zv;

@@ -29,6 +29,7 @@
 
 #include <BRepBuilderAPI_MakeShell.hxx>
 #include <BRepOffsetAPI_Sewing.hxx>
+#include <BRepBuilderAPI_MakeSolid.hxx>
 
 #include <BRepOffsetAPI_MakePipe.hxx>
 #include <BRepOffsetAPI_MakePipeShell.hxx>
@@ -49,12 +50,13 @@
 #include <exception>
 #include <assert.h>
 
-#define NOTRACE 1
-#include <nos/trace.h>
+#include <servoce/edge.h>
+#include <servoce/face.h>
+#include <servoce/shell.h>
 
 using namespace servoce;
 
-shape servoce::box(double x, double y, double z, bool center)
+solid_shape servoce::box(double x, double y, double z, bool center)
 {
 	if (!center)
 	{
@@ -67,7 +69,7 @@ shape servoce::box(double x, double y, double z, bool center)
 	}
 }
 
-shape servoce::cylinder(double r, double h, bool center)
+solid_shape servoce::cylinder(double r, double h, bool center)
 {
 	if (!center)
 	{
@@ -80,7 +82,7 @@ shape servoce::cylinder(double r, double h, bool center)
 	}
 }
 
-shape servoce::cylinder(double r, double h, double angle, bool center)
+solid_shape servoce::cylinder(double r, double h, double angle, bool center)
 {
 	if (!center)
 	{
@@ -93,7 +95,7 @@ shape servoce::cylinder(double r, double h, double angle, bool center)
 	}
 }
 
-shape servoce::cone(double r1, double r2, double h, bool center)
+solid_shape servoce::cone(double r1, double r2, double h, bool center)
 {
 	if (!center)
 	{
@@ -106,7 +108,7 @@ shape servoce::cone(double r1, double r2, double h, bool center)
 	}
 }
 
-shape servoce::cone(double r1, double r2, double h, double yaw, bool center)
+solid_shape servoce::cone(double r1, double r2, double h, double yaw, bool center)
 {
 	if (!center)
 	{
@@ -119,27 +121,27 @@ shape servoce::cone(double r1, double r2, double h, double yaw, bool center)
 	}
 }
 
-shape servoce::sphere(double r) { return BRepPrimAPI_MakeSphere(r).Solid(); }
-shape servoce::sphere(double r, double an1) { return BRepPrimAPI_MakeSphere(r, an1).Solid(); }
-shape servoce::sphere(double r, double an1, double an2) { return BRepPrimAPI_MakeSphere(r, an1, an2).Solid(); }
-shape servoce::sphere(double r, double an1, double an2, double an3) { return BRepPrimAPI_MakeSphere(r, an1, an2, an3).Solid(); }
+solid_shape servoce::sphere(double r) { return BRepPrimAPI_MakeSphere(r).Solid(); }
+solid_shape servoce::sphere(double r, double an1) { return BRepPrimAPI_MakeSphere(r, an1).Solid(); }
+solid_shape servoce::sphere(double r, double an1, double an2) { return BRepPrimAPI_MakeSphere(r, an1, an2).Solid(); }
+solid_shape servoce::sphere(double r, double an1, double an2, double an3) { return BRepPrimAPI_MakeSphere(r, an1, an2, an3).Solid(); }
 
-shape servoce::torus(double r1, double r2)
+solid_shape servoce::torus(double r1, double r2)
 {
 	return BRepPrimAPI_MakeTorus(r1, r2).Solid();
 }
 
-shape servoce::torus(double r1, double r2, double ua)
+solid_shape servoce::torus(double r1, double r2, double ua)
 {
 	return BRepPrimAPI_MakeTorus(r1, r2, ua).Solid();
 }
 
-shape servoce::torus(double r1, double r2, double va1, double va2)
+solid_shape servoce::torus(double r1, double r2, double va1, double va2)
 {
 	return BRepPrimAPI_MakeTorus(r1, r2, va1, va2).Solid();
 }
 
-shape servoce::torus(double r1, double r2, double va1, double va2, double ua)
+solid_shape servoce::torus(double r1, double r2, double va1, double va2, double ua)
 {
 	return BRepPrimAPI_MakeTorus(r1, r2, va1, va2, ua).Solid();
 }
@@ -231,7 +233,7 @@ shape servoce::make_pipe_shell(
 	return shape();
 }
 
-shape servoce::halfspace()
+solid_shape servoce::halfspace()
 {
 	gp_Pln P;
 	TopoDS_Face F = BRepLib_MakeFace(P);
@@ -446,13 +448,13 @@ shape _unify_face(const servoce::shape& proto)
 #include <BRepAdaptor_Surface.hxx>
 #include <servoce/boolops.h>
 
-std::vector<servoce::shape> _unify_faces_array(const std::vector<servoce::shape>& input)
+std::vector<servoce::shape> _unify_faces_array(const std::vector<servoce::face_shape>& input)
 {
 	std::vector<servoce::shape> ret;
 	ret.reserve(input.size());
 	std::map<Handle(Geom_Plane), std::vector<const servoce::shape*>> fset;
 
-	for (const servoce::shape& i : input)
+	for (const servoce::face_shape& i : input)
 	{
 		Handle(Geom_Surface) surface = BRep_Tool::Surface(i.Face());
 
@@ -484,8 +486,8 @@ std::vector<servoce::shape> _unify_faces_array(const std::vector<servoce::shape>
 
 				if (
 				    dir0.IsEqual(dir1, 0.00001) &&
-				    abs(pln0.Distance(pln1.Axis().Location())) < 0.0000001 &&
-				    abs(pln1.Distance(pln0.Axis().Location())) < 0.0000001)
+				    std::abs(pln0.Distance(pln1.Axis().Location())) < 0.0000001 &&
+				    std::abs(pln1.Distance(pln0.Axis().Location())) < 0.0000001)
 				{
 					found = true;
 					arr.emplace_back(&i);
@@ -561,14 +563,14 @@ shape _unify_compound(const servoce::shape& proto)
 		builder.Add(comp, _unify_shell(explorer.Current()).Shell());
 	}
 
-	std::vector<servoce::shape> faces;
+	std::vector<servoce::face_shape> faces;
 
 	for (explorer.Init(proto.Shape(), TopAbs_FACE, TopAbs_SHELL); explorer.More(); explorer.Next())
 	{
-		faces.emplace_back(explorer.Current());
+		faces.emplace_back((TopoDS_Face&)explorer.Current());
 	}
 
-	auto faces_new = _unify_faces_array(faces);
+	std::vector<servoce::shape> faces_new = _unify_faces_array(faces);
 
 	for (auto& f : faces_new)
 	{
@@ -591,4 +593,12 @@ shape servoce::unify(const shape& proto)
 	else Standard_Failure::Raise("TODO");
 
 	return shape();
+}
+
+
+servoce::solid_shape servoce::make_solid(const servoce::shell_shape& shp) 
+{
+	BRepBuilderAPI_MakeSolid algo(shp.Shell());
+	algo.Build();
+	return algo.Solid();
 }

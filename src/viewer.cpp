@@ -2,8 +2,6 @@
 #include <servoce/scene.h>
 
 #include <mutex>
-#include <nos/print.h>
-#include <nos/trace.h>
 
 #include <local/OccViewContext.h>
 
@@ -14,25 +12,20 @@ Handle(Graphic3d_GraphicDriver) g_graphicDriver = nullptr;
 
 servoce::viewer::viewer()
 {
-#if !defined(_MSC_VER) 
+#if !defined(_MSC_VER) && !defined(__APPLE__)
 	if (getenv("DISPLAY")==NULL) 
 	{
 		throw std::runtime_error("DISPLAY missing");
 	}
 #endif
-	
-	TRACE();
 }
 
 
 servoce::viewer::~viewer()
-{
-	TRACE();
-}
+{}
 
 void servoce::viewer::set_triedron_axes(bool en)
 {
-	TRACE();
 	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 
 	if (en)
@@ -52,28 +45,24 @@ void servoce::viewer::set_triedron_axes(bool en)
 
 servoce::view servoce::viewer::create_view()
 {
-	TRACE();
 	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	return servoce::view( occ->create_view_window() );
 }
 
 void servoce::viewer::redraw()
 {
-	TRACE();
 	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	occ->m_viewer->Redraw();
 }
 
 void servoce::viewer::close()
 {
-	TRACE();
 	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	return occ->m_viewer->Remove();
 }
 
 void servoce::viewer::clean_context()
 {
-	TRACE();
 	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	occ->m_context->EraseAll(false);
 	//occ->m_context->RemoveAll(true);
@@ -81,7 +70,6 @@ void servoce::viewer::clean_context()
 
 /*void servoce::viewer::add_scene(servoce::scene& scn)
 {
-	TRACE();
 	//scn.set_viewer(this);
 	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 
@@ -93,14 +81,12 @@ void servoce::viewer::clean_context()
 /*
 void servoce::viewer::display(servoce::shape_view& controller)
 {
-	TRACE();
 	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	occ->m_context->Display(controller.native(), false);
 }*/
 
 void servoce::viewer::display(servoce::interactive_object& controller)
 {
-	TRACE();
 	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	controller.set_context(occ->m_context);
 	occ->m_context->Display(controller.native(), false);

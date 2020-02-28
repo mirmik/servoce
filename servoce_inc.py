@@ -150,9 +150,10 @@ module(
     "servoce_sources",
     srcdir="src",
     sources=[
-        "topo.cpp",
+        "shape.cpp",
         "trans.cpp",
         "solid.cpp",
+        "shell.cpp",
         "surface.cpp",
         "curve2.cpp",
         "curve3.cpp",
@@ -164,7 +165,6 @@ module(
         "geombase.cpp",
         "geomprops.cpp",
         "view.cpp",
-        "shape_view.cpp",
         "scene.cpp",
         "viewer.cpp",
         "camera.cpp",
@@ -177,7 +177,6 @@ module(
     include_paths=["include", ".", "src"],
     mdepends=[
         "liboce",
-        "nos",
     ] + add_modules,
     cxx_flags="-Wall -fPIC -DQT_NO_VERSION_TAGGING -ffunction-sections -fdata-sections",
     cc_flags="-Wall -fPIC -ffunction-sections -fdata-sections",

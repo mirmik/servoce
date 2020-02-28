@@ -1,5 +1,5 @@
 #include <servoce/convert.h>
-#include <servoce/topo.h>
+#include <servoce/shape.h>
 
 #include <StlAPI_Writer.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
@@ -13,12 +13,6 @@
 #include <HLRBRep_HLRToShape.hxx>
 #include <GCPnts_QuasiUniformDeflection.hxx>
 #include <BRepAdaptor_Curve.hxx>
-
-#include <nos/print.h>
-#include <nos/fprint.h>
-#include <igris/util/string.h>
-
-using namespace nos::argument_literal;
 
 bool servoce::make_stl(const servoce::shape& shp, const std::string& path, double deflection)
 {
@@ -79,12 +73,10 @@ const char* SVG_TEMPLATE = R"x(<?xml version="1.0" encoding="UTF-8" standalone="
 </svg>
 )x";
 
-const char* PATHTEMPLATE = "            <path d=\"{}\" />\n";
+const char* PATHTEMPLATE = "            <path d=\"%s\" />\n";
 
 std::string servoce::getSVG(const servoce::shape& shp) 
 {
-	using namespace nos::argument_literal;
-
 	servoce::project_builder project(shp);
 
 	auto visible_paths = servoce::getPaths(project.vcompound());
@@ -93,16 +85,20 @@ std::string servoce::getSVG(const servoce::shape& shp)
 	std::string visible_content = "";
 	for (auto p : visible_paths) 
 	{
-		visible_content.append(nos::format(PATHTEMPLATE, p));
+		char buf[128];
+		sprintf(buf, PATHTEMPLATE, p.c_str());
+		visible_content.append(buf);
 	}
 	
 	std::string hidden_content = "";
 	for (auto p : hidden_paths) 
 	{
-		hidden_content.append(nos::format(PATHTEMPLATE, p));
+		char buf[128];
+		sprintf(buf, PATHTEMPLATE, p.c_str());
+		hidden_content.append(buf);
 	}
 
-	std::string svg = nos::format(SVG_TEMPLATE,
+	/*std::string svg = nos::format(SVG_TEMPLATE,
 		"width"_a = 800,
 		"height"_a = 800,
 		"hiddenContent"_a = hidden_content,
@@ -113,7 +109,8 @@ std::string servoce::getSVG(const servoce::shape& shp)
 		"textboxY"_a = 10,
 		"strokeWidth"_a = 1,
 		"uom"_a = ""
-	);
+	);*/
+	std::string svg = "TODO";
 
 	return svg;
 }
@@ -151,12 +148,16 @@ std::string servoce::makeSVGedge(const TopoDS_Edge& edg)
 		int NbPoints = points.NbPoints();
 
 		auto p = points.Value(1);
-		ret.append(nos::format("M{},{} ", p.X(), p.Y()));
+		
+		char buf[128];
+		sprintf(buf, "M%f,%f ", p.X(), p.Y());
+		ret.append(buf);
 		
 		for (int i = 2; i < NbPoints + 1; i++) 
 		{
 			auto p = points.Value(i);
-			ret.append(nos::format("L{},{} ", p.X(), p.Y()));
+			sprintf(buf, "M%f,%f ", p.X(), p.Y());
+			ret.append(buf);
 		} 
 	}
 

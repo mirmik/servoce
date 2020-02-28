@@ -6,9 +6,12 @@
 #include <iostream>
 #include <memory>
 #include <set>
+
+#include <servoce/geombase.h>
 #include <servoce/boolops.h>
 #include <servoce/trans.h>
-#include <servoce/geombase.h>
+#include <servoce/transformable.h>
+#include <servoce/boundbox.h>
 
 class TopoDS_Shape;
 class TopoDS_Shell;
@@ -21,6 +24,8 @@ class TopoDS_Compound;
 
 namespace servoce
 {
+	class face_shape;
+	class edge_shape;
 	class boundbox;
 
 	enum topoenum
@@ -33,7 +38,7 @@ namespace servoce
 		compound
 	};
 
-	class shape
+	class shape : public servoce::transformable<shape>
 	{
 	public:
 		TopoDS_Shape* m_shp = nullptr;
@@ -83,39 +88,6 @@ namespace servoce
 		TopoDS_Compound& Compound();
 		const TopoDS_Compound& Compound() const;
 
-		shape transform(const transformation& trans) { return trans(*this); }
-		shape transform(const general_transformation& trans) { return trans(*this); }
-
-		shape translate(double x, double y, double z) { return transform(servoce::translate(x, y, z)); }
-		shape up(double z) { return translate(0, 0, z); }
-		shape down(double z) { return translate(0, 0, -z); }
-		shape forw(double y) { return translate(0, y, 0); }
-		shape back(double y) { return translate(0, -y, 0); }
-		shape right(double x) { return translate(x, 0, 0); }
-		shape left(double x) { return translate(-x, 0, 0); }
-
-		shape rotate(vector3 vec, double a) { return transform(servoce::rotate(vec, a)); }
-		shape rotateX(double a) { return transform(servoce::rotateX(a)); }
-		shape rotateY(double a) { return transform(servoce::rotateY(a)); }
-		shape rotateZ(double a) { return transform(servoce::rotateZ(a)); }
-
-		shape mirrorX() { return transform(servoce::mirrorX()); }
-		shape mirrorY() { return transform(servoce::mirrorY()); }
-		shape mirrorZ() { return transform(servoce::mirrorZ()); }
-
-		shape mirrorXY() { return transform(servoce::mirrorXY()); }
-		shape mirrorYZ() { return transform(servoce::mirrorYZ()); }
-		shape mirrorXZ() { return transform(servoce::mirrorXZ()); }
-
-		shape scale(double s, point3 center = point3()) { return transform(servoce::scale(s, center)); }
-		shape scaleX(double s) { return transform(servoce::scaleX(s)); }
-		shape scaleY(double s) { return transform(servoce::scaleY(s)); }
-		shape scaleZ(double s) { return transform(servoce::scaleZ(s)); }
-		shape scaleXY(double x, double y) { return transform(servoce::scaleXY(x, y)); }
-		shape scaleYZ(double y, double z) { return transform(servoce::scaleYZ(y, z)); }
-		shape scaleXZ(double x, double z) { return transform(servoce::scaleXZ(x, z)); }
-		shape scaleXYZ(double x, double y, double z) { return transform(servoce::scaleXYZ(x, y, z)); }
-
 		point3 center() const;
 		vector3 cmradius() const;
 		double mass() const;
@@ -124,7 +96,7 @@ namespace servoce
 		double moment_of_inertia(const servoce::vector3& axis) const;
 		double radius_of_gyration(const servoce::vector3& axis) const;
 
-		servoce::shape infill_face(); ///< Превращает замкнутый двумерный контур в 2d объект
+		//servoce::shape infill_face(); ///< Превращает замкнутый двумерный контур в 2d объект
 
 		servoce::shape operator+(const shape& oth) const { return servoce::make_union(*this, oth); }
 		servoce::shape operator-(const shape& oth) const { return servoce::make_difference(*this, oth); }
@@ -139,9 +111,9 @@ namespace servoce
 		std::vector<servoce::shape> shells() const;
 		std::vector<servoce::shape> compounds() const;
 		std::vector<servoce::shape> compsolids() const;
-		std::vector<servoce::shape> faces() const;
+		std::vector<servoce::face_shape> faces() const;
 		std::vector<servoce::shape> wires() const;
-		std::vector<servoce::shape> edges() const;
+		std::vector<servoce::edge_shape> edges() const;
 
 		std::vector<TopoDS_Edge> Edges() const;
 
@@ -165,16 +137,10 @@ namespace servoce
 		boundbox bounding_box();
 	};
 
-	class wire_shape : public shape
-	{
-	public:
-		//wire_shape(TopoDS_Wire& arg) : shape(arg) {}
-		wire_shape() {}
-		wire_shape(const TopoDS_Wire& arg) : shape((const TopoDS_Shape&)arg) {}
-	};
+	shape fill(const shape&);
 
-	shape	near_face		(const shape& shp, const point3& pnt);
-	shape	near_edge		(const shape& shp, const point3& pnt);
+	face_shape	near_face		(const shape& shp, const point3& pnt);
+	edge_shape	near_edge		(const shape& shp, const point3& pnt);
 	shape 	near_vertex		(const shape& shp, const point3& pnt);
 }
 

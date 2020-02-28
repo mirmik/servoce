@@ -1,4 +1,3 @@
-#include <servoce/shape_view.h>
 #include <servoce/interactive_object.h>
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_Shape.hxx>

@@ -1,4 +1,4 @@
-#include <servoce/topo.h>
+#include <servoce/shape.h>
 #include <servoce/face.h>
 #include <servoce/solid.h>
 #include <servoce/geomprops.h>
@@ -45,6 +45,9 @@
 
 #include <algorithm>
 #include <cassert>
+
+#include <servoce/edge.h>
+#include <servoce/face.h>
 
 servoce::shape::shape(const TopoDS_Shape& shp) : m_shp(new TopoDS_Shape(shp))
 {
@@ -190,6 +193,21 @@ servoce::shape servoce::shape::fill()
 	throw "unsuported type";
 }
 
+servoce::shape servoce::fill(const servoce::shape& shp)
+{
+	if (shp.Shape().ShapeType() == TopAbs_EDGE)
+	{
+		return	BRepBuilderAPI_MakeFace(BRepBuilderAPI_MakeWire(shp.Edge()).Wire()).Shape();
+	}
+
+	if (shp.Shape().ShapeType() == TopAbs_WIRE)
+	{
+		return BRepBuilderAPI_MakeFace(shp.Wire()).Shape();
+	}
+
+	throw "unsuported type";
+}
+
 std::vector<servoce::point3> servoce::shape::vertices() const
 {
 	std::vector<servoce::point3> pnts;
@@ -240,9 +258,9 @@ std::vector<servoce::shape> servoce::shape::solids() const
 	return ret;
 }
 
-std::vector<servoce::shape> servoce::shape::faces() const
+std::vector<servoce::face_shape> servoce::shape::faces() const
 {
-	std::vector<servoce::shape> ret;
+	std::vector<servoce::face_shape> ret;
 
 	for (TopExp_Explorer ex(Shape(), TopAbs_FACE); ex.More(); ex.Next())
 	{
@@ -279,9 +297,9 @@ std::vector<TopoDS_Edge> servoce::shape::Edges() const
 	return ret;
 }
 
-std::vector<servoce::shape> servoce::shape::edges() const
+std::vector<servoce::edge_shape> servoce::shape::edges() const
 {
-	std::vector<servoce::shape> ret;
+	std::vector<servoce::edge_shape> ret;
 
 	for (TopExp_Explorer ex(Shape(), TopAbs_EDGE); ex.More(); ex.Next())
 	{
@@ -334,7 +352,7 @@ std::vector<servoce::shape> servoce::shape::compsolids() const
 	return ret;
 }
 
-servoce::shape servoce::near_face(const servoce::shape& shp, const servoce::point3& pnt)
+servoce::face_shape servoce::near_face(const servoce::shape& shp, const servoce::point3& pnt)
 {
 	double min = std::numeric_limits<double>::max();
 	TopoDS_Face ret;
@@ -352,7 +370,7 @@ servoce::shape servoce::near_face(const servoce::shape& shp, const servoce::poin
 	return ret;
 }
 
-servoce::shape servoce::near_edge(const servoce::shape& shp, const servoce::point3& pnt)
+servoce::edge_shape servoce::near_edge(const servoce::shape& shp, const servoce::point3& pnt)
 {
 	double min = std::numeric_limits<double>::max();
 	TopoDS_Edge ret;

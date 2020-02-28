@@ -6,9 +6,7 @@
 #include <vector>
 #include <memory>
 
-#include <nos/trace.h>
-
-class OccViewWindow;
+struct OccViewWindow;
 
 namespace servoce
 {
@@ -19,8 +17,8 @@ namespace servoce
 	{
 	public:
 		void set_virtual_window(int w, int h);
-		void set_window(int wind);
-
+		void set_window(uintptr_t wind);
+		
 		void fit_all(double margin);
 		void set_direction(float a, float b, float c);
 		std::tuple<double, double, double> direction();
@@ -71,7 +69,7 @@ namespace servoce
 
 		view(OccViewWindow* occ);
 		view(const view&) = delete;
-		view(view&& other) { TRACE(); occ = other.occ; other.occ = nullptr; }
+		view(view&& other) { occ = other.occ; other.occ = nullptr; }
 		~view();
 	
 	private:

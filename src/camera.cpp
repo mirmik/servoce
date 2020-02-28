@@ -17,7 +17,7 @@ void servoce::drone_camera::set_orient(servoce::viewer* viewer) {
 
 }*/
 
-gp_Dir servoce::drone_camera::native_up() {
+/*gp_Dir servoce::drone_camera::native_up() {
 	return gp_Dir(0,0,1);
 }
 
@@ -31,4 +31,4 @@ gp_Pnt servoce::drone_camera::native_eye() {
 
 float servoce::drone_camera::native_scale() { 
 	return _scale;
-}
+}*/

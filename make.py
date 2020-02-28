@@ -9,8 +9,6 @@ import licant.libs
 import os
 
 licant.execute("servoce_inc.py")
-licant.include("igris", "igris/igris.g.py")
-licant.include("nos", "nos/nos.g.py")
 
 install_lib_dir = "/usr/lib/"
 install_inc_dir = "/usr/local/include/"
@@ -20,11 +18,8 @@ shared_library("cxxbuild/libservoce.so",
     mdepends=
     [
     	"servoce_sources", 
-    	"nos",
-    	"igris", 
-    	"igris.include", 
-    	("igris.sshell", "__none__")
-    ]
+    ],
+    cxx_flags="-Wall -Wextra"
 )
 
 
