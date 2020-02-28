@@ -70,24 +70,24 @@ def debian_collect(f):
 		cmd0 = "cp {0} pyservoce/libs/".format(os.path.join(occt_libs_dir, f))
 		if not iswin:
 			cmd05 = "patchelf --set-rpath '$ORIGIN' pyservoce/libs/{0}".format(f)
-		cmd1 = "ln -s {2}/pyservoce/libs/{0} {2}/pyservoce/libs/{1}".format(
-			f, f[:-4], os.getcwd()
-		)
-		cmd2 = "ln -s {2}/pyservoce/libs/{0} {2}/pyservoce/libs/{1}".format(
-			f, f[:-6], os.getcwd()
-		)
+		#cmd1 = "ln -s {2}/pyservoce/libs/{0} {2}/pyservoce/libs/{1}".format(
+		#	f, f[:-4], os.getcwd()
+		#)
+		#cmd2 = "ln -s {2}/pyservoce/libs/{0} {2}/pyservoce/libs/{1}".format(
+		#	f, f[:-6], os.getcwd()
+		#)
 
 		print(cmd0)
 		if not iswin:
 			print(cmd05)
-		print(cmd1)
-		print(cmd2)
+		#print(cmd1)
+		#print(cmd2)
 
 		os.system(cmd0)
 		if not iswin:
 			os.system(cmd05)
-		os.system(cmd1)
-		os.system(cmd2)
+		#os.system(cmd1)
+		#os.system(cmd2)
 
 def darwin_collect(f,l):
 	import subprocess 
