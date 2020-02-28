@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
 #include <servoce/solid.h>
+#include <servoce/face.h>
+#include <servoce/edge.h>
 
 TEST(box, Solid) 
 {
