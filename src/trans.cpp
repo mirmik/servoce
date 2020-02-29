@@ -140,6 +140,15 @@ servoce::transformation servoce::scale(double s, point3 center)
 	return servoce::transformation(trsf);
 }
 
+
+servoce::transformation servoce::scale(double s)
+{
+	auto trsf = new gp_Trsf();
+	trsf->SetScale(gp_Pnt(0,0,0), s);
+	return servoce::transformation(trsf);
+}
+
+
 servoce::general_transformation servoce::scaleX(double s)
 {
 	auto gtrsf = new gp_GTrsf();

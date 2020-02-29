@@ -39,3 +39,38 @@ def Scene_add(scene, obj, color=default_color):
 
 color = pyservoce.libservoce.Color
 pyservoce.libservoce.Scene.add = Scene_add
+
+
+pyservoce.libservoce.transformation.__call__ = lambda self, obj: obj.transform(self)
+
+class TransformableMixin:
+    def transform(self, trsf):
+        raise Exception("transform not implemented")
+
+    def translate(self, *args, **kwargs): self.transform(translate(*args,**kwargs))
+    def move(self, *args, **kwargs): self.transform(move(*args,**kwargs))
+    def moveX(self, *args, **kwargs): self.transform(moveX(*args,**kwargs))
+    def moveY(self, *args, **kwargs): self.transform(moveY(*args,**kwargs))
+    def moveZ(self, *args, **kwargs): self.transform(moveZ(*args,**kwargs))
+    def movX(self, *args, **kwargs): self.transform(moveX(*args,**kwargs))
+    def movY(self, *args, **kwargs): self.transform(moveY(*args,**kwargs))
+    def movZ(self, *args, **kwargs): self.transform(moveZ(*args,**kwargs))
+
+    def rotate(self, *args, **kwargs): self.transform(rotate(*args,**kwargs))
+    def rotateX(self, *args, **kwargs): self.transform(rotateX(*args,**kwargs))
+    def rotateY(self, *args, **kwargs): self.transform(rotateY(*args,**kwargs))
+    def rotateZ(self, *args, **kwargs): self.transform(rotateZ(*args,**kwargs))
+
+    def rotX(self, *args, **kwargs): self.transform(rotateX(*args,**kwargs))
+    def rotY(self, *args, **kwargs): self.transform(rotateY(*args,**kwargs))
+    def rotZ(self, *args, **kwargs): self.transform(rotateZ(*args,**kwargs))
+
+    def mirrorO(self, *args, **kwargs): self.transform(mirrorO(*args,**kwargs))
+    def mirrorX(self, *args, **kwargs): self.transform(mirrorX(*args,**kwargs))
+    def mirrorY(self, *args, **kwargs): self.transform(mirrorY(*args,**kwargs))
+    def mirrorZ(self, *args, **kwargs): self.transform(mirrorZ(*args,**kwargs))
+    def mirrorXY(self, *args, **kwargs): self.transform(mirrorXY(*args,**kwargs))
+    def mirrorYZ(self, *args, **kwargs): self.transform(mirrorYZ(*args,**kwargs))
+    def mirrorXZ(self, *args, **kwargs): self.transform(mirrorXZ(*args,**kwargs))
+
+    def scale(self, *args, **kwargs): self.transform(scale(*args,**kwargs))

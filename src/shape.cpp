@@ -41,6 +41,8 @@
 #include <GProp_GProps.hxx>
 #include <BRepGProp.hxx>
 
+#include <BRepBuilderAPI_Transform.hxx>
+#include <BRepBuilderAPI_GTransform.hxx>
 #include <TopExp.hxx>
 
 #include <algorithm>
@@ -411,15 +413,24 @@ std::string servoce::shape::shapetype_as_string() const
 	switch (Shape().ShapeType())
 	{
 		case TopAbs_WIRE: return "wire";
+
 		case TopAbs_EDGE: return "edge";
+
 		case TopAbs_COMPOUND: return "compound";
+
 		case TopAbs_COMPSOLID: return "compsolid";
+
 		case TopAbs_FACE: return "face";
+
 		case TopAbs_SOLID: return "solid";
+
 		case TopAbs_SHELL: return "vertex";
+
 		case TopAbs_VERTEX: return "shell";
+
 		case TopAbs_SHAPE: return "shape";
 	}
+
 	return "undefined";
 }
 
@@ -497,6 +508,7 @@ TopoDS_Edge servoce::shape::Edge_OrOneEdgedWireToEdge() const
 	else if (Shape().ShapeType() == TopAbs_WIRE)
 	{
 		auto edgs = Edges();
+
 		if (edgs.size() > 1)
 		{
 			throw std::runtime_error(
@@ -512,24 +524,25 @@ TopoDS_Edge servoce::shape::Edge_OrOneEdgedWireToEdge() const
 }
 
 
-servoce::geomprops gprops(const servoce::shape& shp) 
+servoce::geomprops gprops(const servoce::shape& shp)
 {
-	switch (shp.Shape().ShapeType()) 
+	switch (shp.Shape().ShapeType())
 	{
 		case TopAbs_VERTEX:
 		case TopAbs_WIRE:
 		case TopAbs_EDGE:
 			return servoce::geomprops::linear_properties(shp, 1);
-	
+
 		case TopAbs_FACE:
 		case TopAbs_SHELL:
 			return servoce::geomprops::surface_properties(shp, 1);
-	
+
 		case TopAbs_SOLID:
 		case TopAbs_COMPSOLID:
 		case TopAbs_COMPOUND:
-		case TopAbs_SHAPE: 
+		case TopAbs_SHAPE:
 			return servoce::geomprops::volume_properties(shp, 1);
+
 		default:
 			throw std::runtime_error("undefined shape");
 	}
@@ -562,12 +575,23 @@ double servoce::shape::moment_of_inertia(const servoce::vector3& axis) const
 
 double servoce::shape::radius_of_gyration(const servoce::vector3& axis) const
 {
-	return geomprops::volume_properties(*this,1).radius_of_gyration(axis);
+	return geomprops::volume_properties(*this, 1).radius_of_gyration(axis);
 }
 
-servoce::boundbox servoce::shape::bounding_box() 
+servoce::boundbox servoce::shape::bounding_box()
 {
 	Bnd_Box box;
 	BRepBndLib::Add(Shape(), box);
 	return {box};
+}
+
+
+servoce::shape servoce::shape::transform(const servoce::transformation& trans) const
+{
+	return BRepBuilderAPI_Transform(Shape(), *trans.trsf, true).Shape();
+}
+
+servoce::shape servoce::shape::transform(const servoce::general_transformation& trans) const
+{
+	return BRepBuilderAPI_GTransform(Shape(), *trans.gtrsf, true).Shape();
 }

@@ -166,6 +166,7 @@ module(
         "geomprops.cpp",
         "view.cpp",
         "scene.cpp",
+        "axis.cpp",
         "viewer.cpp",
         "camera.cpp",
         "boundbox.cpp",

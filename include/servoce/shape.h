@@ -49,6 +49,9 @@ namespace servoce
 		shape(shape&& oth);
 		~shape();
 
+		shape transform(const transformation& trans) const override;
+		shape transform(const general_transformation& trans) const override;
+
 		shape& operator= (const shape& oth);
 		shape& operator= (const TopoDS_Shape& shp);
 		shape& operator= (shape&& oth);
@@ -143,5 +146,7 @@ namespace servoce
 	edge_shape	near_edge		(const shape& shp, const point3& pnt);
 	shape 	near_vertex		(const shape& shp, const point3& pnt);
 }
+
+#include <servoce/transformable_impl.h>
 
 #endif
