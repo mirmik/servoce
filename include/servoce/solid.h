@@ -36,7 +36,10 @@ namespace servoce
 	shape make_linear_extrude(const shape& base, const servoce::vector3& vec, bool center = false);
 	shape make_linear_extrude(const shape& base, double z, bool center = false);
 	shape make_pipe(const shape& profile, const shape& path);
-	shape make_pipe_shell(const shape& profile, const shape& path, bool isFrenet = false);
+	shape make_pipe_shell(const std::vector<const shape*>& profile, const shape& path, bool isFrenet = false, bool approx_c1=false);
+	shape make_pipe_shell(const shape& profile, const shape& path, bool isFrenet=false);
+	shape make_pipe_shell(const shape& profile, const shape& path, 
+		const shape& auxiliary_spine, bool curvilinear_equivalence);
 
 	shape loft(const std::vector<shape>& vec, bool smooth=false);
 	shape revol(const shape& proto, double angle = 0.0);
