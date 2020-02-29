@@ -1,3 +1,6 @@
+## 1.21.0
+	Универсальное API афинных преобразований.
+
 ## 1.20.0 
 	Transformation API improved.
 	Add shape classes.
