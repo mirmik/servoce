@@ -27,11 +27,17 @@ void servoce::interactive_object::set_color(float r, float g, float b, float a)
 	m_ais->SetTransparency(a);
 }
 
-void servoce::interactive_object::set_location(const servoce::transformation& trans)
+void servoce::interactive_object::relocate(const servoce::transformation& trans)
 {
 	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	if (m_context)
 		m_context->SetLocation(native(), *trans.trsf);
+}
+
+void servoce::interactive_object::set_location(const servoce::transformation& trans) 
+{
+	std::cout << "set_location is deprecated. use relocate instead." << std::endl;
+	relocate(trans);
 }
 
 void servoce::interactive_object::hide(bool en)

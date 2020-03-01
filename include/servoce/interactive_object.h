@@ -33,7 +33,7 @@ namespace servoce
 		Handle(AIS_InteractiveObject) const native() const { return m_ais; }
 
 		void set_location(const servoce::transformation& trans);
-		void relocate(const servoce::transformation& trans) { set_location(trans); }
+		void relocate(const servoce::transformation& trans);
 		
 		void hide(bool en);
 
