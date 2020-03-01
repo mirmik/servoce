@@ -25,6 +25,7 @@ void registry_interactive_object(py::module & m)
 	.def("relocate", &interactive_object::relocate, ungil())
 	.def("hide", &interactive_object::hide, ungil())
 	.def("bbox", &servoce::interactive_object::bounding_box, ungil())
+	.def("copy", &interactive_object::copy, py::arg("bind_to_scene")=true, ungil())
 	;
 
 	pywrap_transformable<servoce::interactive_object, std::shared_ptr<servoce::interactive_object>>(cls);
