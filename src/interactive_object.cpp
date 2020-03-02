@@ -83,9 +83,8 @@ std::shared_ptr<servoce::interactive_object> servoce::interactive_object::copy(b
 
 	auto ret = std::make_shared<interactive_object>(anInstance);
 
-	if (bind_to_scene)
+	if (bind_to_scene && scn)
 	{
-		assert(scn);
 		scn->add(ret);
 	}
 
