@@ -1,5 +1,6 @@
 ## 1.21.0
 	Универсальное API афинных преобразований.
+	Add perspective support.
 
 ## 1.20.0 
 	Transformation API improved.
