@@ -98,6 +98,8 @@ namespace servoce
 		matrix33 outerprod(const vector3& oth);
 		matrix33 vecmul_matrix();
 
+		bool iszero() const { return x == 0 && y == 0 && z==0; }
+
 		vector3 transform(const servoce::transformation& trsf) const override;
 
 	};

@@ -46,6 +46,7 @@
 
 #include <map>
 #include <limits>
+#include <Standard_PrimitiveTypes.hxx>
 
 #include <exception>
 #include <assert.h>
@@ -193,7 +194,7 @@ servoce::shape servoce::shape::extrude(const vector3& vec, bool center)
 	return make_linear_extrude(*this, vec, center);
 }
 
-shape servoce::make_pipe(const shape& profile, const shape& path)
+shape servoce::make_pipe_0(const shape& profile, const shape& path)
 {
 	if (path.Shape().IsNull())
 		Standard_Failure::Raise("Cannot sweep along empty spine");
@@ -204,7 +205,45 @@ shape servoce::make_pipe(const shape& profile, const shape& path)
 	return BRepOffsetAPI_MakePipe(path.Wire_orEdgeToWire(), profile.Shape()).Shape();
 }
 
-shape servoce::make_pipe_shell(
+shape servoce::make_pipe(const shape& profile, const shape& path,
+                         const std::string mode, bool force_approx_c1)
+{
+	if (path.Shape().IsNull())
+		Standard_Failure::Raise("Cannot sweep along empty spine");
+
+	if (profile.Shape().IsNull())
+		Standard_Failure::Raise("Cannot sweep empty profile");
+
+	GeomFill_Trihedron tri;
+
+	std::map<std::string, GeomFill_Trihedron> map =
+	{
+		{ "corrected_frenet", GeomFill_IsCorrectedFrenet },
+		{ "fixed", GeomFill_IsFixed},
+		{ "frenet", GeomFill_IsFrenet},
+		{ "constant_normal", GeomFill_IsConstantNormal},
+		{ "darboux", GeomFill_IsDarboux},
+		{ "guide_ac", GeomFill_IsGuideAC},
+		{ "guide_plan", GeomFill_IsGuidePlan},
+		{ "guide_ac_with_contact", GeomFill_IsGuideACWithContact},
+		{ "guide_plan_with_contact", GeomFill_IsGuidePlanWithContact},
+		{ "discrete_trihedron", GeomFill_IsDiscreteTrihedron}
+	};
+
+	try 
+	{
+		tri = map.at(mode);
+	}
+
+	catch (...)
+	{
+		throw std::runtime_error("servoce::make_pipe: undefined mode");
+	}
+
+	return BRepOffsetAPI_MakePipe(path.Wire_orEdgeToWire(), profile.Shape(), tri, force_approx_c1).Shape();
+}
+
+/*shape servoce::make_pipe_shell(
     const shape& profile,
     const shape& path,
     bool isFrenet
@@ -220,18 +259,32 @@ shape servoce::make_pipe_shell(
 	mkPipeShell.MakeSolid();
 
 	return mkPipeShell.Shape();
-}
+}*/
 
 shape servoce::make_pipe_shell(
     const std::vector<const shape*>& profile,
     const shape& path,
-    bool isFrenet,
-    bool approx_c1
+    bool frenet,
+    bool approx_c1,
+    const vector3& binormal,
+    const vector3& parallel,
+    bool discrete,
+    bool solid
 )
 {
 	BRepOffsetAPI_MakePipeShell mkPipeShell(path.Wire_orEdgeToWire());
-	mkPipeShell.SetMode(isFrenet);
+	
+	mkPipeShell.SetMode(frenet);
 	mkPipeShell.SetForceApproxC1(approx_c1);
+
+	if (!binormal.iszero())
+		mkPipeShell.SetMode(binormal.Dir());
+
+	if (!parallel.iszero())
+		mkPipeShell.SetMode(gp_Ax2(gp_Pnt(0,0,0), parallel.Dir()));
+
+	if (discrete) 
+		mkPipeShell.SetDiscreteMode();
 
 	for (auto a : profile)
 		mkPipeShell.Add(a->Shape());
@@ -239,11 +292,13 @@ shape servoce::make_pipe_shell(
 	if (!mkPipeShell.IsReady()) std::logic_error("shape is not ready to build");
 
 	mkPipeShell.Build();
-	mkPipeShell.MakeSolid();
+
+	if (solid)
+		mkPipeShell.MakeSolid();
 
 	return mkPipeShell.Shape();
 }
-
+/*
 shape servoce::make_pipe_shell(const shape& profile, const shape& path,
                                const shape& auxiliary_spine, bool curvilinear_equivalence)
 {
@@ -257,7 +312,7 @@ shape servoce::make_pipe_shell(const shape& profile, const shape& path,
 	mkPipeShell.MakeSolid();
 
 	return mkPipeShell.Shape();
-}
+}*/
 
 solid_shape servoce::halfspace()
 {

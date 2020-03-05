@@ -109,15 +109,6 @@ PYBIND11_MODULE(libservoce, m)
 	m.def("unify", 		&unify, ungil());
 
 //OPS3D
-	m.def("linear_extrude", (shape(*)(const shape&, const vector3&, bool)) &make_linear_extrude, ungil(), py::arg("shp"), py::arg("vec"), py::arg("center") = false);
-	m.def("linear_extrude", (shape(*)(const shape&, double, bool)) &make_linear_extrude, ungil(), py::arg("shp"), py::arg("z"), py::arg("center") = false);
-	m.def("linear_extrude", [](const shape & shp, const py::list & lst, bool center) { return servoce::make_linear_extrude(shp, vector3(lst[0].cast<double>(), lst[1].cast<double>(), lst[2].cast<double>()), center); }, ungil(), py::arg("shp"), py::arg("vec"), py::arg("center") = false);
-	m.def("pipe", 			make_pipe, ungil(), py::arg("prof"), py::arg("path"));
-	//m.def("pipe_shell", 	(shape(*)(const shape& profile, const shape& path, const shape& auxiliary_spine, bool curvilinear_equivalence))&make_pipe_shell, ungil(), py::arg("prof"), py::arg("path"), py::arg("auxspine"), py::arg("curvilinear_equivalence"));
-	m.def("pipe_shell", 	(shape(*)(const shape& profile, const shape& path, bool isFrenet))&make_pipe_shell, ungil(), py::arg("prof"), py::arg("path"), py::arg("isFrenet") = false);
-	m.def("pipe_shell", 	(shape(*)(const std::vector<const shape*>& profile, const shape& path, bool isFrenet, bool approx_c1))&make_pipe_shell, ungil(), py::arg("prof"), py::arg("path"), py::arg("isFrenet")=false, py::arg("approx_c1")=false);
-	m.def("loft", 			loft, ungil(), py::arg("arr"), py::arg("smooth")=false);
-	m.def("revol", 			revol, ungil());
 
 //SURFACE
 	py::class_<surface::surface>(m, "surface")
