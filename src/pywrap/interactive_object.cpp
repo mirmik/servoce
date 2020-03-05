@@ -28,5 +28,6 @@ void registry_interactive_object(py::module & m)
 	.def("copy", &interactive_object::copy, py::arg("bind_to_scene")=true, ungil())
 	;
 
+//	pywrap_self_transformable<servoce::interactive_object>(cls);
 	pywrap_transformable<servoce::interactive_object, std::shared_ptr<servoce::interactive_object>>(cls);
 }

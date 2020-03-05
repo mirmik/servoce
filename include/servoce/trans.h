@@ -31,6 +31,8 @@ namespace servoce
 		transformation invert();	
 		transformation inverse() { return invert(); }
 
+		transformation& operator = (const transformation& oth) { new(this)transformation(oth); return *this; }
+
 		transformation() : trsf(nullptr) {}
 		~transformation();
 

@@ -15,6 +15,7 @@ install_inc_dir = "/usr/local/include/"
 
 shared_library("cxxbuild/libservoce.so", 
     builddir="cxxbuild", 
+    sources = ["src/test.cpp"],
     mdepends=
     [
     	"servoce_sources", 

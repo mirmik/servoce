@@ -1,12 +1,5 @@
-
-#include <pybind11/pybind11.h>
-#include <pybind11/operators.h>
-#include <pybind11/stl.h>
+#include <servoce/coord_system.h>
 
 void test() {
 
 }
-
-
-PYBIND11_MODULE(libservoce, m)
-{}

@@ -68,4 +68,14 @@ static inline void pywrap_transformable(auto cls)
 	;
 }
 
+template <class Cls>
+static inline void pywrap_self_transformable(auto cls) 
+{
+	cls
+	.def("self_transform", [](Cls& obj, const servoce::transformation& trans){ obj.self_transform(trans); return obj; }, ungil())
+	.def("translate", [](Cls& obj, double x, double y, double z){ obj.self_translate(x,y,z); return obj; }, py::arg("x")=0, py::arg("y")=0, py::arg("z")=0, ungil())
+	.def("translate", [](Cls& obj, vector3 v){ obj.self_translate(v); return obj; }, py::arg("v"), ungil())
+	;
+}
+
 #endif

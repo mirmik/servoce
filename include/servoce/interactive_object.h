@@ -10,6 +10,7 @@
 
 #include <servoce/transformable.h>
 #include <servoce/transformable_impl.h>
+#include <servoce/self_transformable.h>
 
 #include <cassert>
 
@@ -18,6 +19,7 @@ namespace servoce
 	class scene;
 
 	class interactive_object : public transformable<std::shared_ptr<interactive_object>>, public std::enable_shared_from_this<interactive_object>
+	//class interactive_object : public self_transformable
 	{
 		Handle(AIS_InteractiveObject) m_ais = nullptr;
 		Handle(AIS_InteractiveContext) m_context = nullptr;
@@ -53,6 +55,14 @@ namespace servoce
 
 			return m_context->Location(m_ais).Transformation();
 		}
+
+		/*void self_transform(const transformation& trans) override
+		{
+			assert(m_context);
+			assert(m_ais);
+
+			relocate(location() * trans);
+		}*/
 
 		std::shared_ptr<interactive_object> self_transform(const transformation& trans) override
 		{
