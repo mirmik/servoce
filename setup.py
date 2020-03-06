@@ -93,6 +93,8 @@ class bdist_wheel(bdist_wheel_):
 pyservoce_lib = Extension(
 	"pyservoce.libservoce",
 	sources= [
+		"src/pywrap/surface.cpp",
+		"src/pywrap/face.cpp",
 		"src/pywrap/coord_system.cpp",
 		"src/pywrap/interactive_object.cpp",
 		"src/pywrap/shape.cpp",
@@ -102,7 +104,6 @@ pyservoce_lib = Extension(
 		"src/pywrap/wire.cpp",
 		"src/pywrap/shell.cpp",
 		"src/pywrap/solid.cpp",
-		"src/pywrap/face.cpp",
 		"src/pywrap/trans.cpp",
 		"src/pywrap/geombase.cpp",
 

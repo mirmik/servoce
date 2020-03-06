@@ -2,39 +2,52 @@
 #include <servoce/solid.h>
 #include <servoce/face.h>
 
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Wire.hxx>
+
 #include <BRepBuilderAPI_Sewing.hxx>
 #include <BRepOffsetAPI_Sewing.hxx>
+#include <ShapeFix_Shell.hxx>
+
+#include <BRepFill.hxx>
 
 servoce::shell_shape servoce::make_shell(const std::vector<const servoce::shape*>& vec)
 {
-	BRepOffsetAPI_Sewing algo(0.1);
+	BRepOffsetAPI_Sewing algo;
 
 	for (auto* a : vec)
 	{
-		algo.Add((TopoDS_Shape&)a->Face());
+		algo.Add(a->Shape());
 	}
 
 	algo.Perform();
-
-	//ShapeFix_Shell fixer((TopoDS_Shell&)algo.SewedShape());
-	//return fixer.Shell();
-	return (TopoDS_Shell&) algo.SewedShape();
+	//auto shell = (TopoDS_Shell&) algo.SewedShape();
+	//shell.Reverse();
+	ShapeFix_Shell fixer((TopoDS_Shell&)algo.SewedShape());
+	fixer.Perform();
+	return fixer.Shell();
+	//return shell;
 }
 
 servoce::shell_shape servoce::make_shell(const std::vector<servoce::face_shape>& vec)
 {
-	BRepOffsetAPI_Sewing algo(0.1);
+	// FOR POLYGON
+
+	BRepOffsetAPI_Sewing algo;
 
 	for (auto& a : vec)
 	{
-		algo.Add((TopoDS_Shape&)a.Face());
+		algo.Add(a.Shape());
 	}
 
 	algo.Perform();
+	//auto shell = (TopoDS_Shell&) algo.SewedShape();
+	//shell.Reverse();
 
-	//ShapeFix_Shell fixer((TopoDS_Shell&)algo.SewedShape());
-	//return fixer.Shell();
-	return (TopoDS_Shell&) algo.SewedShape();
+	ShapeFix_Shell fixer((TopoDS_Shell&)algo.SewedShape());
+	fixer.Perform();
+	return fixer.Shell();
+	//return shell;
 }
 
 servoce::solid_shape servoce::shell_shape::fill() 
@@ -59,4 +72,11 @@ servoce::polyhedron_shell(const std::vector<servoce::point3>& pnts, const std::v
 	}
 
 	return servoce::make_shell(faces);
+}
+
+
+servoce::shell_shape servoce::ruled_shell(const servoce::shape& a, const servoce::shape& b) 
+{
+	TopoDS_Shell aShell = BRepFill::Shell (a.Wire_orEdgeToWire(), b.Wire_orEdgeToWire());
+	return aShell;
 }

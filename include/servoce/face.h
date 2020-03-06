@@ -4,6 +4,7 @@
 #include <vector>
 #include <servoce/shape.h>
 #include <servoce/surface_algo.h>
+#include <servoce/surface.h>
 
 #include <BRepAdaptor_Surface.hxx>
 
@@ -21,7 +22,12 @@ namespace servoce
 		face_shape(const TopoDS_Face& arg) : shape((const TopoDS_Shape&)arg) {}
 	
 		BRepAdaptor_Surface AdaptorSurface() const;
+
+		servoce::surface::surface surface() const;
 	};
+
+	face_shape make_face(const servoce::surface::surface& surf, double umin, double umax, double vmin, double vmax);
+	face_shape make_face(const servoce::surface::surface& surf, std::pair<double,double> urange, std::pair<double, double> vrange);
 
 	//prim2d
 	shape circle(double r, bool wire = false);
@@ -47,6 +53,10 @@ namespace servoce
 	shape fillet2d(const shape& shp, double r);
 	face_shape chamfer2d(const shape& shp, double r, const std::vector<point3>& refs);
 	face_shape chamfer2d(const shape& shp, double r);
+
+	face_shape ruled_face(const shape& a, const shape& b);
+
+	face_shape trivial_tube(const shape& spine, double r);
 }
 
 #endif

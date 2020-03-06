@@ -1,6 +1,11 @@
 #include <servoce/shape.h>
 #include <servoce/face.h>
+#include <servoce/edge.h>
 #include <servoce/solid.h>
+#include <servoce/wire.h>
+#include <servoce/shell.h>
+#include <servoce/compsolid.h>
+#include <servoce/compound.h>
 #include <servoce/geomprops.h>
 #include <servoce/boundbox.h>
 
@@ -119,6 +124,9 @@ const TopoDS_Solid& servoce::shape::Solid() const { return TopoDS::Solid(*m_shp)
 TopoDS_Compound& servoce::shape::Compound() { return TopoDS::Compound(*m_shp); }
 const TopoDS_Compound& servoce::shape::Compound() const { return TopoDS::Compound(*m_shp); }
 
+TopoDS_CompSolid& servoce::shape::CompSolid() { return TopoDS::CompSolid(*m_shp); }
+const TopoDS_CompSolid& servoce::shape::CompSolid() const { return TopoDS::CompSolid(*m_shp); }
+
 TopoDS_Wire servoce::shape::Wire_orEdgeToWire() const
 {
 	if (Shape().ShapeType() == TopAbs_WIRE)
@@ -126,6 +134,15 @@ TopoDS_Wire servoce::shape::Wire_orEdgeToWire() const
 	else
 		return BRepBuilderAPI_MakeWire(Edge()).Wire();
 }
+
+
+servoce::edge_shape servoce::shape::as_edge() const { return Edge(); }
+servoce::wire_shape servoce::shape::as_wire() const { return Wire_orEdgeToWire(); }
+servoce::face_shape servoce::shape::as_face() const { return Face(); }
+servoce::shell_shape servoce::shape::as_shell() const { return Shell(); } 
+servoce::solid_shape servoce::shape::as_solid() const { return Solid(); } 
+servoce::compsolid_shape servoce::shape::as_compsolid() const { return CompSolid(); } 
+servoce::compound_shape servoce::shape::as_compound() const { return Compound(); } 
 
 void servoce::shape::dump(std::ostream& out) const
 {
@@ -247,9 +264,9 @@ servoce::topoenum servoce::shape::type()
 	throw "TODO";
 }
 
-std::vector<servoce::shape> servoce::shape::solids() const
+std::vector<servoce::solid_shape> servoce::shape::solids() const
 {
-	std::vector<servoce::shape> ret;
+	std::vector<servoce::solid_shape> ret;
 
 	for (TopExp_Explorer ex(Shape(), TopAbs_SOLID); ex.More(); ex.Next())
 	{
@@ -273,9 +290,9 @@ std::vector<servoce::face_shape> servoce::shape::faces() const
 	return ret;
 }
 
-std::vector<servoce::shape> servoce::shape::wires() const
+std::vector<servoce::wire_shape> servoce::shape::wires() const
 {
-	std::vector<servoce::shape> ret;
+	std::vector<servoce::wire_shape> ret;
 
 	for (TopExp_Explorer ex(Shape(), TopAbs_WIRE); ex.More(); ex.Next())
 	{
@@ -313,9 +330,9 @@ std::vector<servoce::edge_shape> servoce::shape::edges() const
 }
 
 
-std::vector<servoce::shape> servoce::shape::shells() const
+std::vector<servoce::shell_shape> servoce::shape::shells() const
 {
-	std::vector<servoce::shape> ret;
+	std::vector<servoce::shell_shape> ret;
 
 	for (TopExp_Explorer ex(Shape(), TopAbs_SHELL); ex.More(); ex.Next())
 	{
@@ -326,10 +343,10 @@ std::vector<servoce::shape> servoce::shape::shells() const
 	return ret;
 }
 
-std::vector<servoce::shape> servoce::shape::compounds() const
+std::vector<servoce::compound_shape> servoce::shape::compounds() const
 {
 
-	std::vector<servoce::shape> ret;
+	std::vector<servoce::compound_shape> ret;
 
 	for (TopExp_Explorer ex(Shape(), TopAbs_COMPOUND); ex.More(); ex.Next())
 	{
@@ -340,10 +357,10 @@ std::vector<servoce::shape> servoce::shape::compounds() const
 	return ret;
 }
 
-std::vector<servoce::shape> servoce::shape::compsolids() const
+std::vector<servoce::compsolid_shape> servoce::shape::compsolids() const
 {
 
-	std::vector<servoce::shape> ret;
+	std::vector<servoce::compsolid_shape> ret;
 
 	for (TopExp_Explorer ex(Shape(), TopAbs_COMPSOLID); ex.More(); ex.Next())
 	{

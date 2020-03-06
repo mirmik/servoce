@@ -15,6 +15,7 @@ void registry_edge_shape(py::module &);
 void registry_shell_shape(py::module &);
 void registry_solid_shape(py::module & m);
 void registry_face_shape(py::module &);
+void registry_surface_shape(py::module &);
 void registry_trans(py::module &);
 
 void registry_geombase_shape(py::module & m);
@@ -84,6 +85,7 @@ PYBIND11_MODULE(libservoce, m)
 	;
 
 	registry_geombase_shape(m);
+	registry_surface_shape(m);
 
 	registry_shape(m);
 	registry_edge_shape(m);
@@ -111,9 +113,6 @@ PYBIND11_MODULE(libservoce, m)
 //OPS3D
 
 //SURFACE
-	py::class_<surface::surface>(m, "surface")
-		.def("map", &surface::surface::map, ungil());
-	m.def("surface_cylinder", surface::cylinder, ungil());
 	
 //CURVE2
 	py::class_<curve2::curve2>(m, "curve2")

@@ -2,6 +2,7 @@
 #define SERVOCE_SURFACE_ALGO_H
 
 #include <BRepLProp_SLProps.hxx>
+#include <BRepAdaptor_Surface.hxx>
 
 namespace servoce 
 {

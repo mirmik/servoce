@@ -16,9 +16,18 @@
 #include <BRepPrimAPI_MakePrism.hxx>
 #include <BRepPrimAPI_MakeRevol.hxx>
 #include <BRepExtrema_DistShapeShape.hxx>
+#include <BRepOffsetAPI_MakeOffsetShape.hxx>
 //#include <BRepPrimAPI_MakeWedge.hxx>
 //#include <BRepOffsetAPI_ThruSections.hxx>
 #include <TopExp_Explorer.hxx>
+#include <BRepAdaptor_HCurve.hxx>
+#include <Geom_Circle.hxx>
+#include <GeomFill_SectionLaw.hxx>
+#include <GeomFill_CurveAndTrihedron.hxx>
+#include <GeomFill_EvolvedSection.hxx>
+#include <GeomFill_CorrectedFrenet.hxx>
+#include <GeomFill_Sweep.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
 
 #include <BRepBuilderAPI_MakeSolid.hxx>
 
@@ -51,9 +60,13 @@
 #include <exception>
 #include <assert.h>
 
+#include <ShapeFix_Solid.hxx>
+
 #include <servoce/edge.h>
 #include <servoce/face.h>
 #include <servoce/shell.h>
+
+#include <Law_Constant.hxx>
 
 using namespace servoce;
 
@@ -276,12 +289,15 @@ shape servoce::make_pipe_shell(
 	BRepOffsetAPI_MakePipeShell mkPipeShell(path.Wire_orEdgeToWire());
 
 	BRepBuilderAPI_TransitionMode transMode;
+
 	switch (transition)
 	{
 		case 1: transMode = BRepBuilderAPI_RightCorner;
 			break;
+
 		case 2: transMode = BRepBuilderAPI_RoundCorner;
 			break;
+
 		default: transMode = BRepBuilderAPI_Transformed;
 			break;
 	}
@@ -322,23 +338,28 @@ servoce::shape servoce::make_pipe_shell(
 {
 	if (spine.Shape().IsNull())
 		throw std::runtime_error("Cannot sweep along empty spine.");
+
 	if (spine.Shape().ShapeType() != TopAbs_WIRE && spine.Shape().ShapeType() != TopAbs_EDGE)
 		throw std::runtime_error("Spine shape is not a wire and not an edge.");
 
 	BRepOffsetAPI_MakePipeShell mkPipeShell(spine.Wire_orEdgeToWire());
 	BRepBuilderAPI_TransitionMode transMode;
+
 	switch (transition)
 	{
 		case 1: transMode = BRepBuilderAPI_RightCorner;
 			break;
+
 		case 2: transMode = BRepBuilderAPI_RoundCorner;
 			break;
+
 		default: transMode = BRepBuilderAPI_Transformed;
 			break;
 	}
+
 	mkPipeShell.SetMode(frenet);
 	mkPipeShell.SetTransitionMode(transMode);
-	
+
 	for (auto & it : profiles)
 	{
 		mkPipeShell.Add(it->Shape());
@@ -778,7 +799,90 @@ shape servoce::unify(const shape& proto)
 
 servoce::solid_shape servoce::make_solid(const servoce::shell_shape& shp)
 {
-	BRepBuilderAPI_MakeSolid algo(shp.Shell());
+	//BRepBuilderAPI_MakeSolid algo(shp.Shell());
+	ShapeFix_Solid algo;
+	//algo.Build();
+	return algo.SolidFromShell(shp.Shell());
+}
+
+
+servoce::shape servoce::offset_shape(const servoce::shape& shp, double off)
+{
+	BRepOffsetAPI_MakeOffsetShape algo;
+	algo.PerformByJoin(shp.Shape(), off, 1e-6);
 	algo.Build();
-	return algo.Solid();
+	return algo.Shape();
+}
+
+
+
+
+static Handle(Law_Function) CreateBsFunction (const Standard_Real theFirst, const Standard_Real theLast, const Standard_Real theRadius)
+{
+    (void)theRadius;
+    //Handle(Law_BSpline) aBs;
+    //Handle(Law_BSpFunc) aFunc = new Law_BSpFunc (aBs, theFirst, theLast);
+    Handle(Law_Constant) aFunc = new Law_Constant();
+    aFunc->Set(1, theFirst, theLast);
+    return aFunc;
+}
+
+servoce::shape servoce::make_tube(
+	const servoce::edge_shape& shp, double radius, double tol, int cont, int maxdegree, int maxsegm)
+{
+    // http://opencascade.blogspot.com/2009/11/surface-modeling-part3.html
+    Standard_Real theTol = tol;
+    Standard_Real theRadius = radius;
+    //Standard_Boolean theIsPolynomial = Standard_True;
+    Standard_Boolean myIsElem = Standard_True;
+    GeomAbs_Shape theContinuity = GeomAbs_Shape(cont);
+    Standard_Integer theMaxDegree = maxdegree;
+    Standard_Integer theMaxSegment = maxsegm;
+
+    /*if (this->_Shape.IsNull())
+        Standard_Failure::Raise("Cannot sweep along empty spine");*/
+
+    Handle(Adaptor3d_HCurve) myPath;
+    if (shp.Shape().ShapeType() == TopAbs_EDGE) {
+        BRepAdaptor_Curve path_adapt(shp.Edge());
+        myPath = new BRepAdaptor_HCurve(path_adapt);
+    }
+    //else if (this->_Shape.ShapeType() == TopAbs_WIRE) {
+    //    const TopoDS_Wire& path_wire = TopoDS::Wire(this->_Shape);
+    //    BRepAdaptor_CompCurve path_adapt(path_wire);
+    //    myPath = new BRepAdaptor_HCompCurve(path_adapt);
+    //}
+    //else {
+    //    Standard_Failure::Raise("Spine shape is neither an edge nor a wire");
+    //}
+    else {
+        Standard_Failure::Raise("Spine shape is not an edge");
+    }
+
+    //circular profile
+    Handle(Geom_Circle) aCirc = new Geom_Circle (gp::XOY(), theRadius);
+    aCirc->Rotate (gp::OZ(), M_PI/2.);
+
+    //perpendicular section
+    Handle(Law_Function) myEvol = ::CreateBsFunction (myPath->FirstParameter(), myPath->LastParameter(), theRadius);
+    Handle(GeomFill_SectionLaw) aSec = new GeomFill_EvolvedSection(aCirc, myEvol);
+    Handle(GeomFill_LocationLaw) aLoc = new GeomFill_CurveAndTrihedron(new GeomFill_CorrectedFrenet);
+    aLoc->SetCurve (myPath);
+
+    GeomFill_Sweep mkSweep (aLoc, myIsElem);
+    mkSweep.SetTolerance (theTol);
+    mkSweep.Build (aSec, GeomFill_Location, theContinuity, theMaxDegree, theMaxSegment);
+    if (mkSweep.IsDone()) {
+        Handle(Geom_Surface) mySurface = mkSweep.Surface();
+        //Standard_Real myError = mkSweep.ErrorOnSurface();
+
+        Standard_Real u1,u2,v1,v2;
+        mySurface->Bounds(u1,u2,v1,v2);
+        BRepBuilderAPI_MakeFace mkBuilder(mySurface, u1, u2, v1, v2
+          , Precision::Confusion()
+        );
+        return mkBuilder.Shape();
+    }
+
+    return TopoDS_Shape();
 }

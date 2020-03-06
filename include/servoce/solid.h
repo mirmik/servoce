@@ -75,6 +75,13 @@ namespace servoce
 	shape unify(const shape& proto);
 
 	servoce::solid_shape make_solid(const servoce::shell_shape& shp);
+
+	shape offset_shape(const servoce::shape& shp, double off);
+
+
+	// TODO: Move to face
+	shape make_tube(
+	const edge_shape& shp, double radius, double tol, int cont, int maxdegree, int maxsegm);
 }
 
 #endif

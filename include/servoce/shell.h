@@ -20,6 +20,8 @@ namespace servoce
 	shell_shape make_shell(const std::vector<const servoce::shape*>& vec);
 	shell_shape make_shell(const std::vector<servoce::face_shape>& vec);
 	shell_shape polyhedron_shell(const std::vector<servoce::point3>& pnts, const std::vector<std::vector<int>>& faces);
+
+	shell_shape ruled_shell(const shape& a, const shape& b);
 } 
 
 #endif

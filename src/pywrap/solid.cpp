@@ -42,6 +42,7 @@ void registry_solid_shape(py::module & m)
 	m.def("halfspace", 	&halfspace, ungil());
 
 	m.def("thicksolid", &thicksolid, ungil());
+	m.def("offset_shape", &offset_shape, ungil());
 
 	m.def("make_solid", &make_solid, ungil());
 

@@ -14,15 +14,13 @@ namespace servoce {
 	public:
 		using crvalgo = curve_algo<edge_shape, servoce::point3, servoce::vector3>;
 
-		//edge_shape(TopoDS_Edge& arg) : shape(arg) {}
 		edge_shape(){}
 		edge_shape(const TopoDS_Edge& arg) : shape((const TopoDS_Shape&)arg) {}
 
 		std::pair<double,double> range();
 
 		BRepAdaptor_Curve AdaptorCurve() const;
-
-		//curve3::curve3& adaptor_curve
+		curve3::curve3 curve();
 
 		face_shape fill();
 	};

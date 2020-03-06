@@ -26,4 +26,6 @@ void registry_shell_shape(py::module & m)
 
 	m.def("make_shell", (shell_shape(*)(const std::vector<const servoce::shape*>& vec))&make_shell, ungil());
 	m.def("polyhedron_shell", &polyhedron_shell, ungil());
+	
+	m.def("ruled_shell", &ruled_shell, ungil());
 }
