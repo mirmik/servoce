@@ -48,7 +48,16 @@ namespace servoce
 		const vector3& binormal = vector3(0,0,0),
 		const vector3& parallel= vector3(0,0,0),
 		bool discrete=false,
-		bool solid=true);
+		bool solid=true,
+		int transition=0);
+
+	shape make_pipe_shell(
+		const std::vector<const shape*>& profiles, 
+		const shape& spine, 
+		bool frenet=false,
+		bool solid=true,
+		int transition=0);
+
 	//shape make_pipe_shell(const shape& profile, const shape& spine, 
 	//	const shape& auxiliary_spine, bool curvilinear_equivalence);
 

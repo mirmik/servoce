@@ -230,7 +230,7 @@ shape servoce::make_pipe(const shape& profile, const shape& path,
 		{ "discrete_trihedron", GeomFill_IsDiscreteTrihedron}
 	};
 
-	try 
+	try
 	{
 		tri = map.at(mode);
 	}
@@ -269,21 +269,34 @@ shape servoce::make_pipe_shell(
     const vector3& binormal,
     const vector3& parallel,
     bool discrete,
-    bool solid
+    bool solid,
+    int transition
 )
 {
 	BRepOffsetAPI_MakePipeShell mkPipeShell(path.Wire_orEdgeToWire());
-	
+
+	BRepBuilderAPI_TransitionMode transMode;
+	switch (transition)
+	{
+		case 1: transMode = BRepBuilderAPI_RightCorner;
+			break;
+		case 2: transMode = BRepBuilderAPI_RoundCorner;
+			break;
+		default: transMode = BRepBuilderAPI_Transformed;
+			break;
+	}
+
 	mkPipeShell.SetMode(frenet);
+	mkPipeShell.SetTransitionMode(transMode);
 	mkPipeShell.SetForceApproxC1(approx_c1);
 
 	if (!binormal.iszero())
 		mkPipeShell.SetMode(binormal.Dir());
 
 	if (!parallel.iszero())
-		mkPipeShell.SetMode(gp_Ax2(gp_Pnt(0,0,0), parallel.Dir()));
+		mkPipeShell.SetMode(gp_Ax2(gp_Pnt(0, 0, 0), parallel.Dir()));
 
-	if (discrete) 
+	if (discrete)
 		mkPipeShell.SetDiscreteMode();
 
 	for (auto a : profile)
@@ -298,6 +311,47 @@ shape servoce::make_pipe_shell(
 
 	return mkPipeShell.Shape();
 }
+
+
+servoce::shape servoce::make_pipe_shell(
+    const std::vector<const shape*>& profiles,
+    const shape& spine,
+    bool frenet,
+    bool solid,
+    int transition)
+{
+	if (spine.Shape().IsNull())
+		throw std::runtime_error("Cannot sweep along empty spine.");
+	if (spine.Shape().ShapeType() != TopAbs_WIRE && spine.Shape().ShapeType() != TopAbs_EDGE)
+		throw std::runtime_error("Spine shape is not a wire and not an edge.");
+
+	BRepOffsetAPI_MakePipeShell mkPipeShell(spine.Wire_orEdgeToWire());
+	BRepBuilderAPI_TransitionMode transMode;
+	switch (transition)
+	{
+		case 1: transMode = BRepBuilderAPI_RightCorner;
+			break;
+		case 2: transMode = BRepBuilderAPI_RoundCorner;
+			break;
+		default: transMode = BRepBuilderAPI_Transformed;
+			break;
+	}
+	mkPipeShell.SetMode(frenet);
+	mkPipeShell.SetTransitionMode(transMode);
+	
+	for (auto & it : profiles)
+	{
+		mkPipeShell.Add(it->Shape());
+	}
+
+	if (!mkPipeShell.IsReady()) Standard_Failure::Raise("shape is not ready to build");
+	else mkPipeShell.Build();
+
+	if (solid)	mkPipeShell.MakeSolid();
+
+	return mkPipeShell.Shape();
+}
+
 /*
 shape servoce::make_pipe_shell(const shape& profile, const shape& path,
                                const shape& auxiliary_spine, bool curvilinear_equivalence)
@@ -328,7 +382,7 @@ shape servoce::loft(const std::vector<shape>& vec, bool smooth)
 
 	for (auto v : vec)
 		if (v.Shape().ShapeType() == TopAbs_FACE)
-			Standard_Failure::Raise("Loft argument must be array of WIRES");
+			Standard_Failure::Raise("Loft argument must be array of Wires or Edges");
 
 	for (auto& r : vec)
 	{
