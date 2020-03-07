@@ -7,6 +7,7 @@
 #include <servoce/surface.h>
 
 #include <BRepAdaptor_Surface.hxx>
+#include <BRep_Tool.hxx>
 
 class BRepPrimAPI_MakeSweep;
 
@@ -17,17 +18,25 @@ namespace servoce
 	public:
 		using surfalgo = surface_algo<face_shape>;
 
+		Handle(Geom_Surface) surf_saver;
+
 		//edge_shape(TopoDS_Edge& arg) : shape(arg) {}
 		face_shape(){}
-		face_shape(const TopoDS_Face& arg) : shape((const TopoDS_Shape&)arg) {}
+		face_shape(const face_shape& oth) : shape(oth), surf_saver(oth.surf_saver) {}
+		virtual ~face_shape(){}
+		face_shape(const TopoDS_Face& arg) : shape((const TopoDS_Face&)arg) { surf_saver = Surface(); }
 	
 		BRepAdaptor_Surface AdaptorSurface() const;
+		Handle(Geom_Surface) Surface() { return BRep_Tool::Surface(Face()); }
 
-		servoce::surface::surface surface() const;
+		servoce::surface surface() const;
 	};
 
-	face_shape make_face(const servoce::surface::surface& surf, double umin, double umax, double vmin, double vmax);
-	face_shape make_face(const servoce::surface::surface& surf, std::pair<double,double> urange, std::pair<double, double> vrange);
+	face_shape make_face(const std::vector<const servoce::shape*>& vec);
+
+	face_shape make_face(const servoce::surface& surf);
+	face_shape make_face(const servoce::surface& surf, double umin, double umax, double vmin, double vmax);
+	face_shape make_face(const servoce::surface& surf, std::pair<double,double> urange, std::pair<double, double> vrange);
 
 	//prim2d
 	shape circle(double r, bool wire = false);

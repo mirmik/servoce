@@ -6,9 +6,7 @@
 
 namespace servoce
 {
-	namespace curve3 {
-		class curve3;
-	}
+	class curve3;
 
 	class wire_shape : public shape
 	{
@@ -30,8 +28,8 @@ namespace servoce
 	wire_shape sew(const std::vector<const shape*>& arr);
 	wire_shape make_wire(const std::vector<const shape*>& arr);
 
-	curve3::curve3 extract_curve(const shape& wire);
-	curve3::curve3 curve_adaptor(const shape& wire);
+	curve3 extract_curve(const shape& wire);
+	curve3 curve_adaptor(const shape& wire);
 }
 
 #endif

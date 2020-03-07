@@ -8,6 +8,8 @@ from licant.modules import module, submodule
 import licant.libs
 import os
 
+licant.cli.add_argument("--python", default="")
+opts = licant.cli.parse()[0]
 
 def get_occt_include_directory():
     dirs = ["/usr/include/", "/usr/local/include/"]
@@ -146,10 +148,36 @@ module(
     include_paths=[libqt_include_path],
 )
 
-module(
-    "servoce_sources",
-    srcdir="src",
-    sources=[
+pybind_source = []
+python_include = []
+if opts.python != "":
+    python_include = [os.path.join("/usr/include/"+opts.python)]
+    pybind_source = [
+        "pywrap/sweep.cpp",
+        "pywrap/surface.cpp",
+        "pywrap/face.cpp",
+        "pywrap/coord_system.cpp",
+        "pywrap/interactive_object.cpp",
+        "pywrap/shape.cpp",
+        "pywrap/displayable.cpp",
+        "pywrap.cpp",
+        "pywrap/edge.cpp",
+        "pywrap/wire.cpp",
+        "pywrap/shell.cpp",
+        "pywrap/solid.cpp",
+        "pywrap/trans.cpp",
+        "pywrap/geombase.cpp",
+
+        "geombase_py.cpp",
+        "color_py.cpp",
+        "b64.cpp",
+    ]
+
+INCLUDE = ["include", ".", "src"]
+INCLUDE.extend(python_include)
+
+SOURCES = [
+        "project.cpp",
         "shape.cpp",
         "trans.cpp",
         "solid.cpp",
@@ -157,6 +185,7 @@ module(
         "surface.cpp",
         "curve2.cpp",
         "curve3.cpp",
+        "sweep.cpp",
         "face.cpp",
         "wire.cpp",
         "edge.cpp",
@@ -164,6 +193,7 @@ module(
         "convert.cpp",
         "geombase.cpp",
         "geomprops.cpp",
+        "law.cpp",
         "view.cpp",
         "scene.cpp",
         "axis.cpp",
@@ -172,10 +202,16 @@ module(
         "boundbox.cpp",
         "prs3d.cpp",
         "interactive_object.cpp",
-        "opencascade_types.cpp"
-    ] + add_sources,
+        "opencascade_types.cpp",
+    ] + add_sources
+SOURCES.extend(pybind_source)
+
+module(
+    "servoce_sources",
+    srcdir="src",
+    sources=SOURCES,
     moc=[] + add_moc,
-    include_paths=["include", ".", "src"],
+    include_paths=INCLUDE,
     mdepends=[
         "liboce",
     ] + add_modules,

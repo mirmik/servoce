@@ -441,7 +441,7 @@ std::string servoce::shape::shapetype_as_string() const
 
 		case TopAbs_SOLID: return "solid";
 
-		case TopAbs_SHELL: return "vertex";
+		case TopAbs_SHELL: return "shell";
 
 		case TopAbs_VERTEX: return "shell";
 

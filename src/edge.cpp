@@ -5,6 +5,7 @@
 
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
+#include <BRepAdaptor_HCurve.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 
 #include <GCPnts_AbscissaPoint.hxx>
@@ -29,15 +30,28 @@ BRepAdaptor_Curve servoce::edge_shape::AdaptorCurve() const
 	return BRepAdaptor_Curve(Edge());
 }
 
+Handle(Adaptor3d_HCurve) servoce::edge_shape::HCurveAdaptor() const
+{	
+	BRepAdaptor_Curve path_adapt(Edge());
+    return new BRepAdaptor_HCurve(path_adapt);
+}
+
 servoce::face_shape servoce::edge_shape::fill()
 {
 	assert(Shape().ShapeType() == TopAbs_EDGE);
 	return BRepBuilderAPI_MakeFace(Wire_orEdgeToWire()).Face();
 }
 
-servoce::curve3::curve3 servoce::edge_shape::curve()
+servoce::curve3 servoce::edge_shape::curve()
 {
-	auto rang = range(); 
-	Handle(Geom_Curve) aCurve = BRep_Tool::Curve(Edge(), rang.first, rang.second);
+	double a, b;
+	Handle(Geom_Curve) aCurve = BRep_Tool::Curve(Edge(), a, b);
+	return aCurve;
+}
+
+Handle(Geom_Curve) servoce::edge_shape::Curve() const
+{
+	double a, b;
+	Handle(Geom_Curve) aCurve = BRep_Tool::Curve(Edge(), a, b);
 	return aCurve;
 }

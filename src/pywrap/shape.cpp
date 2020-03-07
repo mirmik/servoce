@@ -9,6 +9,8 @@
 #include <servoce/util/b64.h>
 #include <servoce/shape.h>
 #include <servoce/solid.h>
+#include <servoce/shell.h>
+#include <servoce/wire.h>
 #include <servoce/compsolid.h>
 #include <servoce/compound.h>
 #include <servoce/face.h>

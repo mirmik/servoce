@@ -9,7 +9,9 @@
 #include <servoce/util/b64.h>
 
 #include <servoce/face.h>
+#include <servoce/shell.h>
 #include <servoce/solid.h>
+#include <servoce/wire.h>
 #include <servoce/edge.h>
 
 namespace py = pybind11;
@@ -45,5 +47,9 @@ void registry_face_shape(py::module & m)
 
 	m.def("ruled_face", &ruled_face, ungil());
 	m.def("trivial_tube", (face_shape (*)(const shape& spine, double r))&trivial_tube, ungil());
-	m.def("tube", (shape(*)(const servoce::edge_shape&,double,double,int,int,int))&make_tube, py::arg("shp"), py::arg("r"), py::arg("tol"), py::arg("cont"), py::arg("maxdegree"), py::arg("maxsegm"), ungil());
+	//m.def("tube", (shape(*)(const servoce::edge_shape&,double,double,int,int,int))&make_tube, py::arg("shp"), py::arg("r"), py::arg("tol"), py::arg("cont"), py::arg("maxdegree"), py::arg("maxsegm"), ungil());
+
+
+
+	m.def("make_face", (face_shape(*)(const std::vector<const servoce::shape*>& vec))&make_face, ungil());
 }

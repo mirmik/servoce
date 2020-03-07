@@ -338,14 +338,14 @@ bool servoce::shape::is_closed()
 servoce::edge_shape servoce::bezier(
     const std::vector<point3>& pnts)
 {
-	return make_edge(servoce::curve3::bezier(pnts));
+	return make_edge(servoce::bezier_curve3(pnts));
 }
 
 servoce::edge_shape servoce::bezier(
     const std::vector<point3>& pnts,
     const std::vector<double>& weights)
 {
-	return make_edge(servoce::curve3::bezier(pnts, weights));
+	return make_edge(servoce::bezier_curve3(pnts, weights));
 }
 
 servoce::edge_shape servoce::bspline(
@@ -356,7 +356,7 @@ servoce::edge_shape servoce::bspline(
     bool periodic
 )
 {
-	return make_edge(servoce::curve3::bspline(
+	return make_edge(servoce::bspline_curve3(
 		poles, knots, multiplicities, 
 		degree, periodic));
 }
@@ -371,25 +371,25 @@ servoce::edge_shape servoce::bspline(
     bool check_rational
 ) 
 {
-	return make_edge(servoce::curve3::bspline(
+	return make_edge(servoce::bspline_curve3(
 		poles, weights, knots, multiplicities, 
 		degree, periodic, check_rational));
 }
 
 
-servoce::edge_shape servoce::make_edge(const servoce::curve3::curve3& crv)
+servoce::edge_shape servoce::make_edge(const servoce::curve3& crv)
 {
 	auto curve = crv.Curve();
 	return BRepBuilderAPI_MakeEdge(curve).Edge();
 }
 
-servoce::edge_shape servoce::make_edge(const servoce::curve3::curve3& crv, double strt, double fini)
+servoce::edge_shape servoce::make_edge(const servoce::curve3& crv, double strt, double fini)
 {
 	auto curve = crv.Curve();
 	return BRepBuilderAPI_MakeEdge(curve, strt, fini).Edge();
 }
 
-servoce::curve3::curve3 servoce::extract_curve(const servoce::shape& edg) 
+servoce::curve3 servoce::extract_curve(const servoce::shape& edg) 
 {
 	double first;
 	double last;
@@ -401,7 +401,7 @@ servoce::curve3::curve3 servoce::extract_curve(const servoce::shape& edg)
 	auto crv = BRep_Tool::Curve(
 		Edg, first, last);	
 
-	return servoce::curve3::curve3(crv);
+	return servoce::curve3(crv);
 }
 
 servoce::face_shape servoce::wire_shape::fill()

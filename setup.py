@@ -120,6 +120,7 @@ pyservoce_lib = Extension(
 		"src/face.cpp",
 		"src/wire.cpp",
 		"src/edge.cpp",
+		"src/law.cpp",
 		"src/boolops.cpp",
 		"src/geombase.cpp",
 		"src/boundbox.cpp",

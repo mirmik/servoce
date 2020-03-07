@@ -44,7 +44,8 @@ void registry_solid_shape(py::module & m)
 	m.def("thicksolid", &thicksolid, ungil());
 	m.def("offset_shape", &offset_shape, ungil());
 
-	m.def("make_solid", &make_solid, ungil());
+	m.def("make_solid", py::overload_cast<const servoce::shell_shape&>(&make_solid), ungil());
+	m.def("make_solid", py::overload_cast<const std::vector<const servoce::shell_shape*>&>(&make_solid), ungil());
 
 	m.def("pipe_0", 		make_pipe_0, ungil(), py::arg("profile"), py::arg("spine"));
 	m.def("pipe", 			make_pipe, ungil(), py::arg("profile"), py::arg("spine"), py::arg("mode"), py::arg("force_approx_c1") = false);

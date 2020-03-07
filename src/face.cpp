@@ -270,27 +270,54 @@ servoce::face_shape servoce::trivial_tube(const servoce::shape& spine, double r)
 	auto edg = spine.as_edge();
 	auto urange = edg.range();
 
-	servoce::surface::surface surf = servoce::surface::tube(edg.curve(), r);
+	servoce::surface surf = servoce::tube_surface(edg.curve(), r);
 	auto vrange = surf.urange();
 
 	return make_face(surf, vrange, urange);
 }
 
 servoce::face_shape servoce::make_face(
-    const servoce::surface::surface& surf, double u1, double u2, double v1, double v2)
+    const servoce::surface& surf, double u1, double u2, double v1, double v2)
 {
 	BRepBuilderAPI_MakeFace algo(surf.Surface(), u1, u2, v1, v2, 1e-6);
 	algo.Build();
 	return algo.Face();
 }
 
-servoce::face_shape servoce::make_face(
-    const servoce::surface::surface& surf, std::pair<double, double> urange, std::pair<double, double> vrange)
+
+servoce::face_shape servoce::make_face(const servoce::surface& surf)
 {
+	//throw std::runtime_error("HERE");
+	Standard_Real u1, u2, v1, v2;
+	surf.Surface()->Bounds(u1, u2, v1, v2);
+
+	BRepBuilderAPI_MakeFace algo(surf.Surface(), u1, u2, v1, v2, 1e-6);
+	algo.Build();
+	return algo.Face();
+}
+
+servoce::face_shape servoce::make_face(
+    const servoce::surface& surf, std::pair<double, double> urange, std::pair<double, double> vrange)
+{
+	//throw std::runtime_error("HERE");
 	return servoce::make_face(surf, urange.first, urange.second, vrange.first, vrange.second);
 }
 
-servoce::surface::surface servoce::face_shape::surface() const
+servoce::surface servoce::face_shape::surface() const
 {
 	return BRep_Tool::Surface(Face());
+}
+
+
+servoce::face_shape servoce::make_face(const std::vector<const servoce::shape*>& vec) 
+{
+	//throw std::runtime_error("HERE");
+	BRepBuilderAPI_MakeFace algo;
+	for (auto s: vec) 
+	{
+		algo.Add(s->Wire_orEdgeToWire());
+	}
+
+	algo.Build();
+	return algo.Face();
 }

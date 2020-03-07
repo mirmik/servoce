@@ -53,7 +53,7 @@ namespace servoce
 		shape(const TopoDS_Shape& shp);
 		shape(const shape& oth);
 		shape(shape&& oth);
-		~shape();
+		virtual ~shape();
 
 		shape transform(const transformation& trans) const override;
 		shape transform(const general_transformation& trans) const override;

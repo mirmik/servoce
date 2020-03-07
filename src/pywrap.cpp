@@ -23,6 +23,8 @@ void registry_displayable(py::module & m);
 void registry_interactive_object(py::module & m);
 void registry_coord_system(py::module & m);
 
+void registry_sweep_shape(py::module & m);
+
 PYBIND11_MODULE(libservoce, m)
 {
 // EXCEPTIONS
@@ -96,6 +98,8 @@ PYBIND11_MODULE(libservoce, m)
 
 	registry_trans(m);
 	registry_coord_system(m);
+
+	registry_sweep_shape(m);
 
 	m.def("fillet", (shape(*)(const shape&, double, const std::vector<point3>&))&servoce::fillet, ungil(), py::arg("shp"), py::arg("r"), py::arg("refs"));
 	m.def("fillet", (shape(*)(const shape&, double))&servoce::fillet, ungil(), py::arg("shp"), py::arg("r"));

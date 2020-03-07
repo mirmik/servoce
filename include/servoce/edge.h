@@ -19,14 +19,17 @@ namespace servoce {
 
 		std::pair<double,double> range();
 
+		Handle(Geom_Curve) Curve() const;
 		BRepAdaptor_Curve AdaptorCurve() const;
-		curve3::curve3 curve();
+		Handle(Adaptor3d_HCurve) HCurveAdaptor() const;
+
+		curve3 curve();
 
 		face_shape fill();
 	};
 
-	edge_shape make_edge(const servoce::curve3::curve3& crv);
-	edge_shape make_edge(const servoce::curve3::curve3& crv, double strt, double fini);
+	edge_shape make_edge(const servoce::curve3& crv);
+	edge_shape make_edge(const servoce::curve3& crv, double strt, double fini);
 
 	edge_shape make_segment(const point3& a, const point3& b);
 	

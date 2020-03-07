@@ -12,15 +12,15 @@ using namespace servoce;
 
 void registry_surface_shape(py::module & m)
 {
-	py::class_<surface::surface>(m, "surface")
-	.def("map", &surface::surface::map, ungil())
-	.def("urange", &surface::surface::urange)
-	.def("vrange", &surface::surface::vrange)
+	py::class_<surface>(m, "surface")
+	.def("map", &surface::map, ungil())
+	.def("urange", &surface::urange)
+	.def("vrange", &surface::vrange)
 	.def(py::pickle(
-	[](const surface::surface & self) { return b64::base64_encode(string_dump(self)); },
-	[](const std::string & in) { return restore_string_dump<surface::surface>(b64::base64_decode(in)); }), ungil())
+	[](const surface & self) { return b64::base64_encode(string_dump(self)); },
+	[](const std::string & in) { return restore_string_dump<surface>(b64::base64_decode(in)); }), ungil())
 	;
 
-	m.def("surface_tube", surface::tube, ungil());
-	m.def("surface_cylinder", surface::cylinder, ungil());
+	m.def("tube_surface", tube_surface, ungil());
+	m.def("cylinder_surface", cylinder_surface, ungil());
 }
