@@ -61,6 +61,7 @@ PYBIND11_MODULE(libservoce, m)
 	.def("xrange", &servoce::boundbox::xrange)
 	.def("yrange", &servoce::boundbox::yrange)
 	.def("zrange", &servoce::boundbox::zrange)
+	.def("max0", &servoce::boundbox::max0)
 	.def("corner_min", &servoce::boundbox::corner_min)
 	.def("corner_max", &servoce::boundbox::corner_max)
 	.def("__repr__", [](const boundbox & box)
@@ -188,6 +189,7 @@ PYBIND11_MODULE(libservoce, m)
 	//.def("shapes_array", (std::vector<shape>(scene::*)())&scene::shapes_array, ungil())
 	//.def("color_array", (std::vector<color>(scene::*)())&scene::color_array, ungil())
 	.def("__getitem__", &scene::operator[])
+	.def("bbox", &scene::bbox, ungil())
 	.def("total", &scene::total)
 	//.def("__getitem__", [](const scene & s, size_t i) { return s[i]; }, ungil())
 	;
@@ -275,6 +277,7 @@ PYBIND11_MODULE(libservoce, m)
 
 	m.def("draw_arrow", &draw::arrow, py::arg("pnt"), py::arg("vec"), py::arg("clr")=yellow, py::arg("arrlen")=1, py::arg("width")=1);
 	m.def("draw_line", &draw::line, py::arg("a"), py::arg("b"), py::arg("clr")=black, py::arg("style")=line_style::solid_line, py::arg("width")=1);
+	m.def("axis", &draw::axis, py::arg("pnt"), py::arg("dir"), py::arg("clr")=white);
 
 	py::class_<geomprops>(m, "geomprops")
 	//	.def("volume_properties", &geomprops::volume_properties)

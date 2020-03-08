@@ -2,6 +2,7 @@
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_Shape.hxx>
 #include <AIS_ConnectedInteractive.hxx> 
+#include <BRepBndLib.hxx>
 
 #include <mutex>
 #include <servoce/scene.h>
@@ -69,6 +70,14 @@ servoce::interactive_object::interactive_object(const servoce::shape& shp, const
 servoce::boundbox servoce::interactive_object::bounding_box()
 {
 	Bnd_Box box;
+	try 
+	{
+		Handle(AIS_Shape) ashp = Handle(AIS_Shape)::DownCast(m_ais);
+		BRepBndLib::Add(ashp->Shape(), box);
+		return box;
+	}
+	catch(...) {}
+
 	m_ais->BoundingBox(box);
 	return {box};
 }

@@ -34,6 +34,12 @@ namespace servoce
 			line_style style = line_style::solid_line,
 			double width = 1
 		    );
+
+		servoce::interactive_object axis(
+		    const servoce::point3& pnt,
+		    const servoce::vector3& dir,
+			const servoce::color& clr = servoce::white
+		    );
 	}
 }
 

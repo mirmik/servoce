@@ -3,10 +3,12 @@
 #include <Prs3d_Arrow.hxx>
 #include <Geom_CartesianPoint.hxx>
 #include <AIS_Line.hxx>
+#include <AIS_Axis.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_ArrowAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <AIS_InteractiveContext.hxx>
+#include <Geom_Axis1Placement.hxx>
 
 static Aspect_TypeOfLine line_type_to_TypeOfLine(servoce::line_style style) 
 {
@@ -77,4 +79,16 @@ servoce::interactive_object servoce::draw::line(
 	//aisLine->SetColor(Quantity_Color(clr.r, clr.g, clr.b, Quantity_TOC_RGB));
 
 	return servoce::interactive_object(aisLine);
+}
+
+servoce::interactive_object servoce::draw::axis(
+		    const servoce::point3& pnt,
+		    const servoce::vector3& dir,
+			const servoce::color& clr
+		    ) 
+{
+	Handle(AIS_Axis) ax;
+	ax = new AIS_Axis(new Geom_Axis1Placement(pnt.Pnt(), dir.Vec()));
+	ax->SetColor(clr.Color());
+	return servoce::interactive_object(ax);
 }

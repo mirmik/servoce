@@ -38,3 +38,15 @@ AIS_InteractiveContext* servoce::scene::InteractiveContext()
 {
 	return this->vwer->occ->m_context.get();
 }
+
+servoce::boundbox servoce::scene::bbox() const 
+{
+	boundbox bbox = (*iobjs.begin())->bounding_box();
+
+	for (auto& i: iobjs) 
+	{
+		bbox = bbox.add(i->bounding_box());
+	}
+
+	return bbox;
+}

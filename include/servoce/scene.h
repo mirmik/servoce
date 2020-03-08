@@ -43,6 +43,8 @@ namespace servoce
 
 		AIS_InteractiveContext* InteractiveContext();
 
+		boundbox bbox() const;
+
 		std::shared_ptr<servoce::interactive_object> operator[](int idx)
 		{
 			auto it = iobjs.begin();
