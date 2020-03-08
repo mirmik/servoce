@@ -399,9 +399,10 @@ solid_shape servoce::halfspace()
 	return MHS.Solid();
 }
 
-shape servoce::loft(const std::vector<shape>& vec, bool smooth)
+shape servoce::loft(const std::vector<shape>& vec, bool smooth, bool solid, int maxdegree)
 {
-	BRepOffsetAPI_ThruSections builder(Standard_True, !smooth);
+	BRepOffsetAPI_ThruSections builder(solid, !smooth);
+	builder.SetMaxDegree(maxdegree);
 
 	for (auto v : vec)
 		if (v.Shape().ShapeType() == TopAbs_FACE)

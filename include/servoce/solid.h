@@ -61,7 +61,7 @@ namespace servoce
 	//shape make_pipe_shell(const shape& profile, const shape& spine, 
 	//	const shape& auxiliary_spine, bool curvilinear_equivalence);
 
-	shape loft(const std::vector<shape>& vec, bool smooth=false);
+	shape loft(const std::vector<shape>& vec, bool smooth=false, bool solid=true, int maxdegree=4);
 	shape revol(const shape& proto, double angle = 0.0);
 
 	solid_shape halfspace();

@@ -95,6 +95,6 @@ void registry_solid_shape(py::module & m)
 	      py::arg("transition") = 0);
 
 
-	m.def("loft", 			loft, ungil(), py::arg("arr"), py::arg("smooth") = false);
-	m.def("revol", 			revol, ungil());
+	m.def("loft", 	loft, ungil(), py::arg("arr"), py::arg("smooth") = false, py::arg("solid") = true, py::arg("maxdegree") = 4);
+	m.def("revol", 	revol, ungil());
 }
