@@ -13,7 +13,7 @@ class BRepPrimAPI_MakeSweep;
 
 namespace servoce
 {
-	class face_shape : public shape, public surface_algo<face_shape>
+	class face_shape : public shape, public surface_algo<face_shape>, public transformable<face_shape, face_shape>
 	{
 	public:
 		using surfalgo = surface_algo<face_shape>;
@@ -30,6 +30,9 @@ namespace servoce
 		Handle(Geom_Surface) Surface() { return BRep_Tool::Surface(Face()); }
 
 		servoce::surface surface() const;
+
+		face_shape transform(const transformation& trans) const { return shape::transform(trans).as_face(); }
+		face_shape transform(const general_transformation& trans) const { return shape::transform(trans).as_face(); }
 	};
 
 	face_shape make_face(const std::vector<const servoce::shape*>& vec);
@@ -39,18 +42,19 @@ namespace servoce
 	face_shape make_face(const servoce::surface& surf, std::pair<double,double> urange, std::pair<double, double> vrange);
 
 	//prim2d
-	shape circle(double r, bool wire = false);
-	shape circle(double r, double angle, bool wire = false);
-	shape circle(double r, double a1, double a2, bool wire = false);
+	face_shape circle(double r);
+	face_shape circle(double r, double angle);
+	face_shape circle(double r, double a1, double a2);
 
-	shape ellipse(double r1, double r2, bool wire = false);
-	shape ellipse(double r1, double r2, double a1, double a2, bool wire = false);
+	face_shape ellipse(double r1, double r2);
+	face_shape ellipse(double r1, double r2, double a1, double a2);
+
+	face_shape ngon(double r, int n);
+	face_shape square(double a, bool center = false);
+	face_shape rectangle(double a, double b, bool center = false);
 	
 	face_shape polygon(const servoce::point3* pnts, size_t size);
 	face_shape polygon(const std::vector<servoce::point3>& pnts);
-	shape ngon(double r, int n, bool wire = false);
-	shape square(double a, bool center = false, bool wire = false);
-	shape rectangle(double a, double b, bool center = false, bool wire = false);
 
 	shape textshape(const std::string& text, const std::string fontpath, size_t size);
 	face_shape infplane();

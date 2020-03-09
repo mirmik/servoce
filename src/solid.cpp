@@ -318,7 +318,7 @@ shape servoce::make_pipe_shell(
 		mkPipeShell.SetDiscreteMode();
 
 	for (auto a : profile)
-		mkPipeShell.Add(a->Shape());
+		mkPipeShell.Add(a->Wire_orEdgeToWire());
 
 	if (!mkPipeShell.IsReady()) std::logic_error("shape is not ready to build");
 

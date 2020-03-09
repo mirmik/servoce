@@ -136,6 +136,7 @@ TopoDS_Wire servoce::shape::Wire_orEdgeToWire() const
 }
 
 
+servoce::point3 servoce::shape::as_vertex() const { return Vertex(); }
 servoce::edge_shape servoce::shape::as_edge() const { return Edge(); }
 servoce::wire_shape servoce::shape::as_wire() const { return Wire_orEdgeToWire(); }
 servoce::face_shape servoce::shape::as_face() const { return Face(); }

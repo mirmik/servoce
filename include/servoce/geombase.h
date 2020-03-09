@@ -58,7 +58,7 @@ namespace servoce
 		}
 	};
 
-	class vector3 : public linalg::vec<double, 3>, public transformable<vector3>
+	class vector3 : public linalg::vec<double, 3>, public transformable<vector3, vector3>
 	{
 	public:
 		using vec = linalg::vec<double, 3>;
@@ -100,11 +100,12 @@ namespace servoce
 
 		bool iszero() const { return x == 0 && y == 0 && z==0; }
 
-		vector3 transform(const servoce::transformation& trsf) const override;
-
+		vector3 transform(const servoce::transformation& trsf) const;
+		vector3 transform(const general_transformation& trans) const { (void)trans; throw std::runtime_error(""); }
+	
 	};
 
-	class point3 : public linalg::vec<double, 3>, public transformable<point3>
+	class point3 : public linalg::vec<double, 3>, public transformable<point3, point3>
 	{
 	public:
 		using vec = linalg::vec<double, 3>;
@@ -143,7 +144,9 @@ namespace servoce
 		bool operator < (const servoce::point3& b) const { return lexless_xyz(*this, b); }
 		bool operator == (const servoce::point3& oth) const { return x == oth.x && y == oth.y && z == oth.z; }
 
-		point3 transform(const servoce::transformation& trsf) const override;
+		point3 transform(const servoce::transformation& trsf) const;
+		point3 transform(const general_transformation& trans) const { (void)trans; throw std::runtime_error(""); }
+	
 	};
 
 	class matrix33 : public linalg::mat<double, 3, 3>

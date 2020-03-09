@@ -53,6 +53,15 @@ void registry_shape(py::module & m)
 	.def("compounds", &shape::compounds, ungil())
 	.def("compsolids", &shape::compsolids, ungil())
 
+	.def("as_vertex", &shape::as_vertex, ungil())
+	.def("as_solid", &shape::as_solid, ungil())
+	.def("as_face", &shape::as_face, ungil())
+	.def("as_edge", &shape::as_edge, ungil())
+	.def("as_wire", &shape::as_wire, ungil())
+	.def("as_shell", &shape::as_shell, ungil())
+	.def("as_compound", &shape::as_compound, ungil())
+	.def("as_compsolid", &shape::as_compsolid, ungil())
+
 	.def("shapetype", &shape::shapetype_as_string, ungil())
 	.def("print_topo_dump", &shape::print_topo_dump, ungil())
 

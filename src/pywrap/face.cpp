@@ -14,12 +14,14 @@
 #include <servoce/wire.h>
 #include <servoce/edge.h>
 
+#include <pywrap/transformable.h>
+
 namespace py = pybind11;
 using namespace servoce;
 
 void registry_face_shape(py::module & m)
 {
-	py::class_<face_shape, shape>(m, "Face")
+	auto cls = py::class_<face_shape, shape>(m, "Face")
 	.def(py::pickle(
 	[](const face_shape & self) { return b64::base64_encode(string_dump(self)); },
 	[](const std::string & in) { return restore_string_dump<face_shape>(b64::base64_decode(in)); }), ungil())
@@ -28,18 +30,28 @@ void registry_face_shape(py::module & m)
 	//.def("vrange", &face_shape::vrange)
 	//.def("urange", &face_shape::urange)
 	;
+	pywrap_transformable<servoce::face_shape>(cls);
 
-	m.def("square", 	square, ungil(), py::arg("a"), py::arg("center") = false, py::arg("wire")=false);
-	m.def("rectangle", 	rectangle, ungil(), py::arg("a"), py::arg("b"), py::arg("center") = false, py::arg("wire")=false);
+	m.def("ngon_wire", 		ngon_wire, ungil(), py::arg("r"), py::arg("n"));
+	m.def("square_wire", 	square_wire, ungil(), py::arg("a"), py::arg("center") = false);
+	m.def("rectangle_wire", 	rectangle_wire, ungil(), py::arg("a"), py::arg("b"), py::arg("center") = false);
+
+	m.def("ngon", 		ngon, ungil(), py::arg("r"), py::arg("n"));
+	m.def("square", 	square, ungil(), py::arg("a"), py::arg("center") = false);
+	m.def("rectangle", 	rectangle, ungil(), py::arg("a"), py::arg("b"), py::arg("center") = false);
+
+	m.def("circle_edge", 	(edge_shape(*)(double)) &circle_edge, ungil(), py::arg("r"));
+	m.def("circle_edge", 	(edge_shape(*)(double, double)) &circle_edge, ungil(), py::arg("r"), py::arg("angle"));
+	m.def("circle_edge", 	(edge_shape(*)(double, double, double)) &circle_edge, ungil(), py::arg("r"), py::arg("a1"), py::arg("a2"));
+	m.def("ellipse_edge", 	(edge_shape(*)(double, double)) &ellipse_edge, ungil(), py::arg("r1"), py::arg("r2"));
+	m.def("ellipse_edge", 	(edge_shape(*)(double, double, double, double)) &ellipse_edge, ungil(), py::arg("r1"), py::arg("r2"), py::arg("a1"), py::arg("a2"));
 	
-	m.def("circle", 	(shape(*)(double, bool)) &circle, ungil(), py::arg("r"), py::arg("wire")=false);
-	m.def("circle", 	(shape(*)(double, double, bool)) &circle, ungil(), py::arg("r"), py::arg("angle"), py::arg("wire")=false);
-	m.def("circle", 	(shape(*)(double, double, double, bool)) &circle, ungil(), py::arg("r"), py::arg("a1"), py::arg("a2"), py::arg("wire")=false);
+	m.def("circle", 	(face_shape(*)(double)) &circle, ungil(), py::arg("r"));
+	m.def("circle", 	(face_shape(*)(double, double)) &circle, ungil(), py::arg("r"), py::arg("angle"));
+	m.def("circle", 	(face_shape(*)(double, double, double)) &circle, ungil(), py::arg("r"), py::arg("a1"), py::arg("a2"));
+	m.def("ellipse", 	(face_shape(*)(double, double)) &ellipse, ungil(), py::arg("r1"), py::arg("r2"));
+	m.def("ellipse", 	(face_shape(*)(double, double, double, double)) &ellipse, ungil(), py::arg("r1"), py::arg("r2"), py::arg("a1"), py::arg("a2"));
 	
-	m.def("ellipse", 	(shape(*)(double, double, bool)) &ellipse, ungil(), py::arg("r1"), py::arg("r2"), py::arg("wire")=false);
-	m.def("ellipse", 	(shape(*)(double, double, double, double, bool)) &ellipse, ungil(), py::arg("r1"), py::arg("r2"), py::arg("a1"), py::arg("a2"), py::arg("wire")=false);
-	
-	m.def("ngon", 		ngon, ungil(), py::arg("r"), py::arg("n"), py::arg("wire")=false);
 	m.def("polygon", 	(face_shape(*)(const std::vector<point3>&))&polygon, ungil(), py::arg("pnts"));
 	m.def("textshape", 	textshape, ungil(), py::arg("text"), py::arg("fontpath"), py::arg("size"));
 

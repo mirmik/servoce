@@ -30,6 +30,17 @@ namespace servoce
 
 	curve3 extract_curve(const shape& wire);
 	curve3 curve_adaptor(const shape& wire);
+
+	edge_shape circle_edge(double r);
+	edge_shape circle_edge(double r, double angle);
+	edge_shape circle_edge(double r, double a1, double a2);
+
+	edge_shape ellipse_edge(double r1, double r2);
+	edge_shape ellipse_edge(double r1, double r2, double a1, double a2);
+	
+	wire_shape ngon_wire(double r, int n);
+	wire_shape square_wire(double a, bool center = false);
+	wire_shape rectangle_wire(double a, double b, bool center = false);
 }
 
 #endif

@@ -5,6 +5,8 @@
 #include <pybind11/pybind11.h>
 #include <local/pywrap_util.h>
 
+#include <servoce/transformable.h>
+
 #include <servoce/util.h>
 #include <servoce/util/b64.h>
 

@@ -11,74 +11,81 @@ namespace servoce
 	class general_transformation;
 
 	// Interface for transformation support.
-	template <class T>
+	template <class T, class Ret>
 	class transformable
 	{
 	public:
-		//T transform(const transformation& trans) { return trans((const T&)*this); }
-		//T transform(const general_transformation& trans) { return trans((const T&)*this); }
+		T& self() { return (T&)*this; }
+		const T& self() const { return (const T&)*this; }
 
-		virtual T self_transform(const transformation& trans);
-		virtual T transform(const transformation& trans) const = 0;
-		virtual T transform(const general_transformation& trans) const;
+		//Ret transform(const general_transformation& trans) const { (void)trans; throw std::runtime_error("not supported"); }
+	
+
+		//T transform(const transformation& trans) { return trans((const T&)*this); }
+		//T transform(const general_transformation& trans) { throw std::runtime_error("general_transformation is not supported"); }
+
+		//virtual T self_transform(const transformation& trans);
+		//virtual T transform(const transformation& trans) const = 0;
+		//virtual T transform(const general_transformation& trans) const;
 
 		// Translation API: (translate and move is same)
-		T translate(double x, double y, double z);
-		T translate(vector3 v);
-		T translateX(double x);
-		T translateY(double y);
-		T translateZ(double z);
+		Ret translate(double x, double y, double z);
+		Ret translate(vector3 v);
+		Ret translateX(double x);
+		Ret translateY(double y);
+		Ret translateZ(double z);
 
-		T move(double x, double y, double z);
-		T move(vector3 v);
-		T moveX(double x);
-		T moveY(double y);
-		T moveZ(double z);
+		Ret move(double x, double y, double z);
+		Ret move(vector3 v);
+		Ret moveX(double x);
+		Ret moveY(double y);
+		Ret moveZ(double z);
 
 		// mnemonics for translate operations:
-		T up(double z);
-		T down(double z);
-		T forw(double y);
-		T back(double y);
-		T right(double x);
-		T left(double x);
+		Ret up(double z);
+		Ret down(double z);
+		Ret forw(double y);
+		Ret back(double y);
+		Ret right(double x);
+		Ret left(double x);
 
 		// restricted translation api:
-		T movX(double x);
-		T movY(double y);
-		T movZ(double z);
+		Ret movX(double x);
+		Ret movY(double y);
+		Ret movZ(double z);
 
 		// Rotation API:
-		T rotate(double a, vector3 vec);
-		T rotate(double x, double y, double z);
-		T rotateX(double a);
-		T rotateY(double a);
-		T rotateZ(double a);
+		Ret rotate(double a, vector3 vec);
+		Ret rotate(double x, double y, double z);
+		Ret rotateX(double a);
+		Ret rotateY(double a);
+		Ret rotateZ(double a);
 
 		// restricted rotation api:
-		T rot(vector3 vec, double a);
-		T rot(double x, double y, double z);
-		T rotX(double a);
-		T rotY(double a);
-		T rotZ(double a);
+		Ret rot(vector3 vec, double a);
+		Ret rot(double x, double y, double z);
+		Ret rotX(double a);
+		Ret rotY(double a);
+		Ret rotZ(double a);
 
 		// Mirror API;
-		T mirrorX();
-		T mirrorY();
-		T mirrorZ();
-		T mirrorXY();
-		T mirrorYZ();
-		T mirrorXZ();
+		Ret mirrorO();
+		Ret mirrorX();
+		Ret mirrorY();
+		Ret mirrorZ();
+		Ret mirrorXY();
+		Ret mirrorYZ();
+		Ret mirrorXZ();
 
 		// Scale API:
-		T scale(double s, point3 center = point3());
-		T scaleX(double s);
-		T scaleY(double s);
-		T scaleZ(double s);
-		T scaleXY(double x, double y);
-		T scaleYZ(double y, double z);
-		T scaleXZ(double x, double z);
-		T scaleXYZ(double x, double y, double z);
+		Ret scale(double s, point3 center = point3());
+		Ret scaleX(double s);
+		Ret scaleY(double s);
+		Ret scaleZ(double s);
+		Ret scaleXY(double x, double y);
+		Ret scaleYZ(double y, double z);
+		Ret scaleXZ(double x, double z);
+		Ret scaleXYZ(double x, double y, double z);
 	};
 }
 

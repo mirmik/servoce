@@ -44,7 +44,7 @@ namespace servoce
 		compound
 	};
 
-	class shape : public servoce::transformable<shape>
+	class shape : public servoce::transformable<shape, shape>
 	{
 	public:
 		TopoDS_Shape* m_shp = nullptr;
@@ -55,8 +55,8 @@ namespace servoce
 		shape(shape&& oth);
 		virtual ~shape();
 
-		shape transform(const transformation& trans) const override;
-		shape transform(const general_transformation& trans) const override;
+		shape transform(const transformation& trans) const;
+		shape transform(const general_transformation& trans) const;
 
 		shape& operator= (const shape& oth);
 		shape& operator= (const TopoDS_Shape& shp);
@@ -100,6 +100,7 @@ namespace servoce
 		TopoDS_CompSolid& CompSolid();
 		const TopoDS_CompSolid& CompSolid() const;
 
+		point3 as_vertex() const;
 		edge_shape as_edge() const;
 		wire_shape as_wire() const;
 		face_shape as_face() const;

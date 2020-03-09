@@ -18,8 +18,8 @@ void registry_displayable(py::module & m)
 {
 	//py::class_<servoce::displayable>(m, "Displayable");
 
-	auto axis = py::class_<servoce::axis>(m, "Axis");
+	//auto axis = py::class_<servoce::axis>(m, "Axis");
 
-	pywrap_displayable<servoce::axis>(axis);
-	pywrap_transformable<servoce::axis>(axis);
+	//pywrap_displayable<servoce::axis>(axis);
+	//pywrap_transformable<servoce::axis>(axis);
 }

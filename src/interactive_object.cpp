@@ -67,16 +67,20 @@ servoce::interactive_object::interactive_object(const servoce::shape& shp, const
 	set_color(clr);
 }
 
+bool servoce::interactive_object::is_shape() 
+{
+	return m_ais->IsKind(STANDARD_TYPE(AIS_Shape));
+}
+
 servoce::boundbox servoce::interactive_object::bounding_box()
 {
 	Bnd_Box box;
-	try 
+	if (is_shape())
 	{
 		Handle(AIS_Shape) ashp = Handle(AIS_Shape)::DownCast(m_ais);
 		BRepBndLib::Add(ashp->Shape(), box);
 		return box;
 	}
-	catch(...) {}
 
 	m_ais->BoundingBox(box);
 	return {box};

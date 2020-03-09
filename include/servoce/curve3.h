@@ -16,7 +16,7 @@ namespace servoce
 {
 	class shape;
 
-		class curve3 : public transformable<curve3>
+		class curve3 : public transformable<curve3, curve3>
 		{
 		protected:
 			Handle(Geom_Curve) crv;
