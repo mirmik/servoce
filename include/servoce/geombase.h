@@ -2,6 +2,7 @@
 #define SERVOCE_GEOMBASE_H
 
 #include <servoce/linalg/linalg.h>
+#include <servoce/transformable.h>
 
 #include <gp_XYZ.hxx>
 #include <gp_Mat.hxx>
@@ -27,6 +28,7 @@ namespace servoce
 {
 	class point3;
 	class matrix33;
+	class transformation;
 
 	class xyz : public gp_XYZ
 	{};
@@ -56,7 +58,7 @@ namespace servoce
 		}
 	};
 
-	class vector3 : public linalg::vec<double, 3>
+	class vector3 : public linalg::vec<double, 3>, public transformable<vector3, vector3>
 	{
 	public:
 		using vec = linalg::vec<double, 3>;
@@ -65,7 +67,7 @@ namespace servoce
 		vector3(double x, double y) : vec{ x, y, 0 } {}
 		vector3(double x, double y, double z) : vec { x, y, z } {}
 		vector3(double arr[3]) : vec(arr[0], arr[1], arr[2]) {}
-		
+
 		vector3(const vec& oth) : vec(oth) {}
 		vector3(const vector3& oth) : vec(oth) {}
 		vector3(const gp_Vec& vec);
@@ -80,13 +82,13 @@ namespace servoce
 		vector3(const pybind11::tuple&);
 		static bool early(const vector3& a, const vector3& b, double eps = 0.0000001);
 
-		vector3 elementwise_mul(const vector3& oth) { return { x*oth.x, y*oth.y, z*oth.z }; }
+		vector3 elementwise_mul(const vector3& oth) { return { x * oth.x, y * oth.y, z * oth.z }; }
 
 		double dot(const vector3& oth) const { return linalg::dot(*this, oth); }
 		double length() const { return linalg::length(*this); }
 		double length2() const { return linalg::length2(*this); }
 		vector3 normalize() const { return vector3(linalg::normalize(*this)); }
-		
+
 		vector3 cross(const vector3& oth) const { return vector3(linalg::cross(*this, oth)); }
 
 		bool operator==(const vector3& oth) const { return oth.x == x && oth.y == y && oth.z == z; }
@@ -94,16 +96,16 @@ namespace servoce
 		vector3 operator-() const { return vector3(-x, -y, -z); }
 
 		matrix33 outerprod(const vector3& oth);
-
-		/*ssize_t print_to(nos::ostream& out) const
-		{
-			return nos::fprint_to(out, "vector3({},{},{})", x, y, z);
-		}*/
-
 		matrix33 vecmul_matrix();
+
+		bool iszero() const { return x == 0 && y == 0 && z==0; }
+
+		vector3 transform(const servoce::transformation& trsf) const;
+		vector3 transform(const general_transformation& trans) const { (void)trans; throw std::runtime_error(""); }
+	
 	};
 
-	class point3 : public linalg::vec<double, 3>
+	class point3 : public linalg::vec<double, 3>, public transformable<point3, point3>
 	{
 	public:
 		using vec = linalg::vec<double, 3>;
@@ -136,40 +138,39 @@ namespace servoce
 
 		point3 lerp(const point3& o, double koeff) const
 		{
-			return point3(linalg::lerp<vec,vec,double>(*this, o, koeff));
+			return point3(linalg::lerp<vec, vec, double>(*this, o, koeff));
 		}
 
 		bool operator < (const servoce::point3& b) const { return lexless_xyz(*this, b); }
 		bool operator == (const servoce::point3& oth) const { return x == oth.x && y == oth.y && z == oth.z; }
 
-		/*ssize_t print_to(nos::ostream& out) const
-		{
-			return nos::fprint_to(out, "point3({},{},{})", x, y, z);
-		}*/
+		point3 transform(const servoce::transformation& trsf) const;
+		point3 transform(const general_transformation& trans) const { (void)trans; throw std::runtime_error(""); }
+	
 	};
 
-	class matrix33 : public linalg::mat<double,3,3> 
+	class matrix33 : public linalg::mat<double, 3, 3>
 	{
 	public:
-		using parent = linalg::mat<double,3,3>;
+		using parent = linalg::mat<double, 3, 3>;
 
 	public:
-		matrix33(	
-				double a00, double a01, double a02, 
-				double a10, double a11, double a12, 
-				double a20, double a21, double a22) 
+		matrix33(
+		    double a00, double a01, double a02,
+		    double a10, double a11, double a12,
+		    double a20, double a21, double a22)
 			:
-				parent({a00,a10,a20}, {a01,a11,a21}, {a02,a12,a22})
-		{}	
+			parent( {a00, a10, a20}, {a01, a11, a21}, {a02, a12, a22})
+		{}
 
-		matrix33(double * a) 
+		matrix33(double * a)
 			:
-				parent({a[0],a[3],a[6]}, {a[1],a[4],a[7]}, {a[2],a[5],a[8]})
-		{}	
+			parent( {a[0], a[3], a[6]}, {a[1], a[4], a[7]}, {a[2], a[5], a[8]})
+		{}
 
-		matrix33(const gp_Mat& oth) 
+		matrix33(const gp_Mat& oth)
 		{
-			gp_XYZ a,b,c;
+			gp_XYZ a, b, c;
 			a = oth.Column(0);
 			b = oth.Column(1);
 			c = oth.Column(2);
@@ -184,26 +185,26 @@ namespace servoce
 			parent::z.z = c.Z();
 		}
 
-		matrix33(	
-				double a00,  
-				double a11, 
-				double a22) 
+		matrix33(
+		    double a00,
+		    double a11,
+		    double a22)
 			:
-				parent({a00,0,0}, {0,a11,0}, {0,0,a22})
+			parent( {a00, 0, 0}, {0, a11, 0}, {0, 0, a22})
 		{
 
-		}	
+		}
 
 		matrix33()
 			:
-				parent({0,0,0}, {0,0,0}, {0,0,0})
+			parent( {0, 0, 0}, {0, 0, 0}, {0, 0, 0})
 		{
 
-		}	
+		}
 
 		matrix33(const parent& oth) : parent(oth) {}
 
-		double* data() 
+		double* data()
 		{
 			return parent::arr;
 		}
@@ -214,12 +215,12 @@ namespace servoce
 		}
 
 
-		double& operator()(int i, int j) 
+		double& operator()(int i, int j)
 		{
 			return (*this)[j][i];
 		}
 
-		double& operator()(std::pair<int,int> p) 
+		double& operator()(std::pair<int, int> p)
 		{
 			return (*this)[p.second][p.first];
 		}
@@ -229,14 +230,14 @@ namespace servoce
 			return (*this)[j][i];
 		}
 
-		const double& operator()(std::pair<int,int> p) const
+		const double& operator()(std::pair<int, int> p) const
 		{
 			return (*this)[p.second][p.first];
 		}
 
 
-		matrix33 inverse() { return linalg::inverse((parent&)*this); }
-		matrix33 transpose() { return linalg::transpose((parent&)*this); }
+		matrix33 inverse() { return linalg::inverse((parent&) * this); }
+		matrix33 transpose() { return linalg::transpose((parent&) * this); }
 
 		vector3 operator* (const vector3& vec) { return linalg::mul(*this, vec); }
 		matrix33 operator* (const matrix33& mat) { return linalg::mul(*this, mat); }
@@ -248,14 +249,16 @@ namespace servoce
 		static constexpr int cols() { return 3; }
 	};
 
-	static inline matrix33 operator* (double c, const matrix33& mat) { 
-		return c * (const matrix33::parent&)mat; }
+	static inline matrix33 operator* (double c, const matrix33& mat)
+	{
+		return c * (const matrix33::parent&)mat;
+	}
 
 
-	class quaternion : public linalg::vec<double,4>
+	class quaternion : public linalg::vec<double, 4>
 	{
 	public:
-		using quat = linalg::vec<double,4>;
+		using quat = linalg::vec<double, 4>;
 
 		quaternion() : quat{0, 0, 0, 1} {}
 		quaternion(double x, double y, double z, double w) : quat{ x, y, z, w } {}
@@ -274,7 +277,7 @@ namespace servoce
 		quaternion(const pybind11::list&);
 		quaternion(const pybind11::tuple&);
 
-		matrix33 to_matrix() 
+		matrix33 to_matrix()
 		{
 			return linalg::qmat(*this);
 		}
@@ -282,17 +285,19 @@ namespace servoce
 		vector3 rotation_vector() const
 		{
 			double angle = linalg::qangle(*this);
-			if (::fabs(angle) < 0.000001) 
-				return {0,0,0};
+
+			if (::fabs(angle) < 0.000001)
+				return {0, 0, 0};
+
 			return vector3(linalg::qaxis(*this) * angle);
 		}
 
 		quaternion inverse() { return linalg::qconj(*this); }
 		vector3 rotate(const vector3& vec) { return linalg::qrot(*this, vec); }
 
-	//	bool operator==(const vector3& oth) const { return oth.x == x && oth.y == y && oth.z == z; }
-	//	bool operator!=(const vector3& oth) const { return oth.x != x || oth.y != y || oth.z != z; }
-	//	vector3 operator-() const { return vector3(-x, -y, -z); }
+		//	bool operator==(const vector3& oth) const { return oth.x == x && oth.y == y && oth.z == z; }
+		//	bool operator!=(const vector3& oth) const { return oth.x != x || oth.y != y || oth.z != z; }
+		//	vector3 operator-() const { return vector3(-x, -y, -z); }
 	};
 
 	static inline vector3 operator/(const vector3& v, double a)
@@ -319,27 +324,29 @@ namespace servoce
 	static inline point3 operator-(const point3& a, const vector3& b)
 	{ return point3(a.x - b.x, a.y - b.y, a.z - b.z); }
 
-	
+
 
 	static inline quaternion operator*(const quaternion& a, const quaternion& b)
-	{ 
-		return linalg::qmul((const linalg::vec<double,4> &)a, (const linalg::vec<double,4> &)b); 
+	{
+		return linalg::qmul((const linalg::vec<double, 4> &)a, (const linalg::vec<double, 4> &)b);
 	}
 
-	inline point3 vector3::to_point3() const { return point3(x,y,z); }
+	inline point3 vector3::to_point3() const { return point3(x, y, z); }
 
 
 	inline matrix33 vector3::outerprod(const vector3& oth) { return linalg::outerprod(*this, oth); }
 
 
-	inline matrix33 vector3::vecmul_matrix() 
+	inline matrix33 vector3::vecmul_matrix()
 	{
 		return matrix33(
-			 0, -z,  y,
-			 z,  0, -x,
-			-y,  x,  0
-		);
+		           0, -z,  y,
+		           z,  0, -x,
+		           -y,  x,  0
+		       );
 	}
 }
+
+#include <servoce/transformable_impl.h>
 
 #endif

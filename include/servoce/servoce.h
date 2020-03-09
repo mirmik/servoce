@@ -25,4 +25,6 @@
 #include <servoce/prs3d.h>
 #include <servoce/geomprops.h>
 
+#include <servoce/axis.h>
+
 #endif

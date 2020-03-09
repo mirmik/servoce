@@ -5,17 +5,18 @@
 
 #include <Geom_Curve.hxx>
 #include <Geom_TrimmedCurve.hxx>
+#include <Adaptor3d_HCurve.hxx>
 #include <gp_Pnt.hxx>
 
 #include <vector>
+
+#include <servoce/transformable.h>
 
 namespace servoce
 {
 	class shape;
 
-	namespace curve3
-	{
-		class curve3
+		class curve3 : public transformable<curve3, curve3>
 		{
 		protected:
 			Handle(Geom_Curve) crv;
@@ -27,6 +28,7 @@ namespace servoce
 
 			Handle(Geom_Curve) Curve() { return crv; }
 			const Handle(Geom_Curve) Curve() const { return crv; }
+			Handle(Adaptor3d_HCurve) HCurveAdaptor() const;
 
 			servoce::point3 value(double arg) { return d0(arg); }
 			servoce::point3 d0(double arg) { return crv->Value(arg); }
@@ -38,6 +40,8 @@ namespace servoce
 
 			servoce::shape edge();
 			servoce::shape edge(double strt, double fini);
+
+			curve3 transform(const transformation& trans) const;
 		};
 
 		class bounded_curve3 : public curve3
@@ -50,18 +54,21 @@ namespace servoce
 
 		class conic_curve3 : public curve3
 		{
-			// TODO
+		public:
+			conic_curve3(Geom_Curve* crv) : curve3(crv) {}
+			conic_curve3(Handle(Geom_Curve) crv) : curve3(crv) {}
+			conic_curve3() {}
 		};
 
 		// Basic:
-		bounded_curve3 bezier(
+		bounded_curve3 bezier_curve3(
 			const std::vector<point3>& pnts);
 		
-		bounded_curve3 bezier(
+		bounded_curve3 bezier_curve3(
 			const std::vector<point3>& pnts, 
 			const std::vector<double>& weights);
 
-		bounded_curve3 bspline(
+		bounded_curve3 bspline_curve3(
 		    const std::vector<point3>& poles,
 		    const std::vector<double>& knots,
 		    const std::vector<int>& multiplicities,
@@ -69,7 +76,7 @@ namespace servoce
 		    bool periodic = false
 		);
 
-		bounded_curve3 bspline(
+		bounded_curve3 bspline_curve3(
 		    const std::vector<point3>& poles,
 		    const std::vector<double>& weights,
 		    const std::vector<double>& knots,
@@ -80,23 +87,24 @@ namespace servoce
 		);
 
 
-		bounded_curve3 trimmed(); //TODO
+		bounded_curve3 trimmed_curve3(); //TODO
 
-		conic_curve3 circle(); //TODO
-		conic_curve3 ellipse(); //TODO
-		conic_curve3 hyperbola(); //TODO
-		conic_curve3 parabola(); //TODO
+		conic_curve3 circle_curve3(double radius);
+		conic_curve3 ellipse_curve3(); //TODO
+		conic_curve3 hyperbola_curve3(); //TODO
+		conic_curve3 parabola_curve3(); //TODO
 
-		curve3 line(const point3& a, const vector3& b);
-		curve3 offset(); //TODO
+		curve3 line_curve3(const point3& a, const vector3& b);
+		curve3 offset_curve3(); //TODO
 
 		// Advanced:
-		curve3 interpolate(
+		curve3 interpolate_curve3(
 		    const std::vector<servoce::point3>& pnts, const std::vector<servoce::vector3>& tang, bool closed);
 
-		curve3 interpolate(
+		curve3 interpolate_curve3(
 		    const std::vector<servoce::point3>& pnts, bool closed);
-	}
 }
+
+#include <servoce/transformable_impl.h>
 
 #endif

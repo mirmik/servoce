@@ -11,7 +11,11 @@ file(GLOB HEADERS
 file(GLOB SOURCES 
 	src/b64.cpp      
 	src/curve3.cpp   
-	src/face.cpp         
+	src/edge.cpp     
+	src/wire.cpp     
+	src/face.cpp     
+	src/shell.cpp    
+	src/solid.cpp         
 	src/interactive_object.cpp  
 	src/opencascade_types.cpp  
 	src/prs3d.cpp   

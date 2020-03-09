@@ -71,6 +71,8 @@ namespace servoce
 		view(const view&) = delete;
 		view(view&& other) { occ = other.occ; other.occ = nullptr; }
 		~view();
+
+		void set_perspective(bool en=true);
 	
 	private:
 		int w = 0;

@@ -10,6 +10,7 @@
 
 #include <servoce/edge.h>
 #include <servoce/face.h>
+#include <servoce/project.h>
 
 namespace py = pybind11;
 using namespace servoce;
@@ -82,4 +83,7 @@ void registry_edge_shape(py::module & m)
 	      py::arg("periodic") = false,
 	      py::arg("check_rational") = true
 	     );
+
+
+	m.def("project", py::overload_cast<const point3&, const edge_shape&>(&servoce::project));
 }

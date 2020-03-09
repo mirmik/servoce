@@ -1,7 +1,9 @@
 #ifndef SERVOCE_TRANS_H
 #define SERVOCE_TRANS_H
 
+#include <gp_Trsf.hxx>
 #include <servoce/geombase.h>
+#include <vector>
 
 class gp_Trsf;
 class gp_GTrsf;
@@ -11,11 +13,13 @@ namespace servoce
 	class shape;
 	class point3;
 	class vector3;
+	class quaternion;
 
 	struct transformation
 	{
 		gp_Trsf* trsf;
 		transformation(gp_Trsf* trsf) : trsf(trsf) {};
+		transformation(gp_Trsf trsf) : trsf(new gp_Trsf(trsf)) {};
 		transformation(const transformation& oth); 
 		transformation(transformation&& oth) : trsf(oth.trsf) { oth.trsf = nullptr; }
 		shape operator()(const servoce::shape& sld) const;
@@ -26,6 +30,8 @@ namespace servoce
 
 		transformation invert();	
 		transformation inverse() { return invert(); }
+
+		transformation& operator = (const transformation& oth) { new(this)transformation(oth); return *this; }
 
 		transformation() : trsf(nullptr) {}
 		~transformation();
@@ -99,7 +105,8 @@ namespace servoce
 	transformation mirrorYZ();
 	transformation mirrorXZ();
 
-	transformation scale(double, point3 center = point3());
+	transformation scale(double, point3 center);
+	transformation scale(double);
 
 	//Non Aphine Transforms
 	general_transformation scaleX(double);
@@ -113,7 +120,7 @@ namespace servoce
 	general_transformation scaleXYZ(double,double,double);
 
 //Advanced:
-	transformation short_rotate(const vector3& t, const vector3& f={0,0,1});
+	transformation short_rotate(const vector3& f, const vector3& t);
 }
 
 #endif

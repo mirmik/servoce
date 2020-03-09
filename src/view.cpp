@@ -5,6 +5,8 @@
 #include <Aspect_DisplayConnection.hxx>
 #include <IntCurvesFace_ShapeIntersector.hxx>
 
+#include <Graphic3d_Camera.hxx>
+
 #include <mutex>
 
 #include <assert.h>
@@ -150,6 +152,16 @@ void servoce::view::set_orthogonal()
 servoce::view::~view()
 {
 	delete occ;
+}
+
+void servoce::view::set_perspective(bool en) 
+{
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
+	if (en)
+		occ->m_view->Camera()->SetProjectionType(Graphic3d_Camera::Projection_Perspective);
+	else
+		occ->m_view->Camera()->SetProjectionType(Graphic3d_Camera::Projection_Orthographic);
+
 }
 
 std::vector<unsigned char> servoce::view::rawarray()

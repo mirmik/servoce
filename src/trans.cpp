@@ -140,6 +140,15 @@ servoce::transformation servoce::scale(double s, point3 center)
 	return servoce::transformation(trsf);
 }
 
+
+servoce::transformation servoce::scale(double s)
+{
+	auto trsf = new gp_Trsf();
+	trsf->SetScale(gp_Pnt(0,0,0), s);
+	return servoce::transformation(trsf);
+}
+
+
 servoce::general_transformation servoce::scaleX(double s)
 {
 	auto gtrsf = new gp_GTrsf();
@@ -366,7 +375,7 @@ servoce::quaternion servoce::transformation::rotation() const
 	return tr;
 }
 
-servoce::transformation servoce::short_rotate(const vector3& to, const vector3& from)
+servoce::transformation servoce::short_rotate(const vector3& from, const vector3& to)
 {
 	auto f = from.normalize();
 	auto t = to.normalize();

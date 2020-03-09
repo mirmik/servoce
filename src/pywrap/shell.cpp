@@ -5,6 +5,8 @@
 #include <pybind11/pybind11.h>
 #include <local/pywrap_util.h>
 
+#include <servoce/transformable.h>
+
 #include <servoce/util.h>
 #include <servoce/util/b64.h>
 
@@ -26,4 +28,6 @@ void registry_shell_shape(py::module & m)
 
 	m.def("make_shell", (shell_shape(*)(const std::vector<const servoce::shape*>& vec))&make_shell, ungil());
 	m.def("polyhedron_shell", &polyhedron_shell, ungil());
+	
+	m.def("ruled_shell", &ruled_shell, ungil());
 }
