@@ -15,18 +15,18 @@ matrix:
         - python3 ./inctest.py
         - python3 ./apitest.py
 
-     - name: "OSX: Load from pypi"
-       os: osx
-       osx_image: xcode11.2
-       language: shell
+    - name: "OSX: Load from pypi"
+      os: osx
+      osx_image: xcode11.2
+      language: shell
 
-       install:
-         - python3 -m pip install pyservoce
+      install:
+        - python3 -m pip install pyservoce
 
-       script:
-         - cd pytest
-         - python3 ./inctest.py
-         - python3 ./apitest.py
+      script:
+        - cd pytest
+        - python3 ./inctest.py
+        - python3 ./apitest.py
 
     - name: "Ubuntu: Build by setup.py"
       os: linux
