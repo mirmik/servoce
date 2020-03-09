@@ -12,7 +12,7 @@
 namespace py = pybind11;
 using namespace servoce;
 
-void pywrap_transformable(auto cls) {}
+//void pywrap_transformable(auto cls) {}
 
 void registry_displayable(py::module & m)
 {

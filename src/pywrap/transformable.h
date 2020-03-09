@@ -10,8 +10,8 @@
 namespace py = pybind11;
 using namespace servoce;
 
-template <class Cls, class RetCls=Cls>
-static inline void pywrap_transformable(auto cls) 
+template <class Cls, class RetCls=Cls, class U>
+static inline void pywrap_transformable(U&& cls) 
 {
 	cls
 	.def("transform", (RetCls(Cls::*)(const servoce::transformation& trans) const) &Cls::transform, ungil())
@@ -69,8 +69,8 @@ static inline void pywrap_transformable(auto cls)
 	;
 }
 
-template <class Cls>
-static inline void pywrap_self_transformable(auto cls) 
+template <class Cls, class U>
+static inline void pywrap_self_transformable(U&& cls) 
 {
 	cls
 	.def("self_transform", [](Cls& obj, const servoce::transformation& trans){ obj.self_transform(trans); return obj; }, ungil())

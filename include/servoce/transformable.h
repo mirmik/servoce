@@ -78,7 +78,7 @@ namespace servoce
 		Ret mirrorXZ();
 
 		// Scale API:
-		Ret scale(double s, point3 center = point3());
+		Ret scale(double s, point3 center);
 		Ret scaleX(double s);
 		Ret scaleY(double s);
 		Ret scaleZ(double s);

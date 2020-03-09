@@ -15,8 +15,9 @@ namespace servoce
 	class vector3;
 	class quaternion;
 
-	struct transformation
+	class transformation
 	{
+	public:
 		gp_Trsf* trsf;
 		transformation(gp_Trsf* trsf) : trsf(trsf) {};
 		transformation(gp_Trsf trsf) : trsf(new gp_Trsf(trsf)) {};
@@ -48,8 +49,9 @@ namespace servoce
 		static transformation restore_string_dump(const std::string& in);
 	};
 
-	struct general_transformation
+	class general_transformation
 	{
+	public:
 		gp_GTrsf* gtrsf;
 		general_transformation(gp_GTrsf* gtrsf) : gtrsf(gtrsf) {};
 		general_transformation(const general_transformation& oth); 
