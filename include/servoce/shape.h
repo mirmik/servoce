@@ -21,11 +21,17 @@ class TopoDS_Edge;
 class TopoDS_Wire;
 class TopoDS_Face;
 class TopoDS_Compound;
+class TopoDS_CompSolid;
 
 namespace servoce
 {
-	class face_shape;
 	class edge_shape;
+	class wire_shape;
+	class face_shape;
+	class shell_shape;
+	class solid_shape;
+	class compound_shape;
+	class compsolid_shape;
 	class boundbox;
 
 	enum topoenum
@@ -38,7 +44,7 @@ namespace servoce
 		compound
 	};
 
-	class shape : public servoce::transformable<shape>
+	class shape : public servoce::transformable<shape, shape>
 	{
 	public:
 		TopoDS_Shape* m_shp = nullptr;
@@ -47,7 +53,10 @@ namespace servoce
 		shape(const TopoDS_Shape& shp);
 		shape(const shape& oth);
 		shape(shape&& oth);
-		~shape();
+		virtual ~shape();
+
+		shape transform(const transformation& trans) const;
+		shape transform(const general_transformation& trans) const;
 
 		shape& operator= (const shape& oth);
 		shape& operator= (const TopoDS_Shape& shp);
@@ -88,6 +97,18 @@ namespace servoce
 		TopoDS_Compound& Compound();
 		const TopoDS_Compound& Compound() const;
 
+		TopoDS_CompSolid& CompSolid();
+		const TopoDS_CompSolid& CompSolid() const;
+
+		point3 as_vertex() const;
+		edge_shape as_edge() const;
+		wire_shape as_wire() const;
+		face_shape as_face() const;
+		shell_shape as_shell() const;
+		solid_shape as_solid() const;
+		compsolid_shape as_compsolid() const;
+		compound_shape as_compound() const;
+
 		point3 center() const;
 		vector3 cmradius() const;
 		double mass() const;
@@ -107,12 +128,12 @@ namespace servoce
 		servoce::shape extrude(double x, double y, double z, bool center = false);
 
 		std::vector<servoce::point3> vertices() const;
-		std::vector<servoce::shape> solids() const;
-		std::vector<servoce::shape> shells() const;
-		std::vector<servoce::shape> compounds() const;
-		std::vector<servoce::shape> compsolids() const;
+		std::vector<servoce::solid_shape> solids() const;
+		std::vector<servoce::shell_shape> shells() const;
+		std::vector<servoce::compound_shape> compounds() const;
+		std::vector<servoce::compsolid_shape> compsolids() const;
 		std::vector<servoce::face_shape> faces() const;
-		std::vector<servoce::shape> wires() const;
+		std::vector<servoce::wire_shape> wires() const;
 		std::vector<servoce::edge_shape> edges() const;
 
 		std::vector<TopoDS_Edge> Edges() const;
@@ -143,5 +164,7 @@ namespace servoce
 	edge_shape	near_edge		(const shape& shp, const point3& pnt);
 	shape 	near_vertex		(const shape& shp, const point3& pnt);
 }
+
+#include <servoce/transformable_impl.h>
 
 #endif

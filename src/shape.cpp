@@ -1,6 +1,11 @@
 #include <servoce/shape.h>
 #include <servoce/face.h>
+#include <servoce/edge.h>
 #include <servoce/solid.h>
+#include <servoce/wire.h>
+#include <servoce/shell.h>
+#include <servoce/compsolid.h>
+#include <servoce/compound.h>
 #include <servoce/geomprops.h>
 #include <servoce/boundbox.h>
 
@@ -41,6 +46,8 @@
 #include <GProp_GProps.hxx>
 #include <BRepGProp.hxx>
 
+#include <BRepBuilderAPI_Transform.hxx>
+#include <BRepBuilderAPI_GTransform.hxx>
 #include <TopExp.hxx>
 
 #include <algorithm>
@@ -117,6 +124,9 @@ const TopoDS_Solid& servoce::shape::Solid() const { return TopoDS::Solid(*m_shp)
 TopoDS_Compound& servoce::shape::Compound() { return TopoDS::Compound(*m_shp); }
 const TopoDS_Compound& servoce::shape::Compound() const { return TopoDS::Compound(*m_shp); }
 
+TopoDS_CompSolid& servoce::shape::CompSolid() { return TopoDS::CompSolid(*m_shp); }
+const TopoDS_CompSolid& servoce::shape::CompSolid() const { return TopoDS::CompSolid(*m_shp); }
+
 TopoDS_Wire servoce::shape::Wire_orEdgeToWire() const
 {
 	if (Shape().ShapeType() == TopAbs_WIRE)
@@ -124,6 +134,16 @@ TopoDS_Wire servoce::shape::Wire_orEdgeToWire() const
 	else
 		return BRepBuilderAPI_MakeWire(Edge()).Wire();
 }
+
+
+servoce::point3 servoce::shape::as_vertex() const { return Vertex(); }
+servoce::edge_shape servoce::shape::as_edge() const { return Edge(); }
+servoce::wire_shape servoce::shape::as_wire() const { return Wire_orEdgeToWire(); }
+servoce::face_shape servoce::shape::as_face() const { return Face(); }
+servoce::shell_shape servoce::shape::as_shell() const { return Shell(); } 
+servoce::solid_shape servoce::shape::as_solid() const { return Solid(); } 
+servoce::compsolid_shape servoce::shape::as_compsolid() const { return CompSolid(); } 
+servoce::compound_shape servoce::shape::as_compound() const { return Compound(); } 
 
 void servoce::shape::dump(std::ostream& out) const
 {
@@ -245,9 +265,9 @@ servoce::topoenum servoce::shape::type()
 	throw "TODO";
 }
 
-std::vector<servoce::shape> servoce::shape::solids() const
+std::vector<servoce::solid_shape> servoce::shape::solids() const
 {
-	std::vector<servoce::shape> ret;
+	std::vector<servoce::solid_shape> ret;
 
 	for (TopExp_Explorer ex(Shape(), TopAbs_SOLID); ex.More(); ex.Next())
 	{
@@ -271,9 +291,9 @@ std::vector<servoce::face_shape> servoce::shape::faces() const
 	return ret;
 }
 
-std::vector<servoce::shape> servoce::shape::wires() const
+std::vector<servoce::wire_shape> servoce::shape::wires() const
 {
-	std::vector<servoce::shape> ret;
+	std::vector<servoce::wire_shape> ret;
 
 	for (TopExp_Explorer ex(Shape(), TopAbs_WIRE); ex.More(); ex.Next())
 	{
@@ -311,9 +331,9 @@ std::vector<servoce::edge_shape> servoce::shape::edges() const
 }
 
 
-std::vector<servoce::shape> servoce::shape::shells() const
+std::vector<servoce::shell_shape> servoce::shape::shells() const
 {
-	std::vector<servoce::shape> ret;
+	std::vector<servoce::shell_shape> ret;
 
 	for (TopExp_Explorer ex(Shape(), TopAbs_SHELL); ex.More(); ex.Next())
 	{
@@ -324,10 +344,10 @@ std::vector<servoce::shape> servoce::shape::shells() const
 	return ret;
 }
 
-std::vector<servoce::shape> servoce::shape::compounds() const
+std::vector<servoce::compound_shape> servoce::shape::compounds() const
 {
 
-	std::vector<servoce::shape> ret;
+	std::vector<servoce::compound_shape> ret;
 
 	for (TopExp_Explorer ex(Shape(), TopAbs_COMPOUND); ex.More(); ex.Next())
 	{
@@ -338,10 +358,10 @@ std::vector<servoce::shape> servoce::shape::compounds() const
 	return ret;
 }
 
-std::vector<servoce::shape> servoce::shape::compsolids() const
+std::vector<servoce::compsolid_shape> servoce::shape::compsolids() const
 {
 
-	std::vector<servoce::shape> ret;
+	std::vector<servoce::compsolid_shape> ret;
 
 	for (TopExp_Explorer ex(Shape(), TopAbs_COMPSOLID); ex.More(); ex.Next())
 	{
@@ -411,15 +431,24 @@ std::string servoce::shape::shapetype_as_string() const
 	switch (Shape().ShapeType())
 	{
 		case TopAbs_WIRE: return "wire";
+
 		case TopAbs_EDGE: return "edge";
+
 		case TopAbs_COMPOUND: return "compound";
+
 		case TopAbs_COMPSOLID: return "compsolid";
+
 		case TopAbs_FACE: return "face";
+
 		case TopAbs_SOLID: return "solid";
-		case TopAbs_SHELL: return "vertex";
+
+		case TopAbs_SHELL: return "shell";
+
 		case TopAbs_VERTEX: return "shell";
+
 		case TopAbs_SHAPE: return "shape";
 	}
+
 	return "undefined";
 }
 
@@ -497,6 +526,7 @@ TopoDS_Edge servoce::shape::Edge_OrOneEdgedWireToEdge() const
 	else if (Shape().ShapeType() == TopAbs_WIRE)
 	{
 		auto edgs = Edges();
+
 		if (edgs.size() > 1)
 		{
 			throw std::runtime_error(
@@ -512,24 +542,25 @@ TopoDS_Edge servoce::shape::Edge_OrOneEdgedWireToEdge() const
 }
 
 
-servoce::geomprops gprops(const servoce::shape& shp) 
+servoce::geomprops gprops(const servoce::shape& shp)
 {
-	switch (shp.Shape().ShapeType()) 
+	switch (shp.Shape().ShapeType())
 	{
 		case TopAbs_VERTEX:
 		case TopAbs_WIRE:
 		case TopAbs_EDGE:
 			return servoce::geomprops::linear_properties(shp, 1);
-	
+
 		case TopAbs_FACE:
 		case TopAbs_SHELL:
 			return servoce::geomprops::surface_properties(shp, 1);
-	
+
 		case TopAbs_SOLID:
 		case TopAbs_COMPSOLID:
 		case TopAbs_COMPOUND:
-		case TopAbs_SHAPE: 
+		case TopAbs_SHAPE:
 			return servoce::geomprops::volume_properties(shp, 1);
+
 		default:
 			throw std::runtime_error("undefined shape");
 	}
@@ -562,12 +593,23 @@ double servoce::shape::moment_of_inertia(const servoce::vector3& axis) const
 
 double servoce::shape::radius_of_gyration(const servoce::vector3& axis) const
 {
-	return geomprops::volume_properties(*this,1).radius_of_gyration(axis);
+	return geomprops::volume_properties(*this, 1).radius_of_gyration(axis);
 }
 
-servoce::boundbox servoce::shape::bounding_box() 
+servoce::boundbox servoce::shape::bounding_box()
 {
 	Bnd_Box box;
 	BRepBndLib::Add(Shape(), box);
 	return {box};
+}
+
+
+servoce::shape servoce::shape::transform(const servoce::transformation& trans) const
+{
+	return BRepBuilderAPI_Transform(Shape(), *trans.trsf, true).Shape();
+}
+
+servoce::shape servoce::shape::transform(const servoce::general_transformation& trans) const
+{
+	return BRepBuilderAPI_GTransform(Shape(), *trans.gtrsf, true).Shape();
 }

@@ -73,7 +73,7 @@ void registry_trans(py::module & m)
 	m.def("rotateX", rotateX, ungil());
 	m.def("rotateY", rotateY, ungil());
 	m.def("rotateZ", rotateZ, ungil());
-	m.def("short_rotate", &short_rotate, py::arg("t"), py::arg("f")=vector3(0,0,1), ungil());
+	m.def("short_rotate", &short_rotate, py::arg("f"), py::arg("t"), ungil());
 
 	m.def("mirrorO", (transformation(*)(double,double,double))&mirrorO, ungil());
 	m.def("mirrorO", (transformation(*)(const point3&))&mirrorO, ungil());
@@ -91,7 +91,8 @@ void registry_trans(py::module & m)
 	m.def("mirrorXZ", mirrorXZ, ungil());
 	m.def("mirrorYZ", mirrorYZ, ungil());
 
-	m.def("scale", &scale, ungil(), py::arg("factor"), py::arg("center") = servoce::point3());
+	m.def("scale", (transformation(*)(double,point3))&scale, ungil(), py::arg("factor"), py::arg("center"));
+	m.def("scale", (transformation(*)(double))&scale, ungil(), py::arg("factor"));
 	m.def("scaleX", scaleX, ungil(), py::arg("factor"));
 	m.def("scaleY", scaleY, ungil(), py::arg("factor"));
 	m.def("scaleZ", scaleZ, ungil(), py::arg("factor"));

@@ -15,6 +15,8 @@ namespace servoce
 		solid_shape(const TopoDS_Solid& arg) : shape((const TopoDS_Shape&)arg) {}
 	};
 
+	//class sweep_solid_shape {};
+
 	solid_shape box(double x, double y, double z, bool center = false);
 	solid_shape sphere(double r);
 	solid_shape sphere(double r, double an1);
@@ -35,10 +37,31 @@ namespace servoce
 	//sweep3d
 	shape make_linear_extrude(const shape& base, const servoce::vector3& vec, bool center = false);
 	shape make_linear_extrude(const shape& base, double z, bool center = false);
-	shape make_pipe(const shape& profile, const shape& path);
-	shape make_pipe_shell(const shape& profile, const shape& path, bool isFrenet = false);
+	shape make_pipe_0(const shape& profile, const shape& spine);
+	shape make_pipe(const shape& profile, const shape& spine, const std::string mode, bool force_approx_c1=false);
+	//shape make_pipe_shell(const std::vector<const shape*>& profile, const shape& spine, bool isFrenet = false, bool approx_c1=false);
+	shape make_pipe_shell(
+		const std::vector<const shape*>& wires, 
+		const shape& spine, 
+		bool frenet=false, 
+		bool force_approx_c1=false, 
+		const vector3& binormal = vector3(0,0,0),
+		const vector3& parallel= vector3(0,0,0),
+		bool discrete=false,
+		bool solid=true,
+		int transition=0);
 
-	shape loft(const std::vector<shape>& vec, bool smooth=false);
+	shape make_pipe_shell(
+		const std::vector<const shape*>& profiles, 
+		const shape& spine, 
+		bool frenet=false,
+		bool solid=true,
+		int transition=0);
+
+	//shape make_pipe_shell(const shape& profile, const shape& spine, 
+	//	const shape& auxiliary_spine, bool curvilinear_equivalence);
+
+	shape loft(const std::vector<shape>& vec, bool smooth=false, bool solid=true, int maxdegree=4);
 	shape revol(const shape& proto, double angle = 0.0);
 
 	solid_shape halfspace();
@@ -52,6 +75,12 @@ namespace servoce
 	shape unify(const shape& proto);
 
 	servoce::solid_shape make_solid(const servoce::shell_shape& shp);
+	servoce::solid_shape make_solid(const std::vector<const servoce::shell_shape*>& shp);
+
+	shape offset_shape(const servoce::shape& shp, double off);
+
+
+	// TODO: Move to face
 }
 
 #endif

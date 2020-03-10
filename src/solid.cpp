@@ -1,4 +1,6 @@
 #include <servoce/solid.h>
+#include <servoce/wire.h>
+#include <servoce/face.h>
 
 #include <gp_Pln.hxx>
 
@@ -16,9 +18,18 @@
 #include <BRepPrimAPI_MakePrism.hxx>
 #include <BRepPrimAPI_MakeRevol.hxx>
 #include <BRepExtrema_DistShapeShape.hxx>
+#include <BRepOffsetAPI_MakeOffsetShape.hxx>
 //#include <BRepPrimAPI_MakeWedge.hxx>
 //#include <BRepOffsetAPI_ThruSections.hxx>
 #include <TopExp_Explorer.hxx>
+#include <BRepAdaptor_HCurve.hxx>
+#include <Geom_Circle.hxx>
+#include <GeomFill_SectionLaw.hxx>
+#include <GeomFill_CurveAndTrihedron.hxx>
+#include <GeomFill_EvolvedSection.hxx>
+#include <GeomFill_CorrectedFrenet.hxx>
+#include <GeomFill_Sweep.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
 
 #include <BRepBuilderAPI_MakeSolid.hxx>
 
@@ -46,13 +57,18 @@
 
 #include <map>
 #include <limits>
+#include <Standard_PrimitiveTypes.hxx>
 
 #include <exception>
 #include <assert.h>
 
+#include <ShapeFix_Solid.hxx>
+
 #include <servoce/edge.h>
 #include <servoce/face.h>
 #include <servoce/shell.h>
+
+#include <Law_Constant.hxx>
 
 using namespace servoce;
 
@@ -193,7 +209,7 @@ servoce::shape servoce::shape::extrude(const vector3& vec, bool center)
 	return make_linear_extrude(*this, vec, center);
 }
 
-shape servoce::make_pipe(const shape& profile, const shape& path)
+shape servoce::make_pipe_0(const shape& profile, const shape& path)
 {
 	if (path.Shape().IsNull())
 		Standard_Failure::Raise("Cannot sweep along empty spine");
@@ -204,34 +220,176 @@ shape servoce::make_pipe(const shape& profile, const shape& path)
 	return BRepOffsetAPI_MakePipe(path.Wire_orEdgeToWire(), profile.Shape()).Shape();
 }
 
-shape servoce::make_pipe_shell(
+shape servoce::make_pipe(const shape& profile, const shape& path,
+                         const std::string mode, bool force_approx_c1)
+{
+	if (path.Shape().IsNull())
+		Standard_Failure::Raise("Cannot sweep along empty spine");
+
+	if (profile.Shape().IsNull())
+		Standard_Failure::Raise("Cannot sweep empty profile");
+
+	GeomFill_Trihedron tri;
+
+	std::map<std::string, GeomFill_Trihedron> map =
+	{
+		{ "corrected_frenet", GeomFill_IsCorrectedFrenet },
+		{ "fixed", GeomFill_IsFixed},
+		{ "frenet", GeomFill_IsFrenet},
+		{ "constant_normal", GeomFill_IsConstantNormal},
+		{ "darboux", GeomFill_IsDarboux},
+		{ "guide_ac", GeomFill_IsGuideAC},
+		{ "guide_plan", GeomFill_IsGuidePlan},
+		{ "guide_ac_with_contact", GeomFill_IsGuideACWithContact},
+		{ "guide_plan_with_contact", GeomFill_IsGuidePlanWithContact},
+		{ "discrete_trihedron", GeomFill_IsDiscreteTrihedron}
+	};
+
+	try
+	{
+		tri = map.at(mode);
+	}
+
+	catch (...)
+	{
+		throw std::runtime_error("servoce::make_pipe: undefined mode");
+	}
+
+	return BRepOffsetAPI_MakePipe(path.Wire_orEdgeToWire(), profile.Shape(), tri, force_approx_c1).Shape();
+}
+
+/*shape servoce::make_pipe_shell(
     const shape& profile,
     const shape& path,
     bool isFrenet
 )
 {
-	try
+	BRepOffsetAPI_MakePipeShell mkPipeShell(path.Wire_orEdgeToWire());
+	mkPipeShell.SetMode(isFrenet);
+	mkPipeShell.Add(profile.Shape());
+
+	if (!mkPipeShell.IsReady()) std::logic_error("shape is not ready to build");
+
+	mkPipeShell.Build();
+	mkPipeShell.MakeSolid();
+
+	return mkPipeShell.Shape();
+}*/
+
+shape servoce::make_pipe_shell(
+    const std::vector<const shape*>& profile,
+    const shape& path,
+    bool frenet,
+    bool approx_c1,
+    const vector3& binormal,
+    const vector3& parallel,
+    bool discrete,
+    bool solid,
+    int transition
+)
+{
+	BRepOffsetAPI_MakePipeShell mkPipeShell(path.Wire_orEdgeToWire());
+
+	BRepBuilderAPI_TransitionMode transMode;
+
+	switch (transition)
 	{
-		BRepOffsetAPI_MakePipeShell mkPipeShell(path.Wire_orEdgeToWire());
-		mkPipeShell.SetMode(isFrenet);
+		case 1: transMode = BRepBuilderAPI_RightCorner;
+			break;
 
-		mkPipeShell.SetMode(isFrenet);
-		mkPipeShell.Add(profile.Shape());
+		case 2: transMode = BRepBuilderAPI_RoundCorner;
+			break;
 
-		if (!mkPipeShell.IsReady()) std::logic_error("shape is not ready to build");
+		default: transMode = BRepBuilderAPI_Transformed;
+			break;
+	}
 
-		mkPipeShell.Build();
+	mkPipeShell.SetMode(frenet);
+	mkPipeShell.SetTransitionMode(transMode);
+	mkPipeShell.SetForceApproxC1(approx_c1);
+
+	if (!binormal.iszero())
+		mkPipeShell.SetMode(binormal.Dir());
+
+	if (!parallel.iszero())
+		mkPipeShell.SetMode(gp_Ax2(gp_Pnt(0, 0, 0), parallel.Dir()));
+
+	if (discrete)
+		mkPipeShell.SetDiscreteMode();
+
+	for (auto a : profile)
+		mkPipeShell.Add(a->Wire_orEdgeToWire());
+
+	if (!mkPipeShell.IsReady()) std::logic_error("shape is not ready to build");
+
+	mkPipeShell.Build();
+
+	if (solid)
 		mkPipeShell.MakeSolid();
 
-		return mkPipeShell.Shape();
-	}
-	catch (...)
+	return mkPipeShell.Shape();
+}
+
+
+servoce::shape servoce::make_pipe_shell(
+    const std::vector<const shape*>& profiles,
+    const shape& spine,
+    bool frenet,
+    bool solid,
+    int transition)
+{
+	if (spine.Shape().IsNull())
+		throw std::runtime_error("Cannot sweep along empty spine.");
+
+	if (spine.Shape().ShapeType() != TopAbs_WIRE && spine.Shape().ShapeType() != TopAbs_EDGE)
+		throw std::runtime_error("Spine shape is not a wire and not an edge.");
+
+	BRepOffsetAPI_MakePipeShell mkPipeShell(spine.Wire_orEdgeToWire());
+	BRepBuilderAPI_TransitionMode transMode;
+
+	switch (transition)
 	{
-		Standard_Failure::Raise("ERROR");
+		case 1: transMode = BRepBuilderAPI_RightCorner;
+			break;
+
+		case 2: transMode = BRepBuilderAPI_RoundCorner;
+			break;
+
+		default: transMode = BRepBuilderAPI_Transformed;
+			break;
 	}
 
-	return shape();
+	mkPipeShell.SetMode(frenet);
+	mkPipeShell.SetTransitionMode(transMode);
+
+	for (auto & it : profiles)
+	{
+		mkPipeShell.Add(it->Shape());
+	}
+
+	if (!mkPipeShell.IsReady()) Standard_Failure::Raise("shape is not ready to build");
+	else mkPipeShell.Build();
+
+	if (solid)	mkPipeShell.MakeSolid();
+
+	return mkPipeShell.Shape();
 }
+
+/*
+shape servoce::make_pipe_shell(const shape& profile, const shape& path,
+                               const shape& auxiliary_spine, bool curvilinear_equivalence)
+{
+	BRepOffsetAPI_MakePipeShell mkPipeShell(path.Wire_orEdgeToWire());
+	mkPipeShell.SetMode(auxiliary_spine.Wire_orEdgeToWire(), curvilinear_equivalence);
+	mkPipeShell.Add(profile.Shape());
+
+	if (!mkPipeShell.IsReady()) std::logic_error("shape is not ready to build");
+
+	mkPipeShell.Build();
+	mkPipeShell.MakeSolid();
+
+	return mkPipeShell.Shape();
+}*/
 
 solid_shape servoce::halfspace()
 {
@@ -241,13 +399,14 @@ solid_shape servoce::halfspace()
 	return MHS.Solid();
 }
 
-shape servoce::loft(const std::vector<shape>& vec, bool smooth)
+shape servoce::loft(const std::vector<shape>& vec, bool smooth, bool solid, int maxdegree)
 {
-	BRepOffsetAPI_ThruSections builder(Standard_True, !smooth);
+	BRepOffsetAPI_ThruSections builder(solid, !smooth);
+	builder.SetMaxDegree(maxdegree);
 
 	for (auto v : vec)
 		if (v.Shape().ShapeType() == TopAbs_FACE)
-			Standard_Failure::Raise("Loft argument must be array of WIRES");
+			Standard_Failure::Raise("Loft argument must be array of Wires or Edges");
 
 	for (auto& r : vec)
 	{
@@ -438,9 +597,18 @@ servoce::shape servoce::chamfer(const servoce::shape& shp, double r)
 
 shape _unify_face(const servoce::shape& proto)
 {
-	ShapeUpgrade_UnifySameDomain USD(proto.Shape(), true, true, true); // UnifyFaces mode on, UnifyEdges mode on, ConcatBSplines mode on.
-	USD.Build();
-	return USD.Shape();
+	try
+	{
+		ShapeUpgrade_UnifySameDomain USD(proto.Shape(), true, true, true); // UnifyFaces mode on, UnifyEdges mode on, ConcatBSplines mode on.
+		USD.Build();
+		return USD.Shape();
+	}
+	catch (...)
+	{
+		printf("Exception in _unify_face:");
+		fflush(stdout);
+		throw;
+	}
 }
 
 #include <BOPTools_AlgoTools.hxx>
@@ -454,131 +622,167 @@ std::vector<servoce::shape> _unify_faces_array(const std::vector<servoce::face_s
 	ret.reserve(input.size());
 	std::map<Handle(Geom_Plane), std::vector<const servoce::shape*>> fset;
 
-	for (const servoce::face_shape& i : input)
+
+	try
 	{
-		Handle(Geom_Surface) surface = BRep_Tool::Surface(i.Face());
-
-		BRepAdaptor_Surface adaptor_surface(i.Face());
-		GeomAbs_SurfaceType surface_type = adaptor_surface.GetType();
-
-		if (surface_type == GeomAbs_Plane)
+		for (const servoce::face_shape& i : input)
 		{
-			Handle(Geom_Plane) pln = Handle(Geom_Plane)::DownCast(surface);
-			gp_Pln pln0 = pln->Pln();
+			Handle(Geom_Surface) surface = BRep_Tool::Surface(i.Face());
 
-			bool found = false;
+			BRepAdaptor_Surface adaptor_surface(i.Face());
+			GeomAbs_SurfaceType surface_type = adaptor_surface.GetType();
 
-			for (auto& pr : fset)
+			if (surface_type == GeomAbs_Plane)
 			{
-				Handle(Geom_Plane) key = pr.first;
-				std::vector<const servoce::shape*>& arr = pr.second;
+				Handle(Geom_Plane) pln = Handle(Geom_Plane)::DownCast(surface);
+				gp_Pln pln0 = pln->Pln();
 
-				gp_Pnt pnt;
-				key->D0(0, 0, pnt);
-				gp_Pln pln1 = key->Pln();
+				bool found = false;
 
-				auto dir0 = pln0.Axis().Direction();
-				auto dir1 = pln1.Axis().Direction();
-
-				//PRINT(dir0.IsEqual(dir1, 0.00001));
-				//PRINT(pln0.Distance(pln1.Axis().Location()));
-				//PRINT(pln1.Distance(pln0.Axis().Location()));
-
-				if (
-				    dir0.IsEqual(dir1, 0.00001) &&
-				    std::abs(pln0.Distance(pln1.Axis().Location())) < 0.0000001 &&
-				    std::abs(pln1.Distance(pln0.Axis().Location())) < 0.0000001)
+				for (auto& pr : fset)
 				{
-					found = true;
-					arr.emplace_back(&i);
-					break;
+					Handle(Geom_Plane) key = pr.first;
+					std::vector<const servoce::shape*>& arr = pr.second;
+
+					gp_Pnt pnt;
+					key->D0(0, 0, pnt);
+					gp_Pln pln1 = key->Pln();
+
+					auto dir0 = pln0.Axis().Direction();
+					auto dir1 = pln1.Axis().Direction();
+
+					//PRINT(dir0.IsEqual(dir1, 0.00001));
+					//PRINT(pln0.Distance(pln1.Axis().Location()));
+					//PRINT(pln1.Distance(pln0.Axis().Location()));
+
+					if (
+					    dir0.IsEqual(dir1, 0.00001) &&
+					    std::abs(pln0.Distance(pln1.Axis().Location())) < 0.0000001 &&
+					    std::abs(pln1.Distance(pln0.Axis().Location())) < 0.0000001)
+					{
+						found = true;
+						arr.emplace_back(&i);
+						break;
+					}
 				}
+
+				if (found == false)
+					fset.emplace(std::make_pair(pln, std::vector<const servoce::shape*> {&i}));
 			}
 
-			if (found == false)
-				fset.emplace(std::make_pair(pln, std::vector<const servoce::shape*> {&i}));
+			else
+			{
+				ret.emplace_back(i);
+				continue;
+			}
 		}
 
-		else
+		for (auto pr : fset)
 		{
-			ret.emplace_back(i);
-			continue;
+			auto farr = servoce::make_union(pr.second);
+			ret.emplace_back(_unify_face(farr));
 		}
-	}
 
-	for (auto pr : fset)
+		return ret;
+	}
+	catch (...)
 	{
-		auto farr = servoce::make_union(pr.second);
-		ret.emplace_back(_unify_face(farr));
+		printf("Exception in _unify_faces_array:\n");
+		fflush(stdout);
+		throw;
 	}
-
-	return ret;
 }
 
-shape _unify_shell(const servoce::shape& proto)
+shell_shape _unify_shell(const servoce::shell_shape& proto)
 {
 	std::vector<servoce::shape> faces;
-
 	BRepOffsetAPI_Sewing mkShell;
 
-	auto newfaces = _unify_faces_array(proto.faces());
-	//PRINT(newfaces.size());
+	try
+	{
+		auto newfaces = _unify_faces_array(proto.faces());
+		//PRINT(newfaces.size());
 
-	for (servoce::shape& n : newfaces)
-		mkShell.Add(n.Shape());
+		for (servoce::shape& n : newfaces)
+			mkShell.Add(n.Shape());
 
-	mkShell.Perform();
-	return mkShell.SewedShape();
+		mkShell.Perform();
+		return (TopoDS_Shell&) mkShell.SewedShape();
+	}
+	catch (...)
+	{
+		printf("Exception in _unify_shell:\n");
+		fflush(stdout);
+		throw;
+	}
 }
 
-shape _unify_solid(const servoce::shape& proto)
+solid_shape _unify_solid(const servoce::solid_shape& proto)
 {
 	BRepBuilderAPI_MakeSolid mkSolid;
 	TopExp_Explorer explorer;
 
-	for (explorer.Init(proto.Shape(), TopAbs_SHELL); explorer.More(); explorer.Next())
+	try
 	{
-		mkSolid.Add(_unify_shell(explorer.Current()).Shell());
-	}
+		for (explorer.Init(proto.Shape(), TopAbs_SHELL); explorer.More(); explorer.Next())
+		{
+			mkSolid.Add(_unify_shell((TopoDS_Shell&)explorer.Current()).Shell());
+		}
 
-	mkSolid.Build();
-	return mkSolid.Shape();
+		mkSolid.Build();
+		return (TopoDS_Solid&)mkSolid.Shape();
+	}
+	catch (...)
+	{
+		printf("Exception in _unify_solid:\n");
+		fflush(stdout);
+		throw;
+	}
 }
 
 shape _unify_compound(const servoce::shape& proto)
 {
 	BRep_Builder builder;
 	TopoDS_Compound comp;
-	builder.MakeCompound(comp);
 
-	TopExp_Explorer explorer;
-
-	for (explorer.Init(proto.Shape(), TopAbs_SOLID); explorer.More(); explorer.Next())
+	try
 	{
-		builder.Add(comp, _unify_solid(explorer.Current()).Solid());
-	}
+		builder.MakeCompound(comp);
 
-	for (explorer.Init(proto.Shape(), TopAbs_SHELL, TopAbs_SOLID); explorer.More(); explorer.Next())
+		TopExp_Explorer explorer;
+
+		for (explorer.Init(proto.Shape(), TopAbs_SOLID); explorer.More(); explorer.Next())
+		{
+			builder.Add(comp, _unify_solid((TopoDS_Solid&)explorer.Current()).Solid());
+		}
+
+		for (explorer.Init(proto.Shape(), TopAbs_SHELL, TopAbs_SOLID); explorer.More(); explorer.Next())
+		{
+			builder.Add(comp, _unify_shell((TopoDS_Shell&)explorer.Current()).Shell());
+		}
+
+		std::vector<servoce::face_shape> faces;
+
+		for (explorer.Init(proto.Shape(), TopAbs_FACE, TopAbs_SHELL); explorer.More(); explorer.Next())
+		{
+			faces.emplace_back((TopoDS_Face&)explorer.Current());
+		}
+
+		std::vector<servoce::shape> faces_new = _unify_faces_array(faces);
+
+		for (auto& f : faces_new)
+		{
+			builder.Add(comp, f.Shape());
+		}
+
+		return comp;
+	}
+	catch (...)
 	{
-		builder.Add(comp, _unify_shell(explorer.Current()).Shell());
+		printf("Exception in _unify_compound:\n");
+		fflush(stdout);
+		throw;
 	}
-
-	std::vector<servoce::face_shape> faces;
-
-	for (explorer.Init(proto.Shape(), TopAbs_FACE, TopAbs_SHELL); explorer.More(); explorer.Next())
-	{
-		faces.emplace_back((TopoDS_Face&)explorer.Current());
-	}
-
-	std::vector<servoce::shape> faces_new = _unify_faces_array(faces);
-
-	for (auto& f : faces_new)
-	{
-		builder.Add(comp, f.Shape());
-	}
-
-
-	return comp;
 }
 
 shape servoce::unify(const shape& proto)
@@ -586,7 +790,7 @@ shape servoce::unify(const shape& proto)
 	const TopoDS_Shape& _Shape = proto.Shape();
 
 	if (_Shape.IsNull()) Standard_Failure::Raise("Cannot remove splitter from empty shape");
-	else if (_Shape.ShapeType() == TopAbs_SOLID) return _unify_solid(proto);
+	else if (_Shape.ShapeType() == TopAbs_SOLID) return _unify_solid((const servoce::solid_shape&)proto);
 	//else if (_Shape.ShapeType() == TopAbs_SHELL) return _unify_shell(proto);
 	//else if (_Shape.ShapeType() == TopAbs_FACE)	return _unify_face(proto);
 	else if (_Shape.ShapeType() == TopAbs_COMPOUND) return _unify_compound(proto);
@@ -596,9 +800,46 @@ shape servoce::unify(const shape& proto)
 }
 
 
-servoce::solid_shape servoce::make_solid(const servoce::shell_shape& shp) 
+servoce::solid_shape servoce::make_solid(const servoce::shell_shape& shp)
 {
-	BRepBuilderAPI_MakeSolid algo(shp.Shell());
-	algo.Build();
-	return algo.Solid();
+	//BRepBuilderAPI_MakeSolid algo(shp.Shell());
+	ShapeFix_Solid algo;
+	//algo.Build();
+	return algo.SolidFromShell(shp.Shell());
 }
+
+servoce::solid_shape servoce::make_solid(const std::vector<const servoce::shell_shape*>& shp) 
+{
+	BRepBuilderAPI_MakeSolid algo;
+
+	for (auto& s : shp) 
+	{
+		algo.Add(s->Shell());
+	}
+
+	ShapeFix_Solid fixer(algo.Solid());
+	fixer.Perform();
+	return servoce::shape(fixer.Solid()).Solid();
+}
+
+
+servoce::shape servoce::offset_shape(const servoce::shape& shp, double off)
+{
+	BRepOffsetAPI_MakeOffsetShape algo;
+	algo.PerformByJoin(shp.Shape(), off, 1e-6);
+	algo.Build();
+	return algo.Shape();
+}
+
+
+
+
+/*static Handle(Law_Function) CreateBsFunction (const Standard_Real theFirst, const Standard_Real theLast, const Standard_Real theRadius)
+{
+	(void)theRadius;
+	//Handle(Law_BSpline) aBs;
+	//Handle(Law_BSpFunc) aFunc = new Law_BSpFunc (aBs, theFirst, theLast);
+	Handle(Law_Constant) aFunc = new Law_Constant();
+	aFunc->Set(1, theFirst, theLast);
+	return aFunc;
+}*/

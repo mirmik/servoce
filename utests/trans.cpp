@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <servoce/geombase.h>
 #include <servoce/trans.h>
 
 TEST(api, Trans) 

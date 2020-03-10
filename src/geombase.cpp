@@ -1,4 +1,5 @@
 #include <servoce/geombase.h>
+#include <servoce/trans.h>
 #include <servoce/util/math.h>
 
 #include <gp_Pnt.hxx>
@@ -23,7 +24,7 @@ servoce::vector3::vector3(const gp_Dir& d)
 servoce::point3::point3(const gp_Pnt& pnt)
 	: vec(pnt.X(), pnt.Y(), pnt.Z()) {}
 
-servoce::point3::point3(const TopoDS_Vertex& pnt) 
+servoce::point3::point3(const TopoDS_Vertex& pnt)
 	: point3(BRep_Tool::Pnt(pnt)) {}
 
 servoce::quaternion::quaternion(const gp_Quaternion& q)
@@ -124,4 +125,15 @@ bool servoce::point2::lexless_xy(const point2& a, const point2& b)
 	}
 
 	return false;
+}
+
+
+servoce::point3 servoce::point3::transform(const servoce::transformation& trsf) const
+{
+	return Pnt().Transformed(*trsf.trsf);
+}
+
+servoce::vector3 servoce::vector3::transform(const servoce::transformation& trsf) const
+{
+	return Vec().Transformed(*trsf.trsf);
 }
