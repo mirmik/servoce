@@ -41,6 +41,9 @@ AIS_InteractiveContext* servoce::scene::InteractiveContext()
 
 servoce::boundbox servoce::scene::bbox() const 
 {
+	if (iobjs.size() == 0) 
+		return servoce::boundbox();
+
 	boundbox bbox = (*iobjs.begin())->bounding_box();
 
 	for (auto& i: iobjs) 

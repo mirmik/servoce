@@ -27,6 +27,7 @@ namespace servoce
 			}
 		}
 
+		boundbox(){}
 		boundbox(const boundbox& box) = default;
 
 		boundbox(double xmin, double ymin, double zmin, double xmax, double ymax, double zmax) :
