@@ -25,6 +25,8 @@ def get_occt_include_directory():
 
     raise Exception("can't find occt")
 
+licant.import_attribute("find_occt_inc", get_occt_include_directory)
+
 full_list = [
     "TKBinL",
     "TKBin",
@@ -113,6 +115,10 @@ if os.name == "posix":
 elif os.name == "nt":
     liboce_include_path = "../../OpenCASCADE-7.3.0-vc14-64/opencascade-7.3.0/inc"
     lib_prefix = "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\"
+
+
+licant.import_attribute("occt_inc", liboce_include_path)
+licant.import_attribute("qt_inc", libqt_include_path)
 
 module(
     "liboce",
@@ -218,4 +224,9 @@ module(
     cxx_flags="-Wall -fPIC -DQT_NO_VERSION_TAGGING -ffunction-sections -fdata-sections",
     cc_flags="-Wall -fPIC -ffunction-sections -fdata-sections",
     ld_flags="-ffunction-sections -fdata-sections -Wl,--gc-sections -Wl,--as-needed",
+)
+
+module("servoce_display",
+    sources=["src/display.cpp", "src/display/dispwidget.cpp"],
+    moc = ["src/local/display.h"]
 )

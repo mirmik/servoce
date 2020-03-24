@@ -1,125 +1,66 @@
 #ifndef SERVOCE_LOCAL_DISPLAY_H
 #define SERVOCE_LOCAL_DISPLAY_H
 
-#include <AIS_InteractiveContext.hxx>
-#include <V3d_View.hxx>
-#include <V3d_Viewer.hxx>
-
-#undef Unsorted
-
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QMainWindow>
 #include <QtOpenGL/QGLWidget>
 
-#include <servoce/linalg/linalg.h>
-
 #include <servoce/scene.h>
-
-// DisplayWidget может не быть QGLWidget.
-// фактически он QGLWidget только ради grabFrameBuffer.
-// см. mainwidget.cpp
+#include <nos/print.h>
+#include <gl2ps.h>
+#include <GL/glut.h>
 
 namespace servoce
 {
 	namespace disp
 	{
-		class DisplayWidget : public QWidget
+		class DisplayMinimal : public QGLWidget
 		{
 			Q_OBJECT
 
-		public:
-			Handle(V3d_Viewer) m_viewer;
-			Handle(V3d_View) m_view;
-			Handle(AIS_InteractiveContext) m_context;
+			const servoce::scene& _scene;
+			bool inited = false;
 
-		private:
-			QPoint temporary1;
-			//malgo::quaternion<double> quat_orient;
-			linalg::vec<float, 4> quat_orient;
-
-			double phi = - cos(M_PI / 4);
-			double psi = 0.61548;
-
-			uint8_t orient = 1;
+			std::shared_ptr<servoce::viewer> _viewer;
+			std::shared_ptr<servoce::view> _view;
 
 		public:
-			void init();
-			const servoce::scene* scn;
-			void setScene(const servoce::scene* scn) { this->scn = scn; }
 
-			void orient1();
-			void orient2();
-
-		protected:
-			virtual void showEvent(QShowEvent* e) override;
-			virtual void paintEvent(QPaintEvent* e) override;
-			virtual void resizeEvent(QResizeEvent* e) override;
-
-			virtual void mousePressEvent(QMouseEvent* e) override;
-			virtual void mouseReleaseEvent(QMouseEvent* e) override;
-			virtual void mouseMoveEvent(QMouseEvent * e) override;
-			virtual void wheelEvent(QWheelEvent * e) override;
-
-			virtual void onLButtonDown(const int theFlags, const QPoint thePoint);
-			virtual void onMButtonDown(const int theFlags, const QPoint thePoint);
-			virtual void onRButtonDown(const int theFlags, const QPoint thePoint);
-			virtual void onMouseWheel(const int theFlags, const int theDelta, const QPoint thePoint);
-			virtual void onLButtonUp(const int theFlags, const QPoint thePoint);
-			virtual void onMButtonUp(const int theFlags, const QPoint thePoint);
-			virtual void onRButtonUp(const int theFlags, const QPoint thePoint);
-			virtual void onMouseMove(const int theFlags, const QPoint thePoint);
-
-			gp_Pnt getMousePositionWithObjects(const QPoint point);
-			gp_Pnt getTrueMousePosition(const QPoint point);
-
-
-		public:
-			DisplayWidget(QWidget* parent = nullptr) : QWidget(parent)
+			DisplayMinimal(const servoce::scene& scn) : QGLWidget(), _scene(scn)
 			{
-				//setAttribute(Qt::WA_PaintOnScreen, true);
-				setBackgroundRole( QPalette::NoRole );
+				setBackgroundRole(QPalette::NoRole);
+				setAttribute(Qt::WA_PaintOnScreen, true);
 			}
 
-		public:
-			const Handle_AIS_InteractiveContext& getContext() const;
+			void showEvent(QShowEvent* ev) override
+			{
+				if (inited != true)
+				{
+					_viewer = _scene.viewer();
 
-		public slots:
-			void autoscale();
-		};
+					if (_view == nullptr)
+					{
+						_view = _viewer->create_shared_view(false);
+						_view->set_triedron();
+						_view->set_gradient(servoce::color(0.5, 0.5, 0.5), servoce::color(0.3, 0.3, 0.3));
+					}
 
-		class MainWidget : public QMainWindow
-		{
-			Q_OBJECT
+					_view->set_window(winId());
+					_view->autoscale();
 
-			QAction* mStlExport;
-			QAction* mExitAction;
-			QAction* mScreen;
-			QAction* mAboutAction;
-			QAction* mAutoscale;
-			QAction* mOrient1;
-			QAction* mOrient2;
+					inited = true;
+				}
+			}
 
-			QMenu* mFileMenu;
-			QMenu* mNavigationMenu;
-			QMenu* mHelpMenu;
+			void paintEvent(QPaintEvent* ev) override
+			{
+				_view->redraw();
+			}
 
-		public:
-			DisplayWidget* display;
-
-		private:
-			void createActions();
-			void createMenus();
-			void createToolbars();
-
-		private slots:
-			void about(void);
-			//void export_stl();
-			void screenshot();
-			void orient1();
-			void orient2();
-
-		public:
-			MainWidget(QWidget* parent = nullptr);
+			void autoscale()
+			{
+				_view->fit_all(0.05);
+			}
 		};
 	}
 }

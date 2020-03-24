@@ -8,6 +8,7 @@
 extern std::recursive_mutex viewrecursive_mutex;
 
 servoce::scene::scene() : vwer(new servoce::viewer()) {}
+servoce::scene::scene(bool pretty) : vwer(new servoce::viewer(pretty)) {}
 
 std::shared_ptr<servoce::interactive_object> servoce::scene::add(std::shared_ptr<servoce::interactive_object> iobj)
 {

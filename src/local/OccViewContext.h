@@ -81,22 +81,22 @@ struct OccViewWindow
 #endif
 
 	OccViewerContext* parent;
-	#if defined(__APPLE__)
+#if defined(__APPLE__)
 	void* winddesc;
-	#else
+#else
 	int winddesc;
-	#endif
+#endif
 
 public:
 	OccViewWindow(Handle(V3d_View) view, OccViewerContext* parent)
-		: m_view(view), parent(parent) 
+		: m_view(view), parent(parent)
 	{}
 
 	void set_virtual_window(int w, int h)
 	{
 		std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 		static int i = 0;
-		
+
 #if defined(WNT) || defined(_MSC_VER)
 		//m_window = new WNT_Window ((std::string("virtual") + std::to_string(i++)).c_str(), 0, 0, w, h);
 		throw std::runtime_error("set_virtual_window::windows not supported");
@@ -115,7 +115,7 @@ public:
 
 #if defined(__APPLE__)
 	void set_window(void* window_handle)
-#else	
+#else
 	void set_window(int  window_handle)
 #endif
 	{
@@ -123,11 +123,11 @@ public:
 		winddesc = window_handle;
 
 #if defined(WNT) || defined(_MSC_VER)
-        m_window = new WNT_Window((Aspect_Handle) window_handle);
+		m_window = new WNT_Window((Aspect_Handle) window_handle);
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
-        m_window = new Cocoa_Window((NSView *) window_handle);
+		m_window = new Cocoa_Window((NSView *) window_handle);
 #else
-        m_window = new Xw_Window(GetDisplayConnection(), (Window) window_handle);
+		m_window = new Xw_Window(GetDisplayConnection(), (Window) window_handle);
 #endif
 
 		m_view->SetWindow(m_window);
@@ -196,29 +196,39 @@ struct OccViewerContext
 	Handle(AIS_Axis) axZ;
 
 public:
-	OccViewerContext()
+	OccViewerContext(bool pretty)
 	{
 		std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
-		static Quantity_Color c1(0.5, 0.5, 0.5, Quantity_TOC_RGB);
-		static Quantity_Color c2(0.3, 0.3, 0.3, Quantity_TOC_RGB);
 
-		axX = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0, 0, 0), gp_Vec(1, 0, 0)));
-		axY = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0, 0, 0), gp_Vec(0, 1, 0)));
-		axZ = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0, 0, 0), gp_Vec(0, 0, 1)));
+		if (pretty)
+		{
+			//static Quantity_Color c1(0.5, 0.5, 0.5, Quantity_TOC_RGB);
+			//static Quantity_Color c2(0.3, 0.3, 0.3, Quantity_TOC_RGB);
 
-		axX->SetColor(Quantity_NOC_RED);
-		axY->SetColor(Quantity_NOC_GREEN);
-		axZ->SetColor(Quantity_NOC_BLUE1);
+			//axX = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0, 0, 0), gp_Vec(1, 0, 0)));
+			//axY = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0, 0, 0), gp_Vec(0, 1, 0)));
+			//axZ = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0, 0, 0), gp_Vec(0, 0, 1)));
 
-		m_viewer = new V3d_Viewer(GetGraphicDriver());
+			//axX->SetColor(Quantity_NOC_RED);
+			//axY->SetColor(Quantity_NOC_GREEN);
+			//axZ->SetColor(Quantity_NOC_BLUE1);
 
-		m_viewer->SetDefaultLights();
-		m_viewer->SetLightOn();
+			m_viewer = new V3d_Viewer(GetGraphicDriver());
 
-		m_context = new AIS_InteractiveContext (m_viewer);
-		m_context->SetDisplayMode(AIS_Shaded, false);
-		m_context->DefaultDrawer()->SetFaceBoundaryDraw(true);
-	}
+			m_viewer->SetDefaultLights();
+			m_viewer->SetLightOn();
+
+			m_context = new AIS_InteractiveContext (m_viewer);
+			m_context->SetDisplayMode(AIS_Shaded, false);
+			m_context->DefaultDrawer()->SetFaceBoundaryDraw(true);
+		} 
+
+		else 
+		{
+			m_viewer = new V3d_Viewer(GetGraphicDriver());
+			m_context = new AIS_InteractiveContext (m_viewer);
+		}
+	} 
 
 	OccViewWindow* create_view_window()
 	{

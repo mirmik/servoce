@@ -15,7 +15,7 @@
 //#include <zencad/DisplayWidget.h>
 
 // occ header files.
-#include <V3d_View.hxx>
+/*#include <V3d_View.hxx>
 #include <V3d_AmbientLight.hxx>
 #include <V3d_DirectionalLight.hxx>
 
@@ -69,10 +69,10 @@ void servoce::disp::DisplayWidget::paintEvent(QPaintEvent* e)
     {
         init();
 
-        for (auto& shp : scn->shape_views)
-        {
-            m_context->Display (shp->native(), false);
-        }
+        //for (auto& shp : scn->)
+        //{
+        //    m_context->Display (shp->native(), false);
+        //}
 
         auto axX = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0, 0, 0), gp_Vec(1, 0, 0)));
         auto axY = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0, 0, 0), gp_Vec(0, 1, 0)));
@@ -310,3 +310,4 @@ gp_Pnt servoce::disp::DisplayWidget::getMousePositionWithObjects(const QPoint po
         break;
     }
 }
+*/
