@@ -14,8 +14,6 @@ if sys.platform == "win32" or sys.platform == "win64":
 #  os.environ['PATH'] += os.pathsep + "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\bin"
 #   os.environ['PATH'] += os.pathsep + "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib"
 
-print("os.environ['PATH']", os.environ['PATH'])
-
 import pyservoce.libservoce
 from pyservoce.libservoce import *
 
@@ -83,3 +81,21 @@ class TransformableMixin:
     def mirrorXZ(self, *args, **kwargs): return self.transform(mirrorXZ(*args,**kwargs))
 
     def scale(self, *args, **kwargs): return self.transform(scale(*args,**kwargs))
+
+
+
+
+def curve_parameters(self):
+    print("curve_parameters")
+
+    if self.curvetype() == "line":
+        pass
+
+
+
+
+
+
+
+
+

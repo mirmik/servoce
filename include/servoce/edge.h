@@ -24,6 +24,7 @@ namespace servoce {
 		Handle(Adaptor3d_HCurve) HCurveAdaptor() const;
 
 		curve3 curve();
+		std::string curvetype();
 
 		face_shape fill();
 	};

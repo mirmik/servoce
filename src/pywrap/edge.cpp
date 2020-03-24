@@ -21,6 +21,8 @@ void registry_edge_shape(py::module & m)
 	.def(py::pickle(
 	[](const edge_shape & self) { return b64::base64_encode(string_dump(self)); },
 	[](const std::string & in) { return restore_string_dump<edge_shape>(b64::base64_decode(in)); }), ungil())
+	.def("curve", &edge_shape::curve, ungil())
+	.def("curvetype", &edge_shape::curvetype, ungil())
 	.def("range", &edge_shape::range, ungil())
 	.def("length", &edge_shape::length, ungil())
 	.def("d0", &edge_shape::d0, ungil())

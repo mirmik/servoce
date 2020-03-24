@@ -55,3 +55,23 @@ Handle(Geom_Curve) servoce::edge_shape::Curve() const
 	Handle(Geom_Curve) aCurve = BRep_Tool::Curve(Edge(), a, b);
 	return aCurve;
 }
+
+std::string servoce::edge_shape::curvetype() 
+{
+	auto adaptor = AdaptorCurve();
+
+	auto type = adaptor.GetType();
+
+	switch (type) 
+	{
+		case GeomAbs_Line: return "line";
+		case GeomAbs_Circle: return "circle";
+		case GeomAbs_Ellipse: return "ellipse";
+		case GeomAbs_Hyperbola: return "hyperbola";
+		case GeomAbs_Parabola: return "parabola";
+		case GeomAbs_BezierCurve: return "bezier";
+		case GeomAbs_BSplineCurve: return "bspline";
+		case GeomAbs_OffsetCurve: return "offset";
+		case GeomAbs_OtherCurve: return "other";
+	}
+}
