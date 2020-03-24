@@ -10,8 +10,14 @@ import io
 import subprocess
 
 def get_occt_include_directory():
-	dirs = ["/usr/include/", "/usr/local/include/"]
+	dirs = ["/usr/include/", "/usr/local/include/", "servoce-third-libs-travis"]
 	subdirs = ["occt", "opencascade"]
+
+	if sys.platform == "darwin":
+		subdirs.append("osx-include")
+
+	if sys.platform == "win32":
+		subdirs.append("win-include") 
 
 	for d in dirs:
 		if os.path.exists(d):
@@ -31,6 +37,9 @@ if os.name == "posix":
 elif os.name == "nt":
 	liboce_include_path = "C:\\OpenCASCADE-7.3.0-vc14-64/opencascade-7.3.0/inc"
 	lib_prefix = "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\"
+	if os.path.exists("servoce-third-libs-travis"):
+		liboce_include_path = get_occt_include_directory()
+		lib_prefix = ""
 
 if sys.platform=="win32" or sys.platform=="win64":
 	extra_link_args = []
@@ -38,8 +47,12 @@ else:
 	extra_link_args = ["-Wl,-rpath,$ORIGIN/libs"]
 
 if sys.platform == "darwin":
-	extra_link_args = ["-Wl,-rpath,@loader_path/libs"]	
+	extra_link_args = ["-Wl,-rpath,@loader_path/libs", "-Wl,-v"]	
 
+if os.path.exists("servoce-third-libs-travis"):
+	# TRAVIS BUILD WITH servoce-third-libs
+	pass
+	#lib_prefix = "pyservoce/libs/"
 
 class build_ext(build_ext_):
 	def build_extensions(self):
@@ -90,6 +103,50 @@ class bdist_wheel(bdist_wheel_):
 		self.plat_name_supplied = True
 		self.plat_name = platform_name
 
+INCLUDE = [liboce_include_path, "src", "include"]
+FLAGS = ["-fPIC", "-std=c++14"]
+
+if sys.platform == "win32":
+	FLAGS = []
+
+if sys.platform == "darwin":
+	FLAGS.append("-DGL_SILENCE_DEPRECATION")
+
+# TRAVIS SUPPORT:
+if os.path.exists("pybind11"):
+	INCLUDE.append("pybind11/include")
+
+LIBS = [
+	lib_prefix + "TKernel",
+	lib_prefix + "TKMath",
+	lib_prefix + "TKG2d",
+	lib_prefix + "TKG3d",
+	lib_prefix + "TKBRep",
+	lib_prefix + "TKGeomBase",
+	lib_prefix + "TKGeomAlgo",
+	lib_prefix + "TKTopAlgo",
+	lib_prefix + "TKPrim",
+	lib_prefix + "TKBO",
+	lib_prefix + "TKBool",
+	lib_prefix + "TKOffset",
+	lib_prefix + "TKService",
+	lib_prefix + "TKV3d",
+	lib_prefix + "TKOpenGl",
+	lib_prefix + "TKFillet",
+	lib_prefix + "TKSTL",
+	lib_prefix + "TKBin",
+	lib_prefix + "TKShHealing",
+	lib_prefix + "TKMesh",
+	lib_prefix + "TKHLR"
+]
+
+LIBRARY_DIRS=[]
+if os.path.exists("servoce-third-libs-travis") and sys.platform=="darwin":
+	LIBRARY_DIRS=["servoce-third-libs-travis/osx"]
+
+if os.path.exists("servoce-third-libs-travis") and sys.platform=="win32":
+	LIBRARY_DIRS=["servoce-third-libs-travis/win", "servoce-third-libs-travis/win-lib"]
+
 pyservoce_lib = Extension(
 	"pyservoce.libservoce",
 	sources= [
@@ -138,33 +195,12 @@ pyservoce_lib = Extension(
         "src/opencascade_types.cpp",
 	],
 	undef_macros = [ "NDEBUG" ],
-	extra_compile_args=["-fPIC", "-std=c++14"],
+	extra_compile_args=FLAGS,
 	extra_link_args=extra_link_args,
-	include_dirs=[liboce_include_path, "src", "include"],
+	include_dirs=INCLUDE,
+	library_dirs=LIBRARY_DIRS,
 	#library_dir=["C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib"],
-	libraries=[
-		lib_prefix + "TKernel",
-		lib_prefix + "TKMath",
-		lib_prefix + "TKG2d",
-		lib_prefix + "TKG3d",
-		lib_prefix + "TKBRep",
-		lib_prefix + "TKGeomBase",
-		lib_prefix + "TKGeomAlgo",
-		lib_prefix + "TKTopAlgo",
-		lib_prefix + "TKPrim",
-		lib_prefix + "TKBO",
-		lib_prefix + "TKBool",
-		lib_prefix + "TKOffset",
-		lib_prefix + "TKService",
-		lib_prefix + "TKV3d",
-		lib_prefix + "TKOpenGl",
-		lib_prefix + "TKFillet",
-		lib_prefix + "TKSTL",
-		lib_prefix + "TKBin",
-		lib_prefix + "TKShHealing",
-		lib_prefix + "TKMesh",
-		lib_prefix + "TKHLR"
-	],
+	libraries=LIBS,
 )
 
 setup(
@@ -180,7 +216,7 @@ setup(
 	long_description_content_type="text/markdown",
 	keywords=["testing", "cad"],
 	classifiers=[],
-	package_data={"pyservoce": ["libs\\*"]},
+	package_data={"pyservoce": ["libs\\*", "*"]},
 	include_package_data=True,
 	ext_modules=[pyservoce_lib],
 	cmdclass={"bdist_wheel": bdist_wheel, "build_ext": build_ext},
