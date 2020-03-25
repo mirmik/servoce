@@ -25,9 +25,9 @@ std::pair<double, double> servoce::edge_shape::range()
 	return { first, last };
 }
 
-Adaptor3d_Curve servoce::edge_shape::AdaptorCurve() const
+std::unique_ptr<Adaptor3d_Curve> servoce::edge_shape::AdaptorCurve() const
 {
-	return BRepAdaptor_Curve(Edge());
+	return std::make_unique<BRepAdaptor_Curve>(Edge());
 }
 
 Handle(Adaptor3d_HCurve) servoce::edge_shape::HCurveAdaptor() const

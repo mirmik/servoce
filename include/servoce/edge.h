@@ -23,7 +23,7 @@ namespace servoce {
 		std::pair<double,double> range();
 
 		Handle(Geom_Curve) Curve() const;
-		Adaptor3d_Curve AdaptorCurve() const override;
+		std::unique_ptr<Adaptor3d_Curve> AdaptorCurve() const override;
 		Handle(Adaptor3d_HCurve) HCurveAdaptor() const;
 
 		curve3 curve();

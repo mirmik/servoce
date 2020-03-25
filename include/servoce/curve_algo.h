@@ -18,13 +18,13 @@ namespace servoce
 		double length() const
 		{
 			auto adaptor = self().AdaptorCurve();
-			return GCPnts_AbscissaPoint::Length(adaptor);
+			return GCPnts_AbscissaPoint::Length(*adaptor);
 		}
 
 		PointType d0(double arg) const
 		{
 			gp_Pnt pnt;
-			self().AdaptorCurve().D0(arg, pnt);
+			self().AdaptorCurve()->D0(arg, pnt);
 			return pnt;
 		}
 
@@ -32,14 +32,14 @@ namespace servoce
 		{
 			gp_Vec vec;
 			gp_Pnt pnt;
-			self().AdaptorCurve().D1(arg, pnt, vec);
+			self().AdaptorCurve()->D1(arg, pnt, vec);
 			return { pnt, vec };
 		}
 
 		double linoff(double dist, double start) const
 		{
 			auto adaptor = self().AdaptorCurve();
-			GCPnts_AbscissaPoint algo(adaptor, dist, start);
+			GCPnts_AbscissaPoint algo(*adaptor, dist, start);
 			return algo.Parameter();
 		}
 
@@ -52,8 +52,8 @@ namespace servoce
 
 		std::pair<double, double> range() const
 		{
-			auto adaptor = self().AdaptorCurve();
-			return { adaptor.FirstParameter(), adaptor.LastParameter() };
+			auto adaptor = self()->AdaptorCurve();
+			return { adaptor->FirstParameter(), adaptor->LastParameter() };
 		}
 
 		PointType linoff_point(double dist, double start) const
@@ -71,12 +71,12 @@ namespace servoce
 			std::vector<PointType> ret;
 
 			auto adaptor = self().AdaptorCurve();
-			GCPnts_UniformAbscissa algo(adaptor, npoints, strt, fini);
+			GCPnts_UniformAbscissa algo(*adaptor, npoints, strt, fini);
 
 			for (int i = 0; i < npoints; ++i)
 			{
 				gp_Pnt pnt;
-				adaptor.D0(algo.Parameter(i + 1), pnt);
+				adaptor->D0(algo.Parameter(i + 1), pnt);
 				ret.push_back(pnt);
 			}
 
@@ -88,13 +88,13 @@ namespace servoce
 			std::vector<PointType> ret;
 
 			auto adaptor = self().AdaptorCurve();
-			GCPnts_UniformAbscissa algo(adaptor, npoints);
+			GCPnts_UniformAbscissa algo(*adaptor, npoints);
 
 			for (int i = 0; i < npoints; ++i)
 			{
 				//nos::println(i, algo.Parameter(i+1));
 				gp_Pnt pnt;
-				adaptor.D0(algo.Parameter(i + 1), pnt);
+				adaptor->D0(algo.Parameter(i + 1), pnt);
 				ret.push_back(pnt);
 			}
 
@@ -106,7 +106,7 @@ namespace servoce
 			std::vector<double> ret;
 
 			auto adaptor = self().AdaptorCurve();
-			GCPnts_UniformAbscissa algo(adaptor, npoints, strt, fini);
+			GCPnts_UniformAbscissa algo(*adaptor, npoints, strt, fini);
 
 			for (int i = 0; i < npoints; ++i)
 			{
@@ -121,7 +121,7 @@ namespace servoce
 			std::vector<double> ret;
 
 			auto adaptor = self().AdaptorCurve();
-			GCPnts_UniformAbscissa algo(adaptor, npoints);
+			GCPnts_UniformAbscissa algo(*adaptor, npoints);
 
 			for (int i = 0; i < npoints; ++i)
 			{
@@ -139,13 +139,12 @@ namespace servoce
 		const Self& self() const { return (const Self&) * this; }
 
 	public:
-		virtual Adaptor3d_Curve AdaptorCurve() const = 0;
+		virtual std::unique_ptr<Adaptor3d_Curve> AdaptorCurve() const = 0;
 
 		std::string curvetype()
 		{
 			auto adaptor = AdaptorCurve();
-
-			auto type = adaptor.GetType();
+			auto type = adaptor->GetType();
 
 			switch (type)
 			{
@@ -168,7 +167,7 @@ namespace servoce
 			if (curvetype() != "line")
 				throw std::runtime_error("curve is not line");
 
-			gp_Lin o = AdaptorCurve().Line();
+			gp_Lin o = AdaptorCurve()->Line();
 
 			return {o.Location(), o.Direction()};
 		}
@@ -180,7 +179,7 @@ namespace servoce
 			if (curvetype() != "circle")
 				throw std::runtime_error("curve is not circle");
 
-			gp_Circ o = AdaptorCurve().Circle();
+			gp_Circ o = AdaptorCurve()->Circle();
 			gp_Ax2 p = o.Position();
 
 			return {p.Location(), o.Radius(), p.XDirection(), p.YDirection()};
