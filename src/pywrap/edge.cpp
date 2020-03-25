@@ -12,12 +12,16 @@
 #include <servoce/face.h>
 #include <servoce/project.h>
 
+#include <pywrap/curve_algo.h>
+#include <pywrap/transformable.h>
+#include <servoce/transformable_shape_impl.h>
+
 namespace py = pybind11;
 using namespace servoce;
 
 void registry_edge_shape(py::module & m)
 {
-	py::class_<edge_shape, shape>(m, "Edge")
+	auto cls = py::class_<edge_shape, shape>(m, "Edge")
 	.def(py::pickle(
 	[](const edge_shape & self) { return b64::base64_encode(string_dump(self)); },
 	[](const std::string & in) { return restore_string_dump<edge_shape>(b64::base64_decode(in)); }), ungil())
@@ -37,7 +41,9 @@ void registry_edge_shape(py::module & m)
 	.def("uniform", (std::vector<double>(edge_shape::crvalgo::*)(int)const)&edge_shape::uniform, ungil(), py::arg("npnts"))
 	.def("fill", &edge_shape::fill, ungil())
 	;
-	
+	pywrap_transformable<servoce::edge_shape>(cls);
+	pywrap_curve_algo3<servoce::edge_shape>(cls);
+
 	m.def("interpolate", (edge_shape(*)(const std::vector<point3>&, const std::vector<vector3>&, bool))
 	      &make_interpolate, ungil(),
 	      py::arg("pnts"),

@@ -158,6 +158,23 @@ namespace servoce
 		boundbox bounding_box();
 	};
 
+	template <class Self>
+	class shape_typed : 
+		public shape,
+		public transformable_shape<Self>
+	{
+	public:
+		shape& as_shape() { return *this; }
+		const shape& as_shape() const { return *this; }
+
+		shape_typed() : shape() {}
+		shape_typed(const shape& oth) : shape(oth) {}
+		shape_typed(shape&& oth) : shape(std::move(oth)) {}
+		shape_typed(const TopoDS_Shape& arg) : shape((const TopoDS_Shape&)arg) { }
+
+		using transformable_shape<Self>::transform;
+	};
+
 	shape fill(const shape&);
 
 	face_shape	near_face		(const shape& shp, const point3& pnt);

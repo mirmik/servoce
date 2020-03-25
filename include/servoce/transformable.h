@@ -87,6 +87,17 @@ namespace servoce
 		Ret scaleXZ(double x, double z);
 		Ret scaleXYZ(double x, double y, double z);
 	};
+
+	template <class Self>
+	class transformable_shape : public transformable<Self, Self>
+	{
+		Self& self() { return (Self&)*this; }
+		const Self& self() const { return (const Self&)*this; }
+		
+	public:
+		Self transform(const transformation& trans) const;
+		Self transform(const general_transformation& trans) const;
+	};
 }
 
 #endif

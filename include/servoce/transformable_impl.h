@@ -63,5 +63,4 @@ template<class T, class Ret> Ret servoce::transformable<T,Ret>::scaleYZ(double y
 template<class T, class Ret> Ret servoce::transformable<T,Ret>::scaleXZ(double x, double z) { return self().transform(servoce::scaleXZ(x, z)); }
 template<class T, class Ret> Ret servoce::transformable<T,Ret>::scaleXYZ(double x, double y, double z) { return self().transform(servoce::scaleXYZ(x, y, z)); }
 
-
 #endif

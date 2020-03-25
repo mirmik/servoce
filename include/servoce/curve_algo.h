@@ -11,8 +11,8 @@ namespace servoce
 	template<class Self, class PointType, class VectorType>
 	class curve_algo
 	{
-		Self& self() { return (Self&)*this; }
-		const Self& self() const { return (const Self&) *this; }
+		Self& self() { return (Self&) * this; }
+		const Self& self() const { return (const Self&) * this; }
 
 	public:
 		double length() const
@@ -21,14 +21,14 @@ namespace servoce
 			return GCPnts_AbscissaPoint::Length(adaptor);
 		}
 
-		PointType d0(double arg) const 
+		PointType d0(double arg) const
 		{
 			gp_Pnt pnt;
 			self().AdaptorCurve().D0(arg, pnt);
 			return pnt;
 		}
 
-		std::pair<PointType, VectorType> d1(double arg) const 
+		std::pair<PointType, VectorType> d1(double arg) const
 		{
 			gp_Vec vec;
 			gp_Pnt pnt;
@@ -36,21 +36,21 @@ namespace servoce
 			return { pnt, vec };
 		}
 
-		double linoff(double dist, double start) const 
+		double linoff(double dist, double start) const
 		{
 			auto adaptor = self().AdaptorCurve();
 			GCPnts_AbscissaPoint algo(adaptor, dist, start);
 			return algo.Parameter();
 		}
 
-		/*double linoff(double dist) const 
+		/*double linoff(double dist) const
 		{
 			auto adaptor = self().AdaptorCurve();
 			GCPnts_AbscissaPoint algo(adaptor, dist, adaptor.FirstParameter());
 			return algo.Parameter();
 		}*/
 
-		std::pair<double,double> range() const
+		std::pair<double, double> range() const
 		{
 			auto adaptor = self().AdaptorCurve();
 			return { adaptor.FirstParameter(), adaptor.LastParameter() };
@@ -76,7 +76,7 @@ namespace servoce
 			for (int i = 0; i < npoints; ++i)
 			{
 				gp_Pnt pnt;
-				adaptor.D0(algo.Parameter(i+1), pnt);
+				adaptor.D0(algo.Parameter(i + 1), pnt);
 				ret.push_back(pnt);
 			}
 
@@ -94,7 +94,7 @@ namespace servoce
 			{
 				//nos::println(i, algo.Parameter(i+1));
 				gp_Pnt pnt;
-				adaptor.D0(algo.Parameter(i+1), pnt);
+				adaptor.D0(algo.Parameter(i + 1), pnt);
 				ret.push_back(pnt);
 			}
 
@@ -110,7 +110,7 @@ namespace servoce
 
 			for (int i = 0; i < npoints; ++i)
 			{
-				ret.push_back(algo.Parameter(i+1));
+				ret.push_back(algo.Parameter(i + 1));
 			}
 
 			return ret;
@@ -125,11 +125,78 @@ namespace servoce
 
 			for (int i = 0; i < npoints; ++i)
 			{
-				ret.push_back(algo.Parameter(i+1));
+				ret.push_back(algo.Parameter(i + 1));
 			}
 
 			return ret;
 		}
+	};
+
+	template<class Self>
+	class curve3_algo : public curve_algo<Self, servoce::point3, servoce::vector3>
+	{
+		Self& self() { return (Self&) * this; }
+		const Self& self() const { return (const Self&) * this; }
+
+	public:
+		virtual Adaptor3d_Curve AdaptorCurve() const = 0;
+
+		std::string curvetype()
+		{
+			auto adaptor = AdaptorCurve();
+
+			auto type = adaptor.GetType();
+
+			switch (type)
+			{
+				case GeomAbs_Line: return "line";
+				case GeomAbs_Circle: return "circle";
+				case GeomAbs_Ellipse: return "ellipse";
+				case GeomAbs_Hyperbola: return "hyperbola";
+				case GeomAbs_Parabola: return "parabola";
+				case GeomAbs_BezierCurve: return "bezier";
+				case GeomAbs_BSplineCurve: return "bspline";
+				case GeomAbs_OffsetCurve: return "offset";
+				case GeomAbs_OtherCurve: return "other";
+				default: throw std::runtime_error("undefined curvetype");
+			}
+		}
+
+		std::pair<point3, vector3> 
+		line_parameters()
+		{
+			if (curvetype() != "line")
+				throw std::runtime_error("curve is not line");
+
+			gp_Lin o = AdaptorCurve().Line();
+
+			return {o.Location(), o.Direction()};
+		}
+
+
+		std::tuple<point3, double, vector3, vector3> 
+		circle_parameters()
+		{
+			if (curvetype() != "circle")
+				throw std::runtime_error("curve is not circle");
+
+			gp_Circ o = AdaptorCurve().Circle();
+			gp_Ax2 p = o.Position();
+
+			return {p.Location(), o.Radius(), p.XDirection(), p.YDirection()};
+		}
+
+		/*std::tuple<point3, double, double, vector3, vector3> 
+		ellipse_parameters()
+		{
+			if (curvetype() != "circle")
+				throw std::runtime_error("curve is not circle");
+
+			gp_Elips o = AdaptorCurve().Line();
+			gp_Ax2 p = o.Position();
+
+			return {p.Location(), p.XDirection(), p.YDirection()};
+		}*/
 	};
 }
 

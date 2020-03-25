@@ -8,11 +8,12 @@ namespace servoce
 {
 	class solid_shape;
 
-	class shell_shape : public shape
+	class shell_shape : public shape_typed<shell_shape>
 	{
 	public:
 		shell_shape(){}
-		shell_shape(const TopoDS_Shell& arg) : shape((const TopoDS_Shape&)arg) {}
+		shell_shape(servoce::shape&& oth) : shell_shape(oth.Shell()) {}
+		shell_shape(const TopoDS_Shell& arg) : shape_typed((const TopoDS_Shape&)arg) {}
 
 		servoce::solid_shape fill();
 	};

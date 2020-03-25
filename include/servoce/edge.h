@@ -9,22 +9,24 @@
 #include <servoce/curve_algo.h>
 
 namespace servoce {
-	class edge_shape : public shape, public curve_algo<edge_shape, servoce::point3, servoce::vector3>
+	class edge_shape : 
+		public shape_typed<edge_shape>, 
+		public curve3_algo<edge_shape>
 	{
 	public:
 		using crvalgo = curve_algo<edge_shape, servoce::point3, servoce::vector3>;
 
 		edge_shape(){}
-		edge_shape(const TopoDS_Edge& arg) : shape((const TopoDS_Shape&)arg) {}
+		edge_shape(servoce::shape&& oth) : shape_typed(std::move(oth)) {}
+		edge_shape(const TopoDS_Edge& arg) : shape_typed((const TopoDS_Shape&)arg) {}
 
 		std::pair<double,double> range();
 
 		Handle(Geom_Curve) Curve() const;
-		BRepAdaptor_Curve AdaptorCurve() const;
+		Adaptor3d_Curve AdaptorCurve() const override;
 		Handle(Adaptor3d_HCurve) HCurveAdaptor() const;
 
 		curve3 curve();
-		std::string curvetype();
 
 		face_shape fill();
 	};

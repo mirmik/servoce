@@ -7,8 +7,6 @@
 
 #include <servoce/scene.h>
 #include <nos/print.h>
-#include <gl2ps.h>
-#include <GL/glut.h>
 
 namespace servoce
 {
