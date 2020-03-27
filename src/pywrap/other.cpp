@@ -17,5 +17,6 @@ using namespace servoce;
 
 void registry_other(py::module & m)
 {
-	m.def("triangulation", &servoce::triangulation);
+	m.def("triangulation", (std::pair<std::vector<servoce::point3>, std::vector<std::tuple<int, int, int>>> (*)(servoce::face_shape& shp, double deflection)) 	&servoce::triangulation);
+	m.def("triangulation", (std::pair<std::vector<servoce::point3>, std::vector<std::tuple<int, int, int>>> (*)(servoce::shape& shp, double deflection)) 		&servoce::triangulation);
 }
