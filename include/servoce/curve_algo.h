@@ -182,7 +182,7 @@ namespace servoce
 			gp_Circ o = AdaptorCurve()->Circle();
 			gp_Ax2 p = o.Position();
 
-			return {p.Location(), o.Radius(), p.XDirection(), p.YDirection()};
+			return std::make_tuple(point3(p.Location()), o.Radius(), vector3(p.XDirection()), vector3(p.YDirection()));
 		}
 
 		/*std::tuple<point3, double, double, vector3, vector3> 

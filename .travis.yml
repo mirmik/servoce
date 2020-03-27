@@ -129,49 +129,49 @@ matrix:
         - python3 ./inctest.py
         - python3 ./apitest.py
 
-    - name: "Windows: Build by setup.py"
-      os : windows
-      language : shell
-
-      script:
-        - choco install pedeps
-        - choco install python --version 3.7.7
-        - export PATH="/c/Python37:/c/Python37/Scripts:$PATH"
-        - python --version
-        - python -m pip install pip -U
-        - python -m pip install wheel
-        
-        - git clone https://github.com/mirmik/servoce-third-libs servoce-third-libs-travis
-        - mkdir pyservoce/libs 
-        - cp servoce-third-libs-travis/win/* pyservoce/libs/
-        - cp servoce-third-libs-travis/win/* pyservoce/
-
-        - dir pyservoce
-        - dir pyservoce/libs
-
-        - export PATH="/c/windows/SysWOW64:$PATH"
-
-        - export WINDIR=""
-        - copypedeps.exe -d pyservoce/libs/TKernel.dll .
-        - copypedeps.exe -d pyservoce/libs/TKBO.dll .
-
-        - copypedeps.exe -d -r pyservoce/libs/TKernel.dll .
-        - copypedeps.exe -d -r pyservoce/libs/TKBO.dll .
-        
-        - echo $PATH
-        - echo $WINDIR
-
-        - git clone https://github.com/pybind/pybind11
-        - python ./setup.py install
-
-        - dir /c/Python37/lib/site-packages/pyservoce-1.21.1-py3.7-win-amd64.egg/pyservoce/libs
-        - dir /c/Python37/lib/site-packages/pyservoce-1.21.1-py3.7-win-amd64.egg/pyservoce
-
-        - copypedeps.exe -d -r /c/Python37/lib/site-packages/pyservoce-1.21.1-py3.7-win-amd64.egg/pyservoce/TKBO.dll .
-
-        - cd pytest
-        - python ./inctest.py
-        - python ./apitest.py
+#    - name: "Windows: Build by setup.py"
+#      os : windows
+#      language : shell
+#
+#      script:
+#        - choco install pedeps
+#        - choco install python --version 3.7.7
+#        - export PATH="/c/Python37:/c/Python37/Scripts:$PATH"
+#        - python --version
+#        - python -m pip install pip -U
+#        - python -m pip install wheel
+#        
+#        - git clone https://github.com/mirmik/servoce-third-libs servoce-third-libs-travis
+#        - mkdir pyservoce/libs 
+#        - cp servoce-third-libs-travis/win/* pyservoce/libs/
+#        - cp servoce-third-libs-travis/win/* pyservoce/
+#
+#        - dir pyservoce
+#        - dir pyservoce/libs
+#
+#        - export PATH="/c/windows/SysWOW64:$PATH"
+#
+#        - export WINDIR=""
+#        - copypedeps.exe -d pyservoce/libs/TKernel.dll .
+#        - copypedeps.exe -d pyservoce/libs/TKBO.dll .
+#
+#        - copypedeps.exe -d -r pyservoce/libs/TKernel.dll .
+#        - copypedeps.exe -d -r pyservoce/libs/TKBO.dll .
+#        
+#        - echo $PATH
+#        - echo $WINDIR
+#
+#        - git clone https://github.com/pybind/pybind11
+#        - python ./setup.py install
+#
+#        - dir /c/Python37/lib/site-packages/pyservoce-1.21.1-py3.7-win-amd64.egg/pyservoce/libs
+#        - dir /c/Python37/lib/site-packages/pyservoce-1.21.1-py3.7-win-amd64.egg/pyservoce
+#
+#        - copypedeps.exe -d -r /c/Python37/lib/site-packages/pyservoce-1.21.1-py3.7-win-amd64.egg/pyservoce/TKBO.dll .
+#
+#        - cd pytest
+#        - python ./inctest.py
+#        - python ./apitest.py
 
     - name: "Ubuntu: Build by setup.py"
       os: linux
