@@ -205,13 +205,13 @@ public:
 			//static Quantity_Color c1(0.5, 0.5, 0.5, Quantity_TOC_RGB);
 			//static Quantity_Color c2(0.3, 0.3, 0.3, Quantity_TOC_RGB);
 
-			//axX = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0, 0, 0), gp_Vec(1, 0, 0)));
-			//axY = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0, 0, 0), gp_Vec(0, 1, 0)));
-			//axZ = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0, 0, 0), gp_Vec(0, 0, 1)));
+			axX = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0, 0, 0), gp_Vec(1, 0, 0)));
+			axY = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0, 0, 0), gp_Vec(0, 1, 0)));
+			axZ = new AIS_Axis(new Geom_Axis1Placement(gp_Pnt(0, 0, 0), gp_Vec(0, 0, 1)));
 
-			//axX->SetColor(Quantity_NOC_RED);
-			//axY->SetColor(Quantity_NOC_GREEN);
-			//axZ->SetColor(Quantity_NOC_BLUE1);
+			axX->SetColor(Quantity_NOC_RED);
+			axY->SetColor(Quantity_NOC_GREEN);
+			axZ->SetColor(Quantity_NOC_BLUE1);
 
 			m_viewer = new V3d_Viewer(GetGraphicDriver());
 
