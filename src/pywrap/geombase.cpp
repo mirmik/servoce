@@ -41,6 +41,7 @@ void registry_geombase_shape(py::module & m)
 	{
 		return point3::early(a, b);
 	})
+	.def("early", &point3::early, py::arg("oth"), py::arg("epsolion")=1e-5)
 	.def("__repr__", [](const point3 & pnt)
 	{
 		char buf[128];

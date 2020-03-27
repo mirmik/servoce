@@ -24,6 +24,7 @@ void registry_interactive_object(py::module & m);
 void registry_coord_system(py::module & m);
 
 void registry_sweep_shape(py::module & m);
+void registry_other(py::module & m);
 
 PYBIND11_MODULE(libservoce, m)
 {
@@ -288,6 +289,7 @@ PYBIND11_MODULE(libservoce, m)
 	;
 
 	registry_displayable(m);
+	registry_other(m);
 }
 
 std::vector<servoce::point3> points(const py::list& lst) 

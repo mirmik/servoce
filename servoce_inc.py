@@ -173,6 +173,7 @@ if opts.python != "":
         "pywrap/solid.cpp",
         "pywrap/trans.cpp",
         "pywrap/geombase.cpp",
+        "pywrap/other.cpp",
 
         "geombase_py.cpp",
         "color_py.cpp",
@@ -196,6 +197,7 @@ SOURCES = [
         "wire.cpp",
         "edge.cpp",
         "boolops.cpp",
+        "triangulation.cpp",
         "convert.cpp",
         "geombase.cpp",
         "geomprops.cpp",
