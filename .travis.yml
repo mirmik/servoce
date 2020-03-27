@@ -60,140 +60,140 @@ matrix:
         - OCCT_INCLUDE="servoce-third-libs-travis/win-include" cmake -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DCMAKE_GENERATOR_PLATFORM=x64 . 
         - cmake --build .
 
-#    - name: "Ubuntu: Build by cmake"
-#      os: linux
-#      python:
-#        "3.7"
-#
-#      install: 
-#        - env | grep DISPLAY
-#        - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-#        - sudo add-apt-repository ppa:freecad-maintainers/occt-releases -y
-#        - sudo add-apt-repository ppa:freecad-maintainers/freecad-stable -y
-#        - sudo apt-get update
-#        - sudo apt install gcc-7 g++-7
-#        - sudo apt install -y libocct-foundation-7.3 libocct-ocaf-7.3 libocct-data-exchange-7.3 libocct-foundation-dev libocct-ocaf-dev libocct-data-exchange-dev
-# 
-#        - git clone https://github.com/google/googletest googletest/
-#        - cd googletest
-#        - CXX=g++-7 CC=gcc-7 cmake .
-#        - make
-#        - sudo make install
-#        - cd ..
-#
-#        - source ./tools/set_occt_paths.sh
-#        - CXX=g++-7 CC=gcc-7 cmake .
-#        - make
-#
-#
-#    - name: "Ubuntu: Load from pypi"
-#      os: linux
-#      python:
-#        "3.8"
-#            
-#      install: 
-#        - python3 -m pip install pyservoce
-#
-#      script:
-#        - cd pytest
-#        - python3 ./inctest.py
-#        - python3 ./apitest.py
-#
-#    - name: "OSX: Load from pypi"
-#      os: osx
-#      osx_image: xcode11.2
-#      language: shell
-#
-#      install:
-#        - python3 -m pip install pyservoce
-#
-#      script:
-#        - cd pytest
-#        - python3 ./inctest.py
-#        - python3 ./apitest.py
-#
-#    - name: "OSX: Build by setup.py"
-#      os: osx
-#      osx_image: xcode11.2
-#      language: shell
-#
-#      script:
-#        - git clone https://github.com/mirmik/servoce-third-libs servoce-third-libs-travis
-#        - mkdir pyservoce/libs 
-#        - cp servoce-third-libs-travis/osx/* pyservoce/libs/
-#
-#        - git clone https://github.com/pybind/pybind11
-#        - python3 ./setup.py install
-#
-#        - cd pytest
-#        - python3 ./inctest.py
-#        - python3 ./apitest.py
-#
-#    - name: "Windows: Build by setup.py"
-#      os : windows
-#      language : shell
-#
-#      script:
-#        - choco install pedeps
-#        - choco install python --version 3.7.7
-#        - export PATH="/c/Python37:/c/Python37/Scripts:$PATH"
-#        - python --version
-#        - python -m pip install pip -U
-#        - python -m pip install wheel
-#        
-#        - git clone https://github.com/mirmik/servoce-third-libs servoce-third-libs-travis
-#        - mkdir pyservoce/libs 
-#        - cp servoce-third-libs-travis/win/* pyservoce/libs/
-#        - cp servoce-third-libs-travis/win/* pyservoce/
-#
-#        - dir pyservoce
-#        - dir pyservoce/libs
-#
-#        - export PATH="/c/windows/SysWOW64:$PATH"
-#
-#        - export WINDIR=""
-#        - copypedeps.exe -d pyservoce/libs/TKernel.dll .
-#        - copypedeps.exe -d pyservoce/libs/TKBO.dll .
-#
-#        - copypedeps.exe -d -r pyservoce/libs/TKernel.dll .
-#        - copypedeps.exe -d -r pyservoce/libs/TKBO.dll .
-#        
-#        - echo $PATH
-#        - echo $WINDIR
-#
-#        - git clone https://github.com/pybind/pybind11
-#        - python ./setup.py install
-#
-#        - dir /c/Python37/lib/site-packages/pyservoce-1.21.1-py3.7-win-amd64.egg/pyservoce/libs
-#        - dir /c/Python37/lib/site-packages/pyservoce-1.21.1-py3.7-win-amd64.egg/pyservoce
-#
-#        - copypedeps.exe -d -r /c/Python37/lib/site-packages/pyservoce-1.21.1-py3.7-win-amd64.egg/pyservoce/TKBO.dll .
-#
-#        - cd pytest
-#        - python ./inctest.py
-#        - python ./apitest.py
-#
-#    - name: "Ubuntu: Build by setup.py"
-#      os: linux
-#      python:
-#        "3.7"
-#            
-#      install: 
-#        - env | grep DISPLAY
-#        - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-#        - sudo add-apt-repository ppa:freecad-maintainers/occt-releases -y
-#        - sudo add-apt-repository ppa:freecad-maintainers/freecad-stable -y
-#        - sudo apt-get update
-#        - sudo apt install -y libocct-foundation-7.3 libocct-ocaf-7.3 libocct-data-exchange-7.3 libocct-foundation-dev libocct-ocaf-dev libocct-data-exchange-dev
-#        - sudo apt install python3-pybind11
-#        
-#        - python3 -m pip install licant
-#        - python3 ./setup.py install
-#
-#      script:
-#        - cd pytest
-#        - python3 ./inctest.py
-#        - python3 ./apitest.py
+    - name: "Ubuntu: Build by cmake"
+      os: linux
+      python:
+        "3.7"
+
+      install: 
+        - env | grep DISPLAY
+        - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+        - sudo add-apt-repository ppa:freecad-maintainers/occt-releases -y
+        - sudo add-apt-repository ppa:freecad-maintainers/freecad-stable -y
+        - sudo apt-get update
+        - sudo apt install gcc-7 g++-7
+        - sudo apt install -y libocct-foundation-7.3 libocct-ocaf-7.3 libocct-data-exchange-7.3 libocct-foundation-dev libocct-ocaf-dev libocct-data-exchange-dev
+ 
+        - git clone https://github.com/google/googletest googletest/
+        - cd googletest
+        - CXX=g++-7 CC=gcc-7 cmake .
+        - make
+        - sudo make install
+        - cd ..
+
+        - source ./tools/set_occt_paths.sh
+        - CXX=g++-7 CC=gcc-7 cmake .
+        - make
+
+
+    - name: "Ubuntu: Load from pypi"
+      os: linux
+      python:
+        "3.8"
+            
+      install: 
+        - python3 -m pip install pyservoce
+
+      script:
+        - cd pytest
+        - python3 ./inctest.py
+        - python3 ./apitest.py
+
+    - name: "OSX: Load from pypi"
+      os: osx
+      osx_image: xcode11.2
+      language: shell
+
+      install:
+        - python3 -m pip install pyservoce
+
+      script:
+        - cd pytest
+        - python3 ./inctest.py
+        - python3 ./apitest.py
+
+    - name: "OSX: Build by setup.py"
+      os: osx
+      osx_image: xcode11.2
+      language: shell
+
+      script:
+        - git clone https://github.com/mirmik/servoce-third-libs servoce-third-libs-travis
+        - mkdir pyservoce/libs 
+        - cp servoce-third-libs-travis/osx/* pyservoce/libs/
+
+        - git clone https://github.com/pybind/pybind11
+        - python3 ./setup.py install
+
+        - cd pytest
+        - python3 ./inctest.py
+        - python3 ./apitest.py
+
+    - name: "Windows: Build by setup.py"
+      os : windows
+      language : shell
+
+      script:
+        - choco install pedeps
+        - choco install python --version 3.7.7
+        - export PATH="/c/Python37:/c/Python37/Scripts:$PATH"
+        - python --version
+        - python -m pip install pip -U
+        - python -m pip install wheel
+        
+        - git clone https://github.com/mirmik/servoce-third-libs servoce-third-libs-travis
+        - mkdir pyservoce/libs 
+        - cp servoce-third-libs-travis/win/* pyservoce/libs/
+        - cp servoce-third-libs-travis/win/* pyservoce/
+
+        - dir pyservoce
+        - dir pyservoce/libs
+
+        - export PATH="/c/windows/SysWOW64:$PATH"
+
+        - export WINDIR=""
+        - copypedeps.exe -d pyservoce/libs/TKernel.dll .
+        - copypedeps.exe -d pyservoce/libs/TKBO.dll .
+
+        - copypedeps.exe -d -r pyservoce/libs/TKernel.dll .
+        - copypedeps.exe -d -r pyservoce/libs/TKBO.dll .
+        
+        - echo $PATH
+        - echo $WINDIR
+
+        - git clone https://github.com/pybind/pybind11
+        - python ./setup.py install
+
+        - dir /c/Python37/lib/site-packages/pyservoce-1.21.1-py3.7-win-amd64.egg/pyservoce/libs
+        - dir /c/Python37/lib/site-packages/pyservoce-1.21.1-py3.7-win-amd64.egg/pyservoce
+
+        - copypedeps.exe -d -r /c/Python37/lib/site-packages/pyservoce-1.21.1-py3.7-win-amd64.egg/pyservoce/TKBO.dll .
+
+        - cd pytest
+        - python ./inctest.py
+        - python ./apitest.py
+
+    - name: "Ubuntu: Build by setup.py"
+      os: linux
+      python:
+        "3.7"
+            
+      install: 
+        - env | grep DISPLAY
+        - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+        - sudo add-apt-repository ppa:freecad-maintainers/occt-releases -y
+        - sudo add-apt-repository ppa:freecad-maintainers/freecad-stable -y
+        - sudo apt-get update
+        - sudo apt install -y libocct-foundation-7.3 libocct-ocaf-7.3 libocct-data-exchange-7.3 libocct-foundation-dev libocct-ocaf-dev libocct-data-exchange-dev
+        - sudo apt install python3-pybind11
+        
+        - python3 -m pip install licant
+        - python3 ./setup.py install
+
+      script:
+        - cd pytest
+        - python3 ./inctest.py
+        - python3 ./apitest.py
 
 
 
