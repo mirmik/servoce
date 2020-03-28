@@ -15,6 +15,7 @@
 #include <servoce/edge.h>
 
 #include <pywrap/transformable.h>
+#include <servoce/transformable_shape_impl.h>
 
 namespace py = pybind11;
 using namespace servoce;

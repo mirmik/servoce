@@ -23,6 +23,7 @@ namespace servoce
 		std::shared_ptr<servoce::viewer> vwer;
 
 		scene();
+		scene(bool pretty);
 
 		std::shared_ptr<servoce::viewer> viewer()
 		{

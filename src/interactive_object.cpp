@@ -72,6 +72,12 @@ bool servoce::interactive_object::is_shape()
 	return m_ais->IsKind(STANDARD_TYPE(AIS_Shape));
 }
 
+servoce::shape servoce::interactive_object::shape() 
+{
+	if (!is_shape()) { throw "is not shape"; }
+	return Handle(AIS_Shape)::DownCast(m_ais)->Shape();
+} 
+
 servoce::boundbox servoce::interactive_object::bounding_box()
 {
 	Bnd_Box box;

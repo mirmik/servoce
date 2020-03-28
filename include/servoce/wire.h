@@ -8,12 +8,14 @@ namespace servoce
 {
 	class curve3;
 
-	class wire_shape : public shape
+	class wire_shape : 
+		public shape_typed<wire_shape> 
 	{
 	public:
 		//wire_shape(TopoDS_Wire& arg) : shape(arg) {}
 		wire_shape() {}
-		wire_shape(const TopoDS_Wire& arg) : shape((const TopoDS_Shape&)arg) {}
+		wire_shape(const TopoDS_Wire& arg) : shape_typed((const TopoDS_Shape&)arg) {}
+		wire_shape(servoce::shape&& oth) : wire_shape(oth.Wire()) {}
 
 		face_shape fill();
 	};

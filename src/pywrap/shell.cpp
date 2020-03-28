@@ -14,17 +14,21 @@
 #include <servoce/solid.h>
 #include <servoce/face.h>
 
+#include <pywrap/transformable.h>
+#include <servoce/transformable_shape_impl.h>
+
 namespace py = pybind11;
 using namespace servoce;
 
 void registry_shell_shape(py::module & m)
 {
-	py::class_<shell_shape, shape>(m, "Shell")
+	auto cls = py::class_<shell_shape, shape>(m, "Shell")
 	.def(py::pickle(
 	[](const shell_shape & self) { return b64::base64_encode(string_dump(self)); },
 	[](const std::string & in) { return restore_string_dump<shell_shape>(b64::base64_decode(in)); }), ungil())
 	.def("fill", &shell_shape::fill, ungil())
 	;
+	pywrap_transformable<servoce::shell_shape>(cls);
 
 	m.def("make_shell", (shell_shape(*)(const std::vector<const servoce::shape*>& vec))&make_shell, ungil());
 	m.def("polyhedron_shell", &polyhedron_shell, ungil());

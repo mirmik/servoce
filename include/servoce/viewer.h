@@ -5,9 +5,11 @@
 #include <servoce/interactive_object.h>
 #include <servoce/view.h>
 
-struct OccViewerContext;
+//#include <lo>
 
-template<typename T>
+class OccViewerContext;
+
+/*template<typename T>
 class lazy_ptr
 {
 private:
@@ -27,20 +29,22 @@ public:
 	const T &operator*() const { return *child; }
 	T *operator->() { return &**this; }
 	const T *operator->() const { return &**this; }
-};
+};*/
 
 namespace servoce
 {
 	class viewer
 	{
 	public:
-		lazy_ptr<OccViewerContext> occ;
+		std::shared_ptr<OccViewerContext> occ;
 
 	public:
-		viewer();
+		viewer();//a : occ(std::make_shared<OccViewerContext>(true)) {}
+		viewer(bool pretty);// : occ(std::make_shared<OccViewerContext>(pretty)) {}
 		~viewer();
 
 		view create_view();
+		std::shared_ptr<view> create_shared_view(bool pretty);
 		void close();
 
 		void set_triedron_axes(bool en = true);

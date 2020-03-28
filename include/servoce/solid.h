@@ -1,5 +1,5 @@
-#ifndef ZENGEOM_SOLID_H
-#define ZENGEOM_SOLID_H
+#ifndef SERVOCE_SOLID_H
+#define SERVOCE_SOLID_H
 
 #include <servoce/shape.h>
 
@@ -7,12 +7,14 @@ namespace servoce
 {
 	class shell_shape;
 
-	class solid_shape : public shape
+	class solid_shape :
+		public shape_typed<solid_shape>
 	{
 	public:
 		//wire_shape(TopoDS_Wire& arg) : shape(arg) {}
 		solid_shape() {}
-		solid_shape(const TopoDS_Solid& arg) : shape((const TopoDS_Shape&)arg) {}
+		solid_shape(const TopoDS_Solid& arg) : shape_typed((const TopoDS_Shape&)arg) {}
+		solid_shape(servoce::shape&& arg) : solid_shape(arg.Solid()) {}
 	};
 
 	//class sweep_solid_shape {};

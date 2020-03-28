@@ -12,17 +12,22 @@
 #include <servoce/wire.h>
 #include <servoce/face.h>
 
+#include <pywrap/transformable.h>
+#include <servoce/transformable_shape_impl.h>
+
 namespace py = pybind11;
 using namespace servoce;
 
 void registry_wire_shape(py::module & m)
 {
-	py::class_<wire_shape, shape>(m, "Wire")
+	auto cls = py::class_<wire_shape, shape>(m, "Wire")
 	.def(py::pickle(
 	[](const wire_shape & self) { return b64::base64_encode(string_dump(self)); },
 	[](const std::string & in) { return restore_string_dump<wire_shape>(b64::base64_decode(in)); }), ungil())
 	.def("fill", &wire_shape::fill, ungil())
 	;
+	pywrap_transformable<servoce::wire_shape>(cls);
+
 
 	m.def("segment",
 	      make_segment, ungil()

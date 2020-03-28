@@ -11,16 +11,21 @@
 #include <servoce/solid.h>
 #include <servoce/shell.h>
 
+#include <pywrap/transformable.h>
+#include <servoce/transformable_shape_impl.h>
+
 namespace py = pybind11;
 using namespace servoce;
 
 void registry_solid_shape(py::module & m)
 {
-	py::class_<solid_shape, shape>(m, "Solid")
+	auto cls = py::class_<solid_shape, shape>(m, "Solid")
 	.def(py::pickle(
 	[](const solid_shape & self) { return b64::base64_encode(string_dump(self)); },
 	[](const std::string & in) { return restore_string_dump<solid_shape>(b64::base64_decode(in)); }), ungil())
 	;
+	pywrap_transformable<servoce::solid_shape>(cls);
+
 
 	m.def("box", 		box, ungil(), py::arg("x"), py::arg("y"), py::arg("z"), py::arg("center") = false);
 

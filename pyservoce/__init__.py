@@ -10,7 +10,7 @@ extra_dll_dir = os.path.join(moduledir, "libs")
 #if (sys.platform == 'win32' or sys.platform == 'win64') and os.path.isdir(extra_dll_dir):
 #   os.environ.setdefault('PATH', '')
 if sys.platform == "win32" or sys.platform == "win64":
-    os.environ['PATH'] += os.pathsep + extra_dll_dir
+    os.environ['PATH'] += os.pathsep + extra_dll_dir + os.pathsep + moduledir
 #  os.environ['PATH'] += os.pathsep + "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\bin"
 #   os.environ['PATH'] += os.pathsep + "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib"
 
@@ -81,3 +81,21 @@ class TransformableMixin:
     def mirrorXZ(self, *args, **kwargs): return self.transform(mirrorXZ(*args,**kwargs))
 
     def scale(self, *args, **kwargs): return self.transform(scale(*args,**kwargs))
+
+
+
+
+def curve_parameters(self):
+    print("curve_parameters")
+
+    if self.curvetype() == "line":
+        pass
+
+
+
+
+
+
+
+
+

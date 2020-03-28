@@ -45,6 +45,8 @@ namespace servoce
 		void hide(bool en);
 		bool is_shape();
 
+		servoce::shape shape();
+
 		void set_context(Handle(AIS_InteractiveContext) cntxt) { m_context = cntxt; }
 
 		boundbox bounding_box();

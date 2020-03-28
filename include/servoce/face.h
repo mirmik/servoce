@@ -13,7 +13,9 @@ class BRepPrimAPI_MakeSweep;
 
 namespace servoce
 {
-	class face_shape : public shape, public surface_algo<face_shape>, public transformable<face_shape, face_shape>
+	class face_shape :
+		public shape_typed<face_shape>,
+		public surface_algo<face_shape>
 	{
 	public:
 		using surfalgo = surface_algo<face_shape>;
@@ -21,25 +23,27 @@ namespace servoce
 		Handle(Geom_Surface) surf_saver;
 
 		//edge_shape(TopoDS_Edge& arg) : shape(arg) {}
-		face_shape(){}
-		face_shape(const face_shape& oth) : shape(oth), surf_saver(oth.surf_saver) {}
-		virtual ~face_shape(){}
-		face_shape(const TopoDS_Face& arg) : shape((const TopoDS_Face&)arg) { surf_saver = Surface(); }
-	
+	public:
+		face_shape() {}
+		face_shape(const face_shape& oth) : shape_typed(oth), surf_saver(oth.surf_saver) {}
+		face_shape(servoce::shape&& oth) : face_shape(oth.Face()) {}
+		face_shape(const TopoDS_Face& arg) : shape_typed((const TopoDS_Face&)arg) { surf_saver = Surface(); }
+		virtual ~face_shape() {}
+
 		BRepAdaptor_Surface AdaptorSurface() const;
 		Handle(Geom_Surface) Surface() { return BRep_Tool::Surface(Face()); }
 
 		servoce::surface surface() const;
 
-		face_shape transform(const transformation& trans) const { return shape::transform(trans).as_face(); }
-		face_shape transform(const general_transformation& trans) const { return shape::transform(trans).as_face(); }
+		//	face_shape transform(const transformation& trans) const { return shape::transform(trans).as_face(); }
+		//	face_shape transform(const general_transformation& trans) const { return shape::transform(trans).as_face(); }
 	};
 
 	face_shape make_face(const std::vector<const servoce::shape*>& vec);
 
 	face_shape make_face(const servoce::surface& surf);
 	face_shape make_face(const servoce::surface& surf, double umin, double umax, double vmin, double vmax);
-	face_shape make_face(const servoce::surface& surf, std::pair<double,double> urange, std::pair<double, double> vrange);
+	face_shape make_face(const servoce::surface& surf, std::pair<double, double> urange, std::pair<double, double> vrange);
 
 	//prim2d
 	face_shape circle(double r);
@@ -52,7 +56,7 @@ namespace servoce
 	face_shape ngon(double r, int n);
 	face_shape square(double a, bool center = false);
 	face_shape rectangle(double a, double b, bool center = false);
-	
+
 	face_shape polygon(const servoce::point3* pnts, size_t size);
 	face_shape polygon(const std::vector<servoce::point3>& pnts);
 

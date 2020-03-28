@@ -11,6 +11,16 @@
 
 #include <assert.h>
 
+servoce::view::view(OccViewWindow* occ, bool pretty) : occ(occ)
+{
+	if (pretty) 
+	{
+		set_gradient(servoce::color(0.5, 0.5, 0.5), servoce::color(0.3, 0.3, 0.3));
+		set_triedron();
+	}
+}
+
+
 servoce::view::view(OccViewWindow* occ) : occ(occ)
 {
 	set_gradient(servoce::color(0.5, 0.5, 0.5), servoce::color(0.3, 0.3, 0.3));

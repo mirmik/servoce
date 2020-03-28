@@ -67,6 +67,7 @@ namespace servoce
 
 		std::pair<servoce::point3, bool> intersect_point( double x, double y ); 
 
+		view(OccViewWindow* occ, bool pretty);
 		view(OccViewWindow* occ);
 		view(const view&) = delete;
 		view(view&& other) { occ = other.occ; other.occ = nullptr; }

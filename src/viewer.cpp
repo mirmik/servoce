@@ -10,7 +10,7 @@ std::recursive_mutex viewrecursive_mutex;
 Handle(Aspect_DisplayConnection) g_displayConnection = nullptr;
 Handle(Graphic3d_GraphicDriver) g_graphicDriver = nullptr;
 
-servoce::viewer::viewer()
+servoce::viewer::viewer() : occ(std::make_shared<OccViewerContext>(true))
 {
 #if !defined(_MSC_VER) && !defined(__APPLE__)
 	if (getenv("DISPLAY")==NULL) 
@@ -20,6 +20,7 @@ servoce::viewer::viewer()
 #endif
 }
 
+servoce::viewer::viewer(bool pretty) : occ(std::make_shared<OccViewerContext>(pretty)) {}
 
 servoce::viewer::~viewer()
 {}
@@ -47,6 +48,12 @@ servoce::view servoce::viewer::create_view()
 {
 	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	return servoce::view( occ->create_view_window() );
+}
+
+std::shared_ptr<servoce::view> servoce::viewer::create_shared_view(bool pretty)
+{
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
+	return std::make_shared<servoce::view>( occ->create_view_window(), pretty );
 }
 
 void servoce::viewer::redraw()
