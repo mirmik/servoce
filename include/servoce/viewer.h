@@ -9,7 +9,7 @@
 
 class OccViewerContext;
 
-/*template<typename T>
+template<typename T>
 class lazy_ptr
 {
 private:
@@ -29,7 +29,7 @@ public:
 	const T &operator*() const { return *child; }
 	T *operator->() { return &**this; }
 	const T *operator->() const { return &**this; }
-};*/
+};
 
 namespace servoce
 {

@@ -6,8 +6,8 @@ import pyservoce
 print("make box")
 pyservoce.box(1,1,1)
 
-print("make Scene")
-try:
-	pyservoce.Scene()
-except Exception as ex:
-	print("non fatal: {}", ex)
+#print("make Scene")
+#try:
+#	pyservoce.Scene()
+#except Exception as ex:
+#	print("non fatal: {}", ex)
