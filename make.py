@@ -21,7 +21,6 @@ shared_library("cxxbuild/libservoce.so",
     	"servoce_sources", 
     ],
     cxx_flags="-Wall -Wextra",
-    libs=["python3.6m"]
 )
 
 

@@ -60,6 +60,12 @@ void servoce::view::redraw()
 	occ->m_view->Redraw();
 }
 
+void servoce::view::remove()
+{
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
+	occ->m_view->Remove();
+}
+
 void servoce::view::redraw_immediate()
 {
 	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);

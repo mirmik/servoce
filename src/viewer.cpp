@@ -5,6 +5,15 @@
 
 #include <local/OccViewContext.h>
 
+extern Handle(Aspect_DisplayConnection) g_displayConnection;
+extern Handle(Graphic3d_GraphicDriver) g_graphicDriver;
+
+void servoce::close_display_connection() 
+{
+	g_displayConnection.Nullify();
+	g_graphicDriver.Nullify();
+}
+
 //Global resource for viewer, view, scene, shape_view, OccViewContext
 std::recursive_mutex viewrecursive_mutex;
 Handle(Aspect_DisplayConnection) g_displayConnection = nullptr;
@@ -18,6 +27,12 @@ servoce::viewer::viewer() : occ(std::make_shared<OccViewerContext>(true))
 		throw std::runtime_error("DISPLAY missing");
 	}
 #endif
+}
+
+void servoce::viewer::remove()
+{
+	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
+	occ->m_viewer->Remove();
 }
 
 servoce::viewer::viewer(bool pretty) : occ(std::make_shared<OccViewerContext>(pretty)) {}

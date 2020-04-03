@@ -9,27 +9,27 @@
 
 class OccViewerContext;
 
-template<typename T>
-class lazy_ptr
-{
-private:
-	T *child;
-
-public:
-	lazy_ptr() : child(0) {}
-	~lazy_ptr() { delete child; }
-	
-	T &operator*()
-	{
-		if (!child) child = new T;
-
-		return *child;
-	}
-
-	const T &operator*() const { return *child; }
-	T *operator->() { return &**this; }
-	const T *operator->() const { return &**this; }
-};
+//template<typename T>
+//class lazy_ptr
+//{
+//private:
+//	T *child;
+//
+//public:
+//	lazy_ptr() : child(0) {}
+//	~lazy_ptr() { delete child; }
+//	
+//	T &operator*()
+//	{
+//		if (!child) child = new T;
+//
+//		return *child;
+//	}
+//
+//	const T &operator*() const { return *child; }
+//	T *operator->() { return &**this; }
+//	const T *operator->() const { return &**this; }
+//};
 
 namespace servoce
 {
@@ -49,12 +49,15 @@ namespace servoce
 
 		void set_triedron_axes(bool en = true);
 		void redraw();
+		void remove();
 
 		//void add_scene(scene& scn);
 		void clean_context();
 		//void display(shape_view& controller);
 		void display(interactive_object& controller);
 	};
+
+	void close_display_connection();
 }
 
 #endif

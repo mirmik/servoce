@@ -199,6 +199,7 @@ PYBIND11_MODULE(libservoce, m)
 	.def("create_view", &viewer::create_view, ungil())
 	.def("redraw", &viewer::redraw, ungil())
 	.def("close", &viewer::close, ungil())
+	.def("remove", &viewer::remove, ungil())
 //	.def("add_scene", &viewer::add_scene, ungil())
 	.def("clean_context", &viewer::clean_context, ungil())
 //	.def("display", (void(viewer::*)(shape_view&))&viewer::display, ungil())
@@ -220,6 +221,7 @@ PYBIND11_MODULE(libservoce, m)
 	.def("direction", &view::direction, ungil())
 	.def("pan", &view::pan, ungil())
 	.def("zoom", &view::zoom, ungil())
+	.def("remove", &view::remove, ungil())
 	.def("scale", &view::scale, ungil())
 	.def("set_scale", &view::set_scale, ungil())
 	.def("set_eye", &view::set_eye, ungil())
@@ -290,6 +292,8 @@ PYBIND11_MODULE(libservoce, m)
 
 	registry_displayable(m);
 	registry_other(m);
+
+	m.def("close_display_connection", &close_display_connection);
 }
 
 std::vector<servoce::point3> points(const py::list& lst) 

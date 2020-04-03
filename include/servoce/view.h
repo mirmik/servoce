@@ -44,6 +44,8 @@ namespace servoce
 		void redraw_immediate();
 		void must_be_resized();
 
+		void remove();
+
 
 		servoce::point3 eye();
 		void set_eye(servoce::point3 pnt);
