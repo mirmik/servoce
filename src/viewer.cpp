@@ -10,8 +10,8 @@ extern Handle(Graphic3d_GraphicDriver) g_graphicDriver;
 
 void servoce::close_display_connection() 
 {
-	g_displayConnection.Nullify();
-	g_graphicDriver.Nullify();
+	//g_displayConnection.Nullify();
+	//g_graphicDriver.Nullify();
 }
 
 //Global resource for viewer, view, scene, shape_view, OccViewContext

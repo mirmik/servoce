@@ -65,4 +65,5 @@ void registry_face_shape(py::module & m)
 
 
 	m.def("make_face", (face_shape(*)(const std::vector<const servoce::shape*>& vec))&make_face, ungil());
+	m.def("fix_face", (face_shape(*)(const face_shape&))&fix_face, ungil());
 }
