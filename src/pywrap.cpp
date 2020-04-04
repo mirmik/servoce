@@ -69,8 +69,9 @@ PYBIND11_MODULE(libservoce, m)
 	{
 		char buf[128];
 		sprintf(buf, "bbox(x:(%f,%f),y:(%f,%f),z:(%f,%f))", 
-			(double)box.xmin, (double)box.ymin, (double)box.zmin, 
-			(double)box.xmax, (double)box.ymax, (double)box.zmax);
+			(double)box.xmin, (double)box.xmax, 
+			(double)box.ymin, (double)box.ymax, 
+			(double)box.zmin, (double)box.zmax);
 		return std::string(buf);
 	})
 	.def(py::pickle(

@@ -41,7 +41,7 @@ void registry_geombase_shape(py::module & m)
 	{
 		return point3::early(a, b);
 	})
-	.def("early", &point3::early, py::arg("oth"), py::arg("epsolion")=1e-5)
+	.def("early", &point3::early, py::arg("oth"), py::arg("epsilon")=1e-5)
 	.def("__repr__", [](const point3 & pnt)
 	{
 		char buf[128];
@@ -134,6 +134,8 @@ void registry_geombase_shape(py::module & m)
 	.def("length", &vector3::length)
 	.def("length2", &vector3::length2)
 	.def("early", &vector3::early)
+	.def("angle", py::overload_cast<>(&vector3::angle))
+	.def("angle", py::overload_cast<const vector3&>(&vector3::angle))
 	.def("dot", &vector3::dot)
 	.def("iszero", &vector3::iszero)
 	.def("cross", &vector3::cross)

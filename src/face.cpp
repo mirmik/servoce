@@ -336,13 +336,34 @@ servoce::surface servoce::face_shape::surface() const
 servoce::face_shape servoce::make_face(const std::vector<const servoce::shape*>& vec)
 {
 	//throw std::runtime_error("HERE");
+	std::cout << "fasdfasdf" << std::endl;
+	BRepBuilderAPI_MakeFace algo(vec[0]->Wire_orEdgeToWire());
+
+	auto it = ++vec.begin();
+	auto eit = vec.end();
+
+	for (;it!=eit;++it)
+	{
+		algo.Add((*it)->Wire_orEdgeToWire());
+	}
+
+	algo.Build();
+
+	ShapeFix_Face fixer(algo.Face());
+	fixer.Perform();
+	return servoce::shape(fixer.Face()).Face();
+}
+
+/*servoce::face_shape servoce::make_face(const std::vector<const servoce::shape*>& shp) 
+{
 	BRepBuilderAPI_MakeFace algo;
 
-	for (auto s : vec)
+	for (auto& s : shp) 
 	{
 		algo.Add(s->Wire_orEdgeToWire());
 	}
 
-	algo.Build();
-	return algo.Face();
-}
+	ShapeFix_Face fixer(algo.Face());
+	fixer.Perform();
+	return servoce::shape(fixer.Face()).Face();
+}*/

@@ -97,6 +97,8 @@ namespace servoce
 
 		matrix33 outerprod(const vector3& oth);
 		matrix33 vecmul_matrix();
+		double angle() { return linalg::angle({1,0,0}, *this); }
+		double angle(const vector3& oth) { return linalg::angle(*this, oth); }
 
 		bool iszero() const { return x == 0 && y == 0 && z==0; }
 
