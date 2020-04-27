@@ -21,6 +21,7 @@ namespace servoce
 		gp_Trsf* trsf;
 		transformation(gp_Trsf* trsf) : trsf(trsf) {};
 		transformation(gp_Trsf trsf) : trsf(new gp_Trsf(trsf)) {};
+		transformation(const point3& pnt, const vector3& dir1, const vector3& dir2);
 		transformation(const transformation& oth); 
 		transformation(transformation&& oth) : trsf(oth.trsf) { oth.trsf = nullptr; }
 		shape operator()(const servoce::shape& sld) const;
@@ -87,6 +88,7 @@ namespace servoce
 	transformation right(double);
 
 	transformation axrotation(double ax, double ay, double az, double angle);
+	transformation rotate(const quaternion& q);
 	transformation rotate(double a, const vector3& ax);
 	transformation rotate(double x, double y, double z);
 	transformation rotateX(double a);

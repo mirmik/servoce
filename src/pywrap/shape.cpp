@@ -84,6 +84,9 @@ void registry_shape(py::module & m)
 	.def("mass", &shape::mass, ungil())
 	.def("matrix_of_inertia", &shape::matrix_of_inertia, ungil())
 	.def("static_moments", &shape::static_moments, ungil())
+	.def("principal_inertia_axes", &shape::principal_inertia_axes, ungil())
+	.def("principal_inertia_moments", &shape::principal_inertia_moments, ungil())
+	.def("inertia_frame", &shape::inertia_frame, ungil())
 
 	.def("bbox", &servoce::shape::bounding_box, ungil())
 	//.def("moment_of_inertia", &shape::moment_of_inertia, ungil()) //TODO

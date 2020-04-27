@@ -46,6 +46,11 @@ namespace servoce
 
 		//GProp_PrincipalProps 	PrincipalProperties () const
 		// 	Computes the principal properties of inertia of the current system. There is always a set of axes for which the products of inertia of a geometric system are equal to 0; i.e. the matrix of inertia of the system is diagonal. These axes are the principal axes of inertia. Their origin is coincident with the center of mass of the system. The associated moments are called the principal moments of inertia. This function computes the eigen values and the eigen vectors of the matrix of inertia of the system. Results are stored by using a presentation framework of principal properties of inertia (GProp_PrincipalProps object) which may be queried to access the value sought. More...
+	
+
+		std::tuple<servoce::vector3, servoce::vector3, servoce::vector3> principal_inertia_axes() const;
+		servoce::transformation inertia_frame() const;
+		std::tuple<double, double, double> principal_inertia_moments() const;		
 	};
 }
 

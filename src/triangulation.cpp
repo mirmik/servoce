@@ -11,6 +11,8 @@ servoce::triangulation(servoce::face_shape& shp, double deflection)
 {
 	BRepMesh_IncrementalMesh mesh(shp.Shape(), deflection);
 
+	bool reverse_orientation = shp.Face().Orientation() == TopAbs_REVERSED;
+
 	auto L = TopLoc_Location();
 	auto triangulation = BRep_Tool::Triangulation(shp.Face(), L);
 
@@ -24,7 +26,11 @@ servoce::triangulation(servoce::face_shape& shp, double deflection)
 		int a, b, c;
 		auto tri = Triangles(i);
 		tri.Get(a,b,c);
-		triangles.emplace_back(a-1,b-1,c-1);
+		
+		if (reverse_orientation)
+			triangles.emplace_back(b-1,a-1,c-1);
+		else
+			triangles.emplace_back(a-1,b-1,c-1);
 	}	
 
 	std::vector<servoce::point3> nodes;

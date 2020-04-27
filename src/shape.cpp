@@ -596,6 +596,21 @@ double servoce::shape::radius_of_gyration(const servoce::vector3& axis) const
 	return geomprops::volume_properties(*this, 1).radius_of_gyration(axis);
 }
 
+std::tuple<servoce::vector3, servoce::vector3, servoce::vector3> servoce::shape::principal_inertia_axes() const 
+{
+	return gprops(*this).principal_inertia_axes();
+}
+
+std::tuple<double, double, double> servoce::shape::principal_inertia_moments() const 
+{
+	return gprops(*this).principal_inertia_moments();
+}
+
+servoce::transformation servoce::shape::inertia_frame() const 
+{
+	return gprops(*this).inertia_frame();
+}
+
 servoce::boundbox servoce::shape::bounding_box()
 {
 	Bnd_Box box;

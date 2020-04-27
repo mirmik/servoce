@@ -116,6 +116,9 @@ namespace servoce
 		std::tuple<double, double, double> static_moments () const;
 		double moment_of_inertia(const servoce::vector3& axis) const;
 		double radius_of_gyration(const servoce::vector3& axis) const;
+		std::tuple<servoce::vector3, servoce::vector3, servoce::vector3> principal_inertia_axes() const;
+		servoce::transformation inertia_frame() const;
+		std::tuple<double, double, double> principal_inertia_moments() const;	
 
 		//servoce::shape infill_face(); ///< Превращает замкнутый двумерный контур в 2d объект
 

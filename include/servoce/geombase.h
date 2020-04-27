@@ -284,6 +284,8 @@ namespace servoce
 			return linalg::qmat(*this);
 		}
 
+		transformation to_transformation();
+
 		vector3 rotation_vector() const
 		{
 			double angle = linalg::qangle(*this);
@@ -300,6 +302,8 @@ namespace servoce
 		//	bool operator==(const vector3& oth) const { return oth.x == x && oth.y == y && oth.z == z; }
 		//	bool operator!=(const vector3& oth) const { return oth.x != x || oth.y != y || oth.z != z; }
 		//	vector3 operator-() const { return vector3(-x, -y, -z); }
+
+		quaternion operator*(const quaternion& oth) const { return quaternion(linalg::qmul((linalg::vec<double, 4>)*this, (linalg::vec<double, 4>)oth)); }
 	};
 
 	static inline vector3 operator/(const vector3& v, double a)

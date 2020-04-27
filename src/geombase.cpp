@@ -137,3 +137,15 @@ servoce::vector3 servoce::vector3::transform(const servoce::transformation& trsf
 {
 	return Vec().Transformed(*trsf.trsf);
 }
+
+gp_Quaternion servoce::quaternion::Quaternion() const 
+{
+	return gp_Quaternion(x,y,z,w);
+}
+
+servoce::transformation servoce::quaternion::to_transformation() 
+{
+	gp_Trsf trsf;
+	trsf.SetRotation(Quaternion());
+	return trsf;
+}

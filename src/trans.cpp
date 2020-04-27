@@ -10,6 +10,7 @@
 
 #include <gp_Ax1.hxx>
 #include <gp_Ax2.hxx>
+#include <gp_Ax3.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_Quaternion.hxx>
 #include <gp_GTrsf.hxx>
@@ -23,9 +24,24 @@ servoce::transformation::transformation(const transformation& oth)
 servoce::general_transformation::general_transformation(const general_transformation& oth)
 	: gtrsf(new gp_GTrsf(*oth.gtrsf)) {}
 
+servoce::transformation::transformation(const point3& pnt, const vector3& dir1, const vector3& dir2) :
+	trsf(new gp_Trsf())
+{
+	auto ax3 = gp_Ax3(pnt.Pnt(), dir1.Dir(), dir2.Dir());	
+	trsf->SetTransformation(ax3);
+}
+
+
 servoce::transformation servoce::rotate(double a, const servoce::vector3& vec)
 {
 	return servoce::axrotation(vec.x, vec.y, vec.z, a);
+}
+
+servoce::transformation servoce::rotate(const servoce::quaternion& q)
+{
+	gp_Trsf trsf;
+	trsf.SetRotation(q.Quaternion());
+	return trsf;
 }
 
 servoce::transformation servoce::rotate(double x, double z, double y)

@@ -17,6 +17,7 @@ using namespace servoce;
 void registry_trans(py::module & m)
 {
 	py::class_<transformation>(m, "transformation")
+	.def(py::init<const point3&, const vector3&, const vector3&>(), py::arg("pnt"), py::arg("dir0"), py::arg("dir1"))
 	.def("__call__", (shape(transformation::*)(const shape&)const)&transformation::operator(), ungil())
 	.def("__call__", (point3(transformation::*)(const point3&)const)&transformation::operator(), ungil())
 	.def("__call__", (vector3(transformation::*)(const vector3&)const)&transformation::operator(), ungil())
@@ -70,6 +71,7 @@ void registry_trans(py::module & m)
 	m.def("axrotation", axrotation, ungil());
 	m.def("rotate", (transformation(*)(double,double,double))&rotate, py::arg("x") = 0, py::arg("y") = 0, py::arg("z") = 0, ungil());
 	m.def("rotate", (transformation(*)(double,const vector3&))&rotate, py::arg("a"), py::arg("v"), ungil());
+	m.def("rotate", (transformation(*)(const quaternion&))&rotate, py::arg("q"), ungil());
 	m.def("rotateX", rotateX, ungil());
 	m.def("rotateY", rotateY, ungil());
 	m.def("rotateZ", rotateZ, ungil());
