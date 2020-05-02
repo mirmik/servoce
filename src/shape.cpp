@@ -496,7 +496,7 @@ void servoce::shape::print_topo_dump()
 {
 	if (!Shape().IsNull())
 	{
-		cout << "____shape type: " << Shape().ShapeType() << "____" << endl;
+		std::cout << "____shape type: " << Shape().ShapeType() << "____" << std::endl;
 
 		Handle(TopTools_HSequenceOfShape) seqShape = new TopTools_HSequenceOfShape;
 		Handle(TopTools_HSequenceOfShape) compounds, compsolids, solids, shells, faces, wires, edges, vertices;
@@ -505,14 +505,14 @@ void servoce::shape::print_topo_dump()
 
 		anExp.SeqFromCompound(Shape(), false);
 		anExp.DispatchList(seqShape, vertices, edges, wires, faces, shells, solids, compsolids, compounds);
-		cout << "____Nb compounds: " << compounds->Length() << "____" << endl;
-		cout << "____Nb compsolids: " << compsolids->Length() << "____" << endl;
-		cout << "____Nb solids: " << solids->Length() << "____" << endl;
-		cout << "____Nb shells: " << shells->Length() << "____" << endl;
-		cout << "____Nb faces: " << faces->Length() << "____" << endl;
-		cout << "____Nb wires: " << wires->Length() << "____" << endl;
-		cout << "____Nb edges: " << edges->Length() << "____" << endl;
-		cout << "____Nb vertices: " << vertices->Length() << "____" << endl;
+		std::cout << "____Nb compounds: " << compounds->Length() << "____" << std::endl;
+		std::cout << "____Nb compsolids: " << compsolids->Length() << "____" << std::endl;
+		std::cout << "____Nb solids: " << solids->Length() << "____" << std::endl;
+		std::cout << "____Nb shells: " << shells->Length() << "____" << std::endl;
+		std::cout << "____Nb faces: " << faces->Length() << "____" << std::endl;
+		std::cout << "____Nb wires: " << wires->Length() << "____" << std::endl;
+		std::cout << "____Nb edges: " << edges->Length() << "____" << std::endl;
+		std::cout << "____Nb vertices: " << vertices->Length() << "____" << std::endl;
 	}
 }
 

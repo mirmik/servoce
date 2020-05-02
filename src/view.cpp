@@ -4,27 +4,27 @@
 #include <local/OccViewContext.h>
 #include <Aspect_DisplayConnection.hxx>
 #include <IntCurvesFace_ShapeIntersector.hxx>
-
 #include <Graphic3d_Camera.hxx>
 
 #include <mutex>
-
 #include <assert.h>
+
+
 
 servoce::view::view(OccViewWindow* occ, bool pretty) : occ(occ)
 {
 	if (pretty) 
 	{
-		set_gradient(servoce::color(0.5, 0.5, 0.5), servoce::color(0.3, 0.3, 0.3));
-		set_triedron();
+		//set_gradient(servoce::color(0.5, 0.5, 0.5), servoce::color(0.3, 0.3, 0.3));
+		//set_triedron();
 	}
 }
 
 
 servoce::view::view(OccViewWindow* occ) : occ(occ)
 {
-	set_gradient(servoce::color(0.5, 0.5, 0.5), servoce::color(0.3, 0.3, 0.3));
-	set_triedron();
+	//set_gradient(servoce::color(0.5, 0.5, 0.5), servoce::color(0.3, 0.3, 0.3));
+	//set_triedron();
 }
 
 void servoce::view::set_background(const servoce::color& clr)
@@ -63,6 +63,11 @@ void servoce::view::redraw()
 void servoce::view::remove()
 {
 	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
+	if (!occ->m_window.IsNull()) 
+	{
+		occ->m_window->Unmap();
+		occ->m_window.Nullify();
+	}
 	occ->m_view->Remove();
 }
 
@@ -167,6 +172,7 @@ void servoce::view::set_orthogonal()
 
 servoce::view::~view()
 {
+	remove();
 	delete occ;
 }
 
@@ -277,7 +283,7 @@ void servoce::see(servoce::scene& scn)
 {
 	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	auto vv = scn.viewer()->create_view();
-	vv.see();
+	vv->see();
 }
 
 void servoce::view::reset_orientation()

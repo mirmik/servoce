@@ -24,9 +24,11 @@
 
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
+#include <BRepAdaptor_Surface.hxx>
 
 #include <BRepOffsetAPI_MakePipe.hxx>
 #include <Font_BRepTextBuilder.hxx>
+#include <ShapeFix_Face.hxx>
 
 #include <BRepFill.hxx>
 

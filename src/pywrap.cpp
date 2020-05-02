@@ -208,7 +208,7 @@ PYBIND11_MODULE(libservoce, m)
 	.def("set_triedron_axes", &viewer::set_triedron_axes, py::arg("en")=true, ungil())
 	;
 
-	py::class_<view>(m, "View")
+	py::class_<view, std::shared_ptr<servoce::view>>(m, "View")
 	.def("set_window", &view::set_window, ungil())
 	.def("set_virtual_window", &view::set_virtual_window, ungil())
 	.def("set_triedron", &view::set_triedron, py::arg("en")=true, ungil())

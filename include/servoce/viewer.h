@@ -43,7 +43,7 @@ namespace servoce
 		viewer(bool pretty);// : occ(std::make_shared<OccViewerContext>(pretty)) {}
 		~viewer();
 
-		view create_view();
+		std::shared_ptr<view> create_view();
 		std::shared_ptr<view> create_shared_view(bool pretty);
 		void close();
 

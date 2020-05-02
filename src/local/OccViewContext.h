@@ -39,32 +39,10 @@
 
 extern Handle(Aspect_DisplayConnection) g_displayConnection;
 extern Handle(Graphic3d_GraphicDriver) g_graphicDriver;
+Handle(Aspect_DisplayConnection) GetDisplayConnection();
+Handle(Graphic3d_GraphicDriver) GetGraphicDriver();
 
 extern std::recursive_mutex viewrecursive_mutex;
-
-inline Handle(Aspect_DisplayConnection) GetDisplayConnection()
-{
-	static bool inited = false;
-
-	if (!inited)
-	{
-		g_displayConnection = new Aspect_DisplayConnection();
-	}
-
-	return g_displayConnection;
-}
-
-inline Handle(Graphic3d_GraphicDriver) GetGraphicDriver()
-{
-	static bool inited = false;
-
-	if (!inited)
-	{
-		g_graphicDriver = new OpenGl_GraphicDriver(GetDisplayConnection());
-	}
-
-	return g_graphicDriver;
-}
 
 struct OccViewerContext;
 
@@ -221,6 +199,11 @@ public:
 			m_context = new AIS_InteractiveContext (m_viewer);
 			m_context->SetDisplayMode(AIS_Shaded, false);
 			m_context->DefaultDrawer()->SetFaceBoundaryDraw(true);
+			
+			//Quantity_Color clr(0,0,0,Quantity_TOC_RGB );
+			//auto aspect = m_context->DefaultDrawer()->FaceBoundaryAspect();
+			//Handle(Prs3d_LineAspect) aspect = new Prs3d_LineAspect(clr, Aspect_TOL_SOLID, 10);
+			//m_context->DefaultDrawer()->SetFaceBoundaryAspect(aspect);
 		} 
 
 		else 
@@ -233,7 +216,8 @@ public:
 	OccViewWindow* create_view_window()
 	{
 		std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
-		return new OccViewWindow( m_viewer->CreateView(), this );
+		auto ret = new OccViewWindow( m_viewer->CreateView(), this );
+		return ret;
 	}
 
 //	void set_scene(const servoce::scene& scn)

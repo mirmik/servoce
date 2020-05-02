@@ -10,8 +10,31 @@ extern Handle(Graphic3d_GraphicDriver) g_graphicDriver;
 
 void servoce::close_display_connection() 
 {
-	//g_displayConnection.Nullify();
-	//g_graphicDriver.Nullify();
+	//g_graphicDriver->RemoveView();
+	//g_graphicDriver->RemoveStructure();
+	g_graphicDriver.Nullify();
+	g_displayConnection.Nullify();
+}
+
+
+Handle(Aspect_DisplayConnection) GetDisplayConnection()
+{
+	if (g_displayConnection.IsNull())
+	{
+		g_displayConnection = new Aspect_DisplayConnection();
+	}
+
+	return g_displayConnection;
+}
+
+Handle(Graphic3d_GraphicDriver) GetGraphicDriver()
+{
+	if (g_graphicDriver.IsNull())
+	{
+		g_graphicDriver = new OpenGl_GraphicDriver(GetDisplayConnection());
+	}
+
+	return g_graphicDriver;
 }
 
 //Global resource for viewer, view, scene, shape_view, OccViewContext
@@ -59,10 +82,11 @@ void servoce::viewer::set_triedron_axes(bool en)
 	}
 }
 
-servoce::view servoce::viewer::create_view()
+std::shared_ptr<servoce::view> servoce::viewer::create_view()
 {
 	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
-	return servoce::view( occ->create_view_window() );
+	auto ret = std::make_shared<servoce::view>( occ->create_view_window() );
+	return ret;
 }
 
 std::shared_ptr<servoce::view> servoce::viewer::create_shared_view(bool pretty)

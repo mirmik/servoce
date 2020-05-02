@@ -1,9 +1,11 @@
 #include <servoce/interactive_object.h>
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_Shape.hxx>
+#include <AIS_ColoredShape.hxx>
 #include <AIS_ConnectedInteractive.hxx> 
 #include <BRepBndLib.hxx>
 
+#include <Prs3d_LineAspect.hxx>
 #include <mutex>
 #include <servoce/scene.h>
 
@@ -21,6 +23,10 @@ void servoce::interactive_object::set_color(const servoce::color& clr)
 	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	m_ais->SetColor(clr.Color());
 	m_ais->SetTransparency(clr.a);
+
+	Handle(Prs3d_LineAspect) aspect = new Prs3d_LineAspect(
+		Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1);
+	m_ais->Attributes()->SetFaceBoundaryAspect(aspect);
 }
 
 void servoce::interactive_object::set_color(float r, float g, float b, float a)
@@ -28,6 +34,10 @@ void servoce::interactive_object::set_color(float r, float g, float b, float a)
 	std::lock_guard<std::recursive_mutex> lock(viewrecursive_mutex);
 	m_ais->SetColor(Quantity_Color(r, g, b, Quantity_TOC_RGB));
 	m_ais->SetTransparency(a);
+
+	Handle(Prs3d_LineAspect) aspect = new Prs3d_LineAspect(
+		Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1);
+	m_ais->Attributes()->SetFaceBoundaryAspect(aspect);
 }
 
 void servoce::interactive_object::relocate(const servoce::transformation& trans)
@@ -58,8 +68,11 @@ void servoce::interactive_object::hide(bool en)
 }
 
 servoce::interactive_object::interactive_object(const servoce::shape& shp) :
-	interactive_object(new AIS_Shape(shp.Shape()))
-{}
+	interactive_object(new AIS_ColoredShape(shp.Shape()))
+{
+//	Handle(Prs3d_LineAspect) aspect = new Prs3d_LineAspect(Quantity_NOC_BLACK, Aspect_TOL_SOLID, 0.1);
+//	m_ais->Attributes()->SetFaceBoundaryAspect(aspect);
+}
 
 servoce::interactive_object::interactive_object(const servoce::shape& shp, const servoce::color& clr) :
 	interactive_object(shp)

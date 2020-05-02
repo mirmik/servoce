@@ -1,6 +1,0 @@
-[submodule "igris"]
-	path = igris
-	url = https://github.com/mirmik/igris
-[submodule "nos"]
-	path = nos
-	url = https://github.com/mirmik/nos

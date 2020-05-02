@@ -18,7 +18,7 @@ shared_library("cxxbuild/libservoce.so",
     sources = ["src/test.cpp"],
     mdepends=
     [
-    	"servoce_sources", 
+    	"servoce_sources"
     ],
     cxx_flags="-Wall -Wextra",
 )
@@ -30,9 +30,9 @@ def install():
     os.system("cp -r include/servoce {}".format(install_inc_dir))
     print("success install")
 
-licant.copy(src="cxxbuild/libservoce.so", tgt="build/lib.linux-x86_64-3.7/pyservoce/libservoce.cpython-37m-x86_64-linux-gnu.so")
+licant.copy(src="cxxbuild/libservoce.so", tgt="build/lib.linux-x86_64-3.8/pyservoce/libservoce.cpython-38-x86_64-linux-gnu.so")
 
-@licant.routine(deps=["build/lib.linux-x86_64-3.7/pyservoce/libservoce.cpython-37m-x86_64-linux-gnu.so"])
+@licant.routine(deps=["build/lib.linux-x86_64-3.8/pyservoce/libservoce.cpython-38-x86_64-linux-gnu.so"])
 def replace_library():
     os.system("./setup.py install --user")
 

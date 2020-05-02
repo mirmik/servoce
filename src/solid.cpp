@@ -542,7 +542,7 @@ servoce::shape servoce::chamfer(const servoce::shape& shp, double r, const std::
 				}
 
 				TopTools_ListOfShape list = edgeFaceMap.FindFromKey(ret);
-				mk.Add(r, ret, TopoDS::Face(list.First()));
+				mk.Add(r, ret);
 			}
 
 			return mk.Shape();
@@ -580,7 +580,7 @@ servoce::shape servoce::chamfer(const servoce::shape& shp, double r)
 			TopTools_ListOfShape list = edgeFaceMap.FindFromKey(ex.Current());
 
 			// Find adjacent face
-			mk.Add(r, TopoDS::Edge(ex.Current()), TopoDS::Face(list.First()));
+			mk.Add(r, TopoDS::Edge(ex.Current()));
 		}
 
 		return mk.Shape();
