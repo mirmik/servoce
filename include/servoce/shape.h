@@ -55,6 +55,8 @@ namespace servoce
 		shape(shape&& oth);
 		virtual ~shape();
 
+		bool is_nullshape();
+
 		shape transform(const transformation& trans) const;
 		shape transform(const general_transformation& trans) const;
 
@@ -63,10 +65,6 @@ namespace servoce
 		shape& operator= (shape&& oth);
 
 		shape fill();
-
-		//solid to_solid();
-		//wire to_wire();
-		//face to_face();
 
 		void dump(std::ostream& out) const;
 		void load(std::istream& in);

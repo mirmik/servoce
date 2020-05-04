@@ -26,6 +26,7 @@ void registry_interactive_object(py::module & m)
 	.def("hide", &interactive_object::hide, ungil())
 	.def("bbox", &servoce::interactive_object::bounding_box, ungil())
 	.def("shape", &servoce::interactive_object::shape, ungil())
+	.def("is_shape", &servoce::interactive_object::is_shape, ungil())
 	.def("copy", &interactive_object::copy, py::arg("bind_to_scene")=true, ungil())
 	;
 

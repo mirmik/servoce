@@ -74,6 +74,11 @@ servoce::shape::shape(shape&& oth) : m_shp(oth.m_shp)
 
 servoce::shape::~shape() { delete m_shp; }
 
+bool servoce::shape::is_nullshape() 
+{
+	return m_shp->IsNull() || vertices().size() == 0;
+}
+
 servoce::shape& servoce::shape::operator= (const shape& oth)
 {
 	if (m_shp != oth.m_shp)

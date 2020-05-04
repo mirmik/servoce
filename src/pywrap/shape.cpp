@@ -35,6 +35,7 @@ void registry_shape(py::module & m)
 	.def(py::pickle(
 	[](const shape & self) { return b64::base64_encode(string_dump(self)); },
 	[](const std::string & in) { return restore_string_dump<shape>(b64::base64_decode(in)); }), ungil())
+	.def("is_nullshape", &shape::is_nullshape)
 	.def("fill", &shape::fill)
 	.def("center", &shape::center, ungil())
 	.def("extrude", (shape(shape::*)(const vector3&, bool)) &shape::extrude, ungil(), py::arg("vec"), py::arg("center") = false)
