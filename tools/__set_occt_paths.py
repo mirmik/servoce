@@ -5,6 +5,9 @@ def get_occt_include_directory():
 	if os.path.exists("./servoce-third-libs-travis/linux-include-7.4"):
 		return "./servoce-third-libs-travis/linux-include-7.4"
 
+	if os.path.exists("./servoce-third-libs-travis/osx-include"):
+		return "./servoce-third-libs-travis/osx-include"
+
     dirs = ["/usr/include/", "/usr/local/include/"]
     subdirs = ["occt", "opencascade"]
 
