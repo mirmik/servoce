@@ -183,7 +183,7 @@ matrix:
         #- sudo apt-get update
         #- sudo apt install -y libocct-foundation-7.3 libocct-ocaf-7.3 libocct-data-exchange-7.3 libocct-foundation-dev libocct-ocaf-dev libocct-data-exchange-dev
         
-        - sudo apt install -y libglx-dev 
+        - sudo apt install -y libmesa-dev
 
         - git clone https://github.com/mirmik/servoce-third-libs servoce-third-libs-travis
         - mkdir pyservoce/libs 
