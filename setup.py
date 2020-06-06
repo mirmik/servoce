@@ -31,8 +31,13 @@ def get_occt_include_directory():
 
 
 if os.name == "posix":
-	liboce_include_path = get_occt_include_directory()
-	lib_prefix = ""
+	if os.path.exists("servoce-third-libs-travis"):
+		liboce_include_path = "servoce-third-libs-travis/linux-include-7.4"
+		lib_prefix = ""
+
+	else:
+		liboce_include_path = get_occt_include_directory()
+		lib_prefix = ""
 
 elif os.name == "nt":
 	liboce_include_path = "C:\\OpenCASCADE-7.3.0-vc14-64/opencascade-7.3.0/inc"
@@ -147,6 +152,9 @@ if os.path.exists("servoce-third-libs-travis") and sys.platform=="darwin":
 if os.path.exists("servoce-third-libs-travis") and sys.platform=="win32":
 	LIBRARY_DIRS=["servoce-third-libs-travis/win", "servoce-third-libs-travis/win-lib"]
 
+if os.path.exists("servoce-third-libs-travis") and sys.platform=="linux":
+	LIBRARY_DIRS=["servoce-third-libs-travis/linux-7.4"]
+
 pyservoce_lib = Extension(
 	"pyservoce.libservoce",
 	sources= [
@@ -208,7 +216,7 @@ pyservoce_lib = Extension(
 setup(
 	name="pyservoce",
 	packages=["pyservoce"],
-	version="1.22.0",
+	version="1.23.0",
 	license="MIT",
 	description="CAD system for righteous zen programmers ",
 	author="mirmik",
