@@ -78,7 +78,7 @@ servoce::geomprops::principal_inertia_axes() const
 	servoce::vector3 b = pprops.SecondAxisOfInertia(); 
 	servoce::vector3 c = pprops.ThirdAxisOfInertia(); 
 
-	return {a,b,c};
+	return std::tuple<servoce::vector3, servoce::vector3, servoce::vector3> {a,b,c};
 }
 
 
@@ -88,7 +88,7 @@ servoce::geomprops::principal_inertia_moments() const
 	double Ixx, Iyy, Izz;
 	GProp_PrincipalProps pprops = PrincipalProperties(); 
 	pprops.Moments(Ixx, Iyy, Izz);
-	return {Ixx, Iyy, Izz};
+	return std::tuple<double, double, double> {Ixx, Iyy, Izz};
 }
 
 servoce::transformation servoce::geomprops::inertia_frame() const 
