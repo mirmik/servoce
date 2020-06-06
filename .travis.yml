@@ -187,7 +187,7 @@ matrix:
         - mkdir pyservoce/libs 
         - cp servoce-third-libs-travis/linux-7.4/* pyservoce/libs/
 
-        - sudo apt install python3-pybind11
+        - sudo apt install pybind11
         
         - python3 -m pip install licant
         - python3 ./setup.py install
