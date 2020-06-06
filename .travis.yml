@@ -178,8 +178,6 @@ matrix:
 
       addons:
         apt:
-          sources:
-            - debian-sid
           packages:
             - libglfw3-dev
             - libglx-dev
