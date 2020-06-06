@@ -66,14 +66,12 @@ matrix:
         "3.7"
 
       install: 
-        - env | grep DISPLAY
-        - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-        - sudo add-apt-repository ppa:freecad-maintainers/occt-releases -y
-        - sudo add-apt-repository ppa:freecad-maintainers/freecad-stable -y
-        - sudo apt-get update
+        - git clone https://github.com/mirmik/servoce-third-libs servoce-third-libs-travis
+        - mkdir pyservoce/libs 
+        - cp servoce-third-libs-travis/linux-7.4/* pyservoce/libs/
+
         - sudo apt install gcc-7 g++-7
-        - sudo apt install -y libocct-foundation-7.3 libocct-ocaf-7.3 libocct-data-exchange-7.3 libocct-foundation-dev libocct-ocaf-dev libocct-data-exchange-dev
- 
+        
         - git clone https://github.com/google/googletest googletest/
         - cd googletest
         - CXX=g++-7 CC=gcc-7 cmake .
