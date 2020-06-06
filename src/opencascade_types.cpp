@@ -7,6 +7,15 @@ TColgp_Array1OfPnt servoce::opencascade_array1_of_pnt(const std::vector<point3>&
 	return ret;
 }
 
+TColgp_Array2OfPnt servoce::opencascade_array2_of_pnt(const std::vector<std::vector<point3>>& arr)
+{
+	TColgp_Array2OfPnt ret(1, arr.size(), 1, arr[0].size());
+	for (unsigned int r = 0; r < arr.size(); ++r) 
+		for (unsigned int c = 0; c < arr[0].size(); ++c) 
+			ret.SetValue(r+1, c+1, arr[r][c].Pnt());
+	return ret;
+}
+
 TColStd_Array1OfReal servoce::opencascade_array1_of_real(const std::vector<double>& arr)
 {
 

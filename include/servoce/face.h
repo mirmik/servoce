@@ -76,6 +76,8 @@ namespace servoce
 	face_shape ruled_face(const shape& a, const shape& b);
 
 	face_shape trivial_tube(const shape& spine, double r);
+
+	face_shape interpolate2(const std::vector<std::vector<point3>>& refs);
 }
 
 #endif

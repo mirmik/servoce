@@ -31,6 +31,10 @@
 #include <ShapeFix_Face.hxx>
 
 #include <BRepFill.hxx>
+#include <GeomAPI_PointsToBSplineSurface.hxx>
+#include <Geom_BSplineSurface.hxx>
+
+#include <servoce/opencascade_types.h>
 
 BRepAdaptor_Surface servoce::face_shape::AdaptorSurface() const
 {
@@ -362,6 +366,13 @@ servoce::face_shape servoce::fix_face(const servoce::face_shape& shp)
 	fixer.Perform();
 	fixer.FixOrientation();
 	return servoce::shape(fixer.Face()).Face();
+}
+
+servoce::face_shape servoce::interpolate2(const std::vector<std::vector<point3>>& refs) 
+{
+	auto Arr = servoce::opencascade_array2_of_pnt(refs);
+	auto Surf = GeomAPI_PointsToBSplineSurface(Arr);
+	return BRepBuilderAPI_MakeFace(Surf.Surface(), 1e-5).Face();
 }
 
 /*servoce::face_shape servoce::make_face(const std::vector<const servoce::shape*>& shp) 
