@@ -5,7 +5,7 @@ project(servoce)
 
 link_directories(${CMAKE_SOURCE_DIR}/servoce-third-libs-travis/win-lib ${CMAKE_SOURCE_DIR}/servoce-third-libs-travis/win)
 link_directories(${CMAKE_SOURCE_DIR}/servoce-third-libs-travis/osx)
-link_directories(${CMAKE_SOURCE_DIR}/servoce-third-libs-travis/linux-7.4 
+link_directories(${CMAKE_SOURCE_DIR}/servoce-third-libs-travis/linux-7.4)
 
 if (APPLE)
 	add_definitions(-DGL_SILENCE_DEPRECATION)
