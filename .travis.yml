@@ -70,17 +70,17 @@ matrix:
         - mkdir pyservoce/libs 
         - cp servoce-third-libs-travis/linux-7.4/* pyservoce/libs/
 
-        - sudo apt install gcc-7 g++-7
+        - sudo apt install clang
         
         - git clone https://github.com/google/googletest googletest/
         - cd googletest
-        - CXX=g++-7 CC=gcc-7 cmake .
+        - CXX=clang CC=clang cmake .
         - make
         - sudo make install
         - cd ..
 
         - source ./tools/set_occt_paths.sh
-        - CXX=g++-7 CC=gcc-7 cmake .
+        - CXX=clang CC=clang cmake .
         - make
 
 
