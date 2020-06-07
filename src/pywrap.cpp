@@ -161,14 +161,14 @@ PYBIND11_MODULE(libservoce, m)
 	.def(py::pickle(
 	[](const color & self)
 	{
-		float arr[4] = {self.r, self.g, self.b, self.a};
-		return b64::base64_encode((uint8_t*)&arr, 4 * sizeof(float));
+		double arr[4] = {self.r, self.g, self.b, self.a};
+		return b64::base64_encode((uint8_t*)&arr, 4 * sizeof(double));
 	},
 	[](const std::string & in)
 	{
 		float arr[4];
 		std::string decoded = b64::base64_decode(in);
-		memcpy(&arr, decoded.data(), 4 * sizeof(float));
+		memcpy(&arr, decoded.data(), 4 * sizeof(double));
 		return color{arr[0],arr[1],arr[2],arr[3]};
 	}), ungil())
 	.def("__repr__", [](const color & pnt)

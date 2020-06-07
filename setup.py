@@ -14,7 +14,7 @@ def get_occt_include_directory():
 	subdirs = ["occt", "opencascade"]
 
 	if sys.platform == "darwin":
-		subdirs.append("osx-include")
+		subdirs.append("osx-7.4-include")
 
 	if sys.platform == "win32":
 		subdirs.append("win-include-7.4") 
