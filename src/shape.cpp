@@ -52,6 +52,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <iostream>
 
 #include <servoce/edge.h>
 #include <servoce/face.h>

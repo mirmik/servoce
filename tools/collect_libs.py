@@ -114,6 +114,11 @@ def darwin_collect(f,l):
 		print(cmd)
 		os.system(cmd)
 
+	lib2 = lib[:-7]+"dylib"
+	do_command(f"cp {lib} {lib2}")
+
+
+
 	
 for l in listlibs:
 	if sys.platform == "darwin":
