@@ -3,7 +3,7 @@ set( CMAKE_VERBOSE_MAKEFILE on )
 project(servoce)
 
 
-link_directories(${CMAKE_SOURCE_DIR}/servoce-third-libs-travis/win-lib ${CMAKE_SOURCE_DIR}/servoce-third-libs-travis/win)
+link_directories(${CMAKE_SOURCE_DIR}/servoce-third-libs-travis/win-lib-7.4 ${CMAKE_SOURCE_DIR}/servoce-third-libs-travis/win-7.4)
 link_directories(${CMAKE_SOURCE_DIR}/servoce-third-libs-travis/osx)
 link_directories(${CMAKE_SOURCE_DIR}/servoce-third-libs-travis/linux-7.4)
 
