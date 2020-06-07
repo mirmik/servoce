@@ -77,7 +77,7 @@ namespace servoce
 
 	face_shape trivial_tube(const shape& spine, double r);
 
-	face_shape interpolate2(const std::vector<std::vector<point3>>& refs);
+	face_shape interpolate2(const std::vector<std::vector<point3>>& refs, int degmin, int degmax);
 }
 
 #endif

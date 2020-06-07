@@ -368,11 +368,11 @@ servoce::face_shape servoce::fix_face(const servoce::face_shape& shp)
 	return servoce::shape(fixer.Face()).Face();
 }
 
-servoce::face_shape servoce::interpolate2(const std::vector<std::vector<point3>>& refs) 
+servoce::face_shape servoce::interpolate2(const std::vector<std::vector<point3>>& refs, int degmin, int degmax) 
 {
 	auto Arr = servoce::opencascade_array2_of_pnt(refs);
-	auto Surf = GeomAPI_PointsToBSplineSurface(Arr);
-	return BRepBuilderAPI_MakeFace(Surf.Surface(), 1e-5).Face();
+	auto Surf = GeomAPI_PointsToBSplineSurface(Arr, degmin, degmax, GeomAbs_C2, 1.0e-3);
+	return BRepBuilderAPI_MakeFace(Surf.Surface(), 1.0e-5).Face();
 }
 
 /*servoce::face_shape servoce::make_face(const std::vector<const servoce::shape*>& shp) 

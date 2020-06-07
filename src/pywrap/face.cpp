@@ -62,7 +62,7 @@ void registry_face_shape(py::module & m)
 	m.def("trivial_tube", (face_shape (*)(const shape& spine, double r))&trivial_tube, ungil());
 	//m.def("tube", (shape(*)(const servoce::edge_shape&,double,double,int,int,int))&make_tube, py::arg("shp"), py::arg("r"), py::arg("tol"), py::arg("cont"), py::arg("maxdegree"), py::arg("maxsegm"), ungil());
 
-	m.def("interpolate2", &interpolate2, ungil());
+	m.def("interpolate2", &interpolate2, ungil(), py::arg("pnts"), py::arg("degmin")=2, py::arg("degmax")=2);
 
 	m.def("make_face", (face_shape(*)(const std::vector<const servoce::shape*>& vec))&make_face, ungil());
 	m.def("fix_face", (face_shape(*)(const face_shape&))&fix_face, ungil());
