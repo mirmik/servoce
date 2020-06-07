@@ -14,7 +14,7 @@ namespace servoce
 {
 	struct color
 	{
-		float r=0, g=0, b=0, a=0;
+		double r=0, g=0, b=0, a=0;
 		
 		constexpr color() : color(0.6, 0.6, 0.8) {}
 		constexpr color(const color& oth) : color(oth.r, oth.g, oth.b, oth.a) {}
