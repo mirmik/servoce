@@ -17,7 +17,7 @@ def get_occt_include_directory():
 		subdirs.append("osx-include")
 
 	if sys.platform == "win32":
-		subdirs.append("win-include") 
+		subdirs.append("win-include-7.4") 
 
 	for d in dirs:
 		if os.path.exists(d):
@@ -40,8 +40,8 @@ if os.name == "posix":
 		lib_prefix = ""
 
 elif os.name == "nt":
-	liboce_include_path = "C:\\OpenCASCADE-7.3.0-vc14-64/opencascade-7.3.0/inc"
-	lib_prefix = "C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib\\"
+	liboce_include_path = "C:\\OpenCASCADE-7.4.0-vc14-64/opencascade-7.4.0/inc"
+	lib_prefix = "C:\\OpenCASCADE-7.4.0-vc14-64\\opencascade-7.4.0\\win64\\vc14\\lib\\"
 	if os.path.exists("servoce-third-libs-travis"):
 		liboce_include_path = get_occt_include_directory()
 		lib_prefix = ""
@@ -150,7 +150,7 @@ if os.path.exists("servoce-third-libs-travis") and sys.platform=="darwin":
 	LIBRARY_DIRS=["servoce-third-libs-travis/osx"]
 
 if os.path.exists("servoce-third-libs-travis") and sys.platform=="win32":
-	LIBRARY_DIRS=["servoce-third-libs-travis/win", "servoce-third-libs-travis/win-lib"]
+	LIBRARY_DIRS=["servoce-third-libs-travis/win-7.4", "servoce-third-libs-travis/win-lib-7.4"]
 
 if os.path.exists("servoce-third-libs-travis") and sys.platform=="linux":
 	LIBRARY_DIRS=["servoce-third-libs-travis/linux-7.4"]
