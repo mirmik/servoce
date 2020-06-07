@@ -54,3 +54,14 @@ servoce::boundbox servoce::scene::bbox() const
 
 	return bbox;
 }
+
+
+void servoce::scene::set_chordial_deviation(bool relative, double deviation) 
+{
+	if (relative)
+		InteractiveContext()->DefaultDrawer()->SetTypeOfDeflection(Aspect_TOD_RELATIVE);
+	else
+		InteractiveContext()->DefaultDrawer()->SetTypeOfDeflection(Aspect_TOD_ABSOLUTE);
+
+	InteractiveContext()->DefaultDrawer()->SetMaximalChordialDeviation(deviation);
+}

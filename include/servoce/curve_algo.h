@@ -28,12 +28,12 @@ namespace servoce
 			return pnt;
 		}
 
-		std::pair<PointType, VectorType> d1(double arg) const
+		VectorType d1(double arg) const
 		{
 			gp_Vec vec;
 			gp_Pnt pnt;
 			self().AdaptorCurve()->D1(arg, pnt, vec);
-			return { pnt, vec };
+			return vec;
 		}
 
 		double linoff(double dist, double start) const

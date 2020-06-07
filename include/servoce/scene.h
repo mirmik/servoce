@@ -54,6 +54,10 @@ namespace servoce
 		}
 
 		size_t total() {return iobjs.size();}
+
+
+
+		void set_chordial_deviation(bool relative, double deviation);
 	};
 }
 

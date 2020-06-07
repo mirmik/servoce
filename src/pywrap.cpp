@@ -192,7 +192,8 @@ PYBIND11_MODULE(libservoce, m)
 	//.def("color_array", (std::vector<color>(scene::*)())&scene::color_array, ungil())
 	.def("__getitem__", &scene::operator[])
 	.def("bbox", &scene::bbox, ungil())
-	.def("total", &scene::total)
+	.def("total", &scene::total, ungil())
+	.def("set_chordial_deviation", &scene::set_chordial_deviation, ungil(), py::arg("relative"), py::arg("deviation"))
 	//.def("__getitem__", [](const scene & s, size_t i) { return s[i]; }, ungil())
 	;
 
