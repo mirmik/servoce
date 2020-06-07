@@ -4,7 +4,7 @@ project(servoce)
 
 
 link_directories(${CMAKE_SOURCE_DIR}/servoce-third-libs-travis/win-lib-7.4 ${CMAKE_SOURCE_DIR}/servoce-third-libs-travis/win-7.4)
-link_directories(${CMAKE_SOURCE_DIR}/servoce-third-libs-travis/osx)
+link_directories(${CMAKE_SOURCE_DIR}/servoce-third-libs-travis/osx-7.4)
 link_directories(${CMAKE_SOURCE_DIR}/servoce-third-libs-travis/linux-7.4)
 
 if (APPLE)
