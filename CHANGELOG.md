@@ -1,5 +1,7 @@
 ## 1.23.0
 	Opencascade upgrade to 7.4.0
+	Add interpolate2
+	Sweeps moved from solid
 
 ## 1.21.0
 	Универсальное API афинных преобразований.
