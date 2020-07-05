@@ -1,4 +1,5 @@
 #include <servoce/servoce.h>
+#include <servoce/geomprops.h>
 #include <servoce/util/b64.h>
 
 #include <local/pywrap_util.h>
@@ -65,6 +66,7 @@ PYBIND11_MODULE(libservoce, m)
 	.def("max0", &servoce::boundbox::max0)
 	.def("corner_min", &servoce::boundbox::corner_min)
 	.def("corner_max", &servoce::boundbox::corner_max)
+	.def("shape", &servoce::boundbox::shape)
 	.def("__repr__", [](const boundbox & box)
 	{
 		char buf[128];
@@ -286,9 +288,10 @@ PYBIND11_MODULE(libservoce, m)
 
 	py::class_<geomprops>(m, "geomprops")
 	//	.def("volume_properties", &geomprops::volume_properties)
-	//	.def("mass", &GProp_GProps::Mass)
-		.def("cmpoint", &GProp_GProps::CentreOfMass)
-	//	.def("cmradius", &geomprops::cmradius)
+		.def("mass", &geomprops::mass)
+	//	.def("cmpoint", &GProp_GProps::CentreOfMass)
+		.def("cmradius", &geomprops::cmradius)
+		.def("center", &geomprops::center)
 	//	.def("inermat", &GProp_GProps::MatrixOfInertia)
 	;
 

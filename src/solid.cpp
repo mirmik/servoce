@@ -318,7 +318,7 @@ servoce::shape servoce::chamfer(const servoce::shape& shp, double r, const std::
 
 			return mk.Shape();
 		}
-		catch (std::exception ex)
+		catch (const std::exception& ex)
 		{
 			std::cout << ex.what() << std::endl;
 			throw ex;

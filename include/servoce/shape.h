@@ -33,6 +33,7 @@ namespace servoce
 	class compound_shape;
 	class compsolid_shape;
 	class boundbox;
+	class geomprops;
 
 	enum topoenum
 	{
@@ -157,6 +158,10 @@ namespace servoce
 		void print_topo_dump();
 
 		boundbox bounding_box();
+
+		geomprops props1();
+		geomprops props2();
+		geomprops props3();
 	};
 
 	template <class Self>

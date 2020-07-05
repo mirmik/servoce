@@ -21,6 +21,7 @@ static inline void pywrap_transformable(U&& cls)
 	
 	.def("move", (RetCls(transformable<Cls,RetCls>::*)(double,double,double))&transformable<Cls,RetCls>::move, py::arg("x")=0, py::arg("y")=0, py::arg("z")=0, ungil())
 	.def("move", (RetCls(transformable<Cls,RetCls>::*)(vector3))&transformable<Cls,RetCls>::move, py::arg("v"), ungil())
+	.def("move", (RetCls(transformable<Cls,RetCls>::*)(point3))&transformable<Cls,RetCls>::move, py::arg("p"), ungil())
 	.def("moveX", &transformable<Cls,RetCls>::moveX, ungil())
 	.def("moveY", &transformable<Cls,RetCls>::moveY, ungil())
 	.def("moveZ", &transformable<Cls,RetCls>::moveZ, ungil())

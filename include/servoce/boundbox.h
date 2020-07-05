@@ -73,6 +73,8 @@ namespace servoce
 		std::pair<double, double> xrange() { return {xmin, xmax}; }
 		std::pair<double, double> yrange() { return {ymin, ymax}; }
 		std::pair<double, double> zrange() { return {zmin, zmax}; }
+
+		servoce::shape shape();
 	};
 }
 

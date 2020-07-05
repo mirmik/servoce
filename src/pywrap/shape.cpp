@@ -16,6 +16,7 @@
 #include <servoce/face.h>
 #include <servoce/edge.h>
 #include <servoce/trans.h>
+#include <servoce/geomprops.h>
 
 #include <pywrap/transformable.h>
 
@@ -92,6 +93,11 @@ void registry_shape(py::module & m)
 	.def("bbox", &servoce::shape::bounding_box, ungil())
 	//.def("moment_of_inertia", &shape::moment_of_inertia, ungil()) //TODO
 	//.def("radius_of_gyration", &shape::radius_of_gyration, ungil()) //TODO
+
+
+	.def("props1", &servoce::shape::props1, ungil())
+	.def("props2", &servoce::shape::props2, ungil())
+	.def("props3", &servoce::shape::props3, ungil())
 	;
 
 	m.def("fill", &servoce::fill, ungil());
