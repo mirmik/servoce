@@ -45,7 +45,7 @@ namespace servoce
 	face_shape make_face(const servoce::surface& surf, double umin, double umax, double vmin, double vmax);
 	face_shape make_face(const servoce::surface& surf, std::pair<double, double> urange, std::pair<double, double> vrange);
 
-	face_shape fix_face(const face_shape& face);
+	face_shape fix_face(const shape& face);
 
 	//prim2d
 	face_shape circle(double r);

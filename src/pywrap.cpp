@@ -1,6 +1,7 @@
 #include <servoce/servoce.h>
 #include <servoce/geomprops.h>
 #include <servoce/util/b64.h>
+#include <servoce/vertex.h>
 
 #include <local/pywrap_util.h>
 
@@ -299,6 +300,7 @@ PYBIND11_MODULE(libservoce, m)
 	registry_other(m);
 
 	m.def("close_display_connection", &close_display_connection);
+	m.def("vertex", &servoce::make_vertex);
 }
 
 std::vector<servoce::point3> points(const py::list& lst) 

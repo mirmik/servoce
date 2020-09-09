@@ -184,6 +184,7 @@ INCLUDE = ["include", ".", "src"]
 INCLUDE.extend(python_include)
 
 SOURCES = [
+        "vertex.cpp",
         "project.cpp",
         "shape.cpp",
         "trans.cpp",

@@ -173,6 +173,7 @@ pyservoce_lib = Extension(
         "src/pywrap/trans.cpp",
         "src/pywrap/other.cpp",
         "src/pywrap/geombase.cpp",
+        "src/vertex.cpp",
         "src/geombase_py.cpp",
         "src/color_py.cpp",
         "src/b64.cpp",

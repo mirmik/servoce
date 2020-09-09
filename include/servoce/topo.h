@@ -1,6 +1,7 @@
 #ifndef SERVO_TOPO__H
 #define SERVO_TOPO__H
 
+#include <servoce/vertex.h>
 #include <servoce/edge.h>
 #include <servoce/wire.h>
 #include <servoce/face.h>
