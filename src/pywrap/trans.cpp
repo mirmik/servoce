@@ -57,6 +57,7 @@ void registry_trans(py::module & m)
 	
 	m.def("move", (transformation(*)(double, double, double)) &move, py::arg("x") = 0, py::arg("y") = 0, py::arg("z") = 0, ungil());
 	m.def("move", (transformation(*)(const vector3&)) &move, py::arg("v"), ungil());
+	m.def("move", (transformation(*)(const point3&)) &move, py::arg("p"), ungil());
 	m.def("moveX", &moveX, ungil());
 	m.def("moveY", &moveY, ungil());
 	m.def("moveZ", &moveZ, ungil());

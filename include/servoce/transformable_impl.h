@@ -12,8 +12,8 @@ template<class T, class Ret> Ret servoce::transformable<T,Ret>::translateY(doubl
 template<class T, class Ret> Ret servoce::transformable<T,Ret>::translateZ(double z) { return translate(0, 0, z); }
 
 template<class T, class Ret> Ret servoce::transformable<T,Ret>::move(double x, double y, double z) { return translate(x, y, z); }
-template<class T, class Ret> Ret servoce::transformable<T,Ret>::move(vector3 v) { return translate(v.x, v.y, v.z); }
-template<class T, class Ret> Ret servoce::transformable<T,Ret>::move(point3 v) { return translate(v.x, v.y, v.z); }
+template<class T, class Ret> Ret servoce::transformable<T,Ret>::move(const vector3& v) { return translate(v.x, v.y, v.z); }
+template<class T, class Ret> Ret servoce::transformable<T,Ret>::move(const point3& v) { return translate(v.x, v.y, v.z); }
 template<class T, class Ret> Ret servoce::transformable<T,Ret>::moveX(double x) { return translate(x, 0, 0); }
 template<class T, class Ret> Ret servoce::transformable<T,Ret>::moveY(double y) { return translate(0, y, 0); }
 template<class T, class Ret> Ret servoce::transformable<T,Ret>::moveZ(double z) { return translate(0, 0, z); }

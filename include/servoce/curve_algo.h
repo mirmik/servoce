@@ -3,6 +3,7 @@
 
 #include <GCPnts_AbscissaPoint.hxx>
 #include <GCPnts_UniformAbscissa.hxx>
+#include <GeomAPI_ProjectPointOnCurve.hxx>
 
 #include <vector>
 
@@ -19,6 +20,14 @@ namespace servoce
 		{
 			auto adaptor = self().AdaptorCurve();
 			return GCPnts_AbscissaPoint::Length(*adaptor);
+		}
+
+		double project(PointType pnt) 
+		{
+			GeomAPI_ProjectPointOnCurve algo(
+				pnt.Pnt(), 
+				self().Curve());
+			return algo.LowerDistanceParameter();
 		}
 
 		PointType d0(double arg) const
@@ -43,13 +52,6 @@ namespace servoce
 			return algo.Parameter();
 		}
 
-		/*double linoff(double dist) const
-		{
-			auto adaptor = self().AdaptorCurve();
-			GCPnts_AbscissaPoint algo(adaptor, dist, adaptor.FirstParameter());
-			return algo.Parameter();
-		}*/
-
 		std::pair<double, double> range() const
 		{
 			auto adaptor = self()->AdaptorCurve();
@@ -60,11 +62,6 @@ namespace servoce
 		{
 			return d0(linoff(dist, start));
 		}
-
-		/*PointType linoff_point(double dist) const
-		{
-			return d0(linoff(dist));
-		}*/
 
 		std::vector<PointType> uniform_points(int npoints, double strt, double fini) const
 		{
@@ -185,17 +182,17 @@ namespace servoce
 			return std::make_tuple(point3(p.Location()), o.Radius(), vector3(p.XDirection()), vector3(p.YDirection()));
 		}
 
-		/*std::tuple<point3, double, double, vector3, vector3> 
+		std::tuple<point3, double, double, vector3, vector3> 
 		ellipse_parameters()
 		{
-			if (curvetype() != "circle")
-				throw std::runtime_error("curve is not circle");
+			if (curvetype() != "ellipse")
+				throw std::runtime_error("curve is not ellipse");
 
-			gp_Elips o = AdaptorCurve().Line();
+			gp_Elips o = AdaptorCurve()->Ellipse();
 			gp_Ax2 p = o.Position();
 
-			return {p.Location(), p.XDirection(), p.YDirection()};
-		}*/
+			return std::make_tuple(point3(p.Location()), o.MajorRadius(), o.MinorRadius(), vector3(p.XDirection()), vector3(p.YDirection()));
+		}
 	};
 }
 
