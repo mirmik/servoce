@@ -160,5 +160,5 @@ runtests
 jjj
 jj
 
-third_libs/**
-!third_libs/*.py
+third-libs/**
+!third-libs/*.py
