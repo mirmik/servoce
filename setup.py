@@ -158,6 +158,7 @@ if os.path.exists("servoce-third-libs-travis") and sys.platform=="linux":
 pyservoce_lib = Extension(
 	"pyservoce.libservoce",
 	sources= [
+        "src/pywrap/compound.cpp",
         "src/pywrap/sweep.cpp",
         "src/pywrap/surface.cpp",
         "src/pywrap/face.cpp",

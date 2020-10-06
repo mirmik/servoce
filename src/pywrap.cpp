@@ -18,6 +18,7 @@ void registry_shell_shape(py::module &);
 void registry_solid_shape(py::module & m);
 void registry_face_shape(py::module &);
 void registry_surface_shape(py::module &);
+void registry_compound_shape(py::module &);
 void registry_trans(py::module &);
 
 void registry_geombase_shape(py::module & m);
@@ -101,6 +102,7 @@ PYBIND11_MODULE(libservoce, m)
 	registry_face_shape(m);
 	registry_shell_shape(m);
 	registry_solid_shape(m);
+	registry_compound_shape(m);
 
 	registry_trans(m);
 	registry_coord_system(m);
@@ -171,7 +173,7 @@ PYBIND11_MODULE(libservoce, m)
 	{
 		float arr[4];
 		std::string decoded = b64::base64_decode(in);
-		memcpy(&arr, decoded.data(), 4 * sizeof(double));
+		memcpy(&arr, decoded.data(), sizeof(arr));
 		return color{arr[0],arr[1],arr[2],arr[3]};
 	}), ungil())
 	.def("__repr__", [](const color & pnt)
