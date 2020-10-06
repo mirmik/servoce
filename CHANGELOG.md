@@ -1,3 +1,6 @@
+## 1.24.0
+	Add curve trim, compound class and some small features.
+
 ## 1.23.0
 	Opencascade upgrade to 7.4.0
 	Add interpolate2
