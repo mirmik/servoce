@@ -16,7 +16,7 @@
 namespace py = pybind11;
 using namespace servoce;
 
-void registry_solid_shape(py::module & m)
+void registry_compound_shape(py::module & m)
 {
 	auto cls = py::class_<compound_shape, shape>(m, "Compound")
 	.def(py::pickle(
