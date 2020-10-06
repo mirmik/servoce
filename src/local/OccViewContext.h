@@ -44,10 +44,11 @@ Handle(Graphic3d_GraphicDriver) GetGraphicDriver();
 
 extern std::recursive_mutex viewrecursive_mutex;
 
-struct OccViewerContext;
+class OccViewerContext;
 
-struct OccViewWindow
+class OccViewWindow
 {
+public:
 	Handle(V3d_View) m_view;
 
 #if defined(WNT) || defined(_MSC_VER)
@@ -164,8 +165,9 @@ public:
 };
 
 
-struct OccViewerContext
+class OccViewerContext
 {
+public:
 	Handle(AIS_InteractiveContext) m_context;
 	Handle(V3d_Viewer) m_viewer;
 
