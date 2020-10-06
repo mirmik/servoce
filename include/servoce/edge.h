@@ -29,6 +29,8 @@ namespace servoce {
 		curve3 curve();
 
 		face_shape fill();
+
+		edge_shape trim(double start, double finish) const;
 	};
 
 	edge_shape make_edge(const servoce::curve3& crv);

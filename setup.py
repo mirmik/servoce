@@ -42,9 +42,14 @@ if os.name == "posix":
 elif os.name == "nt":
 	liboce_include_path = "C:\\OpenCASCADE-7.4.0-vc14-64/opencascade-7.4.0/inc"
 	lib_prefix = "C:\\OpenCASCADE-7.4.0-vc14-64\\opencascade-7.4.0\\win64\\vc14\\lib\\"
+	
 	if os.path.exists("servoce-third-libs-travis"):
 		liboce_include_path = get_occt_include_directory()
 		lib_prefix = ""
+
+	if os.path.exists(os.path.join(os.getenv("APPDATA"), "servoce-third-libs")):
+		liboce_include_path = os.path.join(os.getenv("APPDATA"), "servoce-third-libs", "include")
+		lib_prefix = os.path.join(os.getenv("APPDATA"), "servoce-third-libs", "lib")
 
 if sys.platform=="win32" or sys.platform=="win64":
 	extra_link_args = []
@@ -122,27 +127,27 @@ if os.path.exists("pybind11"):
 	INCLUDE.append("pybind11/include")
 
 LIBS = [
-	lib_prefix + "TKernel",
-	lib_prefix + "TKMath",
-	lib_prefix + "TKG2d",
-	lib_prefix + "TKG3d",
-	lib_prefix + "TKBRep",
-	lib_prefix + "TKGeomBase",
-	lib_prefix + "TKGeomAlgo",
-	lib_prefix + "TKTopAlgo",
-	lib_prefix + "TKPrim",
-	lib_prefix + "TKBO",
-	lib_prefix + "TKBool",
-	lib_prefix + "TKOffset",
-	lib_prefix + "TKService",
-	lib_prefix + "TKV3d",
-	lib_prefix + "TKOpenGl",
-	lib_prefix + "TKFillet",
-	lib_prefix + "TKSTL",
-	lib_prefix + "TKBin",
-	lib_prefix + "TKShHealing",
-	lib_prefix + "TKMesh",
-	lib_prefix + "TKHLR"
+	os.path.join(lib_prefix, "TKernel"),
+	os.path.join(lib_prefix, "TKMath"),
+	os.path.join(lib_prefix, "TKG2d"),
+	os.path.join(lib_prefix, "TKG3d"),
+	os.path.join(lib_prefix, "TKBRep"),
+	os.path.join(lib_prefix, "TKGeomBase"),
+	os.path.join(lib_prefix, "TKGeomAlgo"),
+	os.path.join(lib_prefix, "TKTopAlgo"),
+	os.path.join(lib_prefix, "TKPrim"),
+	os.path.join(lib_prefix, "TKBO"),
+	os.path.join(lib_prefix, "TKBool"),
+	os.path.join(lib_prefix, "TKOffset"),
+	os.path.join(lib_prefix, "TKService"),
+	os.path.join(lib_prefix, "TKV3d"),
+	os.path.join(lib_prefix, "TKOpenGl"),
+	os.path.join(lib_prefix, "TKFillet"),
+	os.path.join(lib_prefix, "TKSTL"),
+	os.path.join(lib_prefix, "TKBin"),
+	os.path.join(lib_prefix, "TKShHealing"),
+	os.path.join(lib_prefix, "TKMesh"),
+	os.path.join(lib_prefix, "TKHLR")
 ]
 
 LIBRARY_DIRS=[]
@@ -158,6 +163,7 @@ if os.path.exists("servoce-third-libs-travis") and sys.platform=="linux":
 pyservoce_lib = Extension(
 	"pyservoce.libservoce",
 	sources= [
+        "src/pywrap/compound.cpp",
         "src/pywrap/sweep.cpp",
         "src/pywrap/surface.cpp",
         "src/pywrap/face.cpp",
@@ -173,6 +179,7 @@ pyservoce_lib = Extension(
         "src/pywrap/trans.cpp",
         "src/pywrap/other.cpp",
         "src/pywrap/geombase.cpp",
+        "src/vertex.cpp",
         "src/geombase_py.cpp",
         "src/color_py.cpp",
         "src/b64.cpp",
@@ -204,19 +211,18 @@ pyservoce_lib = Extension(
         "src/interactive_object.cpp",
         "src/opencascade_types.cpp",
 	],
-	undef_macros = [ "NDEBUG" ],
+	#undef_macros = [ "NDEBUG" ],
 	extra_compile_args=FLAGS,
 	extra_link_args=extra_link_args,
 	include_dirs=INCLUDE,
 	library_dirs=LIBRARY_DIRS,
-	#library_dir=["C:\\OpenCASCADE-7.3.0-vc14-64\\opencascade-7.3.0\\win64\\vc14\\lib"],
 	libraries=LIBS,
 )
 
 setup(
 	name="pyservoce",
 	packages=["pyservoce"],
-	version="1.23.0",
+	version="1.24.0",
 	license="MIT",
 	description="CAD system for righteous zen programmers ",
 	author="mirmik",

@@ -36,7 +36,8 @@ namespace servoce
 		Ret translateZ(double z);
 
 		Ret move(double x, double y, double z);
-		Ret move(vector3 v);
+		Ret move(const vector3& v);
+		Ret move(const point3& v);
 		Ret moveX(double x);
 		Ret moveY(double y);
 		Ret moveZ(double z);

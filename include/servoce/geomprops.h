@@ -31,6 +31,12 @@ namespace servoce
  			auto pnt = CentreOfMass();
  			return gp_Vec(pnt.X(), pnt.Y(), pnt.Z()); 
  		}
+
+ 		servoce::point3 center () const 
+ 		{ 
+ 			auto pnt = CentreOfMass();
+ 			return gp_Pnt(pnt.X(), pnt.Y(), pnt.Z()); 
+ 		}
  	
 		//returns the matrix of inertia. It is a symmetrical matrix. The coefficients of the matrix are the quadratic moments of inertia. More...
  		servoce::matrix33 matrix_of_inertia () const;

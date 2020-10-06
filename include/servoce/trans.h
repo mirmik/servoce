@@ -76,6 +76,7 @@ namespace servoce
 	transformation translate(const vector3& vec);
 	transformation move(double x, double y, double z);
 	transformation move(const vector3& vec);
+	transformation move(const point3& vec);
 	transformation moveX(double);
 	transformation moveY(double);
 	transformation moveZ(double);

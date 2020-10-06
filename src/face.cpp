@@ -360,7 +360,7 @@ servoce::face_shape servoce::make_face(const std::vector<const servoce::shape*>&
 	return servoce::shape(fixer.Face()).Face();
 }
 
-servoce::face_shape servoce::fix_face(const servoce::face_shape& shp)
+servoce::face_shape servoce::fix_face(const servoce::shape& shp)
 {
 	ShapeFix_Face fixer(shp.Face());
 	fixer.Perform();

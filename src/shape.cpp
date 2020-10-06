@@ -634,3 +634,18 @@ servoce::shape servoce::shape::transform(const servoce::general_transformation& 
 {
 	return BRepBuilderAPI_GTransform(Shape(), *trans.gtrsf, true).Shape();
 }
+
+servoce::geomprops servoce::shape::props1() 
+{
+	return geomprops::linear_properties(*this);
+}
+
+servoce::geomprops servoce::shape::props2() 
+{
+	return geomprops::surface_properties(*this);
+}
+
+servoce::geomprops servoce::shape::props3() 
+{
+	return geomprops::volume_properties(*this);
+}

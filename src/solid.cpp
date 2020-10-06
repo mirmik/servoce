@@ -318,7 +318,7 @@ servoce::shape servoce::chamfer(const servoce::shape& shp, double r, const std::
 
 			return mk.Shape();
 		}
-		catch (std::exception ex)
+		catch (const std::exception& ex)
 		{
 			std::cout << ex.what() << std::endl;
 			throw ex;
@@ -464,7 +464,7 @@ std::vector<servoce::shape> _unify_faces_array(const std::vector<servoce::face_s
 	}
 }
 
-shell_shape _unify_shell(const servoce::shell_shape& proto)
+shell_shape _unify_shell(const servoce::shape& proto)
 {
 	std::vector<servoce::shape> faces;
 	BRepOffsetAPI_Sewing mkShell;
@@ -562,8 +562,8 @@ shape servoce::unify(const shape& proto)
 
 	if (_Shape.IsNull()) Standard_Failure::Raise("Cannot remove splitter from empty shape");
 	else if (_Shape.ShapeType() == TopAbs_SOLID) return _unify_solid((const servoce::solid_shape&)proto);
-	//else if (_Shape.ShapeType() == TopAbs_SHELL) return _unify_shell(proto);
-	//else if (_Shape.ShapeType() == TopAbs_FACE)	return _unify_face(proto);
+	else if (_Shape.ShapeType() == TopAbs_SHELL) return _unify_shell(proto);
+	else if (_Shape.ShapeType() == TopAbs_FACE)	return _unify_face(proto);
 	else if (_Shape.ShapeType() == TopAbs_COMPOUND) return _unify_compound(proto);
 	else Standard_Failure::Raise("TODO");
 

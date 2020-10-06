@@ -7,6 +7,7 @@
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_HCurve.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
 
 #include <GCPnts_AbscissaPoint.hxx>
 #include <GCPnts_UniformAbscissa.hxx>
@@ -54,4 +55,10 @@ Handle(Geom_Curve) servoce::edge_shape::Curve() const
 	double a, b;
 	Handle(Geom_Curve) aCurve = BRep_Tool::Curve(Edge(), a, b);
 	return aCurve;
+}
+
+servoce::edge_shape servoce::edge_shape::trim(double start, double finish) const
+{
+	BRepBuilderAPI_MakeEdge algo(Curve(), start, finish);
+	return algo.Edge();
 }

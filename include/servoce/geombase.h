@@ -145,6 +145,8 @@ namespace servoce
 
 		bool operator < (const servoce::point3& b) const { return lexless_xyz(*this, b); }
 		bool operator == (const servoce::point3& oth) const { return x == oth.x && y == oth.y && z == oth.z; }
+		bool operator!=(const point3& oth) const { return oth.x != x || oth.y != y || oth.z != z; }
+		point3 operator-() const { return point3(-x, -y, -z); }
 
 		point3 transform(const servoce::transformation& trsf) const;
 		point3 transform(const general_transformation& trans) const { (void)trans; throw std::runtime_error(""); }

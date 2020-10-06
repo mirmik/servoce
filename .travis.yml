@@ -130,9 +130,6 @@ matrix:
         - cp servoce-third-libs-travis/linux-7.4/* pyservoce/libs/
 
         - git clone https://github.com/pybind/pybind11
-        - cd pybind11
-        - python3 ./setup.py install
-        - cd ..
         
         - python3 -m pip install licant
         - python3 ./setup.py install

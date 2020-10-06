@@ -40,6 +40,7 @@ void registry_edge_shape(py::module & m)
 	.def("uniform", (std::vector<double>(edge_shape::crvalgo::*)(int, double, double)const)&edge_shape::uniform, ungil(), py::arg("npnts"), py::arg("strt"), py::arg("fini"))
 	.def("uniform", (std::vector<double>(edge_shape::crvalgo::*)(int)const)&edge_shape::uniform, ungil(), py::arg("npnts"))
 	.def("fill", &edge_shape::fill, ungil())
+	.def("trim", &edge_shape::trim, ungil())
 	;
 	pywrap_transformable<servoce::edge_shape>(cls);
 	pywrap_curve_algo3<servoce::edge_shape>(cls);

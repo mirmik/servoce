@@ -293,6 +293,11 @@ servoce::transformation servoce::move(const vector3& v)
 	return servoce::translate(v.x, v.y, v.z);
 }
 
+servoce::transformation servoce::move(const point3& v)
+{
+	return servoce::translate(v.x, v.y, v.z);
+}
+
 servoce::transformation servoce::moveX(double x)
 {
 	return servoce::translate(x, 0, 0);
