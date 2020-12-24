@@ -294,7 +294,6 @@ servoce::shape servoce::chamfer(const servoce::shape& shp, double r, const std::
 		{
 			BRepFilletAPI_MakeChamfer mk(shp.Shape());
 
-
 			TopTools_IndexedDataMapOfShapeListOfShape edgeFaceMap;
 			TopExp::MapShapesAndAncestors(shp.Shape(), TopAbs_EDGE, TopAbs_FACE, edgeFaceMap);
 
