@@ -5,6 +5,7 @@
 #include <GCPnts_UniformAbscissa.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
 
+#include <tuple>
 #include <vector>
 
 namespace servoce
