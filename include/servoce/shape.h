@@ -6,6 +6,7 @@
 #include <iostream>
 #include <memory>
 #include <set>
+#include <tuple>
 
 #include <servoce/geombase.h>
 #include <servoce/boolops.h>

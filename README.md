@@ -1,5 +1,9 @@
 This library is part of zencad project.
+
+**Deprecated from zencad 1.0.0. Will be archived.**
+
 Servoce wraps opencascade core for integrate with zencad.
+
 
 Status:  
 ![](https://travis-ci.com/mirmik/servoce.svg?branch=master) - master  
